@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plane, UtensilsCrossed, ShoppingBag, ArrowUpRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const categories = [
   {
@@ -9,7 +10,7 @@ const categories = [
     subtitle: 'Hotels & Flights',
     description: 'Book your perfect getaway — from luxury hotels to the best flight deals.',
     icon: Plane,
-    href: '#travel',
+    href: '/travel',
     gradient: 'from-[#0A192F] to-[#1E3A5F]',
   },
   {
