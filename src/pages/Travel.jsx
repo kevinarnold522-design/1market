@@ -7,16 +7,16 @@ const destinations = [
   {
     id: 'cavite',
     name: 'Cavite',
-    tagline: 'Heritage Shores & Island Escapes',
+    tagline: 'Heritage Shores & Beach Resorts',
     region: 'Luzon',
-    image: 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/12b041927_generated_image.png',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
     highlight: 'Featured',
     rating: 4.7,
     options: [
-      { type: 'Hotel', name: 'Crimson Hotel Cavite', price: '₱3,200/night', stars: 4 },
-      { type: 'Hotel', name: 'Bellevue Resort Cavite', price: '₱4,500/night', stars: 5 },
-      { type: 'Flight', name: 'Manila → Cavite Ferry', price: '₱350', stars: null },
-      { type: 'Hotel', name: 'La Carmela de Boracay', price: '₱2,800/night', stars: 3 },
+      { type: 'Hotel', name: 'Canyon Cove Hotel & Spa', price: '₱3,500/night', stars: 4, link: 'https://www.canyon.ph/canyon-cove-hotel-spa/' },
+      { type: 'Hotel', name: 'The Bayleaf Hotel Cavite', price: '₱4,200/night', stars: 4, link: 'https://www.thebayleaf.com.ph/cavite/' },
+      { type: 'Hotel', name: 'Pico Sands Hotel', price: '₱5,800/night', stars: 5, link: 'https://www.expedia.com/Nasugbu-Hotels-Pico-Sands-Hotel.h6316376.Hotel-Information' },
+      { type: 'Flight', name: 'Bus: Cubao → Tagaytay/Cavite', price: 'From ₱120', stars: null, link: 'https://www.traveloka.com/en-ph' },
     ],
   },
   {
@@ -24,29 +24,29 @@ const destinations = [
     name: 'Palawan',
     tagline: "The World's Best Island",
     region: 'Luzon',
-    image: 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/5fea9f629_generated_image.png',
+    image: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?w=800&q=80',
     highlight: 'Top Rated',
     rating: 4.9,
     options: [
-      { type: 'Hotel', name: 'El Nido Resorts Lagen', price: '₱18,000/night', stars: 5 },
-      { type: 'Hotel', name: 'Two Seasons Coron', price: '₱6,500/night', stars: 4 },
-      { type: 'Flight', name: 'Manila → Puerto Princesa', price: '₱1,800', stars: null },
-      { type: 'Flight', name: 'Manila → El Nido', price: '₱2,400', stars: null },
+      { type: 'Hotel', name: 'Amanpulo Resort', price: '₱70,000+/night', stars: 5, link: 'https://www.aman.com/resorts/amanpulo' },
+      { type: 'Hotel', name: 'Sea Cocoon Hotel El Nido', price: '₱6,500/night', stars: 4, link: 'https://www.agoda.com/sea-cocoon-hotel/hotel/default-city-km.html' },
+      { type: 'Flight', name: 'Manila → Puerto Princesa (PAL)', price: 'From ₱1,800', stars: null, link: 'https://www.philippineairlines.com' },
+      { type: 'Flight', name: 'Manila → El Nido (AirSWIFT)', price: 'From ₱2,400', stars: null, link: 'https://www.airswift.com.ph' },
     ],
   },
   {
     id: 'boracay',
     name: 'Boracay',
-    tagline: 'World-Class White Beach',
+    tagline: 'World-Famous White Beach',
     region: 'Visayas',
-    image: 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/cfcfbf6bd_generated_image.png',
+    image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80',
     highlight: 'Popular',
     rating: 4.8,
     options: [
-      { type: 'Hotel', name: 'Shangri-La Boracay', price: '₱12,000/night', stars: 5 },
-      { type: 'Hotel', name: 'Discovery Shores', price: '₱8,500/night', stars: 5 },
-      { type: 'Flight', name: 'Manila → Kalibo', price: '₱1,200', stars: null },
-      { type: 'Hotel', name: 'Henann Palm Beach', price: '₱4,200/night', stars: 4 },
+      { type: 'Hotel', name: "Shangri-La Boracay", price: '₱20,000+/night', stars: 5, link: 'https://www.shangri-la.com/boracay/boracayresort/' },
+      { type: 'Hotel', name: 'Discovery Shores Boracay', price: '₱12,000+/night', stars: 5, link: 'https://www.discoveryboracay.com' },
+      { type: 'Hotel', name: 'Henann Palm Beach Resort', price: '₱4,800/night', stars: 4, link: 'https://www.henannresorts.com/henann-palm-beach-resort/' },
+      { type: 'Flight', name: 'Manila → Caticlan (Cebu Pacific)', price: 'From ₱1,700', stars: null, link: 'https://www.cebupacificair.com' },
     ],
   },
   {
@@ -54,29 +54,29 @@ const destinations = [
     name: 'Batangas',
     tagline: 'Dive Sites & Beach Coves',
     region: 'Luzon',
-    image: 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/a5f852c18_generated_image.png',
+    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80',
     highlight: 'Trending',
     rating: 4.6,
     options: [
-      { type: 'Hotel', name: 'Acuatico Beach Resort', price: '₱5,500/night', stars: 5 },
-      { type: 'Hotel', name: 'Laiya Beach Club', price: '₱3,800/night', stars: 4 },
-      { type: 'Flight', name: 'Bus: Manila → Batangas', price: '₱250', stars: null },
-      { type: 'Hotel', name: 'La Luz Beach Resort', price: '₱4,000/night', stars: 4 },
+      { type: 'Hotel', name: 'Acuatico Beach Resort', price: '₱10,800+/night', stars: 5, link: 'https://acuaticoresort.com.ph' },
+      { type: 'Hotel', name: 'Canyon Cove Hotel & Spa', price: '₱3,500/night', stars: 4, link: 'https://www.canyon.ph/canyon-cove-hotel-spa/' },
+      { type: 'Hotel', name: 'Camp Netanya Resort & Spa', price: '₱6,000/night', stars: 4, link: 'https://www.agoda.com/city/batangas-ph.html' },
+      { type: 'Flight', name: 'Bus: Buendia → Batangas (ALPS)', price: 'From ₱200', stars: null, link: 'https://www.traveloka.com/en-ph/bus' },
     ],
   },
   {
     id: 'cebu',
     name: 'Cebu',
-    tagline: 'Whale Sharks & Waterfalls',
+    tagline: 'Whale Sharks, Waterfalls & Culture',
     region: 'Visayas',
-    image: 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/12b041927_generated_image.png',
+    image: 'https://images.unsplash.com/photo-1565967511849-76a60a516170?w=800&q=80',
     highlight: 'Must Visit',
     rating: 4.8,
     options: [
-      { type: 'Hotel', name: 'Shangri-La Mactan', price: '₱9,000/night', stars: 5 },
-      { type: 'Hotel', name: 'Crimson Resort Mactan', price: '₱6,800/night', stars: 5 },
-      { type: 'Flight', name: 'Manila → Cebu', price: '₱1,500', stars: null },
-      { type: 'Hotel', name: 'Radisson Blu Cebu', price: '₱5,200/night', stars: 5 },
+      { type: 'Hotel', name: 'Shangri-La Mactan, Cebu', price: '₱12,000+/night', stars: 5, link: 'https://www.shangri-la.com/cebu/mactanresort/' },
+      { type: 'Hotel', name: 'Crimson Resort & Spa Mactan', price: '₱9,500/night', stars: 5, link: 'https://www.crimsonhotel.com/mactan/' },
+      { type: 'Hotel', name: 'Radisson Blu Cebu', price: '₱7,000/night', stars: 5, link: 'https://www.radissonhotels.com/en-us/hotels/radisson-blu-cebu' },
+      { type: 'Flight', name: 'Manila → Cebu (Cebu Pacific)', price: 'From ₱1,500', stars: null, link: 'https://www.cebupacificair.com' },
     ],
   },
   {
@@ -84,14 +84,14 @@ const destinations = [
     name: 'Bohol',
     tagline: 'Chocolate Hills & Tarsiers',
     region: 'Visayas',
-    image: 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/5fea9f629_generated_image.png',
+    image: 'https://images.unsplash.com/photo-1591223493216-f8a538fbb3a6?w=800&q=80',
     highlight: 'Scenic',
     rating: 4.7,
     options: [
-      { type: 'Hotel', name: 'Eskaya Beach Resort', price: '₱7,200/night', stars: 5 },
-      { type: 'Hotel', name: 'Henann Alona Beach', price: '₱4,500/night', stars: 4 },
-      { type: 'Flight', name: 'Manila → Tagbilaran', price: '₱1,600', stars: null },
-      { type: 'Hotel', name: 'Bohol Beach Club', price: '₱3,800/night', stars: 4 },
+      { type: 'Hotel', name: 'Eskaya Beach Resort & Spa', price: '₱24,000+/night', stars: 5, link: 'https://eskayaresort.com' },
+      { type: 'Hotel', name: 'Henann Alona Beach Resort', price: '₱5,500/night', stars: 4, link: 'https://www.henannresorts.com/alona-beach/' },
+      { type: 'Hotel', name: 'Bohol Beach Club', price: '₱4,800/night', stars: 4, link: 'https://www.boholbeachclub.com.ph' },
+      { type: 'Flight', name: 'Manila → Tagbilaran (PAL)', price: 'From ₱1,600', stars: null, link: 'https://www.philippineairlines.com' },
     ],
   },
 ];
@@ -166,6 +166,7 @@ function BookingModal({ destination, onClose }) {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.05 }}
               className="flex items-center justify-between p-4 rounded-xl bg-[#F8FAFC] hover:bg-[#EFF6FF] border border-transparent hover:border-[#2563EB]/20 transition-all cursor-pointer group"
+              onClick={() => window.open(opt.link, '_blank')}
             >
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-white flex items-center justify-center shadow-sm">
@@ -191,8 +192,11 @@ function BookingModal({ destination, onClose }) {
         </div>
 
         <div className="p-4 pt-0">
-          <button className="w-full py-3 bg-[#0A192F] hover:bg-[#2563EB] text-white font-body font-semibold text-sm rounded-xl transition-colors duration-300">
-            Book Now
+          <button
+            onClick={() => window.open(destination.options[0].link, '_blank')}
+            className="w-full py-3 bg-[#0A192F] hover:bg-[#2563EB] text-white font-body font-semibold text-sm rounded-xl transition-colors duration-300"
+          >
+            View All Options →
           </button>
         </div>
       </motion.div>
@@ -218,7 +222,7 @@ export default function Travel() {
       {/* Header */}
       <div className="relative bg-[#0A192F] overflow-hidden">
         <div className="absolute inset-0 opacity-20"
-          style={{ backgroundImage: `url(https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/cfcfbf6bd_generated_image.png)`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          style={{ backgroundImage: `url(https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0A192F]/60 to-[#0A192F]" />
 
