@@ -34,15 +34,15 @@ export default function Footer() {
               Categories
             </h4>
             <div className="space-y-3">
-              {['Travel', 'Food', 'Buy & Sell'].map((link) => (
-                <a
-                  key={link}
-                  href={`#${link.toLowerCase().replace(/\s*&\s*/g, '')}`}
-                  className="block font-body text-sm text-white/40 hover:text-[#00D4FF] transition-colors"
-                >
+              {['Travel', 'Food', 'Buy & Sell'].map((link) =>
+              <a
+                key={link}
+                href={`#${link.toLowerCase().replace(/\s*&\s*/g, '')}`}
+                className="block font-body text-sm text-white/40 hover:text-[#00D4FF] transition-colors">
+                
                   {link}
                 </a>
-              ))}
+              )}
             </div>
           </div>
 
@@ -52,8 +52,8 @@ export default function Footer() {
               About
             </h4>
             <div className="space-y-3">
-              <p className="font-body text-sm text-white/40 leading-relaxed">
-                Founded by Kevin Roberto
+              <p className="font-body text-sm text-white/40 leading-relaxed">Founded by Kevin W. Roberto
+
               </p>
               <p className="font-body text-sm text-white/40 leading-relaxed">
                 Manila, Philippines
@@ -73,6 +73,6 @@ export default function Footer() {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>);
+
 }
