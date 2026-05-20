@@ -54,8 +54,8 @@ export default function HeroSection({ heroImage }) {
 
               <div className="h-[1px] w-16 bg-[#00D4FF]" />
 
-              <p className="font-body text-xs sm:text-sm text-[#0A192F]/40 max-w-sm leading-relaxed">
-                Founded by Kevin Roberto in 2026 — a growing community thanks to you.
+              <p className="font-body text-xs sm:text-sm text-[#0A192F]/40 max-w-sm leading-relaxed">Founded by Kevin Roberto in 2026 A— a growing community thanks to you.
+
               </p>
 
               <motion.a
