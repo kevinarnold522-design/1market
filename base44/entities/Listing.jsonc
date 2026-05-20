@@ -1,0 +1,113 @@
+{
+  "name": "Listing",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "shoes",
+        "cars",
+        "houses",
+        "services",
+        "product"
+      ],
+      "description": "Listing category"
+    },
+    "business_id": {
+      "type": "string",
+      "description": "Optional: linked business entity ID"
+    },
+    "price": {
+      "type": "number"
+    },
+    "price_label": {
+      "type": "string",
+      "description": "Display price string e.g. \u20b1500\u2013\u20b11,200/unit"
+    },
+    "location": {
+      "type": "string",
+      "enum": [
+        "Manila",
+        "Cavite"
+      ]
+    },
+    "area": {
+      "type": "string"
+    },
+    "seller_name": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "extra_images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "condition": {
+      "type": "string",
+      "enum": [
+        "Brand New",
+        "Like New",
+        "Used",
+        "N/A"
+      ]
+    },
+    "brand": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "year": {
+      "type": "integer"
+    },
+    "mileage": {
+      "type": "string"
+    },
+    "transmission": {
+      "type": "string"
+    },
+    "size": {
+      "type": "string"
+    },
+    "property_type": {
+      "type": "string"
+    },
+    "lot_size": {
+      "type": "string"
+    },
+    "bedrooms": {
+      "type": "integer"
+    },
+    "bathrooms": {
+      "type": "integer"
+    },
+    "status": {
+      "type": "string"
+    },
+    "service_area": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "title",
+    "type",
+    "location"
+  ]
+}

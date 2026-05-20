@@ -10,6 +10,8 @@ import Home from './pages/Home';
 import Travel from './pages/Travel';
 import Food from './pages/Food';
 import BuySell from './pages/BuySell';
+import Admin from './pages/Admin';
+import SellerDashboard from './pages/SellerDashboard';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -41,6 +43,8 @@ const AuthenticatedApp = () => {
       <Route path="/travel" element={<Travel />} />
       <Route path="/food" element={<Food />} />
       <Route path="/buysell" element={<BuySell />} />
+      <Route path="/admin" element={<Admin />} />
+      <Route path="/seller" element={<SellerDashboard />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

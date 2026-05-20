@@ -1,0 +1,27 @@
+{
+  "name": "Review",
+  "type": "object",
+  "properties": {
+    "business_id": {
+      "type": "string"
+    },
+    "reviewer_name": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "comment": {
+      "type": "string"
+    },
+    "photo_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "business_id",
+    "rating"
+  ]
+}

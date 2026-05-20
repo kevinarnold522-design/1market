@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, MapPin, Star, Filter, X, ChevronRight, UtensilsCrossed, Coffee, ShoppingBag, Clock } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, Star, Filter, X, UtensilsCrossed, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
 import MemberSignupModal from '../components/MemberSignupModal';
 
 const businesses = [
@@ -47,6 +48,9 @@ const categoryTypes = [
 
 function BusinessCard({ biz, onRate }) {
   const locationColor = biz.location === 'Manila' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700';
+  const imgSrc = biz.image_url || biz.image;
+  const menuItems = biz.menu || [];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -54,21 +58,23 @@ function BusinessCard({ biz, onRate }) {
       className="bg-white rounded-2xl overflow-hidden border border-[#0A192F]/5 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
     >
       <div className="relative aspect-[16/9] overflow-hidden">
-        <img src={biz.image} alt={biz.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        <img src={imgSrc} alt={biz.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/50 to-transparent" />
         <div className="absolute top-3 left-3 flex gap-2">
-          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${locationColor}`}>
-            📍 {biz.location}
-          </span>
+          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${locationColor}`}>📍 {biz.location}</span>
         </div>
         <div className="absolute top-3 right-3">
           <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/90 text-[#0A192F]">{biz.tag}</span>
         </div>
+        {/* Logo badge */}
+        {biz.logo_url && (
+          <div className="absolute bottom-3 right-3 w-10 h-10 rounded-xl bg-white shadow-md flex items-center justify-center overflow-hidden border border-white">
+            <img src={biz.logo_url} alt="logo" className="w-8 h-8 object-contain" onError={e => e.target.style.display='none'} />
+          </div>
+        )}
       </div>
       <div className="p-4">
-        <div className="flex items-start justify-between gap-2 mb-1">
-          <h3 className="font-heading font-bold text-base text-[#0A192F] leading-tight">{biz.name}</h3>
-        </div>
+        <h3 className="font-heading font-bold text-base text-[#0A192F] leading-tight mb-0.5">{biz.name}</h3>
         <p className="font-body text-xs text-[#2563EB] font-semibold mb-1">{biz.category} · {biz.area}</p>
         <p className="font-body text-xs text-[#0A192F]/50 mb-2 flex items-center gap-1">
           <MapPin className="w-3 h-3" /> {biz.address}
@@ -77,10 +83,10 @@ function BusinessCard({ biz, onRate }) {
           <Clock className="w-3 h-3" /> {biz.hours}
         </p>
         <div className="flex flex-wrap gap-1 mb-3">
-          {biz.menu.slice(0, 3).map((item, i) => (
+          {menuItems.slice(0, 3).map((item, i) => (
             <span key={i} className="px-2 py-0.5 bg-[#F8FAFC] text-[#0A192F]/60 text-[10px] rounded-full border border-[#0A192F]/5">{item}</span>
           ))}
-          {biz.menu.length > 3 && <span className="px-2 py-0.5 bg-[#F8FAFC] text-[#0A192F]/40 text-[10px] rounded-full border border-[#0A192F]/5">+{biz.menu.length - 3} more</span>}
+          {menuItems.length > 3 && <span className="px-2 py-0.5 bg-[#F8FAFC] text-[#0A192F]/40 text-[10px] rounded-full border border-[#0A192F]/5">+{menuItems.length - 3} more</span>}
         </div>
         <button
           onClick={() => onRate(biz)}
@@ -153,13 +159,21 @@ export default function Food() {
   const [ratingBiz, setRatingBiz] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [dbBusinesses, setDbBusinesses] = useState([]);
+
+  useEffect(() => {
+    base44.entities.Business.filter({ section: 'food', is_active: true }).then(setDbBusinesses).catch(() => {});
+  }, []);
+
+  // Merge DB businesses on top of static ones (DB takes priority)
+  const allBusinesses = [...dbBusinesses, ...businesses.filter(sb => !dbBusinesses.some(db => db.name === sb.name))];
 
   const toggleType = (key) => {
     setActiveTypes(prev => prev.includes(key) ? prev.filter(t => t !== key) : [...prev, key]);
   };
 
-  const filtered = businesses.filter(b => {
-    const matchSearch = b.name.toLowerCase().includes(search.toLowerCase()) || b.area.toLowerCase().includes(search.toLowerCase()) || b.category.toLowerCase().includes(search.toLowerCase());
+  const filtered = allBusinesses.filter(b => {
+    const matchSearch = b.name.toLowerCase().includes(search.toLowerCase()) || (b.area || '').toLowerCase().includes(search.toLowerCase()) || (b.category || '').toLowerCase().includes(search.toLowerCase());
     const matchLoc = locationFilter === 'All' || b.location === locationFilter;
     const matchType = activeTypes.length === 0 || activeTypes.includes(b.type);
     return matchSearch && matchLoc && matchType;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 export default function Footer() {
@@ -52,12 +53,10 @@ export default function Footer() {
               About
             </h4>
             <div className="space-y-3">
-              <p className="font-body text-sm text-white/40 leading-relaxed">Founded by Kevin W. Roberto
-
-              </p>
-              <p className="font-body text-sm text-white/40 leading-relaxed">
-                Manila, Philippines
-              </p>
+              <p className="font-body text-sm text-white/40 leading-relaxed">Founded by Kevin W. Roberto</p>
+              <p className="font-body text-sm text-white/40 leading-relaxed">Manila, Philippines</p>
+              <Link to="/admin" className="block font-body text-xs text-white/20 hover:text-[#00D4FF] transition-colors">Admin Dashboard →</Link>
+              <Link to="/seller" className="block font-body text-xs text-white/20 hover:text-[#00D4FF] transition-colors">Seller Dashboard →</Link>
             </div>
           </div>
         </div>

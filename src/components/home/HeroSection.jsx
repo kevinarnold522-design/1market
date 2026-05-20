@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
 
-const WARM_HERO = 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&q=85';
+const WARM_HERO = 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=1200&q=85';
 
 export default function HeroSection({ heroImage }) {
   return (

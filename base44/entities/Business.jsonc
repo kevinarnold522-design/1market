@@ -1,0 +1,106 @@
+{
+  "name": "Business",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Business name"
+    },
+    "category": {
+      "type": "string",
+      "description": "Category (e.g. Fast Food, Local Eatery, Hotel, etc.)"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "chain",
+        "carinderia",
+        "home-kitchen",
+        "home-baker",
+        "coffee",
+        "hotel",
+        "vehicle-rental",
+        "shop",
+        "service"
+      ],
+      "description": "Business type"
+    },
+    "section": {
+      "type": "string",
+      "enum": [
+        "food",
+        "travel",
+        "buysell"
+      ],
+      "description": "Which section this belongs to"
+    },
+    "location": {
+      "type": "string",
+      "enum": [
+        "Manila",
+        "Cavite",
+        "Nationwide"
+      ],
+      "default": "Manila"
+    },
+    "area": {
+      "type": "string",
+      "description": "Specific area/district"
+    },
+    "address": {
+      "type": "string"
+    },
+    "hours": {
+      "type": "string"
+    },
+    "tag": {
+      "type": "string",
+      "description": "Short badge label"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "Real company logo URL"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Main establishment photo URL"
+    },
+    "extra_images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Additional establishment photos"
+    },
+    "menu": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Menu items or key offerings"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "rating": {
+      "type": "number",
+      "default": 0
+    },
+    "rating_count": {
+      "type": "integer",
+      "default": 0
+    }
+  },
+  "required": [
+    "name",
+    "section",
+    "location"
+  ]
+}
