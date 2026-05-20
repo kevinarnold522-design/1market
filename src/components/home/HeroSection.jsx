@@ -81,12 +81,12 @@ export default function HeroSection({ heroImage }) {
             className="relative order-first lg:order-last">
             
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl shadow-[#0A192F]/10">
-              <img
-                src={WARM_HERO}
-                alt="Customer and business owner interaction"
-                className="w-full h-full object-cover" />
               
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/20 to-transparent hidden" />
+
+
+              
+              
+              
             </div>
             {/* Floating badge */}
             <motion.div
