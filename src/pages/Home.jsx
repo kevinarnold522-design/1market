@@ -22,7 +22,7 @@ const FEATURED_IMAGES = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pt-8">
+    <div className="min-h-screen bg-[#F8FAFC] pt-8 overflow-x-hidden">
       <Navbar />
       <HeroSection heroImage={HERO_IMAGE} />
       <CategoryCards images={CATEGORY_IMAGES} />

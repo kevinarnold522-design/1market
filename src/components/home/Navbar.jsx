@@ -15,18 +15,18 @@ export default function Navbar() {
   }, []);
 
   const links = [
-    { label: 'Travel', href: '#travel' },
-    { label: 'Food', href: '#food' },
-    { label: 'Buy & Sell', href: '#buysell' },
+    { label: 'Travel', href: '#categories' },
+    { label: 'Food', href: '#categories' },
+    { label: 'Buy & Sell', href: '#categories' },
   ];
 
   return (
     <>
     {/* Sign Up Banner */}
-    <div className="fixed top-0 left-0 right-0 z-50 bg-[#00D4FF] text-[#0A192F] py-2 px-4 text-center">
-      <span className="font-body text-xs font-semibold">🎉 Join 1Market.ph for FREE — Rate businesses, buy, and sell across Manila & Cavite!</span>
-      <button onClick={() => setShowSignup(true)} className="ml-3 px-3 py-0.5 bg-[#0A192F] text-white rounded-full text-xs font-bold hover:bg-[#2563EB] transition-colors">
-        Sign Up Now →
+    <div className="fixed top-0 left-0 right-0 z-50 bg-[#00D4FF] text-[#0A192F] py-2 px-3 text-center flex items-center justify-center flex-wrap gap-x-2">
+      <span className="font-body text-[11px] sm:text-xs font-semibold">🎉 Join 1Market.ph FREE — Buy, sell & rate across Manila & Cavite!</span>
+      <button onClick={() => setShowSignup(true)} className="px-3 py-0.5 bg-[#0A192F] text-white rounded-full text-[11px] sm:text-xs font-bold hover:bg-[#2563EB] transition-colors whitespace-nowrap">
+        Sign Up →
       </button>
     </div>
     <nav

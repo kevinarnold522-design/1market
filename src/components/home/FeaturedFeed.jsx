@@ -57,7 +57,7 @@ export default function FeaturedFeed({ images }) {
     : allSuggestions;
 
   return (
-    <section className="py-24 lg:py-32 bg-[#F8FAFC]">
+    <section className="py-16 sm:py-24 lg:py-32 bg-[#F8FAFC]">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 mb-10">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -97,12 +97,12 @@ export default function FeaturedFeed({ images }) {
 
       {/* Horizontal Scroll */}
       <div ref={scrollRef}
-        className="flex gap-5 overflow-x-auto scrollbar-hide pl-6 lg:pl-[max(1.5rem,calc((100vw-80rem)/2+1.5rem))] pr-6"
+        className="flex gap-4 sm:gap-5 overflow-x-auto scrollbar-hide pl-4 sm:pl-6 lg:pl-[max(1.5rem,calc((100vw-80rem)/2+1.5rem))] pr-4 sm:pr-6"
         style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         {items.map((item, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ delay: i * 0.07 }} onClick={() => navigate(item.link)}
-            className="flex-shrink-0 w-[280px] sm:w-[300px] group cursor-pointer" style={{ scrollSnapAlign: 'start' }}>
+            className="flex-shrink-0 w-[240px] sm:w-[300px] group cursor-pointer" style={{ scrollSnapAlign: 'start' }}>
             <div className="relative rounded-2xl overflow-hidden bg-white shadow-sm shadow-[#0A192F]/5 border border-[#0A192F]/5 hover:shadow-lg hover:shadow-[#0A192F]/10 transition-all duration-300 hover:-translate-y-1">
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
