@@ -34,8 +34,8 @@ export default function HeroSection({ heroImage }) {
                 className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#0A192F]/5 rounded-full">
                 
                 <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
-                <span className="font-body text-xs font-medium tracking-widest uppercase text-[#0A192F]/60">
-                  Est. 2026
+                <span className="font-body text-xs font-medium tracking-widest uppercase text-[#0A192F]/60">E 2026
+
                 </span>
               </motion.div>
 
