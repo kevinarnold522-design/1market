@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import MemberSignupModal from '../MemberSignupModal';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -19,8 +21,16 @@ export default function Navbar() {
   ];
 
   return (
+    <>
+    {/* Sign Up Banner */}
+    <div className="fixed top-0 left-0 right-0 z-50 bg-[#00D4FF] text-[#0A192F] py-2 px-4 text-center">
+      <span className="font-body text-xs font-semibold">🎉 Join 1Market.ph for FREE — Rate businesses, buy, and sell across Manila & Cavite!</span>
+      <button onClick={() => setShowSignup(true)} className="ml-3 px-3 py-0.5 bg-[#0A192F] text-white rounded-full text-xs font-bold hover:bg-[#2563EB] transition-colors">
+        Sign Up Now →
+      </button>
+    </div>
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-8 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
           ? 'bg-[#0A192F]/80 backdrop-blur-xl shadow-lg shadow-[#0A192F]/10'
           : 'bg-transparent'
@@ -41,7 +51,7 @@ export default function Navbar() {
           </a>
 
           {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6">
             {links.map((link) => (
               <a
                 key={link.label}
@@ -54,6 +64,10 @@ export default function Navbar() {
                 <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#00D4FF] transition-all duration-300 group-hover:w-full" />
               </a>
             ))}
+            <button onClick={() => setShowSignup(true)}
+              className="px-4 py-2 bg-[#00D4FF] text-[#0A192F] rounded-lg font-body font-bold text-xs hover:bg-white transition-colors">
+              Sign Up Free
+            </button>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -88,10 +102,18 @@ export default function Navbar() {
                   {link.label}
                 </a>
               ))}
+              <button onClick={() => { setMenuOpen(false); setShowSignup(true); }}
+                className="w-full mt-2 py-2.5 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-sm hover:bg-white transition-colors">
+                Sign Up Free
+              </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </nav>
+    <AnimatePresence>
+      {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
+    </AnimatePresence>
+    </>
   );
 }

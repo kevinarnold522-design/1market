@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plane, UtensilsCrossed, ShoppingBag, ArrowUpRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const categories = [
   {
@@ -19,7 +19,7 @@ const categories = [
     subtitle: 'Restaurants & Local Eats',
     description: 'Discover restaurants and small businesses serving the best food near you.',
     icon: UtensilsCrossed,
-    href: '#food',
+    href: '/food',
     gradient: 'from-[#1E3A5F] to-[#2563EB]',
   },
   {
@@ -28,13 +28,14 @@ const categories = [
     subtitle: 'Products & Listings',
     description: 'Browse all products and listings — buy what you need, sell what you don\'t.',
     icon: ShoppingBag,
-    href: '#buysell',
+    href: '/buysell',
     gradient: 'from-[#2563EB] to-[#00D4FF]',
   },
 ];
 
 export default function CategoryCards({ images }) {
   const [hovered, setHovered] = useState(null);
+  const navigate = useNavigate();
 
   return (
     <section id="categories" className="relative py-24 lg:py-32">
@@ -66,16 +67,16 @@ export default function CategoryCards({ images }) {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid md:grid-cols-3 gap-4 lg:gap-6">
           {categories.map((cat, i) => (
-            <motion.a
+            <motion.div
               key={cat.id}
-              href={cat.href}
+              onClick={() => navigate(cat.href)}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15 }}
               onMouseEnter={() => setHovered(cat.id)}
               onMouseLeave={() => setHovered(null)}
-              className={`group relative rounded-2xl overflow-hidden transition-all duration-500 ${
+              className={`group relative rounded-2xl overflow-hidden transition-all duration-500 cursor-pointer ${
                 hovered && hovered !== cat.id ? 'md:scale-[0.97] opacity-80' : ''
               } ${hovered === cat.id ? 'md:scale-[1.02]' : ''}`}
               style={{ minHeight: '420px' }}
@@ -119,7 +120,7 @@ export default function CategoryCards({ images }) {
                   </div>
                 </div>
               </div>
-            </motion.a>
+            </motion.div>
           ))}
         </div>
       </div>
