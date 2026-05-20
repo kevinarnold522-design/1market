@@ -15,8 +15,8 @@ export default function HeroSection({ heroImage }) {
         className="absolute left-12 top-0 w-[1px] bg-gradient-to-b from-transparent via-[#00D4FF] to-transparent hidden lg:block"
         initial={{ height: 0 }}
         animate={{ height: '100%' }}
-        transition={{ duration: 2, ease: 'easeOut' }}
-      />
+        transition={{ duration: 2, ease: 'easeOut' }} />
+      
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-screen py-24 lg:py-28">
@@ -24,15 +24,15 @@ export default function HeroSection({ heroImage }) {
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
+            transition={{ duration: 0.8, delay: 0.2 }}>
+            
             <div className="space-y-5">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#0A192F]/5 rounded-full"
-              >
+                className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#0A192F]/5 rounded-full">
+                
                 <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
                 <span className="font-body text-xs font-medium tracking-widest uppercase text-[#0A192F]/60">
                   Est. 2026
@@ -61,8 +61,8 @@ export default function HeroSection({ heroImage }) {
               <motion.a
                 href="#categories"
                 className="inline-flex items-center gap-3 mt-4 group"
-                whileHover={{ y: 2 }}
-              >
+                whileHover={{ y: 2 }}>
+                
                 <span className="font-body text-sm font-medium text-[#0A192F]/70 group-hover:text-[#2563EB] transition-colors">
                   Explore Categories
                 </span>
@@ -78,23 +78,23 @@ export default function HeroSection({ heroImage }) {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.5 }}
-            className="relative order-first lg:order-last"
-          >
+            className="relative order-first lg:order-last">
+            
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl shadow-[#0A192F]/10">
               <img
                 src={WARM_HERO}
                 alt="Customer and business owner interaction"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/20 to-transparent" />
+                className="w-full h-full object-cover" />
+              
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/20 to-transparent hidden" />
             </div>
             {/* Floating badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.2 }}
-              className="absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 bg-white/90 backdrop-blur-xl rounded-xl shadow-xl shadow-[#0A192F]/5 px-4 sm:px-6 py-3 sm:py-4 border border-white/50"
-            >
+              className="absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 bg-white/90 backdrop-blur-xl rounded-xl shadow-xl shadow-[#0A192F]/5 px-4 sm:px-6 py-3 sm:py-4 border border-white/50">
+              
               <p className="font-heading font-bold text-xl sm:text-2xl text-[#0A192F]">Manila & Cavite</p>
               <p className="font-body text-xs text-[#0A192F]/50 tracking-wide">Local businesses, real connections</p>
             </motion.div>
@@ -104,6 +104,6 @@ export default function HeroSection({ heroImage }) {
 
       {/* Bottom gradient fade */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#F8FAFC] to-transparent" />
-    </section>
-  );
+    </section>);
+
 }
