@@ -81,12 +81,37 @@ export default function HeroSection({ heroImage }) {
             className="relative order-first lg:order-last">
             
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl shadow-[#0A192F]/10">
-              
-
-
-              
-              
-              
+              {/* Buyer */}
+              <img
+                src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&q=80"
+                alt="Buyer shopping"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#0A192F]/60 via-transparent to-transparent" />
+              {/* Seller badge */}
+              <div className="absolute top-4 right-4 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg">
+                <img
+                  src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=200&q=80"
+                  alt="Seller"
+                  className="w-10 h-10 rounded-lg object-cover"
+                />
+                <div>
+                  <p className="font-heading font-bold text-xs text-[#0A192F]">Seller</p>
+                  <p className="font-body text-[10px] text-[#0A192F]/50">Local Business</p>
+                </div>
+              </div>
+              {/* Buyer label */}
+              <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg">
+                <img
+                  src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=200&q=80"
+                  alt="Buyer"
+                  className="w-10 h-10 rounded-lg object-cover"
+                />
+                <div>
+                  <p className="font-heading font-bold text-xs text-[#0A192F]">Buyer</p>
+                  <p className="font-body text-[10px] text-[#0A192F]/50">Smart Shopper</p>
+                </div>
+              </div>
             </div>
             {/* Floating badge */}
             <motion.div
