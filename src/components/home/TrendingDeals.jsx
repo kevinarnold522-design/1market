@@ -38,10 +38,25 @@ const PLATFORM_COLORS = {
   'Traveloka': '#0770E3',
 };
 
-const CATEGORIES = ['All', 'Hotel', 'Stay', 'Flight', 'Activity', 'Concert', 'Movie', 'Package'];
+// Electronics deals
+const ELECTRONICS_DEALS = [
+  { id: 101, platform: 'Lazada', category: 'Electronics', title: 'Samsung Galaxy A55 5G', location: 'Nationwide PH', originalPrice: 22990, salePrice: 17499, discount: 24, rating: 4.8, image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&q=80', link: 'https://www.lazada.com.ph/catalog/?q=samsung+galaxy', badge: '📱 Best Seller', color: 'from-blue-600 to-blue-800' },
+  { id: 102, platform: 'Shopee', category: 'Electronics', title: 'iPhone 15 Pro Max 256GB', location: 'Nationwide PH', originalPrice: 89000, salePrice: 74999, discount: 16, rating: 4.9, image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&q=80', link: 'https://shopee.ph/search?keyword=iphone+15', badge: '🔥 Flash Sale', color: 'from-slate-600 to-slate-800' },
+  { id: 103, platform: 'Lazada', category: 'Electronics', title: 'ASUS VivoBook 15 Laptop', location: 'Nationwide PH', originalPrice: 38990, salePrice: 29999, discount: 23, rating: 4.7, image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80', link: 'https://www.lazada.com.ph/catalog/?q=asus+vivobook', badge: '💻 Work Deal', color: 'from-indigo-600 to-indigo-800' },
+  { id: 104, platform: 'Shopee', category: 'Electronics', title: 'JBL Charge 5 Speaker', location: 'Nationwide PH', originalPrice: 8990, salePrice: 5999, discount: 33, rating: 4.8, image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&q=80', link: 'https://shopee.ph/search?keyword=jbl+speaker', badge: '🔊 Audio Deal', color: 'from-orange-600 to-orange-800' },
+  { id: 105, platform: 'Lazada', category: 'Electronics', title: 'Xiaomi 14T Pro 5G', location: 'Nationwide PH', originalPrice: 34999, salePrice: 26499, discount: 24, rating: 4.7, image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80', link: 'https://www.lazada.com.ph/catalog/?q=xiaomi+14t', badge: '⚡ Promo', color: 'from-orange-500 to-red-600' },
+  { id: 106, platform: 'Shopee', category: 'Electronics', title: 'Sony WH-1000XM5 Headphones', location: 'Nationwide PH', originalPrice: 21990, salePrice: 15999, discount: 27, rating: 4.9, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80', link: 'https://shopee.ph/search?keyword=sony+headphones', badge: '🎧 Top Pick', color: 'from-gray-700 to-gray-900' },
+  { id: 107, platform: 'Lazada', category: 'Electronics', title: 'iPad Air 11" M2 WiFi', location: 'Nationwide PH', originalPrice: 55990, salePrice: 44999, discount: 20, rating: 4.9, image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&q=80', link: 'https://www.lazada.com.ph/catalog/?q=ipad+air', badge: '🍎 Apple Deal', color: 'from-zinc-600 to-zinc-800' },
+  { id: 108, platform: 'Shopee', category: 'Electronics', title: 'OPPO Reno12 F 5G', location: 'Nationwide PH', originalPrice: 15999, salePrice: 11499, discount: 28, rating: 4.6, image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=400&q=80', link: 'https://shopee.ph/search?keyword=oppo+reno12', badge: '📸 Camera King', color: 'from-green-600 to-emerald-700' },
+];
+
+const PLATFORM_COLORS_EXTRA = { 'Lazada': '#F57226', 'Shopee': '#EE4D2D' };
+
+const CATEGORIES = ['All', 'Electronics', 'Hotel', 'Stay', 'Flight', 'Activity', 'Concert', 'Movie', 'Package'];
 
 function DealCard({ deal, animKey }) {
-  const platformColor = PLATFORM_COLORS[deal.platform] || '#2563EB';
+  const allColors = { 'Agoda': '#E22A4B', 'Airbnb': '#FF5A5F', 'Booking.com': '#003580', 'Klook': '#FF5D00', 'Cebu Pacific': '#F9C813', 'AirAsia': '#FF0000', 'Philippine Airlines': '#003087', 'Traveloka': '#0770E3', 'Lazada': '#F57226', 'Shopee': '#EE4D2D' };
+  const platformColor = allColors[deal.platform] || '#2563EB';
 
   return (
     <motion.div
@@ -139,8 +154,10 @@ export default function TrendingDeals() {
     return () => clearInterval(scroll);
   }, []);
 
-  const filtered = activeCategory === 'All' ? ALL_DEALS : ALL_DEALS.filter(d => d.category === activeCategory);
+  const ALL_COMBINED = [...ALL_DEALS, ...ELECTRONICS_DEALS];
+  const filtered = activeCategory === 'All' ? ALL_COMBINED : ALL_COMBINED.filter(d => d.category === activeCategory);
 
+  const mergedPlatformColors = { ...PLATFORM_COLORS, ...PLATFORM_COLORS_EXTRA };
   const dealsWithOffsets = filtered.map(d => ({
     ...d,
     salePrice: Math.round(d.salePrice * (1 + (priceOffsets[d.id] || 0))),
