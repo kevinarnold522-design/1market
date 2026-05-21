@@ -95,7 +95,7 @@ export default function HeroSection({ heroImage }) {
               transition={{ delay: 1.2 }}
               className="absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 bg-white/90 backdrop-blur-xl rounded-xl shadow-xl shadow-[#0A192F]/5 px-4 sm:px-6 py-3 sm:py-4 border border-white/50">
               
-              <p className="font-heading font-bold text-xl sm:text-2xl text-[#0A192F]">We bring you</p>
+              <p className="font-heading font-bold text-xl sm:text-2xl text-[#0A192F]">We bring you!</p>
               <p className="font-body text-xs text-[#0A192F]/50 tracking-wide">Local businesses, real connections</p>
             </motion.div>
           </motion.div>
