@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import MemberSignupModal from '../MemberSignupModal';
 
 export default function Navbar() {
@@ -15,16 +16,16 @@ export default function Navbar() {
   }, []);
 
   const links = [
-    { label: 'Travel', href: '#categories' },
-    { label: 'Food', href: '#categories' },
-    { label: 'Buy & Sell', href: '#categories' },
+    { label: 'Travel', href: '/travel' },
+    { label: 'Food', href: '/food' },
+    { label: 'Buy & Sell', href: '/buysell' },
   ];
 
   return (
     <>
     {/* Sign Up Banner */}
     <div className="fixed top-0 left-0 right-0 z-50 bg-[#00D4FF] text-[#0A192F] py-2 px-3 text-center flex items-center justify-center flex-wrap gap-x-2">
-      <span className="font-body text-[11px] sm:text-xs font-semibold">🎉 Join 1Market.ph FREE — Buy, sell & rate across Manila & Cavite!</span>
+      <span className="font-body text-[11px] sm:text-xs font-semibold">🎉 Sign Up Now and Be Part of the Community — 1Market.ph!</span>
       <button onClick={() => setShowSignup(true)} className="px-3 py-0.5 bg-[#0A192F] text-white rounded-full text-[11px] sm:text-xs font-bold hover:bg-[#2563EB] transition-colors whitespace-nowrap">
         Sign Up →
       </button>
@@ -53,16 +54,16 @@ export default function Navbar() {
           {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-6">
             {links.map((link) => (
-              <a
+              <Link
                 key={link.label}
-                href={link.href}
+                to={link.href}
                 className={`relative font-body text-sm font-medium tracking-wide transition-colors duration-300 group ${
                   scrolled ? 'text-white/80 hover:text-[#00D4FF]' : 'text-[#0A192F]/70 hover:text-[#0A192F]'
                 }`}
               >
                 {link.label}
                 <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#00D4FF] transition-all duration-300 group-hover:w-full" />
-              </a>
+              </Link>
             ))}
             <button onClick={() => setShowSignup(true)}
               className="px-4 py-2 bg-[#00D4FF] text-[#0A192F] rounded-lg font-body font-bold text-xs hover:bg-white transition-colors">
@@ -93,14 +94,14 @@ export default function Navbar() {
           >
             <div className="px-6 py-4 space-y-3">
               {links.map((link) => (
-                <a
+                <Link
                   key={link.label}
-                  href={link.href}
+                  to={link.href}
                   onClick={() => setMenuOpen(false)}
                   className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors"
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
               <button onClick={() => { setMenuOpen(false); setShowSignup(true); }}
                 className="w-full mt-2 py-2.5 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-sm hover:bg-white transition-colors">

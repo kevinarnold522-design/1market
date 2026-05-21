@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, User, ShoppingBag, UtensilsCrossed, Star, Check } from 'lucide-react';
+import { X, Mail, User, ShoppingBag, Star, Check, Lock, Eye, EyeOff } from 'lucide-react';
 
 const MEMBER_TYPES = [
   { key: 'buyer', icon: ShoppingBag, label: 'Buyer / Customer', desc: 'Browse, save, and rate products & food' },
@@ -19,11 +19,13 @@ export default function MemberSignupModal({ onClose }) {
   const [memberType, setMemberType] = useState('');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!email || !name || !memberType) return;
+    if (!email || !name || !memberType || password.length < 8) return;
     setSubmitted(true);
   };
 
@@ -40,9 +42,9 @@ export default function MemberSignupModal({ onClose }) {
             <div className="w-16 h-16 bg-[#00D4FF]/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <Check className="w-8 h-8 text-[#2563EB]" />
             </div>
-            <h2 className="font-heading font-bold text-2xl text-[#0A192F] mb-2">Welcome to 1Market!</h2>
-            <p className="font-body text-sm text-[#0A192F]/50 mb-2">We've sent a confirmation to <strong>{email}</strong></p>
-            <p className="font-body text-xs text-[#0A192F]/40 mb-6">Check your inbox to complete your free membership setup.</p>
+            <h2 className="font-heading font-bold text-2xl text-[#0A192F] mb-2">Welcome to the Community!</h2>
+            <p className="font-body text-sm text-[#0A192F]/50 mb-2">A verification email has been sent to <strong>{email}</strong></p>
+            <p className="font-body text-xs text-[#0A192F]/40 mb-6">Click the link in your inbox to activate your account. Check your spam folder if you don't see it.</p>
             <button onClick={onClose} className="w-full py-3 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-xl font-body font-semibold transition-colors">
               Done
             </button>
@@ -58,7 +60,7 @@ export default function MemberSignupModal({ onClose }) {
                   </div>
                   <span className="font-heading font-bold text-white text-sm">Market.ph</span>
                 </div>
-                <p className="font-body text-xs text-white/50">Free membership — no credit card needed</p>
+                <p className="font-body text-xs text-white/50">Sign Up Now and Be Part of the Community</p>
               </div>
               <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
                 <X className="w-4 h-4 text-white" />
@@ -69,7 +71,7 @@ export default function MemberSignupModal({ onClose }) {
               {/* Step 1: Member Type */}
               {step === 1 && (
                 <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-                  <h2 className="font-heading font-bold text-xl text-[#0A192F] mb-1">Join 1Market — It's Free!</h2>
+                  <h2 className="font-heading font-bold text-xl text-[#0A192F] mb-1">Sign Up Now & Be Part of the Community!</h2>
                   <p className="font-body text-sm text-[#0A192F]/50 mb-5">What best describes you?</p>
                   <div className="space-y-3 mb-6">
                     {MEMBER_TYPES.map(mt => (
@@ -124,9 +126,29 @@ export default function MemberSignupModal({ onClose }) {
                         ))}
                       </div>
                     </div>
-                    <button type="submit"
-                      className="w-full py-3 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-xl font-body font-semibold text-sm transition-colors">
-                      Sign Up Free — Join 1Market
+                    <div>
+                      <label className="font-body text-xs font-semibold text-[#0A192F]/60 mb-1.5 block">Create Password</label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#0A192F]/30" />
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={e => setPassword(e.target.value)}
+                          required minLength={8}
+                          placeholder="Min. 8 characters"
+                          className="w-full pl-9 pr-10 py-2.5 border border-[#0A192F]/10 rounded-xl font-body text-sm text-[#0A192F] focus:outline-none focus:border-[#2563EB] transition-colors"
+                        />
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#0A192F]/30 hover:text-[#0A192F]/60">
+                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                      {password.length > 0 && password.length < 8 && (
+                        <p className="font-body text-[10px] text-red-400 mt-1">Password must be at least 8 characters</p>
+                      )}
+                    </div>
+                    <button type="submit" disabled={password.length < 8}
+                      className="w-full py-3 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-xl font-body font-semibold text-sm transition-colors disabled:opacity-40">
+                      Sign Up Now — Join the Community
                     </button>
                   </form>
                   <p className="font-body text-[10px] text-[#0A192F]/30 mt-4 text-center">By signing up, you agree to our Terms of Service. Your data is kept private.</p>

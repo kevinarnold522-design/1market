@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+
+const OWNER_EMAIL = 'Kevinarnold522@gmail.com';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, X, Save, ArrowLeft, Building2, ShoppingBag, Search, Image, Upload } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -204,6 +206,15 @@ function ListingForm({ initial, onSave, onCancel }) {
 
 export default function Admin() {
   const [tab, setTab] = useState('businesses');
+  const [authChecked, setAuthChecked] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
+
+  useEffect(() => {
+    base44.auth.me().then(user => {
+      setIsOwner(user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase());
+      setAuthChecked(true);
+    }).catch(() => setAuthChecked(true));
+  }, []);
   const [businesses, setBusinesses] = useState([]);
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -271,6 +282,25 @@ export default function Admin() {
     showToast('Listing deleted.');
     loadAll();
   };
+
+  if (!authChecked) return (
+    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-[#0A192F]/10 border-t-[#2563EB] rounded-full animate-spin" />
+    </div>
+  );
+
+  if (!isOwner) return (
+    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-6">
+      <div className="text-center max-w-sm">
+        <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-4 text-2xl">🔒</div>
+        <h2 className="font-heading font-bold text-xl text-[#0A192F] mb-2">Access Restricted</h2>
+        <p className="font-body text-sm text-[#0A192F]/50 mb-4">This dashboard is only accessible to the site owner.</p>
+        <Link to="/" className="inline-flex items-center gap-2 px-4 py-2 bg-[#0A192F] text-white rounded-xl font-body text-sm font-semibold hover:bg-[#2563EB] transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Back to Home
+        </Link>
+      </div>
+    </div>
+  );
 
   const filteredBiz = businesses.filter(b => {
     const matchSearch = b.name?.toLowerCase().includes(search.toLowerCase()) || b.area?.toLowerCase().includes(search.toLowerCase());

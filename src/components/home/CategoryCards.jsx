@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plane, UtensilsCrossed, ShoppingBag, ArrowUpRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -33,10 +33,28 @@ const categories = [
   },
 ];
 
+// Mobile tilt using device orientation
+function useMobileTilt() {
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  React.useEffect(() => {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (!isMobile) return;
+    const handler = (e) => {
+      const x = Math.max(-10, Math.min(10, (e.beta || 0) / 4));
+      const y = Math.max(-10, Math.min(10, (e.gamma || 0) / 4));
+      setTilt({ x, y });
+    };
+    window.addEventListener('deviceorientation', handler);
+    return () => window.removeEventListener('deviceorientation', handler);
+  }, []);
+  return tilt;
+}
+
 function TiltCard({ cat, image, index, navigate }) {
   const cardRef = useRef(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [hovered, setHovered] = useState(false);
+  const mobileTilt = useMobileTilt();
 
   const handleMouseMove = (e) => {
     const card = cardRef.current;
@@ -54,6 +72,9 @@ function TiltCard({ cat, image, index, navigate }) {
     setHovered(false);
   };
 
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const activeTilt = isMobile ? mobileTilt : tilt;
+
   return (
     <motion.div
       ref={cardRef}
@@ -66,8 +87,8 @@ function TiltCard({ cat, image, index, navigate }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={handleMouseLeave}
       animate={{
-        rotateX: tilt.x,
-        rotateY: tilt.y,
+        rotateX: activeTilt.x,
+        rotateY: activeTilt.y,
         scale: hovered ? 1.03 : 1,
       }}
       style={{
