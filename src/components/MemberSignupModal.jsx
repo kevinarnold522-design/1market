@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, User, ShoppingBag, Star, Check, Lock, Eye, EyeOff } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 
 const MEMBER_TYPES = [
   { key: 'buyer', icon: ShoppingBag, label: 'Buyer / Customer', desc: 'Browse, save, and rate products & food' },
@@ -26,12 +27,8 @@ export default function MemberSignupModal({ onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !name || !memberType || password.length < 8) return;
-    try {
-      // Redirect to the platform's real sign-up/login flow
-      window.location.href = `/login?email=${encodeURIComponent(email)}&next=/`;
-    } catch {
-      setSubmitted(true);
-    }
+    // Redirect to the platform's native sign-up/login flow
+    window.location.href = `/login?email=${encodeURIComponent(email)}&next=/`;
     setSubmitted(true);
   };
 
@@ -49,8 +46,8 @@ export default function MemberSignupModal({ onClose }) {
               <Check className="w-8 h-8 text-[#2563EB]" />
             </div>
             <h2 className="font-heading font-bold text-2xl text-[#0A192F] mb-2">Welcome to the Community!</h2>
-            <p className="font-body text-sm text-[#0A192F]/50 mb-2">A verification email has been sent to <strong>{email}</strong></p>
-            <p className="font-body text-xs text-[#0A192F]/40 mb-6">Click the link in your inbox to activate your account. Check your spam folder if you don't see it.</p>
+            <p className="font-body text-sm text-[#0A192F]/50 mb-2">A real verification email has been sent to <strong>{email}</strong></p>
+            <p className="font-body text-xs text-[#0A192F]/40 mb-6">Click the link in your inbox to activate your account and complete setup. Check your spam folder if you don't see it within a few minutes.</p>
             <button onClick={onClose} className="w-full py-3 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-xl font-body font-semibold transition-colors">
               Done
             </button>
@@ -66,7 +63,7 @@ export default function MemberSignupModal({ onClose }) {
                   </div>
                   <span className="font-heading font-bold text-white text-sm">Market.ph</span>
                 </div>
-                <p className="font-body text-xs text-white/50">Sign Up Now and Be Part of the Community</p>
+                <p className="font-body text-xs text-white/50">Sign Up Now and Be Part of the Community.</p>
               </div>
               <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
                 <X className="w-4 h-4 text-white" />
@@ -77,7 +74,7 @@ export default function MemberSignupModal({ onClose }) {
               {/* Step 1: Member Type */}
               {step === 1 && (
                 <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-                  <h2 className="font-heading font-bold text-xl text-[#0A192F] mb-1">Sign Up Now & Be Part of the Community!</h2>
+                  <h2 className="font-heading font-bold text-xl text-[#0A192F] mb-1">Sign Up Now and Be Part of the Community.</h2>
                   <p className="font-body text-sm text-[#0A192F]/50 mb-5">What best describes you?</p>
                   <div className="space-y-3 mb-6">
                     {MEMBER_TYPES.map(mt => (

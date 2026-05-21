@@ -3,6 +3,7 @@ import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../MemberSignupModal';
+import NavUserBadge from './NavUserBadge';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -27,7 +28,7 @@ export default function Navbar() {
     <>
     {/* Sign Up Banner */}
     <div className="fixed top-0 left-0 right-0 z-50 bg-[#00D4FF] text-[#0A192F] py-2 px-3 text-center flex items-center justify-center flex-wrap gap-x-2">
-      <span className="font-body text-[11px] sm:text-xs font-semibold">🎉 Sign Up Now and Be Part of the Community — 1Market.ph!</span>
+      <span className="font-body text-[11px] sm:text-xs font-semibold">🎉 Sign Up Now and Be Part of the Community.</span>
       <button onClick={() => setShowSignup(true)} className="px-3 py-0.5 bg-[#0A192F] text-white rounded-full text-[11px] sm:text-xs font-bold hover:bg-[#2563EB] transition-colors whitespace-nowrap">
         Sign Up →
       </button>
@@ -52,6 +53,8 @@ export default function Navbar() {
               Market<span className="text-[#00D4FF]">.ph</span>
             </span>
           </a>
+          {/* Animated Buyer/Seller badge */}
+          <NavUserBadge />
 
           {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-6">
