@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, Filter, X, ChevronDown, MapPin, Phone, MessageSquare, AlertCircle, ZoomIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -157,7 +158,7 @@ function ImageModal({ item, onClose }) {
 }
 
 export default function BuySell() {
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState(null);
   const [locationFilter, setLocationFilter] = useState('All');
   const [sortBy, setSortBy] = useState('Latest Listings');
   const [search, setSearch] = useState('');
@@ -168,7 +169,7 @@ export default function BuySell() {
 
   const filtered = listings
     .filter(l => {
-      const matchCat = activeCategory === 'all' || l.type === activeCategory;
+      const matchCat = !activeCategory || activeCategory === 'all' || l.type === activeCategory;
       const matchLoc = locationFilter === 'All' || l.location === locationFilter;
       const matchSearch = l.title.toLowerCase().includes(search.toLowerCase()) || (l.area && l.area.toLowerCase().includes(search.toLowerCase()));
       return matchCat && matchLoc && matchSearch;
@@ -179,8 +180,20 @@ export default function BuySell() {
       return b.id - a.id;
     });
 
+  const BUY_SUBCATEGORIES = [
+    { key: 'all', label: 'All Listings', icon: '🛒', desc: 'Browse everything' },
+    ...SUBCATEGORIES,
+  ];
+
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
+      <SubcategorySplash
+        subcategories={BUY_SUBCATEGORIES}
+        activeKey={activeCategory}
+        onSelect={setActiveCategory}
+        title="What are you looking for?"
+        subtitle="Select a category to browse listings"
+      />
       {/* Header */}
       <div className="relative bg-[#0A192F] overflow-hidden">
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />

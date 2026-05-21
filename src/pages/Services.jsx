@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, Phone, MessageSquare, Star, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -124,14 +125,14 @@ function ContactModal({ item, onClose }) {
 }
 
 export default function Services() {
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState(null);
   const [locationFilter, setLocationFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [contactItem, setContactItem] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
 
   const filtered = services.filter(s => {
-    const matchCat = activeCategory === 'all' || s.type === activeCategory;
+    const matchCat = !activeCategory || activeCategory === 'all' || s.type === activeCategory;
     const matchLoc = locationFilter === 'All' || s.location === locationFilter || s.location === 'Both';
     const matchSearch = s.title.toLowerCase().includes(search.toLowerCase()) || s.provider.toLowerCase().includes(search.toLowerCase()) || s.area.toLowerCase().includes(search.toLowerCase());
     return matchCat && matchLoc && matchSearch;
@@ -139,6 +140,13 @@ export default function Services() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
+      <SubcategorySplash
+        subcategories={SUBCATEGORIES}
+        activeKey={activeCategory}
+        onSelect={setActiveCategory}
+        title="What service are you looking for?"
+        subtitle="Pick a category to find the right provider"
+      />
       <div className="relative bg-[#0A192F] overflow-hidden">
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0A192F]/60 to-[#0A192F]" />
@@ -171,6 +179,7 @@ export default function Services() {
             </button>
           ))}
         </div>
+
 
         <div className="flex gap-2 mb-6">
           {['All', 'Manila', 'Cavite'].map(loc => (

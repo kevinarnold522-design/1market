@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, MapPin, Star, Filter, X, UtensilsCrossed, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -206,10 +207,26 @@ function RateModal({ biz, onClose }) {
   );
 }
 
+const FOOD_SUBCATEGORIES = [
+  { key: 'all', label: 'All Food', icon: '🍴', desc: 'Everything' },
+  { key: 'chain', label: 'Fast Food', icon: '🍔', desc: 'Chains' },
+  { key: 'carinderia', label: 'Local Eats', icon: '🥘', desc: 'Carinderias' },
+  { key: 'coffee', label: 'Coffee', icon: '☕', desc: 'Cafes' },
+  { key: 'milktea', label: 'Milk Tea', icon: '🧋', desc: 'Boba' },
+  { key: 'korean', label: 'Korean', icon: '🥩', desc: 'K-BBQ' },
+  { key: 'japanese', label: 'Japanese', icon: '🍱', desc: 'Ramen & more' },
+  { key: 'seafood', label: 'Seafood', icon: '🦞', desc: 'Fresh catch' },
+  { key: 'home-kitchen', label: 'Home Kitchen', icon: '🍲', desc: 'Lutong bahay' },
+  { key: 'home-baker', label: 'Home Bakers', icon: '🎂', desc: 'Pastries' },
+  { key: 'milktea', label: 'Desserts', icon: '🍦', desc: 'Sweets' },
+  { key: 'catering', label: 'Catering', icon: '🍽️', desc: 'Events' },
+];
+
 export default function Food() {
   const [search, setSearch] = useState('');
   const [locationFilter, setLocationFilter] = useState('All');
   const [activeTypes, setActiveTypes] = useState([]);
+  const [selectedSubcat, setSelectedSubcat] = useState(null);
   const [ratingBiz, setRatingBiz] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
@@ -238,6 +255,13 @@ export default function Food() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
+      <SubcategorySplash
+        subcategories={FOOD_SUBCATEGORIES}
+        activeKey={selectedSubcat}
+        onSelect={(key) => { setSelectedSubcat(key); if (key !== 'all') setActiveTypes([key]); else setActiveTypes([]); }}
+        title="What are you craving?"
+        subtitle="Pick a food category to explore"
+      />
       {/* Header */}
       <div className="relative bg-[#0A192F] overflow-hidden">
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />

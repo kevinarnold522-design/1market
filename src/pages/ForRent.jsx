@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, MapPin, ExternalLink, Phone, MessageSquare, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -113,14 +114,14 @@ function ContactModal({ item, onClose }) {
 }
 
 export default function ForRent() {
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState(null);
   const [locationFilter, setLocationFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [contactItem, setContactItem] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
 
   const filtered = listings.filter(l => {
-    const matchCat = activeCategory === 'all' || l.type === activeCategory;
+    const matchCat = !activeCategory || activeCategory === 'all' || l.type === activeCategory;
     const matchLoc = locationFilter === 'All' || l.location === locationFilter;
     const matchSearch = l.title.toLowerCase().includes(search.toLowerCase()) || l.area.toLowerCase().includes(search.toLowerCase()) || l.sub.toLowerCase().includes(search.toLowerCase());
     return matchCat && matchLoc && matchSearch;
@@ -128,6 +129,13 @@ export default function ForRent() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
+      <SubcategorySplash
+        subcategories={SUBCATEGORIES}
+        activeKey={activeCategory}
+        onSelect={setActiveCategory}
+        title="What are you looking to rent?"
+        subtitle="Choose a category to browse listings"
+      />
       <div className="relative bg-[#0A192F] overflow-hidden">
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0A192F]/60 to-[#0A192F]" />

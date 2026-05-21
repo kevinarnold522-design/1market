@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, MapPin, Star, Plane, Hotel, Car, Search, ExternalLink, Building, Anchor, Mountain, Tent, Globe, Navigation, Ship, Bike, Camera } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -246,10 +247,27 @@ const REGION_FILTERS = {
   Cruise: ['All'],
 };
 
+const TRAVEL_SUBCATEGORIES = [
+  { key: 'Hotels', label: 'Hotels', icon: '🏨', desc: 'Book stays' },
+  { key: 'Resorts', label: 'Resorts', icon: '🌴', desc: 'Beach & spa' },
+  { key: 'Flights', label: 'Flights', icon: '✈️', desc: 'Air travel' },
+  { key: 'Ferry & Bus', label: 'Ferry & Bus', icon: '⛴️', desc: 'Land & sea' },
+  { key: 'Car Rentals', label: 'Car Rentals', icon: '🚗', desc: 'Self drive' },
+  { key: 'Van Rentals', label: 'Van Rentals', icon: '🚐', desc: 'Group rides' },
+  { key: 'Tours', label: 'Tours', icon: '🗺️', desc: 'Guided trips' },
+  { key: 'Island Hopping', label: 'Island Hopping', icon: '🏝️', desc: 'Boat tours' },
+  { key: 'Camping', label: 'Camping', icon: '⛺', desc: 'Outdoors' },
+  { key: 'Diving', label: 'Diving', icon: '🤿', desc: 'Scuba' },
+  { key: 'Surfing', label: 'Surfing', icon: '🏄', desc: 'Waves' },
+  { key: 'Hiking', label: 'Hiking', icon: '🥾', desc: 'Trails' },
+  { key: 'Cruise', label: 'Cruise', icon: '🚢', desc: 'Cruises' },
+];
+
 export default function Travel() {
-  const [tab, setTab] = useState('Hotels');
+  const [tab, setTab] = useState(null);
   const [search, setSearch] = useState('');
   const [region, setRegion] = useState('All');
+  const activeTab = tab || 'Hotels';
 
   const resorts = [
     { id: 'r1', name: 'Anvaya Cove Beach & Nature Club', location: 'Morong, Bataan', region: 'Manila', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80', rating: 4.8, price: '₱6,500/night', stars: 5, tag: 'Beach Resort', link: 'https://www.anvayacove.com' },
@@ -271,23 +289,22 @@ export default function Travel() {
   ];
 
   const getItems = () => {
-    if (tab === 'Car Rentals' || tab === 'Van Rentals') {
+    if (activeTab === 'Car Rentals' || activeTab === 'Van Rentals') {
       let items = vehicles;
       if (region !== 'All') items = items.filter(i => i.region === region);
       if (search) { const q = search.toLowerCase(); items = items.filter(i => (i.name || '').toLowerCase().includes(q) || (i.location || '').toLowerCase().includes(q)); }
       return items;
     }
-    if (tab === 'Resorts') return resorts;
-    if (tab === 'Tours') return tours;
-    if (tab === 'Island Hopping') return islandHopping;
-    if (tab === 'Camping') return [{ id: 'c1', name: 'Mt. Pico de Loro Campsite', location: 'Ternate, Cavite', region: 'Cavite', image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800&q=80', rating: 4.7, price: '₱500/person', tag: 'Camping', link: 'https://www.klook.com/en-PH/' }];
-    if (tab === 'Diving') return [{ id: 'd1', name: 'Anilao Dive Package', location: 'Anilao, Batangas', region: 'Cavite', image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80', rating: 4.9, price: '₱3,500/person', tag: 'Scuba', link: 'https://www.klook.com/en-PH/' }];
-    if (tab === 'Surfing') return [{ id: 's1', name: 'La Union Surf Lesson', location: 'La Union', region: 'Manila', image: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800&q=80', rating: 4.8, price: '₱1,200/session', tag: 'Beginner', link: 'https://www.klook.com/en-PH/' }];
-    if (tab === 'Hiking') return [{ id: 'h1', name: 'Mt. Batulao Day Hike', location: 'Nasugbu, Cavite', region: 'Cavite', image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=80', rating: 4.7, price: '₱600/person', tag: 'Day Hike', link: 'https://www.klook.com/en-PH/' }];
-    if (tab === 'Cruise') return [{ id: 'cr1', name: 'Manila Bay Cruise – Dinner', location: 'Manila Bay', region: 'Manila', image: 'https://images.unsplash.com/photo-1580019542155-247062e19ce4?w=800&q=80', rating: 4.6, price: '₱2,500/person', tag: 'Dinner Cruise', link: 'https://www.klook.com/en-PH/' }];
-    if (tab === 'Ferry & Bus') return flights.filter(f => f.id === 'cavite-bus').concat([{ id: 'fy1', route: 'Batangas → Puerto Galera', airline: 'Montenegro Shipping', price: 'From ₱450', duration: '1h 30m', tag: 'Ferry', image: 'https://images.unsplash.com/photo-1580019542155-247062e19ce4?w=800&q=80', link: 'https://www.traveloka.com/en-ph' }]);
-    // Hotels & Flights fallback
-    let items = tab === 'Hotels' ? hotels : tab === 'Flights' ? flights : hotels;
+    if (activeTab === 'Resorts') return resorts;
+    if (activeTab === 'Tours') return tours;
+    if (activeTab === 'Island Hopping') return islandHopping;
+    if (activeTab === 'Camping') return [{ id: 'c1', name: 'Mt. Pico de Loro Campsite', location: 'Ternate, Cavite', region: 'Cavite', image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800&q=80', rating: 4.7, price: '₱500/person', tag: 'Camping', link: 'https://www.klook.com/en-PH/' }];
+    if (activeTab === 'Diving') return [{ id: 'd1', name: 'Anilao Dive Package', location: 'Anilao, Batangas', region: 'Cavite', image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80', rating: 4.9, price: '₱3,500/person', tag: 'Scuba', link: 'https://www.klook.com/en-PH/' }];
+    if (activeTab === 'Surfing') return [{ id: 's1', name: 'La Union Surf Lesson', location: 'La Union', region: 'Manila', image: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800&q=80', rating: 4.8, price: '₱1,200/session', tag: 'Beginner', link: 'https://www.klook.com/en-PH/' }];
+    if (activeTab === 'Hiking') return [{ id: 'h1', name: 'Mt. Batulao Day Hike', location: 'Nasugbu, Cavite', region: 'Cavite', image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=80', rating: 4.7, price: '₱600/person', tag: 'Day Hike', link: 'https://www.klook.com/en-PH/' }];
+    if (activeTab === 'Cruise') return [{ id: 'cr1', name: 'Manila Bay Cruise – Dinner', location: 'Manila Bay', region: 'Manila', image: 'https://images.unsplash.com/photo-1580019542155-247062e19ce4?w=800&q=80', rating: 4.6, price: '₱2,500/person', tag: 'Dinner Cruise', link: 'https://www.klook.com/en-PH/' }];
+    if (activeTab === 'Ferry & Bus') return flights.filter(f => f.id === 'cavite-bus').concat([{ id: 'fy1', route: 'Batangas → Puerto Galera', airline: 'Montenegro Shipping', price: 'From ₱450', duration: '1h 30m', tag: 'Ferry', image: 'https://images.unsplash.com/photo-1580019542155-247062e19ce4?w=800&q=80', link: 'https://www.traveloka.com/en-ph' }]);
+    let items = activeTab === 'Hotels' ? hotels : activeTab === 'Flights' ? flights : hotels;
     if (region !== 'All') items = items.filter(i => i.region === region);
     if (search) { const q = search.toLowerCase(); items = items.filter(i => (i.name || i.route || '').toLowerCase().includes(q) || (i.location || i.airline || '').toLowerCase().includes(q)); }
     return items;
@@ -297,6 +314,13 @@ export default function Travel() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
+      <SubcategorySplash
+        subcategories={TRAVEL_SUBCATEGORIES}
+        activeKey={tab}
+        onSelect={setTab}
+        title="Where do you want to go?"
+        subtitle="Pick a travel category to explore"
+      />
       {/* Header */}
       <div className="relative bg-[#0A192F] overflow-hidden">
         <div className="absolute inset-0 opacity-20"
@@ -328,7 +352,7 @@ export default function Travel() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
             <input
               type="text" value={search} onChange={e => { setSearch(e.target.value); }}
-              placeholder={`Search ${tab.toLowerCase()}...`}
+              placeholder={`Search ${activeTab.toLowerCase()}...`}
               className="w-full pl-11 pr-4 py-3 bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder-white/30 font-body text-sm focus:outline-none focus:border-[#00D4FF]/50 transition-all"
             />
           </motion.div>
@@ -343,7 +367,7 @@ export default function Travel() {
             return (
               <button key={t} onClick={() => { setTab(t); setRegion('All'); setSearch(''); }}
                 className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl font-body font-semibold text-xs sm:text-sm transition-all border ${
-                  tab === t
+                  activeTab === t
                     ? 'bg-[#0A192F] text-white border-[#0A192F]'
                     : 'bg-white border-[#0A192F]/10 text-[#0A192F]/60 hover:border-[#0A192F]/30'
                 }`}>
@@ -355,10 +379,10 @@ export default function Travel() {
         </div>
 
         {/* Region filter */}
-        {REGION_FILTERS[tab].length > 1 && (
+        {REGION_FILTERS[activeTab] && REGION_FILTERS[activeTab].length > 1 && (
           <div className="flex items-center gap-2 mt-4 flex-wrap">
             <span className="font-body text-xs text-[#0A192F]/40 uppercase tracking-wider">Area:</span>
-            {REGION_FILTERS[tab].map(r => (
+            {(REGION_FILTERS[activeTab] || []).map(r => (
               <button key={r} onClick={() => setRegion(r)}
                 className={`px-3 py-1 rounded-full text-xs font-body font-semibold transition-all ${
                   region === r ? 'bg-[#0A192F] text-white' : 'bg-white border border-[#0A192F]/10 text-[#0A192F]/60 hover:border-[#0A192F]/20'
@@ -373,7 +397,7 @@ export default function Travel() {
       {/* Cards Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24">
         <AnimatePresence mode="wait">
-          <motion.div key={tab} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}
+          <motion.div key={activeTab} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {items.map((item, i) => (
               <motion.div key={item.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
@@ -394,7 +418,7 @@ export default function Travel() {
                   )}
                 </div>
                 <div className="p-4 sm:p-5">
-                  {(tab === 'Hotels' || tab === 'Resorts') && (
+                  {(activeTab === 'Hotels' || activeTab === 'Resorts') && (
                     <>
                       {item.stars && (
                         <div className="flex items-center gap-0.5 mb-1">
@@ -405,13 +429,13 @@ export default function Travel() {
                       <p className="font-body text-xs text-[#0A192F]/50 mt-0.5 flex items-center gap-1"><MapPin className="w-3 h-3" /> {item.location}</p>
                     </>
                   )}
-                  {(tab === 'Flights' || tab === 'Ferry & Bus') && (
+                  {(activeTab === 'Flights' || activeTab === 'Ferry & Bus') && (
                     <>
                       <h3 className="font-heading font-bold text-base sm:text-lg text-[#0A192F] group-hover:text-[#2563EB] transition-colors">{item.route || item.name}</h3>
                       <p className="font-body text-xs text-[#0A192F]/50 mt-0.5">{item.airline || item.type} {item.duration ? `· ${item.duration}` : ''}</p>
                     </>
                   )}
-                  {(tab === 'Car Rentals' || tab === 'Van Rentals') && (
+                  {(activeTab === 'Car Rentals' || activeTab === 'Van Rentals') && (
                     <>
                       <h3 className="font-heading font-bold text-base sm:text-lg text-[#0A192F] group-hover:text-[#2563EB] transition-colors">{item.name}</h3>
                       <p className="font-body text-xs text-[#0A192F]/50 mt-0.5 flex items-center gap-1">
@@ -419,7 +443,7 @@ export default function Travel() {
                       </p>
                     </>
                   )}
-                  {!['Hotels', 'Resorts', 'Flights', 'Ferry & Bus', 'Car Rentals', 'Van Rentals'].includes(tab) && (
+                  {!['Hotels', 'Resorts', 'Flights', 'Ferry & Bus', 'Car Rentals', 'Van Rentals'].includes(activeTab) && (
                     <>
                       <h3 className="font-heading font-bold text-base sm:text-lg text-[#0A192F] group-hover:text-[#2563EB] transition-colors">{item.name || item.route}</h3>
                       <p className="font-body text-xs text-[#0A192F]/50 mt-0.5 flex items-center gap-1"><MapPin className="w-3 h-3" /> {item.location}</p>
