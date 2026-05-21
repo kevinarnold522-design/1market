@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, MapPin, Star, Plane, Hotel, Car, Search, ChevronRight, ExternalLink } from 'lucide-react';
+import { ArrowLeft, MapPin, Star, Plane, Hotel, Car, Search, ExternalLink, Building, Anchor, Mountain, Tent, Globe, Navigation, Ship, Bike, Camera } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // ─── HOTELS ────────────────────────────────────────────────────────────────
@@ -219,13 +219,31 @@ const vehicles = [
   },
 ];
 
-const TAB_ICONS = { Hotels: Hotel, Flights: Plane, Vehicles: Car };
-const TABS = ['Hotels', 'Flights', 'Vehicles'];
+const TAB_ICONS = {
+  Hotels: Hotel, Resorts: Building, Flights: Plane, 'Ferry & Bus': Anchor, 'Car Rentals': Car,
+  'Van Rentals': Car, Tours: Globe, 'Island Hopping': Anchor, Camping: Tent, Diving: Anchor,
+  Surfing: Navigation, Hiking: Mountain, Cruise: Ship, 'Bike Rentals': Bike, Photography: Camera,
+};
+
+const TABS = [
+  'Hotels', 'Resorts', 'Flights', 'Ferry & Bus', 'Car Rentals', 'Van Rentals',
+  'Tours', 'Island Hopping', 'Camping', 'Diving', 'Surfing', 'Hiking', 'Cruise',
+];
 
 const REGION_FILTERS = {
   Hotels: ['All', 'Manila', 'Cavite'],
+  Resorts: ['All', 'Manila', 'Cavite'],
   Flights: ['All'],
-  Vehicles: ['All', 'Manila', 'Cavite'],
+  'Ferry & Bus': ['All'],
+  'Car Rentals': ['All', 'Manila', 'Cavite'],
+  'Van Rentals': ['All', 'Manila', 'Cavite'],
+  Tours: ['All'],
+  'Island Hopping': ['All'],
+  Camping: ['All'],
+  Diving: ['All'],
+  Surfing: ['All'],
+  Hiking: ['All'],
+  Cruise: ['All'],
 };
 
 export default function Travel() {
@@ -233,22 +251,49 @@ export default function Travel() {
   const [search, setSearch] = useState('');
   const [region, setRegion] = useState('All');
 
+  const resorts = [
+    { id: 'r1', name: 'Anvaya Cove Beach & Nature Club', location: 'Morong, Bataan', region: 'Manila', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80', rating: 4.8, price: '₱6,500/night', stars: 5, tag: 'Beach Resort', link: 'https://www.anvayacove.com' },
+    { id: 'r2', name: 'La Luz Beach Resort & Spa', location: 'San Juan, Batangas', region: 'Manila', image: 'https://images.unsplash.com/photo-1602002418082-a4443e081dd1?w=800&q=80', rating: 4.7, price: '₱4,200/night', stars: 4, tag: 'Beach Spa', link: 'https://www.laluzresort.com' },
+    { id: 'r3', name: 'Taal Vista Hotel & Resort', location: 'Tagaytay, Cavite', region: 'Cavite', image: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800&q=80', rating: 4.6, price: '₱5,800/night', stars: 4, tag: 'Volcano View', link: 'https://www.taalvistahotelandresort.com' },
+    { id: 'r4', name: 'Estancia Resort Hotel', location: 'Tagaytay, Cavite', region: 'Cavite', image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80', rating: 4.5, price: '₱3,800/night', stars: 4, tag: 'Tagaytay', link: 'https://www.agoda.com/search?city=3667' },
+  ];
+
+  const tours = [
+    { id: 't1', name: 'Intramuros Heritage Walking Tour', location: 'Intramuros, Manila', region: 'Manila', image: 'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=800&q=80', rating: 4.9, price: '₱600/person', tag: 'Historical', link: 'https://www.klook.com/en-PH/' },
+    { id: 't2', name: 'Tagaytay Food & Taal Volcano Tour', location: 'Tagaytay, Cavite', region: 'Cavite', image: 'https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&q=80', rating: 4.8, price: '₱1,500/person', tag: 'Day Tour', link: 'https://www.klook.com/en-PH/' },
+    { id: 't3', name: 'Manila Bay Sunset Cruise', location: 'Manila Bay', region: 'Manila', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80', rating: 4.7, price: '₱850/person', tag: 'Scenic', link: 'https://www.klook.com/en-PH/' },
+    { id: 't4', name: 'Corregidor Island Day Tour', location: 'Manila Bay', region: 'Manila', image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80', rating: 4.6, price: '₱1,200/person', tag: 'Historical', link: 'https://www.klook.com/en-PH/' },
+  ];
+
+  const islandHopping = [
+    { id: 'ih1', name: 'Batangas Island Hopping Package', location: 'Anilao, Batangas', region: 'Cavite', image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80', rating: 4.9, price: '₱1,800/person', tag: 'Island Hop', link: 'https://www.klook.com/en-PH/' },
+    { id: 'ih2', name: 'Fortune Island Day Tour', location: 'Nasugbu, Batangas', region: 'Cavite', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80', rating: 4.8, price: '₱2,200/person', tag: 'Day Tour', link: 'https://www.klook.com/en-PH/' },
+  ];
+
   const getItems = () => {
-    let items = tab === 'Hotels' ? hotels : tab === 'Flights' ? flights : vehicles;
-    if (region !== 'All') {
-      items = items.filter(i => i.region === region);
+    if (tab === 'Car Rentals' || tab === 'Van Rentals') {
+      let items = vehicles;
+      if (region !== 'All') items = items.filter(i => i.region === region);
+      if (search) { const q = search.toLowerCase(); items = items.filter(i => (i.name || '').toLowerCase().includes(q) || (i.location || '').toLowerCase().includes(q)); }
+      return items;
     }
-    if (search) {
-      const q = search.toLowerCase();
-      items = items.filter(i =>
-        (i.name || i.route || '').toLowerCase().includes(q) ||
-        (i.location || i.airline || '').toLowerCase().includes(q)
-      );
-    }
+    if (tab === 'Resorts') return resorts;
+    if (tab === 'Tours') return tours;
+    if (tab === 'Island Hopping') return islandHopping;
+    if (tab === 'Camping') return [{ id: 'c1', name: 'Mt. Pico de Loro Campsite', location: 'Ternate, Cavite', region: 'Cavite', image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800&q=80', rating: 4.7, price: '₱500/person', tag: 'Camping', link: 'https://www.klook.com/en-PH/' }];
+    if (tab === 'Diving') return [{ id: 'd1', name: 'Anilao Dive Package', location: 'Anilao, Batangas', region: 'Cavite', image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80', rating: 4.9, price: '₱3,500/person', tag: 'Scuba', link: 'https://www.klook.com/en-PH/' }];
+    if (tab === 'Surfing') return [{ id: 's1', name: 'La Union Surf Lesson', location: 'La Union', region: 'Manila', image: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800&q=80', rating: 4.8, price: '₱1,200/session', tag: 'Beginner', link: 'https://www.klook.com/en-PH/' }];
+    if (tab === 'Hiking') return [{ id: 'h1', name: 'Mt. Batulao Day Hike', location: 'Nasugbu, Cavite', region: 'Cavite', image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=80', rating: 4.7, price: '₱600/person', tag: 'Day Hike', link: 'https://www.klook.com/en-PH/' }];
+    if (tab === 'Cruise') return [{ id: 'cr1', name: 'Manila Bay Cruise – Dinner', location: 'Manila Bay', region: 'Manila', image: 'https://images.unsplash.com/photo-1580019542155-247062e19ce4?w=800&q=80', rating: 4.6, price: '₱2,500/person', tag: 'Dinner Cruise', link: 'https://www.klook.com/en-PH/' }];
+    if (tab === 'Ferry & Bus') return flights.filter(f => f.id === 'cavite-bus').concat([{ id: 'fy1', route: 'Batangas → Puerto Galera', airline: 'Montenegro Shipping', price: 'From ₱450', duration: '1h 30m', tag: 'Ferry', image: 'https://images.unsplash.com/photo-1580019542155-247062e19ce4?w=800&q=80', link: 'https://www.traveloka.com/en-ph' }]);
+    // Hotels & Flights fallback
+    let items = tab === 'Hotels' ? hotels : tab === 'Flights' ? flights : hotels;
+    if (region !== 'All') items = items.filter(i => i.region === region);
+    if (search) { const q = search.toLowerCase(); items = items.filter(i => (i.name || i.route || '').toLowerCase().includes(q) || (i.location || i.airline || '').toLowerCase().includes(q)); }
     return items;
   };
 
-  const items = getItems();
+  const items = getItems() || [];
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
@@ -294,15 +339,15 @@ export default function Travel() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
         <div className="flex gap-2 sm:gap-3 flex-wrap">
           {TABS.map(t => {
-            const Icon = TAB_ICONS[t];
+            const Icon = TAB_ICONS[t] || Plane;
             return (
               <button key={t} onClick={() => { setTab(t); setRegion('All'); setSearch(''); }}
-                className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-body font-semibold text-sm transition-all border ${
+                className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl font-body font-semibold text-xs sm:text-sm transition-all border ${
                   tab === t
                     ? 'bg-[#0A192F] text-white border-[#0A192F]'
                     : 'bg-white border-[#0A192F]/10 text-[#0A192F]/60 hover:border-[#0A192F]/30'
                 }`}>
-                <Icon className="w-4 h-4" />
+                <Icon className="w-3.5 h-3.5" />
                 {t}
               </button>
             );
@@ -349,27 +394,35 @@ export default function Travel() {
                   )}
                 </div>
                 <div className="p-4 sm:p-5">
-                  {tab === 'Hotels' && (
+                  {(tab === 'Hotels' || tab === 'Resorts') && (
                     <>
-                      <div className="flex items-center gap-0.5 mb-1">
-                        {Array.from({ length: item.stars }).map((_, s) => <Star key={s} className="w-3 h-3 fill-amber-400 text-amber-400" />)}
-                      </div>
+                      {item.stars && (
+                        <div className="flex items-center gap-0.5 mb-1">
+                          {Array.from({ length: item.stars }).map((_, s) => <Star key={s} className="w-3 h-3 fill-amber-400 text-amber-400" />)}
+                        </div>
+                      )}
                       <h3 className="font-heading font-bold text-base sm:text-lg text-[#0A192F] group-hover:text-[#2563EB] transition-colors">{item.name}</h3>
                       <p className="font-body text-xs text-[#0A192F]/50 mt-0.5 flex items-center gap-1"><MapPin className="w-3 h-3" /> {item.location}</p>
                     </>
                   )}
-                  {tab === 'Flights' && (
+                  {(tab === 'Flights' || tab === 'Ferry & Bus') && (
                     <>
-                      <h3 className="font-heading font-bold text-base sm:text-lg text-[#0A192F] group-hover:text-[#2563EB] transition-colors">{item.route}</h3>
-                      <p className="font-body text-xs text-[#0A192F]/50 mt-0.5">{item.airline} · {item.duration}</p>
+                      <h3 className="font-heading font-bold text-base sm:text-lg text-[#0A192F] group-hover:text-[#2563EB] transition-colors">{item.route || item.name}</h3>
+                      <p className="font-body text-xs text-[#0A192F]/50 mt-0.5">{item.airline || item.type} {item.duration ? `· ${item.duration}` : ''}</p>
                     </>
                   )}
-                  {tab === 'Vehicles' && (
+                  {(tab === 'Car Rentals' || tab === 'Van Rentals') && (
                     <>
                       <h3 className="font-heading font-bold text-base sm:text-lg text-[#0A192F] group-hover:text-[#2563EB] transition-colors">{item.name}</h3>
                       <p className="font-body text-xs text-[#0A192F]/50 mt-0.5 flex items-center gap-1">
-                        <MapPin className="w-3 h-3" /> {item.location} · {item.seats} seats
+                        <MapPin className="w-3 h-3" /> {item.location} {item.seats ? `· ${item.seats} seats` : ''}
                       </p>
+                    </>
+                  )}
+                  {!['Hotels', 'Resorts', 'Flights', 'Ferry & Bus', 'Car Rentals', 'Van Rentals'].includes(tab) && (
+                    <>
+                      <h3 className="font-heading font-bold text-base sm:text-lg text-[#0A192F] group-hover:text-[#2563EB] transition-colors">{item.name || item.route}</h3>
+                      <p className="font-body text-xs text-[#0A192F]/50 mt-0.5 flex items-center gap-1"><MapPin className="w-3 h-3" /> {item.location}</p>
                     </>
                   )}
                   <div className="flex items-center justify-between mt-3">

@@ -12,6 +12,8 @@ import Food from './pages/Food';
 import BuySell from './pages/BuySell';
 import Admin from './pages/Admin';
 import SellerDashboard from './pages/SellerDashboard';
+import ForRent from './pages/ForRent';
+import Services from './pages/Services';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -45,6 +47,8 @@ const AuthenticatedApp = () => {
       <Route path="/buysell" element={<BuySell />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/seller" element={<SellerDashboard />} />
+      <Route path="/rent" element={<ForRent />} />
+      <Route path="/services" element={<Services />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

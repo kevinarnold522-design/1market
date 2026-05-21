@@ -23,9 +23,15 @@ export default function MemberSignupModal({ onClose }) {
   const [showPassword, setShowPassword] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !name || !memberType || password.length < 8) return;
+    try {
+      // Redirect to the platform's real sign-up/login flow
+      window.location.href = `/login?email=${encodeURIComponent(email)}&next=/`;
+    } catch {
+      setSubmitted(true);
+    }
     setSubmitted(true);
   };
 

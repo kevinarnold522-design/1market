@@ -19,6 +19,8 @@ export default function Navbar() {
     { label: 'Travel', href: '/travel' },
     { label: 'Food', href: '/food' },
     { label: 'Buy & Sell', href: '/buysell' },
+    { label: 'For Rent', href: '/rent' },
+    { label: 'Services', href: '/services' },
   ];
 
   return (

@@ -35,15 +35,18 @@ export default function Footer() {
               Categories
             </h4>
             <div className="space-y-3">
-              {['Travel', 'Food', 'Buy & Sell'].map((link) =>
-              <a
-                key={link}
-                href={`#${link.toLowerCase().replace(/\s*&\s*/g, '')}`}
-                className="block font-body text-sm text-white/40 hover:text-[#00D4FF] transition-colors">
-                
-                  {link}
+              {[
+                { label: 'Travel', href: '/travel' },
+                { label: 'Food', href: '/food' },
+                { label: 'Buy & Sell', href: '/buysell' },
+                { label: 'For Rent / Lease', href: '/rent' },
+                { label: 'Services Provided', href: '/services' },
+              ].map((link) => (
+                <a key={link.label} href={link.href}
+                  className="block font-body text-sm text-white/40 hover:text-[#00D4FF] transition-colors">
+                  {link.label}
                 </a>
-              )}
+              ))}
             </div>
           </div>
 

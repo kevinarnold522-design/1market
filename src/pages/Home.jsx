@@ -5,6 +5,8 @@ import CategoryCards from '../components/home/CategoryCards';
 import FeaturedFeed from '../components/home/FeaturedFeed';
 import Footer from '../components/home/Footer';
 import BrandingBanner from '../components/home/BrandingBanner';
+import TrendingDeals from '../components/home/TrendingDeals';
+import WelcomeSplash from '../components/home/WelcomeSplash';
 
 const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/be5b76b23_generated_1fcae122.png';
 
@@ -24,10 +26,12 @@ const FEATURED_IMAGES = [
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#F8FAFC] pt-8 overflow-x-hidden">
+      <WelcomeSplash />
       <Navbar />
       <BrandingBanner />
       <HeroSection heroImage={HERO_IMAGE} />
-      <CategoryCards images={CATEGORY_IMAGES} />
+      <CategoryCards />
+      <TrendingDeals />
       <FeaturedFeed images={FEATURED_IMAGES} />
       <Footer />
     </div>

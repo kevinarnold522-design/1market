@@ -5,6 +5,24 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import MemberSignupModal from '../components/MemberSignupModal';
 
+const KNOWN_LOGOS = {
+  'Jollibee': 'https://upload.wikimedia.org/wikipedia/en/thumb/8/84/Jollibee_logo.svg/220px-Jollibee_logo.svg.png',
+  'McDonald': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/McDonald%27s_Golden_Arches.svg/220px-McDonald%27s_Golden_Arches.svg.png',
+  'KFC': 'https://upload.wikimedia.org/wikipedia/en/thumb/b/bf/KFC_logo.svg/220px-KFC_logo.svg.png',
+  'Starbucks': 'https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/220px-Starbucks_Corporation_Logo_2011.svg.png',
+  'Mang Inasal': 'https://upload.wikimedia.org/wikipedia/en/thumb/d/df/Mang_Inasal_logo.svg/220px-Mang_Inasal_logo.svg.png',
+  'Pick Up Coffee': 'https://scontent.fmnl9-1.fna.fbcdn.net/v/t39.30808-6/312058924_8627696557244025_6773741143267966218_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=efb6e6&_nc_eui2=AeEOBdS-v_N-hAMt5MZ1BJ7P5CXwGYSqbr7kJfAZhKpuvuMl8BmEqm26yNjLRzPTVJt0eOxbqMH7ck8R75RBXR5e&_nc_ohc=Sdr6yxPJJm8AX87yQ3h&_nc_ht=scontent.fmnl9-1.fna&oh=00_AfA-VbGN8iE8-T57VriSjFJhCRREMqFq7K9X6tkBJx8cKg&oe=65E8E0C7',
+  'Chowking': 'https://upload.wikimedia.org/wikipedia/en/thumb/e/e5/Chowking_logo.svg/220px-Chowking_logo.svg.png',
+  'Greenwich': 'https://upload.wikimedia.org/wikipedia/en/thumb/e/e1/Greenwich_Pizza_Logo.svg/220px-Greenwich_Pizza_Logo.svg.png',
+};
+
+function getLogoUrl(name) {
+  for (const [key, url] of Object.entries(KNOWN_LOGOS)) {
+    if (name.toLowerCase().includes(key.toLowerCase())) return url;
+  }
+  return null;
+}
+
 const businesses = [
   // MANILA - Fast Food Chains
   { id: 1, name: 'Jollibee - Malate Branch', category: 'Fast Food', location: 'Manila', area: 'Malate', address: 'Taft Ave., Malate, Manila', hours: '6:00 AM – 12:00 AM', menu: ['Chickenjoy', 'Jolly Spaghetti', 'Yumburger', 'Peach Mango Pie'], type: 'chain', tag: 'Open Now', image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80' },
@@ -36,14 +54,50 @@ const businesses = [
   { id: 21, name: 'Imus Sari-Sari Merienda Hub', category: 'Sari-Sari Store', location: 'Cavite', area: 'Imus', address: 'Bayan Luma, Imus, Cavite', hours: '6:00 AM – 9:00 PM', menu: ['Fish Balls', 'Kikiam', 'Buko Juice', 'Ice Candy'], type: 'carinderia', tag: 'Street Snacks', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80' },
   { id: 22, name: "Bacoor Home Kitchen – Aling Fe's", category: 'Home Kitchen', location: 'Cavite', area: 'Bacoor', address: 'Habay, Bacoor, Cavite', hours: '7:00 AM – 3:00 PM', menu: ['Tinolang Manok', 'Menudo', 'Chicken Pochero', 'Sinigang'], type: 'home-kitchen', tag: 'Home Cooked', image: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400&q=80' },
   { id: 23, name: 'Dasmariñas Lutong Bahay Catering', category: 'Catering', location: 'Cavite', area: 'Dasmariñas', address: 'Dasmariñas City, Cavite', hours: 'By appointment', menu: ['Lechon Baboy', 'Pancit Palabok', 'Kare-Kare', 'Leche Flan'], type: 'home-kitchen', tag: 'Catering', image: 'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=400&q=80' },
+
+  // MORE CHAINS WITH REAL LOGOS
+  { id: 24, name: 'KFC - SM Mall of Asia', category: 'Fast Food', location: 'Manila', area: 'Pasay', address: 'SM Mall of Asia, Pasay City', hours: '9:00 AM – 10:00 PM', menu: ['Original Recipe', 'Crispy Chicken', 'Zinger Burger', 'Mashed Potato'], type: 'chain', tag: 'Open Now', image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&q=80' },
+  { id: 25, name: "McDonald's - Robinsons Imus", category: 'Fast Food', location: 'Cavite', area: 'Imus', address: 'Robinsons Place Imus, Cavite', hours: '24 Hours', menu: ['Big Mac', 'McFlurry', 'Fries', 'Chicken McNuggets'], type: 'chain', tag: '24 Hours', image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&q=80' },
+  { id: 26, name: 'Starbucks - BGC High Street', category: 'Specialty Coffee', location: 'Manila', area: 'BGC', address: 'BGC High Street, Taguig', hours: '7:00 AM – 11:00 PM', menu: ['Cold Brew', 'Caramel Macchiato', 'Java Chip Frappuccino', 'Matcha Latte'], type: 'coffee', tag: 'Premium Coffee', image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80' },
+  { id: 27, name: 'Starbucks - Dasmariñas, Cavite', category: 'Specialty Coffee', location: 'Cavite', area: 'Dasmariñas', address: 'SM City Dasmariñas, Cavite', hours: '8:00 AM – 10:00 PM', menu: ['Caramel Frap', 'Iced Americano', 'Vanilla Latte', 'Croissant'], type: 'coffee', tag: 'Drive-Thru', image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&q=80' },
+  { id: 28, name: 'Pick Up Coffee - Imus Branch', category: 'Specialty Coffee', location: 'Cavite', area: 'Imus', address: 'Aguinaldo Hwy., Imus, Cavite', hours: '7:00 AM – 10:00 PM', menu: ['Cold Brew', 'Spanish Latte', 'Matcha Latte', 'Blended Java'], type: 'coffee', tag: 'Local Fave', image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80' },
+  { id: 29, name: "Chowking - SM Bacoor", category: 'Fast Food', location: 'Cavite', area: 'Bacoor', address: 'SM City Bacoor, Molino Blvd.', hours: '7:00 AM – 10:00 PM', menu: ['Lauriat Rice Meal', 'Chao Fan', 'Halo-Halo', 'Siopao'], type: 'chain', tag: 'Open Now', image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&q=80' },
+  { id: 30, name: "Greenwich Pizza - Taft, Manila", category: 'Pizza', location: 'Manila', area: 'Taft', address: 'Taft Ave. cor. P. Gil St., Manila', hours: '10:00 AM – 10:00 PM', menu: ['Hawaiian Pizza', 'Overloaded', 'Lasagna', 'Pasta'], type: 'chain', tag: 'Pizza & Pasta', image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&q=80' },
+
+  // MILK TEA SHOPS
+  { id: 31, name: 'Chatime - SM MOA', category: 'Milk Tea', location: 'Manila', area: 'Pasay', address: 'SM Mall of Asia, Pasay City', hours: '10:00 AM – 9:00 PM', menu: ['Classic Pearl Milk Tea', 'Taro', 'Wintermelon', 'Brown Sugar'], type: 'milktea', tag: 'Milk Tea', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80' },
+  { id: 32, name: 'Tiger Sugar - Quezon City', category: 'Milk Tea', location: 'Manila', area: 'QC', address: 'Tomas Morato, Quezon City', hours: '11:00 AM – 10:00 PM', menu: ['Brown Sugar Boba', 'Tiger Sugar Latte', 'Cream Mousse Series'], type: 'milktea', tag: 'Trending', image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca4f60?w=400&q=80' },
+  { id: 33, name: 'Gong Cha - Imus, Cavite', category: 'Milk Tea', location: 'Cavite', area: 'Imus', address: 'Imus Central Mall, Cavite', hours: '10:00 AM – 9:00 PM', menu: ['Earl Grey Milk Tea', 'Brown Sugar Dirty', 'Matcha Red Bean'], type: 'milktea', tag: 'K-Milk Tea', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&q=80' },
+
+  // JAPANESE
+  { id: 34, name: 'Ramen Nagi - BGC', category: 'Japanese', location: 'Manila', area: 'BGC', address: 'Bonifacio High St., BGC, Taguig', hours: '11:00 AM – 10:00 PM', menu: ['King Black Ramen', 'Butao King', 'Gyoza', 'Karaage'], type: 'japanese', tag: 'Ramen', image: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=400&q=80' },
+  { id: 35, name: 'Yabu - SM MOA', category: 'Japanese', location: 'Manila', area: 'Pasay', address: 'SM Mall of Asia, Pasay', hours: '10:00 AM – 9:30 PM', menu: ['Hire Katsu', 'Rosu Katsu', 'Katsu Don', 'Miso Soup'], type: 'japanese', tag: 'Katsu', image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&q=80' },
+
+  // KOREAN
+  { id: 36, name: 'Samgyupsalamat - Manila', category: 'Korean BBQ', location: 'Manila', area: 'Malate', address: 'Adriatico St., Malate, Manila', hours: '11:00 AM – 11:00 PM', menu: ['Unlimited Samgyupsal', 'Dakgalbi', 'Kimchi', 'Korean Fried Chicken'], type: 'korean', tag: 'Unlimited', image: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400&q=80' },
+  { id: 37, name: 'Bulgogi Brothers - Bacoor', category: 'Korean BBQ', location: 'Cavite', area: 'Bacoor', address: 'SM City Bacoor, Cavite', hours: '11:00 AM – 10:00 PM', menu: ['Beef Bulgogi', 'Samgyupsal', 'Bibimbap', 'Korean Corn Dog'], type: 'korean', tag: 'K-BBQ', image: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400&q=80' },
+
+  // SEAFOOD
+  { id: 38, name: 'Dampa - SM by the Bay', category: 'Seafood', location: 'Manila', area: 'Pasay', address: 'SM by the Bay, Manila', hours: '10:00 AM – 10:00 PM', menu: ['Grilled Shrimp', 'Crab in Coconut', 'Bangus Sisig', 'Talaba'], type: 'seafood', tag: 'Fresh Catch', image: 'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=400&q=80' },
+  { id: 39, name: 'Kawit Seafood Grill', category: 'Seafood', location: 'Cavite', area: 'Kawit', address: 'Near Kawit Fish Port, Kawit, Cavite', hours: '11:00 AM – 9:00 PM', menu: ['Grilled Bangus', 'Kinilaw', 'Sinugbang Pusit', 'Talaba'], type: 'seafood', tag: 'Fresh Catch', image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&q=80' },
 ];
 
 const categoryTypes = [
-  { key: 'chain', label: 'Fast Food Chains', icon: '🍔' },
-  { key: 'carinderia', label: 'Local Eateries / Carinderias', icon: '🥘' },
-  { key: 'home-baker', label: 'Home Bakers', icon: '🍰' },
-  { key: 'coffee', label: 'Specialty Coffee', icon: '☕' },
+  { key: 'chain', label: 'Fast Food', icon: '🍔' },
+  { key: 'carinderia', label: 'Local Eateries', icon: '🥘' },
+  { key: 'coffee', label: 'Coffee Shops', icon: '☕' },
+  { key: 'milktea', label: 'Milk Tea', icon: '🧋' },
+  { key: 'japanese', label: 'Japanese', icon: '🍱' },
+  { key: 'italian', label: 'Italian', icon: '🍝' },
+  { key: 'indian', label: 'Indian', icon: '🍛' },
+  { key: 'middle-eastern', label: 'Middle Eastern', icon: '🧆' },
+  { key: 'korean', label: 'Korean', icon: '🥩' },
+  { key: 'seafood', label: 'Seafood', icon: '🦞' },
+  { key: 'bakery', label: 'Bakeries', icon: '🥐' },
+  { key: 'dessert', label: 'Desserts', icon: '🍦' },
   { key: 'home-kitchen', label: 'Home Kitchens', icon: '🍲' },
+  { key: 'home-baker', label: 'Home Bakers', icon: '🎂' },
+  { key: 'catering', label: 'Catering', icon: '🍽️' },
 ];
 
 function BusinessCard({ biz, onRate }) {
@@ -66,10 +120,10 @@ function BusinessCard({ biz, onRate }) {
         <div className="absolute top-3 right-3">
           <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/90 text-[#0A192F]">{biz.tag}</span>
         </div>
-        {/* Logo badge */}
-        {biz.logo_url && (
+        {/* Logo badge — known brands or custom */}
+        {(biz.logo_url || getLogoUrl(biz.name)) && (
           <div className="absolute bottom-3 right-3 w-10 h-10 rounded-xl bg-white shadow-md flex items-center justify-center overflow-hidden border border-white">
-            <img src={biz.logo_url} alt="logo" className="w-8 h-8 object-contain" onError={e => e.target.style.display='none'} />
+            <img src={biz.logo_url || getLogoUrl(biz.name)} alt="logo" className="w-8 h-8 object-contain" onError={e => e.target.style.display='none'} />
           </div>
         )}
       </div>
