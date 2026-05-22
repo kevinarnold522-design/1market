@@ -67,7 +67,7 @@ export default function FeaturedFeed({ images }) {
             </motion.div>
             <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
               className="font-heading font-bold text-3xl sm:text-4xl text-[#0A192F]">
-              {userLocation ? `Trending Near You · ${userLocation}` : 'Trending on 1Market'}
+              {userLocation ? `Near You · ${userLocation}` : 'Featured on 1Market'}
             </motion.h2>
           </div>
 
