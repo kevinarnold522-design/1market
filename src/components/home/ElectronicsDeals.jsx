@@ -68,19 +68,20 @@ function ElectronicsCard({ item }) {
 export default function ElectronicsDeals() {
   const scrollRef = useRef(null);
   const [activeCategory, setActiveCategory] = useState('All');
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     let dir = 1;
     const scroll = setInterval(() => {
-      if (!el) return;
+      if (!el || isPaused) return;
       el.scrollLeft += dir * 1.0;
       if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 10) dir = -1;
       if (el.scrollLeft <= 10) dir = 1;
     }, 30);
     return () => clearInterval(scroll);
-  }, []);
+  }, [isPaused]);
 
   const filtered = activeCategory === 'All' ? ELECTRONICS : ELECTRONICS.filter(e => e.category === activeCategory);
 
@@ -131,7 +132,7 @@ export default function ElectronicsDeals() {
         </div>
 
         {/* Scrolling cards */}
-        <div ref={scrollRef} className="flex gap-4 overflow-x-auto pb-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div ref={scrollRef} className="flex gap-4 overflow-x-auto pb-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }} onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
           <AnimatePresence mode="popLayout">
             {filtered.map(item => <ElectronicsCard key={item.id} item={item} />)}
           </AnimatePresence>

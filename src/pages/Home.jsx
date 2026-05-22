@@ -9,6 +9,7 @@ import TrendingDeals from '../components/home/TrendingDeals';
 import WelcomeSplash from '../components/home/WelcomeSplash';
 import AskBar from '../components/home/AskBar';
 import ElectronicsDeals from '../components/home/ElectronicsDeals';
+import BuySellElectronicsDeals from '../components/home/BuySellElectronicsDeals';
 import MovingWelcomeBanner from '../components/home/MovingWelcomeBanner';
 import CommunityAnimation from '../components/home/CommunityAnimation';
 import SuggestionsBar from '../components/home/SuggestionsBar';
@@ -41,6 +42,7 @@ export default function Home() {
       <CategoryCards />
       <TrendingDeals />
       <ElectronicsDeals />
+      <BuySellElectronicsDeals />
       <CommunityAnimation />
       <FeaturedFeed images={FEATURED_IMAGES} />
       <Footer />

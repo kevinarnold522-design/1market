@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useFireTransition, FireOverlay } from './FireTransition';
 
 const CATEGORIES = [
   { label: 'Travel', href: '/travel', icon: '✈️', desc: 'Hotels, Tours & Transport', gradient: 'linear-gradient(135deg,#3b82f6,#06b6d4)', glow: '59,130,246' },
@@ -13,7 +13,7 @@ const CATEGORIES = [
 const CARD_SUITS = ['♠', '♥', '♦', '♣'];
 const CARD_VALUES = ['A', 'K', 'Q', 'J', '10', '9'];
 
-function GamblingServicesCard({ cat, index }) {
+function GamblingServicesCard({ cat, index, onFire }) {
   const [flipped, setFlipped] = useState(false);
   const [cardIdx, setCardIdx] = useState(0);
   const [glowing, setGlowing] = useState(false);
@@ -33,13 +33,13 @@ function GamblingServicesCard({ cat, index }) {
       onMouseLeave={() => { setFlipped(false); setGlowing(false); }}
       style={{ perspective: '800px' }}
     >
-      <Link to={cat.href} className="block">
+      <button onClick={() => onFire(cat.href)} className="block w-full text-left">
         <div className="relative" style={{ aspectRatio: '1 / 1.1' }}>
           {/* Front face */}
           <motion.div
             animate={{ rotateY: flipped ? 180 : 0 }}
             transition={{ duration: 0.45, ease: 'easeInOut' }}
-            className="absolute inset-0 rounded-2xl text-white text-center overflow-hidden backface-hidden"
+            className="absolute inset-0 rounded-2xl text-white text-center overflow-hidden"
             style={{
               background: cat.gradient,
               backfaceVisibility: 'hidden',
@@ -67,12 +67,9 @@ function GamblingServicesCard({ cat, index }) {
               boxShadow: `0 0 30px 12px rgba(239,68,68,0.5), 0 8px 40px rgba(239,68,68,0.3)`,
             }}
           >
-            {/* Card back pattern */}
             <div className="absolute inset-1 rounded-xl border border-red-500/30"
               style={{ background: 'repeating-linear-gradient(45deg, rgba(239,68,68,0.05) 0px, rgba(239,68,68,0.05) 2px, transparent 2px, transparent 8px)' }}
             />
-
-            {/* Animated suit/value */}
             <div className="relative z-10 flex flex-col items-center justify-center h-full gap-1">
               <AnimatePresence mode="wait">
                 <motion.div
@@ -92,8 +89,6 @@ function GamblingServicesCard({ cat, index }) {
               <p className="font-body text-xs font-bold text-white/60 mt-1">Services</p>
               <p className="font-body text-[10px] text-white/40">Tap to explore</p>
             </div>
-
-            {/* Corner suit markers */}
             {['tl', 'br'].map(pos => (
               <div key={pos} className={`absolute ${pos === 'tl' ? 'top-2 left-3' : 'bottom-2 right-3 rotate-180'}`}>
                 <p className="font-heading font-black text-xs text-white/40">{CARD_VALUES[cardIdx]}</p>
@@ -102,12 +97,12 @@ function GamblingServicesCard({ cat, index }) {
             ))}
           </motion.div>
         </div>
-      </Link>
+      </button>
     </motion.div>
   );
 }
 
-function TiltCard({ cat, index }) {
+function TiltCard({ cat, index, onFire }) {
   const ref = useRef(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [glowing, setGlowing] = useState(false);
@@ -137,8 +132,8 @@ function TiltCard({ cat, index }) {
         transition: tilt.x === 0 && tilt.y === 0 ? 'transform 0.5s ease' : 'transform 0.08s ease',
         willChange: 'transform',
       }}
-      onMouseMove={e => calcTilt(e.clientX, e.clientY)}
-      onMouseLeave={reset}
+      onMouseMove={e => { calcTilt(e.clientX, e.clientY); setGlowing(true); }}
+      onMouseLeave={() => { reset(); setGlowing(false); }}
       onTouchStart={() => setGlowing(true)}
       onTouchEnd={() => { reset(); setGlowing(false); }}
       onTouchMove={e => {
@@ -147,7 +142,7 @@ function TiltCard({ cat, index }) {
         calcTilt(t.clientX, t.clientY);
       }}
     >
-      <Link to={cat.href} className="block">
+      <button onClick={() => onFire(cat.href)} className="block w-full text-left">
         <div
           className="relative rounded-2xl text-white text-center overflow-hidden"
           style={{
@@ -159,42 +154,43 @@ function TiltCard({ cat, index }) {
             transition: 'box-shadow 0.3s ease',
           }}
         >
-          {/* Shine overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none rounded-2xl" />
-
-          {/* Glow ring on touch/hover */}
           <motion.div
             animate={{ opacity: glowing ? 1 : 0, scale: glowing ? 1 : 0.8 }}
             transition={{ duration: 0.2 }}
             className="absolute inset-0 rounded-2xl pointer-events-none"
             style={{ boxShadow: `inset 0 0 40px rgba(255,255,255,0.2)` }}
           />
-
           <div className="relative z-10 flex flex-col items-center justify-center h-full p-5">
             <div className="text-5xl mb-3 drop-shadow-lg">{cat.icon}</div>
             <p className="font-heading font-bold text-lg leading-tight">{cat.label}</p>
             <p className="font-body text-xs mt-1.5 text-white/80 leading-snug">{cat.desc}</p>
           </div>
         </div>
-      </Link>
+      </button>
     </motion.div>
   );
 }
 
 export default function CategoryCards() {
+  const { firing, fireNavigate } = useFireTransition();
+
   return (
-    <section className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
-      <div className="mb-8 text-center">
-        <span className="font-body text-xs tracking-[0.2em] uppercase text-[#2563EB]">Explore 1Market</span>
-        <h2 className="font-heading font-bold text-3xl text-[#0A192F] mt-1">Browse by Category</h2>
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
-        {CATEGORIES.map((cat, i) =>
-          cat.gambling
-            ? <GamblingServicesCard key={cat.label} cat={cat} index={i} />
-            : <TiltCard key={cat.label} cat={cat} index={i} />
-        )}
-      </div>
-    </section>
+    <>
+      <FireOverlay firing={firing} />
+      <section className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
+        <div className="mb-8 text-center">
+          <span className="font-body text-xs tracking-[0.2em] uppercase text-[#2563EB]">Explore 1Market</span>
+          <h2 className="font-heading font-bold text-3xl text-[#0A192F] mt-1">Browse by Category</h2>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+          {CATEGORIES.map((cat, i) =>
+            cat.gambling
+              ? <GamblingServicesCard key={cat.label} cat={cat} index={i} onFire={fireNavigate} />
+              : <TiltCard key={cat.label} cat={cat} index={i} onFire={fireNavigate} />
+          )}
+        </div>
+      </section>
+    </>
   );
 }
