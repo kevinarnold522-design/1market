@@ -2,12 +2,10 @@ import React from 'react';
 import Navbar from '../components/home/Navbar';
 import HeroSection from '../components/home/HeroSection';
 import CategoryCards from '../components/home/CategoryCards';
-import FeaturedFeed from '../components/home/FeaturedFeed';
 import Footer from '../components/home/Footer';
 import BrandingBanner from '../components/home/BrandingBanner';
 import WelcomeSplash from '../components/home/WelcomeSplash';
 import AskBar from '../components/home/AskBar';
-import ElectronicsDeals from '../components/home/ElectronicsDeals';
 import BuySellElectronicsDeals from '../components/home/BuySellElectronicsDeals';
 import MovingWelcomeBanner from '../components/home/MovingWelcomeBanner';
 import CommunityAnimation from '../components/home/CommunityAnimation';
@@ -17,6 +15,8 @@ import HowItWorksSection from '../components/home/HowItWorksSection';
 import FilipinoPrideBanner from '../components/home/FilipinoPrideBanner';
 import WhatMakesUsSpecial from '../components/home/WhatMakesUsSpecial';
 import SuggestionBox from '../components/home/SuggestionBox';
+import PhFlightDeals from '../components/home/PhFlightDeals';
+import PhHotelDeals from '../components/home/PhHotelDeals';
 
 const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/be5b76b23_generated_1fcae122.png';
 
@@ -39,21 +39,21 @@ export default function Home() {
       <WelcomeSplash />
       <Navbar />
       <FilipinoPrideBanner />
-      <WhatMakesUsSpecial />
       <SuggestionsBar />
       <AskBar />
       <MovingWelcomeBanner />
       <BrandingBanner />
       <HeroSection heroImage={HERO_IMAGE} />
+      <WhatMakesUsSpecial />
       <CategoryCards />
-      <ElectronicsDeals />
+      <PhFlightDeals />
+      <PhHotelDeals />
       <BuySellElectronicsDeals />
       <RentDashboard />
       <ShoesClothingDashboard />
       <ServicesDashboard />
       <HowItWorksSection />
       <CommunityAnimation />
-      <FeaturedFeed images={FEATURED_IMAGES} />
       <Footer />
       <SuggestionBox />
     </div>
