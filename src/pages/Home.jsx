@@ -37,9 +37,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#F8FAFC] pt-8 overflow-x-hidden">
       <WelcomeSplash />
+      <Navbar />
       <FilipinoPrideBanner />
       <WhatMakesUsSpecial />
-      <Navbar />
       <SuggestionsBar />
       <AskBar />
       <MovingWelcomeBanner />
