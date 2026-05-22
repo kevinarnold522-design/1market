@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const MESSAGES = [
-  { emoji: '🛍️', title: '1Market.ph', sub: 'Your One-Stop Philippine Marketplace' },
+  { emoji: '🛍️', title: '1Marketph.com', sub: 'Your One-Stop Philippine Marketplace' },
   { emoji: '🤝', title: 'Buy. Sell. Connect.', sub: 'Bringing local communities together' },
   { emoji: '🍜', title: 'Discover Local Food', sub: 'From carinderias to fine dining near you' },
   { emoji: '✈️', title: 'Plan Your Next Trip', sub: 'Hotels, flights & adventures await' },

@@ -5,7 +5,6 @@ import CategoryCards from '../components/home/CategoryCards';
 import FeaturedFeed from '../components/home/FeaturedFeed';
 import Footer from '../components/home/Footer';
 import BrandingBanner from '../components/home/BrandingBanner';
-import TrendingDeals from '../components/home/TrendingDeals';
 import WelcomeSplash from '../components/home/WelcomeSplash';
 import AskBar from '../components/home/AskBar';
 import ElectronicsDeals from '../components/home/ElectronicsDeals';
@@ -47,7 +46,6 @@ export default function Home() {
       <BrandingBanner />
       <HeroSection heroImage={HERO_IMAGE} />
       <CategoryCards />
-      <TrendingDeals />
       <ElectronicsDeals />
       <BuySellElectronicsDeals />
       <RentDashboard />

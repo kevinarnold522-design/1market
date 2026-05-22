@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, User, ShoppingBag, Star, Check, Lock, Eye, EyeOff, Shield } from 'lucide-react';
+import { X, Mail, User, ShoppingBag, Star, Check, Lock, Eye, EyeOff, Shield, KeyRound } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
 
 const MEMBER_TYPES = [
   { key: 'buyer', icon: ShoppingBag, label: 'Buyer / Customer', desc: 'Browse, save, and rate products & food' },
@@ -77,12 +78,48 @@ export default function MemberSignupModal({ onClose }) {
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [otpError, setOtpError] = useState('');
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [sendingOtp, setSendingOtp] = useState(false);
+
+  const handleSendOtp = async () => {
+    if (!email) return;
+    setSendingOtp(true);
+    setOtpError('');
+    try {
+      await base44.functions.invoke('sendOtp', { action: 'send', email });
+      setOtpSent(true);
+    } catch (e) {
+      setOtpError('Failed to send OTP. Please try again.');
+    }
+    setSendingOtp(false);
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otp) return;
+    setSendingOtp(true);
+    setOtpError('');
+    try {
+      const res = await base44.functions.invoke('sendOtp', { action: 'verify', email, otp });
+      if (res.data?.verified) {
+        setOtpVerified(true);
+        setOtpError('');
+      } else {
+        setOtpError(res.data?.error || 'Invalid code.');
+      }
+    } catch (e) {
+      setOtpError('Verification failed. Please try again.');
+    }
+    setSendingOtp(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !name || !memberType || password.length < 8 || !agreed) return;
+    if (!email || !name || !memberType || password.length < 8 || !agreed || !otpVerified) return;
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1000));
+    await new Promise(r => setTimeout(r, 800));
     window.location.href = `/login?email=${encodeURIComponent(email)}&next=/`;
     setSubmitted(true);
     setLoading(false);
@@ -195,6 +232,41 @@ export default function MemberSignupModal({ onClose }) {
                         {password.length > 0 && password.length < 8 && <p className="font-body text-[9px] text-red-400 mt-1">At least 8 characters required</p>}
                       </div>
 
+                      {/* OTP Verification */}
+                      <div className="p-3 rounded-xl border border-[#0A192F]/8 bg-[#F8FAFC] space-y-2">
+                        <div className="flex items-center justify-between">
+                          <p className="font-body text-[10px] font-semibold text-[#0A192F]/60 uppercase tracking-wider flex items-center gap-1">
+                            <KeyRound className="w-3 h-3" /> Email Verification
+                          </p>
+                          {otpVerified && <span className="text-[9px] text-green-600 font-bold flex items-center gap-0.5"><Check className="w-3 h-3" /> Verified</span>}
+                        </div>
+                        {!otpVerified && (
+                          <>
+                            {!otpSent ? (
+                              <button type="button" onClick={handleSendOtp} disabled={!email || sendingOtp}
+                                className="w-full py-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-lg font-body font-semibold text-xs disabled:opacity-40 transition-colors flex items-center justify-center gap-1.5">
+                                {sendingOtp ? <motion.div animate={{ rotate: 360 }} transition={{ duration: 0.7, repeat: Infinity }} className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full" /> : null}
+                                {sendingOtp ? 'Sending...' : 'Send Verification Code to Email'}
+                              </button>
+                            ) : (
+                              <div className="space-y-2">
+                                <p className="font-body text-[9px] text-[#0A192F]/40">Code sent to <strong>{email}</strong></p>
+                                <div className="flex gap-2">
+                                  <input value={otp} onChange={e => setOtp(e.target.value)} placeholder="Enter 6-digit code" maxLength={6}
+                                    className="flex-1 px-3 py-1.5 border border-[#0A192F]/10 rounded-lg font-body text-sm text-[#0A192F] focus:outline-none focus:border-[#2563EB] tracking-widest text-center" />
+                                  <button type="button" onClick={handleVerifyOtp} disabled={otp.length < 6 || sendingOtp}
+                                    className="px-3 py-1.5 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-lg font-body font-bold text-xs disabled:opacity-40 transition-colors">
+                                    {sendingOtp ? '...' : 'Verify'}
+                                  </button>
+                                </div>
+                                <button type="button" onClick={handleSendOtp} className="font-body text-[9px] text-[#2563EB] underline">Resend code</button>
+                              </div>
+                            )}
+                            {otpError && <p className="font-body text-[9px] text-red-500">{otpError}</p>}
+                          </>
+                        )}
+                      </div>
+
                       {/* Consent checkbox */}
                       <label className="flex items-start gap-2 p-2.5 rounded-xl border border-[#0A192F]/8 bg-[#F8FAFC] cursor-pointer hover:border-[#2563EB]/30 transition-colors">
                         <div className="flex-shrink-0 mt-0.5">
@@ -205,7 +277,7 @@ export default function MemberSignupModal({ onClose }) {
                         </p>
                       </label>
 
-                      <button type="submit" disabled={password.length < 8 || !agreed || loading}
+                      <button type="submit" disabled={password.length < 8 || !agreed || loading || !otpVerified}
                         className="w-full py-2.5 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-xl font-body font-semibold text-sm disabled:opacity-40 transition-all flex items-center justify-center gap-2">
                         {loading ? (
                           <>

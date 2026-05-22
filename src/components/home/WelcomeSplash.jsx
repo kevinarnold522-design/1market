@@ -72,10 +72,10 @@ export default function WelcomeSplash() {
               <p className="font-body text-sm sm:text-base tracking-[0.3em] uppercase text-[#00D4FF] mb-2">
                 Welcome to
               </p>
-              <h1 className="font-heading font-black text-5xl sm:text-7xl lg:text-9xl text-white leading-none mb-2">
-                1Market
+              <h1 className="font-heading font-black text-4xl sm:text-6xl lg:text-8xl text-white leading-none mb-2">
+                1Marketph
               </h1>
-              <span className="font-heading font-bold text-3xl sm:text-5xl text-[#00D4FF]">.ph</span>
+              <span className="font-heading font-bold text-2xl sm:text-4xl text-[#00D4FF]">.com</span>
             </motion.div>
 
             {/* Tagline */}

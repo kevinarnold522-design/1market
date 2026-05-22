@@ -5,7 +5,7 @@ const MESSAGES = [
   { main: '1 Community', sub: 'One platform. Every Filipino business. Every Filipino buyer.' },
   { main: '1 Mindset', sub: 'We build together — sellers, buyers, and dreamers as one.' },
   { main: '1 Goal', sub: 'Connect local businesses to the people who need them most.' },
-  { main: '1 Market.ph', sub: 'Manila & Cavite\'s marketplace — growing nationwide.' },
+  { main: '1Marketph.com', sub: 'Manila & Cavite\'s marketplace — growing nationwide.' },
 ];
 
 export default function BrandingBanner() {
@@ -69,7 +69,7 @@ export default function BrandingBanner() {
             <p className="font-heading font-bold text-xl sm:text-3xl lg:text-4xl text-white tracking-tight">
               {msg.main.split(' ').map((word, wi) => (
                 <span key={wi}>
-                  {word === '1' || word === '1Market.ph' ? (
+                  {word === '1' || word === '1Marketph.com' ? (
                     <span className="text-[#00D4FF]">{word}</span>
                   ) : (
                     word
