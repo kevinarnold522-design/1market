@@ -87,7 +87,7 @@ export default function HeroSection({ heroImage }) {
                 alt="Buyer shopping"
                 className="absolute inset-0 w-full h-full object-cover" />
               
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#0A192F]/60 via-transparent to-transparent hidden" />
+              
               {/* Seller badge */}
               <div className="absolute top-4 right-4 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg">
                 <img
