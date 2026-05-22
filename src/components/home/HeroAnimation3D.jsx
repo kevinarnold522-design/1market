@@ -8,7 +8,7 @@ const ROLES = [
 ];
 
 const SERVICES = [
-  'eCommerce Site Builder',
+  '1 Community',
   'Inventory & Fulfillment',
   'Integrated Payments',
   'Marketing & Analytics',

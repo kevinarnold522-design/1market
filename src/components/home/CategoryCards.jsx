@@ -3,109 +3,26 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useFireTransition, FireOverlay } from './FireTransition';
 
 const CATEGORIES = [
-  { label: 'Travel', href: '/travel', icon: '✈️', desc: 'Hotels, Tours & Transport', gradient: 'linear-gradient(135deg,#3b82f6,#06b6d4)', glow: '59,130,246' },
-  { label: 'Food', href: '/food', icon: '🍽️', desc: 'Restaurants, Cafes & Home Cooks', gradient: 'linear-gradient(135deg,#f97316,#eab308)', glow: '249,115,22' },
-  { label: 'Buy & Sell', href: '/buysell', icon: '🛍️', desc: 'Shoes, Cars, Gadgets & More', gradient: 'linear-gradient(135deg,#a855f7,#ec4899)', glow: '168,85,247' },
-  { label: 'For Rent', href: '/rent', icon: '🏠', desc: 'Homes, Vehicles & Equipment', gradient: 'linear-gradient(135deg,#22c55e,#14b8a6)', glow: '34,197,94' },
-  { label: 'Services', href: '/services', icon: '🛠️', desc: 'Plumbers, Tutors & Freelancers', gradient: 'linear-gradient(135deg,#ef4444,#f43f5e)', glow: '239,68,68', gambling: true },
+  { label: 'Travel', href: '/travel', icon: '✈️', desc: 'Hotels, Tours & Transport', accent: '#60a5fa', suit: '♠', gradient: 'linear-gradient(135deg,#0f2050,#1d4ed8)' },
+  { label: 'Food', href: '/food', icon: '🍽️', desc: 'Restaurants, Cafes & Home Cooks', accent: '#f87171', suit: '♥', gradient: 'linear-gradient(135deg,#3b0000,#b91c1c)' },
+  { label: 'Buy & Sell', href: '/buysell', icon: '🛍️', desc: 'Shoes, Cars, Gadgets & More', accent: '#c084fc', suit: '♦', gradient: 'linear-gradient(135deg,#1e0050,#7e22ce)' },
+  { label: 'For Rent', href: '/rent', icon: '🏠', desc: 'Homes, Vehicles & Equipment', accent: '#4ade80', suit: '♣', gradient: 'linear-gradient(135deg,#002a00,#15803d)' },
+  { label: 'Services', href: '/services', icon: '🛠️', desc: 'Plumbers, Tutors & Freelancers', accent: '#fb923c', suit: '♠', gradient: 'linear-gradient(135deg,#2a1000,#c2410c)' },
 ];
 
-const CARD_SUITS = ['♠', '♥', '♦', '♣'];
 const CARD_VALUES = ['A', 'K', 'Q', 'J', '10', '9'];
 
-function GamblingServicesCard({ cat, index, onFire }) {
+function CasinoCategoryCard({ cat, index, onFire }) {
+  const ref = useRef(null);
   const [flipped, setFlipped] = useState(false);
-  const [cardIdx, setCardIdx] = useState(0);
-  const [glowing, setGlowing] = useState(false);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [cardIdx, setCardIdx] = useState(index % CARD_VALUES.length);
+  const isRed = cat.suit === '♥' || cat.suit === '♦';
 
   useEffect(() => {
-    const t = setInterval(() => setCardIdx(i => (i + 1) % CARD_VALUES.length), 700);
+    const t = setInterval(() => setCardIdx(i => (i + 1) % CARD_VALUES.length), 800);
     return () => clearInterval(t);
   }, []);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.08, duration: 0.4 }}
-      onMouseEnter={() => { setFlipped(true); setGlowing(true); }}
-      onMouseLeave={() => { setFlipped(false); setGlowing(false); }}
-      style={{ perspective: '800px' }}
-    >
-      <button onClick={() => onFire(cat.href)} className="block w-full text-left">
-        <div className="relative" style={{ aspectRatio: '1 / 1.1' }}>
-          {/* Front face */}
-          <motion.div
-            animate={{ rotateY: flipped ? 180 : 0 }}
-            transition={{ duration: 0.45, ease: 'easeInOut' }}
-            className="absolute inset-0 rounded-2xl text-white text-center overflow-hidden"
-            style={{
-              background: cat.gradient,
-              backfaceVisibility: 'hidden',
-              boxShadow: glowing
-                ? `0 0 30px 8px rgba(${cat.glow},0.6), 0 8px 32px rgba(${cat.glow},0.3)`
-                : `0 4px 20px rgba(${cat.glow},0.25)`,
-            }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none rounded-2xl" />
-            <div className="relative z-10 flex flex-col items-center justify-center h-full p-5">
-              <div className="text-5xl mb-3 drop-shadow-lg">{cat.icon}</div>
-              <p className="font-heading font-bold text-lg leading-tight">{cat.label}</p>
-              <p className="font-body text-xs mt-1.5 text-white/80 leading-snug">{cat.desc}</p>
-            </div>
-          </motion.div>
-
-          {/* Back face — gambling card */}
-          <motion.div
-            animate={{ rotateY: flipped ? 0 : -180 }}
-            transition={{ duration: 0.45, ease: 'easeInOut' }}
-            className="absolute inset-0 rounded-2xl overflow-hidden"
-            style={{
-              background: 'linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)',
-              backfaceVisibility: 'hidden',
-              boxShadow: `0 0 30px 12px rgba(239,68,68,0.5), 0 8px 40px rgba(239,68,68,0.3)`,
-            }}
-          >
-            <div className="absolute inset-1 rounded-xl border border-red-500/30"
-              style={{ background: 'repeating-linear-gradient(45deg, rgba(239,68,68,0.05) 0px, rgba(239,68,68,0.05) 2px, transparent 2px, transparent 8px)' }}
-            />
-            <div className="relative z-10 flex flex-col items-center justify-center h-full gap-1">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={cardIdx}
-                  initial={{ scale: 0, rotate: -20, opacity: 0 }}
-                  animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                  exit={{ scale: 0, rotate: 20, opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                  className="text-center"
-                >
-                  <p className="font-heading font-black text-4xl text-white drop-shadow-lg">{CARD_VALUES[cardIdx]}</p>
-                  <p className="text-2xl" style={{ color: cardIdx % 2 === 0 ? '#ef4444' : '#f8fafc' }}>
-                    {CARD_SUITS[cardIdx % 4]}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
-              <p className="font-body text-xs font-bold text-white/60 mt-1">Services</p>
-              <p className="font-body text-[10px] text-white/40">Tap to explore</p>
-            </div>
-            {['tl', 'br'].map(pos => (
-              <div key={pos} className={`absolute ${pos === 'tl' ? 'top-2 left-3' : 'bottom-2 right-3 rotate-180'}`}>
-                <p className="font-heading font-black text-xs text-white/40">{CARD_VALUES[cardIdx]}</p>
-                <p className="text-xs text-red-400/60">{CARD_SUITS[cardIdx % 4]}</p>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </button>
-    </motion.div>
-  );
-}
-
-function TiltCard({ cat, index, onFire }) {
-  const ref = useRef(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [glowing, setGlowing] = useState(false);
 
   const calcTilt = (clientX, clientY) => {
     const el = ref.current;
@@ -113,9 +30,7 @@ function TiltCard({ cat, index, onFire }) {
     const rect = el.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
-    const dx = (clientX - cx) / (rect.width / 2);
-    const dy = (clientY - cy) / (rect.height / 2);
-    setTilt({ x: dy * -14, y: dx * 14 });
+    setTilt({ x: ((clientY - cy) / (rect.height / 2)) * -8, y: ((clientX - cx) / (rect.width / 2)) * 8 });
   };
 
   const reset = () => setTilt({ x: 0, y: 0 });
@@ -127,46 +42,83 @@ function TiltCard({ cat, index, onFire }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.08, duration: 0.4 }}
-      style={{
-        transform: `perspective(600px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-        transition: tilt.x === 0 && tilt.y === 0 ? 'transform 0.5s ease' : 'transform 0.08s ease',
-        willChange: 'transform',
-      }}
-      onMouseMove={e => { calcTilt(e.clientX, e.clientY); setGlowing(true); }}
-      onMouseLeave={() => { reset(); setGlowing(false); }}
-      onTouchStart={() => setGlowing(true)}
-      onTouchEnd={() => { reset(); setGlowing(false); }}
-      onTouchMove={e => {
-        setGlowing(true);
-        const t = e.touches[0];
-        calcTilt(t.clientX, t.clientY);
-      }}
+      style={{ perspective: '700px' }}
+      onMouseEnter={() => setFlipped(true)}
+      onMouseLeave={() => { setFlipped(false); reset(); }}
+      onMouseMove={e => calcTilt(e.clientX, e.clientY)}
+      onTouchStart={() => setFlipped(true)}
+      onTouchEnd={() => { setFlipped(false); reset(); }}
     >
       <button onClick={() => onFire(cat.href)} className="block w-full text-left">
-        <div
-          className="relative rounded-2xl text-white text-center overflow-hidden"
+        <motion.div
           style={{
-            background: cat.gradient,
+            transformStyle: 'preserve-3d',
+            transform: `perspective(700px) rotateY(${flipped ? 180 : tilt.y}deg) rotateX(${tilt.x}deg)`,
+            transition: flipped ? 'transform 0.45s cubic-bezier(0.4,0,0.2,1)' : 'transform 0.1s ease',
             aspectRatio: '1 / 1.1',
-            boxShadow: glowing
-              ? `0 0 30px 8px rgba(${cat.glow},0.6), 0 8px 32px rgba(${cat.glow},0.3)`
-              : `0 4px 20px rgba(${cat.glow},0.25)`,
-            transition: 'box-shadow 0.3s ease',
+            position: 'relative',
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none rounded-2xl" />
-          <motion.div
-            animate={{ opacity: glowing ? 1 : 0, scale: glowing ? 1 : 0.8 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0 rounded-2xl pointer-events-none"
-            style={{ boxShadow: `inset 0 0 40px rgba(255,255,255,0.2)` }}
-          />
-          <div className="relative z-10 flex flex-col items-center justify-center h-full p-5">
-            <div className="text-5xl mb-3 drop-shadow-lg">{cat.icon}</div>
-            <p className="font-heading font-bold text-lg leading-tight">{cat.label}</p>
-            <p className="font-body text-xs mt-1.5 text-white/80 leading-snug">{cat.desc}</p>
+          {/* FRONT */}
+          <div
+            className="absolute inset-0 rounded-2xl overflow-hidden"
+            style={{ backfaceVisibility: 'hidden', background: cat.gradient,
+              border: `1.5px solid ${cat.accent}44`,
+              boxShadow: `0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px ${cat.accent}22`,
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
+            {/* Corner pip */}
+            <div className="absolute top-2 left-2.5 text-[9px] font-black leading-none" style={{ color: cat.accent }}>
+              <div>{CARD_VALUES[cardIdx]}</div>
+              <div>{cat.suit}</div>
+            </div>
+            <div className="absolute bottom-2 right-2.5 text-[9px] font-black leading-none rotate-180" style={{ color: cat.accent }}>
+              <div>{CARD_VALUES[cardIdx]}</div>
+              <div>{cat.suit}</div>
+            </div>
+            <div className="relative z-10 flex flex-col items-center justify-center h-full p-5">
+              <div className="text-5xl mb-3 drop-shadow-lg">{cat.icon}</div>
+              <p className="font-heading font-bold text-lg text-white leading-tight">{cat.label}</p>
+              <p className="font-body text-xs mt-1.5 text-white/70 leading-snug">{cat.desc}</p>
+            </div>
           </div>
-        </div>
+
+          {/* BACK — casino */}
+          <div
+            className="absolute inset-0 rounded-2xl overflow-hidden flex flex-col items-center justify-center"
+            style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)',
+              background: 'linear-gradient(135deg,#0f172a,#1e1b4b)',
+              border: `1.5px solid ${cat.accent}88`,
+              boxShadow: `0 0 30px 8px ${cat.accent}33`,
+            }}
+          >
+            <div className="absolute inset-1 rounded-xl border border-white/5"
+              style={{ background: 'repeating-linear-gradient(45deg,rgba(255,255,255,0.015) 0,rgba(255,255,255,0.015) 2px,transparent 2px,transparent 10px)' }} />
+            <div className="relative z-10 flex flex-col items-center gap-1">
+              <AnimatePresence mode="wait">
+                <motion.div key={cardIdx}
+                  initial={{ scale: 0, rotate: -20, opacity: 0 }}
+                  animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                  exit={{ scale: 0, rotate: 20, opacity: 0 }}
+                  transition={{ duration: 0.22 }}
+                  className="text-center"
+                >
+                  <p className="font-heading font-black text-5xl text-white drop-shadow-lg">{CARD_VALUES[cardIdx]}</p>
+                  <p className="text-2xl" style={{ color: isRed ? '#f87171' : '#f8fafc' }}>{cat.suit}</p>
+                </motion.div>
+              </AnimatePresence>
+              <p className="font-body text-xs font-bold text-white/60 mt-1">{cat.label}</p>
+              <p className="font-body text-[10px] text-white/30">Tap to explore</p>
+            </div>
+            {['tl', 'br'].map(pos => (
+              <div key={pos} className={`absolute ${pos === 'tl' ? 'top-2 left-3' : 'bottom-2 right-3 rotate-180'}`}>
+                <p className="font-heading font-black text-xs" style={{ color: cat.accent }}>{CARD_VALUES[cardIdx]}</p>
+                <p className="text-xs" style={{ color: isRed ? '#f87171' : '#f8fafc' }}>{cat.suit}</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
       </button>
     </motion.div>
   );
@@ -182,13 +134,12 @@ export default function CategoryCards() {
         <div className="mb-8 text-center">
           <span className="font-body text-xs tracking-[0.2em] uppercase text-[#2563EB]">Explore 1Marketph.com</span>
           <h2 className="font-heading font-bold text-3xl text-[#0A192F] mt-1">Browse by Category</h2>
+          <p className="font-body text-xs text-[#0A192F]/40 mt-1">Hover to flip • Click to explore</p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
-          {CATEGORIES.map((cat, i) =>
-            cat.gambling
-              ? <GamblingServicesCard key={cat.label} cat={cat} index={i} onFire={fireNavigate} />
-              : <TiltCard key={cat.label} cat={cat} index={i} onFire={fireNavigate} />
-          )}
+          {CATEGORIES.map((cat, i) => (
+            <CasinoCategoryCard key={cat.label} cat={cat} index={i} onFire={fireNavigate} />
+          ))}
         </div>
       </section>
     </>
