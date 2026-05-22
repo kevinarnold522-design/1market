@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
+import HeroAnimation3D from './HeroAnimation3D';
 
 const WARM_HERO = 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=1200&q=85';
 
@@ -73,55 +74,20 @@ export default function HeroSection({ heroImage }) {
             </div>
           </motion.div>
 
-          {/* Right: Warm hero image */}
+          {/* Right: 3D Animated Hero */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.5 }}
             className="relative order-first lg:order-last">
-            
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl shadow-[#0A192F]/10">
-              {/* Buyer */}
-              <img
-                src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&q=80"
-                alt="Buyer shopping"
-                className="absolute inset-0 w-full h-full object-cover" />
-              
-              
-              {/* Seller badge */}
-              <div className="absolute top-4 right-4 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg">
-                <img
-                  src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=200&q=80"
-                  alt="Seller"
-                  className="w-10 h-10 rounded-lg object-cover" />
-                
-                <div>
-                  <p className="font-heading font-bold text-xs text-[#0A192F]">Seller</p>
-                  <p className="font-body text-[10px] text-[#0A192F]/50">Local Business</p>
-                </div>
-              </div>
-              {/* Buyer label */}
-              <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg">
-                <img
-                  src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=200&q=80"
-                  alt="Buyer"
-                  className="w-10 h-10 rounded-lg object-cover" />
-                
-                <div>
-                  <p className="font-heading font-bold text-xs text-[#0A192F]">Buyer</p>
-                  <p className="font-body text-[10px] text-[#0A192F]/50">Smart Shopper</p>
-                </div>
-              </div>
-            </div>
-            {/* Floating badge */}
+            <HeroAnimation3D />
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.2 }}
-              className="absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 bg-white/90 backdrop-blur-xl rounded-xl shadow-xl shadow-[#0A192F]/5 px-4 sm:px-6 py-3 sm:py-4 border border-white/50">
-              
-              <p className="font-heading font-bold text-xl sm:text-2xl text-[#0A192F]">We bring you!</p>
-              <p className="font-body text-xs text-[#0A192F]/50 tracking-wide">Local businesses, real connections</p>
+              transition={{ delay: 1.4 }}
+              className="absolute -bottom-4 -left-4 sm:-bottom-5 sm:-left-5 bg-white/90 backdrop-blur-xl rounded-xl shadow-xl shadow-[#0A192F]/5 px-4 py-3 border border-white/50">
+              <p className="font-heading font-bold text-base sm:text-lg text-[#0A192F]">We bring you!</p>
+              <p className="font-body text-[10px] text-[#0A192F]/50 tracking-wide">Local businesses, real connections</p>
             </motion.div>
           </motion.div>
         </div>

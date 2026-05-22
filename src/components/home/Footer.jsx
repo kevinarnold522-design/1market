@@ -60,6 +60,7 @@ export default function Footer() {
               <p className="font-body text-sm text-white/40 leading-relaxed">Manila, Philippines</p>
               
               <Link to="/seller" className="block font-body text-xs text-white/20 hover:text-[#00D4FF] transition-colors">Seller Dashboard →</Link>
+              <Link to="/privacy-policy" className="block font-body text-xs text-white/20 hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
             </div>
           </div>
         </div>
@@ -67,7 +68,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="font-body text-xs text-white/30">
-            © 2026 1Market.ph. All rights reserved.
+            © 2026 1Market.ph. All rights reserved. · <Link to="/privacy-policy" className="hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
           </p>
           <div className="flex items-center gap-1">
             <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
