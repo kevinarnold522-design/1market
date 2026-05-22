@@ -8,6 +8,10 @@ import BrandingBanner from '../components/home/BrandingBanner';
 import TrendingDeals from '../components/home/TrendingDeals';
 import WelcomeSplash from '../components/home/WelcomeSplash';
 import AskBar from '../components/home/AskBar';
+import ElectronicsDeals from '../components/home/ElectronicsDeals';
+import MovingWelcomeBanner from '../components/home/MovingWelcomeBanner';
+import CommunityAnimation from '../components/home/CommunityAnimation';
+import SuggestionsBar from '../components/home/SuggestionsBar';
 
 const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/be5b76b23_generated_1fcae122.png';
 
@@ -29,11 +33,15 @@ export default function Home() {
     <div className="min-h-screen bg-[#F8FAFC] pt-8 overflow-x-hidden">
       <WelcomeSplash />
       <Navbar />
+      <SuggestionsBar />
       <AskBar />
+      <MovingWelcomeBanner />
       <BrandingBanner />
       <HeroSection heroImage={HERO_IMAGE} />
       <CategoryCards />
       <TrendingDeals />
+      <ElectronicsDeals />
+      <CommunityAnimation />
       <FeaturedFeed images={FEATURED_IMAGES} />
       <Footer />
     </div>

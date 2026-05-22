@@ -1,14 +1,111 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const CATEGORIES = [
   { label: 'Travel', href: '/travel', icon: '✈️', desc: 'Hotels, Tours & Transport', gradient: 'linear-gradient(135deg,#3b82f6,#06b6d4)', glow: '59,130,246' },
   { label: 'Food', href: '/food', icon: '🍽️', desc: 'Restaurants, Cafes & Home Cooks', gradient: 'linear-gradient(135deg,#f97316,#eab308)', glow: '249,115,22' },
   { label: 'Buy & Sell', href: '/buysell', icon: '🛍️', desc: 'Shoes, Cars, Gadgets & More', gradient: 'linear-gradient(135deg,#a855f7,#ec4899)', glow: '168,85,247' },
   { label: 'For Rent', href: '/rent', icon: '🏠', desc: 'Homes, Vehicles & Equipment', gradient: 'linear-gradient(135deg,#22c55e,#14b8a6)', glow: '34,197,94' },
-  { label: 'Services', href: '/services', icon: '🛠️', desc: 'Plumbers, Tutors & Freelancers', gradient: 'linear-gradient(135deg,#ef4444,#f43f5e)', glow: '239,68,68' },
+  { label: 'Services', href: '/services', icon: '🛠️', desc: 'Plumbers, Tutors & Freelancers', gradient: 'linear-gradient(135deg,#ef4444,#f43f5e)', glow: '239,68,68', gambling: true },
 ];
+
+const CARD_SUITS = ['♠', '♥', '♦', '♣'];
+const CARD_VALUES = ['A', 'K', 'Q', 'J', '10', '9'];
+
+function GamblingServicesCard({ cat, index }) {
+  const [flipped, setFlipped] = useState(false);
+  const [cardIdx, setCardIdx] = useState(0);
+  const [glowing, setGlowing] = useState(false);
+
+  useEffect(() => {
+    const t = setInterval(() => setCardIdx(i => (i + 1) % CARD_VALUES.length), 700);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.08, duration: 0.4 }}
+      onMouseEnter={() => { setFlipped(true); setGlowing(true); }}
+      onMouseLeave={() => { setFlipped(false); setGlowing(false); }}
+      style={{ perspective: '800px' }}
+    >
+      <Link to={cat.href} className="block">
+        <div className="relative" style={{ aspectRatio: '1 / 1.1' }}>
+          {/* Front face */}
+          <motion.div
+            animate={{ rotateY: flipped ? 180 : 0 }}
+            transition={{ duration: 0.45, ease: 'easeInOut' }}
+            className="absolute inset-0 rounded-2xl text-white text-center overflow-hidden backface-hidden"
+            style={{
+              background: cat.gradient,
+              backfaceVisibility: 'hidden',
+              boxShadow: glowing
+                ? `0 0 30px 8px rgba(${cat.glow},0.6), 0 8px 32px rgba(${cat.glow},0.3)`
+                : `0 4px 20px rgba(${cat.glow},0.25)`,
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none rounded-2xl" />
+            <div className="relative z-10 flex flex-col items-center justify-center h-full p-5">
+              <div className="text-5xl mb-3 drop-shadow-lg">{cat.icon}</div>
+              <p className="font-heading font-bold text-lg leading-tight">{cat.label}</p>
+              <p className="font-body text-xs mt-1.5 text-white/80 leading-snug">{cat.desc}</p>
+            </div>
+          </motion.div>
+
+          {/* Back face — gambling card */}
+          <motion.div
+            animate={{ rotateY: flipped ? 0 : -180 }}
+            transition={{ duration: 0.45, ease: 'easeInOut' }}
+            className="absolute inset-0 rounded-2xl overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)',
+              backfaceVisibility: 'hidden',
+              boxShadow: `0 0 30px 12px rgba(239,68,68,0.5), 0 8px 40px rgba(239,68,68,0.3)`,
+            }}
+          >
+            {/* Card back pattern */}
+            <div className="absolute inset-1 rounded-xl border border-red-500/30"
+              style={{ background: 'repeating-linear-gradient(45deg, rgba(239,68,68,0.05) 0px, rgba(239,68,68,0.05) 2px, transparent 2px, transparent 8px)' }}
+            />
+
+            {/* Animated suit/value */}
+            <div className="relative z-10 flex flex-col items-center justify-center h-full gap-1">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={cardIdx}
+                  initial={{ scale: 0, rotate: -20, opacity: 0 }}
+                  animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                  exit={{ scale: 0, rotate: 20, opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="text-center"
+                >
+                  <p className="font-heading font-black text-4xl text-white drop-shadow-lg">{CARD_VALUES[cardIdx]}</p>
+                  <p className="text-2xl" style={{ color: cardIdx % 2 === 0 ? '#ef4444' : '#f8fafc' }}>
+                    {CARD_SUITS[cardIdx % 4]}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+              <p className="font-body text-xs font-bold text-white/60 mt-1">Services</p>
+              <p className="font-body text-[10px] text-white/40">Tap to explore</p>
+            </div>
+
+            {/* Corner suit markers */}
+            {['tl', 'br'].map(pos => (
+              <div key={pos} className={`absolute ${pos === 'tl' ? 'top-2 left-3' : 'bottom-2 right-3 rotate-180'}`}>
+                <p className="font-heading font-black text-xs text-white/40">{CARD_VALUES[cardIdx]}</p>
+                <p className="text-xs text-red-400/60">{CARD_SUITS[cardIdx % 4]}</p>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
 
 function TiltCard({ cat, index }) {
   const ref = useRef(null);
@@ -92,9 +189,11 @@ export default function CategoryCards() {
         <h2 className="font-heading font-bold text-3xl text-[#0A192F] mt-1">Browse by Category</h2>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
-        {CATEGORIES.map((cat, i) => (
-          <TiltCard key={cat.label} cat={cat} index={i} />
-        ))}
+        {CATEGORIES.map((cat, i) =>
+          cat.gambling
+            ? <GamblingServicesCard key={cat.label} cat={cat} index={i} />
+            : <TiltCard key={cat.label} cat={cat} index={i} />
+        )}
       </div>
     </section>
   );

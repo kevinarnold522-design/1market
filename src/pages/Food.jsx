@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, MapPin, Star, Filter, X, UtensilsCrossed, Clock } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, Star, Filter, X, UtensilsCrossed, Clock, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import MemberSignupModal from '../components/MemberSignupModal';
+import BusinessBioModal from '../components/home/BusinessBioModal';
 
 const KNOWN_LOGOS = {
   'Jollibee': 'https://upload.wikimedia.org/wikipedia/en/thumb/8/84/Jollibee_logo.svg/220px-Jollibee_logo.svg.png',
@@ -26,9 +27,9 @@ function getLogoUrl(name) {
 
 const businesses = [
   // MANILA - Fast Food Chains
-  { id: 1, name: 'Jollibee - Malate Branch', category: 'Fast Food', location: 'Manila', area: 'Malate', address: 'Taft Ave., Malate, Manila', hours: '6:00 AM – 12:00 AM', menu: ['Chickenjoy', 'Jolly Spaghetti', 'Yumburger', 'Peach Mango Pie'], type: 'chain', tag: 'Open Now', image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80' },
-  { id: 2, name: 'Jollibee - Recto, Manila', category: 'Fast Food', location: 'Manila', area: 'Recto / U-Belt', address: 'Recto Ave., Manila (near PUP)', hours: '6:00 AM – 11:00 PM', menu: ['Chickenjoy', 'Palabok Fiesta', 'Sundae', 'Burger Steak'], type: 'chain', tag: 'Near University', image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&q=80' },
-  { id: 3, name: 'Mang Inasal - Sampaloc', category: 'Fast Food', location: 'Manila', area: 'Sampaloc', address: 'España Blvd., Sampaloc, Manila', hours: '10:00 AM – 10:00 PM', menu: ['Chicken Inasal', 'BBQ Pork', 'Halo-Halo', 'Garlic Rice'], type: 'chain', tag: 'Popular', image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?w=400&q=80' },
+  { id: 1, name: 'Jollibee - Malate Branch', category: 'Fast Food', location: 'Manila', area: 'Malate', address: 'Taft Ave., Malate, Manila', hours: '6:00 AM – 12:00 AM', menu: ['Chickenjoy', 'Jolly Spaghetti', 'Yumburger', 'Peach Mango Pie'], type: 'chain', tag: 'Open Now', image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80', logo_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/84/Jollibee_logo.svg/220px-Jollibee_logo.svg.png', website: 'https://www.jollibee.com.ph', founder: 'Tony Tan Caktiong', year_started: 1978, bio: 'Jollibee is the largest fast food chain in the Philippines, founded by Tony Tan Caktiong in 1978 in Cubao, Quezon City. What started as a small ice cream parlor evolved into a global fast food empire, beloved for its signature Chickenjoy fried chicken and Jolly Spaghetti. Today, Jollibee operates over 1,500 stores worldwide and is the pride of Filipino fast food culture.' },
+  { id: 2, name: 'Jollibee - Recto, Manila', category: 'Fast Food', location: 'Manila', area: 'Recto / U-Belt', address: 'Recto Ave., Manila (near PUP)', hours: '6:00 AM – 11:00 PM', menu: ['Chickenjoy', 'Palabok Fiesta', 'Sundae', 'Burger Steak'], type: 'chain', tag: 'Near University', image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&q=80', logo_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/84/Jollibee_logo.svg/220px-Jollibee_logo.svg.png', website: 'https://www.jollibee.com.ph', founder: 'Tony Tan Caktiong', year_started: 1978, bio: 'Jollibee is the largest fast food chain in the Philippines, founded by Tony Tan Caktiong in 1978. This branch serves the U-Belt student community near PUP and multiple Manila universities with their famous Chickenjoy and budget-friendly meals.' },
+  { id: 3, name: 'Mang Inasal - Sampaloc', category: 'Fast Food', location: 'Manila', area: 'Sampaloc', address: 'España Blvd., Sampaloc, Manila', hours: '10:00 AM – 10:00 PM', menu: ['Chicken Inasal', 'BBQ Pork', 'Halo-Halo', 'Garlic Rice'], type: 'chain', tag: 'Popular', image: 'https://images.unsplash.com/photo-1432139509613-5c4255815697?w=400&q=80', logo_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/d/df/Mang_Inasal_logo.svg/220px-Mang_Inasal_logo.svg.png', website: 'https://www.manginasal.com', founder: 'Edgar Sia II', year_started: 2003, bio: "Mang Inasal was founded by Edgar 'Injap' Sia II in 2003 in Iloilo City. Famous for its unli-rice offering and smoky chicken inasal grilled over charcoal, it became a nationwide sensation and was acquired by Jollibee Foods Corporation in 2010. Today it operates over 570 branches across the Philippines." },
 
   // MANILA - Local Eateries / Carinderias
   { id: 4, name: "Aling Nena's Carinderia", category: 'Local Eatery', location: 'Manila', area: 'Tondo', address: 'Near Delpan St., Tondo, Manila', hours: '6:00 AM – 3:00 PM', menu: ['Sinigang na Baboy', 'Adobo', 'Pinakbet', 'Dinuguan'], type: 'carinderia', tag: 'Community Fave', image: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80' },
@@ -57,10 +58,10 @@ const businesses = [
   { id: 23, name: 'Dasmariñas Lutong Bahay Catering', category: 'Catering', location: 'Cavite', area: 'Dasmariñas', address: 'Dasmariñas City, Cavite', hours: 'By appointment', menu: ['Lechon Baboy', 'Pancit Palabok', 'Kare-Kare', 'Leche Flan'], type: 'home-kitchen', tag: 'Catering', image: 'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=400&q=80' },
 
   // MORE CHAINS WITH REAL LOGOS
-  { id: 24, name: 'KFC - SM Mall of Asia', category: 'Fast Food', location: 'Manila', area: 'Pasay', address: 'SM Mall of Asia, Pasay City', hours: '9:00 AM – 10:00 PM', menu: ['Original Recipe', 'Crispy Chicken', 'Zinger Burger', 'Mashed Potato'], type: 'chain', tag: 'Open Now', image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&q=80' },
-  { id: 25, name: "McDonald's - Robinsons Imus", category: 'Fast Food', location: 'Cavite', area: 'Imus', address: 'Robinsons Place Imus, Cavite', hours: '24 Hours', menu: ['Big Mac', 'McFlurry', 'Fries', 'Chicken McNuggets'], type: 'chain', tag: '24 Hours', image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&q=80' },
-  { id: 26, name: 'Starbucks - BGC High Street', category: 'Specialty Coffee', location: 'Manila', area: 'BGC', address: 'BGC High Street, Taguig', hours: '7:00 AM – 11:00 PM', menu: ['Cold Brew', 'Caramel Macchiato', 'Java Chip Frappuccino', 'Matcha Latte'], type: 'coffee', tag: 'Premium Coffee', image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80' },
-  { id: 27, name: 'Starbucks - Dasmariñas, Cavite', category: 'Specialty Coffee', location: 'Cavite', area: 'Dasmariñas', address: 'SM City Dasmariñas, Cavite', hours: '8:00 AM – 10:00 PM', menu: ['Caramel Frap', 'Iced Americano', 'Vanilla Latte', 'Croissant'], type: 'coffee', tag: 'Drive-Thru', image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&q=80' },
+  { id: 24, name: 'KFC - SM Mall of Asia', category: 'Fast Food', location: 'Manila', area: 'Pasay', address: 'SM Mall of Asia, Pasay City', hours: '9:00 AM – 10:00 PM', menu: ['Original Recipe', 'Crispy Chicken', 'Zinger Burger', 'Mashed Potato'], type: 'chain', tag: 'Open Now', image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&q=80', logo_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/b/bf/KFC_logo.svg/220px-KFC_logo.svg.png', website: 'https://www.kfc.com.ph', founder: 'Colonel Harland Sanders', year_started: 1952, bio: 'KFC (Kentucky Fried Chicken) was founded by Colonel Harland Sanders in 1952 in North Corbin, Kentucky. Known for its secret blend of 11 herbs and spices, KFC is the world\'s second largest restaurant chain. In the Philippines, KFC has been operating since the 1970s and is a popular destination for crispy chicken and family meals.' },
+  { id: 25, name: "McDonald's - Robinsons Imus", category: 'Fast Food', location: 'Cavite', area: 'Imus', address: 'Robinsons Place Imus, Cavite', hours: '24 Hours', menu: ['Big Mac', 'McFlurry', 'Fries', 'Chicken McNuggets'], type: 'chain', tag: '24 Hours', image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&q=80', logo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/McDonald%27s_Golden_Arches.svg/220px-McDonald%27s_Golden_Arches.svg.png', website: 'https://www.mcdonalds.com.ph', founder: 'Ray Kroc', year_started: 1940, bio: "McDonald's was founded in 1940 by Richard and Maurice McDonald, and later franchised by Ray Kroc in 1955. It is the world's largest fast food restaurant chain with over 40,000 locations worldwide. In the Philippines, McDonald's has been operating since 1981 and is known for Chicken McDo, Big Mac, and its 24-hour branches." },
+  { id: 26, name: 'Starbucks - BGC High Street', category: 'Specialty Coffee', location: 'Manila', area: 'BGC', address: 'BGC High Street, Taguig', hours: '7:00 AM – 11:00 PM', menu: ['Cold Brew', 'Caramel Macchiato', 'Java Chip Frappuccino', 'Matcha Latte'], type: 'coffee', tag: 'Premium Coffee', image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80', logo_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/220px-Starbucks_Corporation_Logo_2011.svg.png', website: 'https://www.starbucks.com.ph', founder: 'Gordon Bowker, Jerry Baldwin, Zev Siegl', year_started: 1971, bio: 'Starbucks was founded in 1971 in Seattle, Washington by three partners. It is now the world\'s largest coffeehouse chain with over 35,000 locations globally. In the Philippines, Starbucks operates through Rustan Coffee Corporation and has hundreds of branches. The BGC High Street branch is one of the most popular premium coffee destinations in Metro Manila.' },
+  { id: 27, name: 'Starbucks - Dasmariñas, Cavite', category: 'Specialty Coffee', location: 'Cavite', area: 'Dasmariñas', address: 'SM City Dasmariñas, Cavite', hours: '8:00 AM – 10:00 PM', menu: ['Caramel Frap', 'Iced Americano', 'Vanilla Latte', 'Croissant'], type: 'coffee', tag: 'Drive-Thru', image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&q=80', logo_url: 'https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/220px-Starbucks_Corporation_Logo_2011.svg.png', website: 'https://www.starbucks.com.ph', founder: 'Gordon Bowker, Jerry Baldwin, Zev Siegl', year_started: 1971, bio: 'Starbucks in Dasmariñas serves as a popular hangout for residents of Cavite. This drive-thru location is one of the busiest in the province, offering the full Starbucks menu including seasonal specials and the iconic Caramel Frappuccino.' },
   { id: 28, name: 'Pick Up Coffee - Imus Branch', category: 'Specialty Coffee', location: 'Cavite', area: 'Imus', address: 'Aguinaldo Hwy., Imus, Cavite', hours: '7:00 AM – 10:00 PM', menu: ['Cold Brew', 'Spanish Latte', 'Matcha Latte', 'Blended Java'], type: 'coffee', tag: 'Local Fave', image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80' },
   { id: 29, name: "Chowking - SM Bacoor", category: 'Fast Food', location: 'Cavite', area: 'Bacoor', address: 'SM City Bacoor, Molino Blvd.', hours: '7:00 AM – 10:00 PM', menu: ['Lauriat Rice Meal', 'Chao Fan', 'Halo-Halo', 'Siopao'], type: 'chain', tag: 'Open Now', image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&q=80' },
   { id: 30, name: "Greenwich Pizza - Taft, Manila", category: 'Pizza', location: 'Manila', area: 'Taft', address: 'Taft Ave. cor. P. Gil St., Manila', hours: '10:00 AM – 10:00 PM', menu: ['Hawaiian Pizza', 'Overloaded', 'Lasagna', 'Pasta'], type: 'chain', tag: 'Pizza & Pasta', image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&q=80' },
@@ -101,7 +102,7 @@ const categoryTypes = [
   { key: 'catering', label: 'Catering', icon: '🍽️' },
 ];
 
-function BusinessCard({ biz, onRate }) {
+function BusinessCard({ biz, onRate, onInfo }) {
   const locationColor = biz.location === 'Manila' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700';
   const imgSrc = biz.image_url || biz.image;
   const menuItems = biz.menu || [];
@@ -143,12 +144,20 @@ function BusinessCard({ biz, onRate }) {
           ))}
           {menuItems.length > 3 && <span className="px-2 py-0.5 bg-[#F8FAFC] text-[#0A192F]/40 text-[10px] rounded-full border border-[#0A192F]/5">+{menuItems.length - 3} more</span>}
         </div>
-        <button
-          onClick={() => onRate(biz)}
-          className="w-full py-2 rounded-xl bg-[#0A192F]/5 hover:bg-[#2563EB] hover:text-white text-[#0A192F]/60 font-body text-xs font-semibold transition-all duration-200"
-        >
-          ⭐ Rate this Business
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => onInfo(biz)}
+            className="flex-1 py-2 rounded-xl bg-[#0A192F]/5 hover:bg-[#0A192F] hover:text-white text-[#0A192F]/60 font-body text-xs font-semibold transition-all duration-200"
+          >
+            ℹ️ About
+          </button>
+          <button
+            onClick={() => onRate(biz)}
+            className="flex-1 py-2 rounded-xl bg-[#0A192F]/5 hover:bg-[#2563EB] hover:text-white text-[#0A192F]/60 font-body text-xs font-semibold transition-all duration-200"
+          >
+            ⭐ Rate
+          </button>
+        </div>
       </div>
     </motion.div>
   );
@@ -228,6 +237,7 @@ export default function Food() {
   const [activeTypes, setActiveTypes] = useState([]);
   const [selectedSubcat, setSelectedSubcat] = useState(null);
   const [ratingBiz, setRatingBiz] = useState(null);
+  const [infoBiz, setInfoBiz] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [dbBusinesses, setDbBusinesses] = useState([]);
@@ -346,7 +356,7 @@ export default function Food() {
         {filtered.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {filtered.map((biz, i) => (
-              <BusinessCard key={biz.id} biz={biz} onRate={setRatingBiz} />
+              <BusinessCard key={biz.id} biz={biz} onRate={setRatingBiz} onInfo={setInfoBiz} />
             ))}
           </div>
         ) : (
@@ -372,6 +382,7 @@ export default function Food() {
         {ratingBiz && <RateModal biz={ratingBiz} onClose={() => setRatingBiz(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
       </AnimatePresence>
+      {infoBiz && <BusinessBioModal business={infoBiz} onClose={() => setInfoBiz(null)} />}
     </div>
   );
 }
