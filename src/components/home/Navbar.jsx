@@ -48,9 +48,9 @@ export default function Navbar() {
               <span className="text-[#0A192F] font-heading font-bold text-sm">1</span>
             </div>
             <span className={`font-heading font-bold text-lg tracking-tight transition-colors duration-300 text-gray-50 ${
-              scrolled ? 'text-white' : ""}`
+              scrolled ? 'text-white' : ''}`
               }>
-              Market<span className="text-[#00D4FF]">.ph</span>
+              Marketph<span className="text-[#00D4FF]">.com</span>
             </span>
           </a>
           {/* Animated Buyer/Seller badge */}

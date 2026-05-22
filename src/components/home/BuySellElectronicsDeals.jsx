@@ -327,7 +327,7 @@ export default function BuySellElectronicsDeals() {
                 </div>
               </div>
               <h2 className="font-heading font-bold text-2xl sm:text-3xl text-white">Phones & Electronics For Sale</h2>
-              <p className="font-body text-sm text-white/40 mt-1">Real listings from trusted sellers — Manila & Cavite</p>
+              <p className="font-body text-sm text-white/40 mt-1">Real listings from trusted sellers across the Philippines</p>
             </div>
             <a href="/buysell" className="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/10 rounded-full text-white/60 font-body text-xs hover:bg-[#00D4FF]/20 hover:text-[#00D4FF] hover:border-[#00D4FF]/40 transition-all">
               Browse All Listings →

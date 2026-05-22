@@ -21,11 +21,11 @@ export default function Footer() {
                 <span className="text-[#0A192F] font-heading font-bold text-sm">1</span>
               </div>
               <span className="font-heading font-bold text-lg text-white">
-                Market<span className="text-[#00D4FF]">.ph</span>
+                Marketph<span className="text-[#00D4FF]">.com</span>
               </span>
             </div>
             <p className="font-body text-sm text-white/40 leading-relaxed max-w-xs">
-              Connecting consumers to products and Businesses to the right people since 2026.
+              Connecting consumers to products and businesses to the right people since 2026. Proudly Filipino 🇵🇭
             </p>
           </div>
 
@@ -68,7 +68,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="font-body text-xs text-white/30">
-            © 2026 1Market.ph. All rights reserved. · <Link to="/privacy-policy" className="hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
+            © 2026 1Marketph.com. All rights reserved. · <Link to="/privacy-policy" className="hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
           </p>
           <div className="flex items-center gap-1">
             <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />

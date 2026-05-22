@@ -1,92 +1,146 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
-const FIRE_PARTICLES = 24;
-
 export function useFireTransition() {
   const [firing, setFiring] = useState(false);
-  const [target, setTarget] = useState(null);
+  const [target, setTarget] = useState('');
   const navigate = useNavigate();
 
-  const fireNavigate = useCallback((href) => {
+  const fireNavigate = (href) => {
+    if (firing) return;
     setTarget(href);
     setFiring(true);
-  }, []);
-
-  useEffect(() => {
-    if (firing && target) {
-      const t = setTimeout(() => {
-        navigate(target);
-        setFiring(false);
-        setTarget(null);
-      }, 700);
-      return () => clearTimeout(t);
-    }
-  }, [firing, target, navigate]);
+    setTimeout(() => {
+      navigate(href);
+      setFiring(false);
+    }, 900);
+  };
 
   return { firing, fireNavigate };
 }
 
+const PAINT_COLORS = [
+  '#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#007AFF',
+  '#5856D6', '#AF52DE', '#FF2D55', '#00D4FF', '#30D158',
+  '#FF6B35', '#A259FF', '#0AC8B9', '#FF6EB4',
+];
+
+function PaintDrop({ color, x, delay, size, angle }) {
+  return (
+    <motion.div
+      initial={{ y: -80, x, scale: 0, opacity: 1 }}
+      animate={{
+        y: ['-10vh', '110vh'],
+        x: [x, x + (Math.random() - 0.5) * 200],
+        scale: [0, size, size * 0.7],
+        opacity: [1, 1, 0],
+        rotate: [0, angle],
+      }}
+      transition={{ duration: 0.75, delay, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed pointer-events-none z-[999]"
+      style={{ top: 0, left: 0 }}
+    >
+      {/* Paint blob */}
+      <div
+        style={{
+          width: `${40 + size * 30}px`,
+          height: `${50 + size * 40}px`,
+          background: color,
+          borderRadius: '50% 50% 60% 40% / 60% 40% 60% 40%',
+          filter: 'blur(0.5px)',
+          boxShadow: `0 0 20px ${color}88`,
+        }}
+      />
+      {/* Splatter drips */}
+      {[...Array(3)].map((_, i) => (
+        <motion.div
+          key={i}
+          initial={{ scaleY: 0, originY: 0 }}
+          animate={{ scaleY: 1 }}
+          transition={{ delay: delay + 0.1 + i * 0.05, duration: 0.3 }}
+          style={{
+            position: 'absolute',
+            bottom: `-${15 + i * 8}px`,
+            left: `${8 + i * 10}px`,
+            width: `${4 + i * 2}px`,
+            height: `${12 + i * 8}px`,
+            background: color,
+            borderRadius: '0 0 50% 50%',
+          }}
+        />
+      ))}
+    </motion.div>
+  );
+}
+
+function SplatBurst({ x, y, color, delay }) {
+  return (
+    <>
+      {[...Array(8)].map((_, i) => {
+        const angle = (i / 8) * 360;
+        const dist = 60 + Math.random() * 80;
+        const rad = (angle * Math.PI) / 180;
+        return (
+          <motion.div
+            key={i}
+            initial={{ x, y, scale: 0, opacity: 1 }}
+            animate={{
+              x: x + Math.cos(rad) * dist,
+              y: y + Math.sin(rad) * dist,
+              scale: [0, 1.2, 0],
+              opacity: [1, 0.8, 0],
+            }}
+            transition={{ duration: 0.6, delay, ease: 'easeOut' }}
+            className="fixed pointer-events-none z-[1000]"
+            style={{
+              width: `${6 + Math.random() * 10}px`,
+              height: `${6 + Math.random() * 10}px`,
+              background: color,
+              borderRadius: '50%',
+              filter: `blur(1px)`,
+            }}
+          />
+        );
+      })}
+    </>
+  );
+}
+
 export function FireOverlay({ firing }) {
+  const drops = firing ? [...Array(28)].map((_, i) => ({
+    id: i,
+    color: PAINT_COLORS[i % PAINT_COLORS.length],
+    x: (i / 28) * window.innerWidth - window.innerWidth / 2 + (Math.random() - 0.5) * 120,
+    delay: i * 0.022,
+    size: 0.8 + Math.random() * 1.2,
+    angle: (Math.random() - 0.5) * 60,
+  })) : [];
+
+  const bursts = firing ? [...Array(8)].map((_, i) => ({
+    id: i,
+    color: PAINT_COLORS[(i * 2) % PAINT_COLORS.length],
+    x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 400),
+    y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
+    delay: i * 0.07,
+  })) : [];
+
   return (
     <AnimatePresence>
       {firing && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] pointer-events-none flex items-center justify-center overflow-hidden"
-          style={{ background: 'radial-gradient(circle, rgba(255,100,0,0.15) 0%, rgba(10,25,47,0.85) 100%)' }}
-        >
-          {/* Splash rings */}
-          {[1, 2, 3].map(i => (
-            <motion.div
-              key={i}
-              initial={{ scale: 0, opacity: 0.9 }}
-              animate={{ scale: i * 4, opacity: 0 }}
-              transition={{ duration: 0.7, delay: i * 0.06, ease: 'easeOut' }}
-              className="absolute rounded-full"
-              style={{
-                width: '80px', height: '80px',
-                background: `radial-gradient(circle, rgba(255,${200 - i*40},0,0.6) 0%, transparent 70%)`,
-              }}
-            />
-          ))}
-
-          {/* Fire particles */}
-          {Array.from({ length: FIRE_PARTICLES }).map((_, i) => {
-            const angle = (i / FIRE_PARTICLES) * 360;
-            const dist = 80 + Math.random() * 120;
-            const rad = (angle * Math.PI) / 180;
-            return (
-              <motion.div
-                key={i}
-                initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
-                animate={{
-                  x: Math.cos(rad) * dist,
-                  y: Math.sin(rad) * dist,
-                  scale: [0, 1.5, 0],
-                  opacity: [1, 0.8, 0],
-                }}
-                transition={{ duration: 0.65, delay: Math.random() * 0.1, ease: 'easeOut' }}
-                className="absolute text-lg"
-                style={{ fontSize: `${10 + Math.random() * 14}px` }}
-              >
-                {['🔥', '✨', '💥', '⚡'][i % 4]}
-              </motion.div>
-            );
-          })}
-
-          {/* Center flash */}
+        <>
+          {/* White flash */}
           <motion.div
-            initial={{ scale: 0, opacity: 1 }}
-            animate={{ scale: 3, opacity: 0 }}
-            transition={{ duration: 0.4, ease: 'easeOut' }}
-            className="absolute w-24 h-24 rounded-full"
-            style={{ background: 'radial-gradient(circle, rgba(255,220,0,0.9) 0%, rgba(255,100,0,0.5) 50%, transparent 70%)' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.6, 0] }}
+            transition={{ duration: 0.4, times: [0, 0.2, 1] }}
+            className="fixed inset-0 z-[998] pointer-events-none bg-white"
           />
-        </motion.div>
+          {/* Paint drops falling */}
+          {drops.map(d => <PaintDrop key={d.id} {...d} />)}
+          {/* Splat bursts */}
+          {bursts.map(b => <SplatBurst key={b.id} {...b} />)}
+        </>
       )}
     </AnimatePresence>
   );

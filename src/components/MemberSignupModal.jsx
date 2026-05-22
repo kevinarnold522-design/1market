@@ -117,7 +117,7 @@ export default function MemberSignupModal({ onClose }) {
                     <div className="w-5 h-5 rounded bg-[#00D4FF] flex items-center justify-center">
                       <span className="text-[#0A192F] font-bold text-[10px]">1</span>
                     </div>
-                    <span className="font-heading font-bold text-white text-sm">Market.ph</span>
+                    <span className="font-heading font-bold text-white text-sm">Marketph.com</span>
                   </div>
                   <PrivacyTooltip />
                 </div>
@@ -256,7 +256,7 @@ export default function MemberSignupModal({ onClose }) {
 
                 <div className="mt-6 p-3 rounded-xl border border-[#2563EB]/15 bg-white/60">
                   <p className="font-body text-[10px] text-[#0A192F]/50 leading-relaxed">
-                    🇵🇭 Compliant with the <strong>Philippine Data Privacy Act of 2012 (RA 10173)</strong>. You may request data deletion anytime by emailing <span className="text-[#2563EB]">privacy@1market.ph</span>
+                    🇵🇭 Compliant with the <strong>Philippine Data Privacy Act of 2012 (RA 10173)</strong>. You may request data deletion anytime by emailing <span className="text-[#2563EB]">privacy@1marketph.com</span>
                   </p>
                 </div>
               </div>

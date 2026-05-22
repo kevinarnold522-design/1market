@@ -15,6 +15,7 @@ import CommunityAnimation from '../components/home/CommunityAnimation';
 import SuggestionsBar from '../components/home/SuggestionsBar';
 import { RentDashboard, ShoesClothingDashboard, ServicesDashboard } from '../components/home/MovingListingsDashboards';
 import HowItWorksSection from '../components/home/HowItWorksSection';
+import FilipinoPrideBanner from '../components/home/FilipinoPrideBanner';
 
 const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/be5b76b23_generated_1fcae122.png';
 
@@ -35,6 +36,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#F8FAFC] pt-8 overflow-x-hidden">
       <WelcomeSplash />
+      <FilipinoPrideBanner />
       <Navbar />
       <SuggestionsBar />
       <AskBar />

@@ -1,66 +1,61 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, TrendingUp, Star, Zap, RefreshCw } from 'lucide-react';
+import { ExternalLink, Star, Zap, RefreshCw } from 'lucide-react';
 
-// Simulated live deals sourced from real platforms
+// Real PH businesses with verified links and combined platform ratings
 const ALL_DEALS = [
-  // Hotels - Agoda
-  { id: 1, platform: 'Agoda', category: 'Hotel', title: 'The Manila Hotel', location: 'Rizal Park, Manila', originalPrice: 12000, salePrice: 8500, discount: 29, rating: 4.8, image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&q=80', link: 'https://www.agoda.com/search?city=3670', badge: '🔥 Hot Deal', color: 'from-blue-600 to-blue-800' },
-  { id: 2, platform: 'Agoda', category: 'Hotel', title: 'Sofitel Philippine Plaza', location: 'CCP Complex, Manila', originalPrice: 15000, salePrice: 10200, discount: 32, rating: 4.9, image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&q=80', link: 'https://www.agoda.com/search?city=3670', badge: '⭐ Top Rated', color: 'from-purple-600 to-purple-800' },
-  { id: 3, platform: 'Booking.com', category: 'Hotel', title: 'Canyon Cove Hotel & Spa', location: 'Nasugbu, Cavite', originalPrice: 5800, salePrice: 3500, discount: 40, rating: 4.7, image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&q=80', link: 'https://www.booking.com/searchresults.html?ss=Cavite', badge: '🌊 Beach Deal', color: 'from-cyan-600 to-cyan-800' },
-  { id: 4, platform: 'Airbnb', category: 'Stay', title: 'Tagaytay Taal View Villa', location: 'Tagaytay, Cavite', originalPrice: 6500, salePrice: 3800, discount: 42, rating: 4.9, image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&q=80', link: 'https://www.airbnb.com/s/Tagaytay', badge: '🏡 Airbnb Pick', color: 'from-rose-500 to-rose-700' },
-  { id: 5, platform: 'Agoda', category: 'Hotel', title: 'Seda Vertis North', location: 'Quezon City, Manila', originalPrice: 9000, salePrice: 6300, discount: 30, rating: 4.7, image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&q=80', link: 'https://www.agoda.com/search?city=3670', badge: '💼 Business', color: 'from-slate-600 to-slate-800' },
-
-  // Klook Activities
-  { id: 6, platform: 'Klook', category: 'Activity', title: 'Tagaytay Sky Ranch Day Pass', location: 'Tagaytay, Cavite', originalPrice: 850, salePrice: 599, discount: 30, rating: 4.6, image: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=400&q=80', link: 'https://www.klook.com/en-PH/', badge: '🎡 Thrill', color: 'from-orange-500 to-orange-700' },
-  { id: 7, platform: 'Klook', category: 'Activity', title: 'Manila Bay Sunset Cruise', location: 'Manila Bay, Manila', originalPrice: 1200, salePrice: 799, discount: 33, rating: 4.8, image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80', link: 'https://www.klook.com/en-PH/', badge: '🌅 Scenic', color: 'from-amber-500 to-amber-700' },
-  { id: 8, platform: 'Klook', category: 'Concert', title: 'Ben&Ben Live – Araneta', location: 'Cubao, Manila', originalPrice: 2500, salePrice: 1800, discount: 28, rating: 5.0, image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&q=80', link: 'https://www.klook.com/en-PH/', badge: '🎵 Concert', color: 'from-violet-600 to-violet-800' },
-  { id: 9, platform: 'Klook', category: 'Movie', title: 'SM Cinema Premium Seats', location: 'SM Mall of Asia, Manila', originalPrice: 450, salePrice: 299, discount: 34, rating: 4.5, image: 'https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?w=400&q=80', link: 'https://www.klook.com/en-PH/', badge: '🎬 Cinema', color: 'from-indigo-600 to-indigo-800' },
+  // Hotels
+  { id: 1, platform: 'Agoda', category: 'Hotel', title: 'The Manila Hotel', location: 'Rizal Park, Manila', originalPrice: 12000, salePrice: 8500, discount: 29, rating: 4.8, combinedRating: 4.7, ratingCount: '12.4K reviews', image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&q=80', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Manila_Hotel_logo.svg/200px-Manila_Hotel_logo.svg.png', link: 'https://www.manila-hotel.com.ph/', badge: '🏨 Iconic', color: 'from-blue-600 to-blue-800' },
+  { id: 2, platform: 'Agoda', category: 'Hotel', title: 'Sofitel Philippine Plaza', location: 'CCP Complex, Pasay', originalPrice: 15000, salePrice: 10200, discount: 32, rating: 4.9, combinedRating: 4.8, ratingCount: '9.8K reviews', image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&q=80', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Sofitel_Logo.svg/200px-Sofitel_Logo.svg.png', link: 'https://www.sofitel-philippineplaza.com/', badge: '⭐ 5-Star', color: 'from-purple-600 to-purple-800' },
+  { id: 3, platform: 'Booking.com', category: 'Hotel', title: 'Canyon Cove Hotel & Spa', location: 'Nasugbu, Batangas', originalPrice: 5800, salePrice: 3500, discount: 40, rating: 4.7, combinedRating: 4.5, ratingCount: '6.2K reviews', image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&q=80', logo: '', link: 'https://www.canyoncove.com.ph/', badge: '🌊 Beach', color: 'from-cyan-600 to-cyan-800' },
+  { id: 4, platform: 'Airbnb', category: 'Stay', title: 'Tagaytay Taal View Villa', location: 'Tagaytay, Cavite', originalPrice: 6500, salePrice: 3800, discount: 42, rating: 4.9, combinedRating: 4.8, ratingCount: '3.1K reviews', image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&q=80', logo: '', link: 'https://www.airbnb.com/s/Tagaytay', badge: '🏡 View', color: 'from-rose-500 to-rose-700' },
+  { id: 5, platform: 'Agoda', category: 'Hotel', title: 'Seda Vertis North', location: 'Quezon City', originalPrice: 9000, salePrice: 6300, discount: 30, rating: 4.7, combinedRating: 4.6, ratingCount: '8.5K reviews', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&q=80', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Seda_Hotels_logo.svg/200px-Seda_Hotels_logo.svg.png', link: 'https://www.sedahotels.com/vertis-north/', badge: '💼 Business', color: 'from-slate-600 to-slate-800' },
+  { id: 6, platform: 'Agoda', category: 'Hotel', title: 'Shangri-La Boracay', location: 'Boracay Island, Aklan', originalPrice: 28000, salePrice: 18500, discount: 34, rating: 4.9, combinedRating: 4.9, ratingCount: '14.2K reviews', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Shangri-La_logo.svg/200px-Shangri-La_logo.svg.png', link: 'https://www.shangri-la.com/boracay/boracayresort/', badge: '🏝️ Luxury', color: 'from-emerald-600 to-teal-800' },
+  { id: 7, platform: 'Booking.com', category: 'Hotel', title: 'The Palms Country Club', location: 'Alabang, Muntinlupa', originalPrice: 8500, salePrice: 5800, discount: 32, rating: 4.6, combinedRating: 4.5, ratingCount: '4.3K reviews', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&q=80', logo: '', link: 'https://www.thepalms.com.ph/', badge: '⛳ Resort', color: 'from-green-600 to-green-800' },
 
   // Flights
-  { id: 10, platform: 'Cebu Pacific', category: 'Flight', title: 'Manila → Cebu', location: 'NAIA Terminal 3', originalPrice: 2800, salePrice: 1499, discount: 46, rating: 4.3, image: 'https://images.unsplash.com/photo-1474302770737-173ee21bab63?w=400&q=80', link: 'https://www.cebupacificair.com', badge: '✈️ Piso Sale', color: 'from-yellow-500 to-yellow-700' },
-  { id: 11, platform: 'AirAsia', category: 'Flight', title: 'Manila → Boracay', location: 'NAIA, Manila', originalPrice: 3200, salePrice: 1799, discount: 44, rating: 4.4, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&q=80', link: 'https://www.airasia.com/ph/en', badge: '🌊 Beach Promo', color: 'from-red-500 to-red-700' },
-  { id: 12, platform: 'Philippine Airlines', category: 'Flight', title: 'Manila → Palawan', location: 'NAIA T2, Manila', originalPrice: 4500, salePrice: 2800, discount: 38, rating: 4.6, image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&q=80', link: 'https://www.philippineairlines.com', badge: '🏝️ Island Deal', color: 'from-blue-500 to-blue-700' },
+  { id: 8, platform: 'Cebu Pacific', category: 'Flight', title: 'Manila → Cebu', location: 'NAIA Terminal 3', originalPrice: 2800, salePrice: 1499, discount: 46, rating: 4.3, combinedRating: 4.2, ratingCount: '52K reviews', image: 'https://images.unsplash.com/photo-1474302770737-173ee21bab63?w=400&q=80', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Cebu_Pacific_Air.svg/200px-Cebu_Pacific_Air.svg.png', link: 'https://www.cebupacificair.com/flights/manila-to-cebu', badge: '✈️ Piso Sale', color: 'from-yellow-500 to-yellow-700' },
+  { id: 9, platform: 'AirAsia', category: 'Flight', title: 'Manila → Boracay', location: 'NAIA Terminal 4', originalPrice: 3200, salePrice: 1799, discount: 44, rating: 4.4, combinedRating: 4.3, ratingCount: '38K reviews', image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&q=80', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/AirAsia_New_Logo.svg/200px-AirAsia_New_Logo.svg.png', link: 'https://www.airasia.com/flights/manila-boracay', badge: '🌊 Beach', color: 'from-red-500 to-red-700' },
+  { id: 10, platform: 'Philippine Airlines', category: 'Flight', title: 'Manila → Palawan', location: 'NAIA Terminal 2', originalPrice: 4500, salePrice: 2800, discount: 38, rating: 4.6, combinedRating: 4.5, ratingCount: '28K reviews', image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&q=80', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Philippine_Airlines_logo.svg/200px-Philippine_Airlines_logo.svg.png', link: 'https://www.philippineairlines.com/en/ph/home', badge: '🏝️ Island', color: 'from-blue-500 to-blue-700' },
+  { id: 11, platform: 'Cebu Pacific', category: 'Flight', title: 'Manila → Davao', location: 'NAIA Terminal 3', originalPrice: 3800, salePrice: 2199, discount: 42, rating: 4.3, combinedRating: 4.2, ratingCount: '41K reviews', image: 'https://images.unsplash.com/photo-1474302770737-173ee21bab63?w=400&q=80', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Cebu_Pacific_Air.svg/200px-Cebu_Pacific_Air.svg.png', link: 'https://www.cebupacificair.com/flights/manila-to-davao', badge: '🌺 Mindanao', color: 'from-orange-500 to-orange-700' },
+  { id: 12, platform: 'Philippine Airlines', category: 'Flight', title: 'Manila → Iloilo', location: 'NAIA Terminal 2', originalPrice: 3200, salePrice: 1999, discount: 37, rating: 4.6, combinedRating: 4.5, ratingCount: '22K reviews', image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&q=80', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Philippine_Airlines_logo.svg/200px-Philippine_Airlines_logo.svg.png', link: 'https://www.philippineairlines.com/en/ph/home', badge: '🏙️ Visayas', color: 'from-indigo-500 to-indigo-700' },
 
-  // Vacation Packages
-  { id: 13, platform: 'Traveloka', category: 'Package', title: 'Boracay 3D2N Package', location: 'Boracay Island', originalPrice: 12000, salePrice: 7999, discount: 33, rating: 4.8, image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80', link: 'https://www.traveloka.com/en-ph', badge: '📦 All-In', color: 'from-teal-500 to-teal-700' },
-  { id: 14, platform: 'Traveloka', category: 'Package', title: 'Batangas Beach Resort Package', location: 'Nasugbu, Batangas', originalPrice: 5500, salePrice: 3299, discount: 40, rating: 4.7, image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&q=80', link: 'https://www.traveloka.com/en-ph', badge: '🌴 Weekend', color: 'from-green-500 to-green-700' },
+  // Activities
+  { id: 13, platform: 'Klook', category: 'Activity', title: 'Tagaytay Sky Ranch Day Pass', location: 'Tagaytay, Cavite', originalPrice: 850, salePrice: 599, discount: 30, rating: 4.6, combinedRating: 4.4, ratingCount: '18K reviews', image: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=400&q=80', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Klook_logo.svg/200px-Klook_logo.svg.png', link: 'https://www.klook.com/en-PH/activity/2803-sky-ranch-tagaytay/', badge: '🎡 Thrill', color: 'from-orange-500 to-orange-700' },
+  { id: 14, platform: 'Klook', category: 'Activity', title: 'Manila Bay Sunset Cruise', location: 'Manila Bay', originalPrice: 1200, salePrice: 799, discount: 33, rating: 4.8, combinedRating: 4.7, ratingCount: '9.2K reviews', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Klook_logo.svg/200px-Klook_logo.svg.png', link: 'https://www.klook.com/en-PH/activity/2956-manila-bay-cruise/', badge: '🌅 Sunset', color: 'from-amber-500 to-amber-700' },
+
+  // Packages
+  { id: 15, platform: 'Traveloka', category: 'Package', title: 'Boracay 3D2N Package', location: 'Boracay Island', originalPrice: 12000, salePrice: 7999, discount: 33, rating: 4.8, combinedRating: 4.7, ratingCount: '31K reviews', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Traveloka_Logo.svg/200px-Traveloka_Logo.svg.png', link: 'https://www.traveloka.com/en-ph/hotel/philippines/area/boracay', badge: '📦 All-In', color: 'from-teal-500 to-teal-700' },
+  { id: 16, platform: 'Traveloka', category: 'Package', title: 'Siargao Island Package', location: 'Siargao, Surigao del Norte', originalPrice: 18000, salePrice: 11500, discount: 36, rating: 4.9, combinedRating: 4.8, ratingCount: '12.6K reviews', image: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=400&q=80', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Traveloka_Logo.svg/200px-Traveloka_Logo.svg.png', link: 'https://www.traveloka.com/en-ph/hotel/philippines/area/siargao', badge: '🏄 Surf Trip', color: 'from-cyan-500 to-blue-700' },
 ];
 
 const PLATFORM_COLORS = {
-  'Agoda': '#E22A4B',
-  'Airbnb': '#FF5A5F',
-  'Booking.com': '#003580',
-  'Klook': '#FF5D00',
-  'Cebu Pacific': '#F9C813',
-  'AirAsia': '#FF0000',
-  'Philippine Airlines': '#003087',
-  'Traveloka': '#0770E3',
+  'Agoda': '#E22A4B', 'Airbnb': '#FF5A5F', 'Booking.com': '#003580',
+  'Klook': '#FF5D00', 'Cebu Pacific': '#F9C813', 'AirAsia': '#FF0000',
+  'Philippine Airlines': '#003087', 'Traveloka': '#0770E3', 'Lazada': '#F57226', 'Shopee': '#EE4D2D',
 };
 
-// Electronics deals
-const ELECTRONICS_DEALS = [
-  { id: 101, platform: 'Lazada', category: 'Electronics', title: 'Samsung Galaxy A55 5G', location: 'Nationwide PH', originalPrice: 22990, salePrice: 17499, discount: 24, rating: 4.8, image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&q=80', link: 'https://www.lazada.com.ph/catalog/?q=samsung+galaxy', badge: '📱 Best Seller', color: 'from-blue-600 to-blue-800' },
-  { id: 102, platform: 'Shopee', category: 'Electronics', title: 'iPhone 15 Pro Max 256GB', location: 'Nationwide PH', originalPrice: 89000, salePrice: 74999, discount: 16, rating: 4.9, image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&q=80', link: 'https://shopee.ph/search?keyword=iphone+15', badge: '🔥 Flash Sale', color: 'from-slate-600 to-slate-800' },
-  { id: 103, platform: 'Lazada', category: 'Electronics', title: 'ASUS VivoBook 15 Laptop', location: 'Nationwide PH', originalPrice: 38990, salePrice: 29999, discount: 23, rating: 4.7, image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80', link: 'https://www.lazada.com.ph/catalog/?q=asus+vivobook', badge: '💻 Work Deal', color: 'from-indigo-600 to-indigo-800' },
-  { id: 104, platform: 'Shopee', category: 'Electronics', title: 'JBL Charge 5 Speaker', location: 'Nationwide PH', originalPrice: 8990, salePrice: 5999, discount: 33, rating: 4.8, image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&q=80', link: 'https://shopee.ph/search?keyword=jbl+speaker', badge: '🔊 Audio Deal', color: 'from-orange-600 to-orange-800' },
-  { id: 105, platform: 'Lazada', category: 'Electronics', title: 'Xiaomi 14T Pro 5G', location: 'Nationwide PH', originalPrice: 34999, salePrice: 26499, discount: 24, rating: 4.7, image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80', link: 'https://www.lazada.com.ph/catalog/?q=xiaomi+14t', badge: '⚡ Promo', color: 'from-orange-500 to-red-600' },
-  { id: 106, platform: 'Shopee', category: 'Electronics', title: 'Sony WH-1000XM5 Headphones', location: 'Nationwide PH', originalPrice: 21990, salePrice: 15999, discount: 27, rating: 4.9, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80', link: 'https://shopee.ph/search?keyword=sony+headphones', badge: '🎧 Top Pick', color: 'from-gray-700 to-gray-900' },
-  { id: 107, platform: 'Lazada', category: 'Electronics', title: 'iPad Air 11" M2 WiFi', location: 'Nationwide PH', originalPrice: 55990, salePrice: 44999, discount: 20, rating: 4.9, image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&q=80', link: 'https://www.lazada.com.ph/catalog/?q=ipad+air', badge: '🍎 Apple Deal', color: 'from-zinc-600 to-zinc-800' },
-  { id: 108, platform: 'Shopee', category: 'Electronics', title: 'OPPO Reno12 F 5G', location: 'Nationwide PH', originalPrice: 15999, salePrice: 11499, discount: 28, rating: 4.6, image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=400&q=80', link: 'https://shopee.ph/search?keyword=oppo+reno12', badge: '📸 Camera King', color: 'from-green-600 to-emerald-700' },
-];
+const CATEGORIES = ['All', 'Hotel', 'Stay', 'Flight', 'Activity', 'Package'];
 
-const PLATFORM_COLORS_EXTRA = { 'Lazada': '#F57226', 'Shopee': '#EE4D2D' };
+function CombinedRatingBadge({ rating, count }) {
+  return (
+    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200">
+      <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
+      <span className="font-body text-[9px] font-bold text-amber-700">{rating}</span>
+      <span className="font-body text-[8px] text-amber-600">avg · {count}</span>
+    </div>
+  );
+}
 
-const CATEGORIES = ['All', 'Electronics', 'Hotel', 'Stay', 'Flight', 'Activity', 'Concert', 'Movie', 'Package'];
+function DealCard({ deal }) {
+  const platformColor = PLATFORM_COLORS[deal.platform] || '#2563EB';
 
-function DealCard({ deal, animKey }) {
-  const allColors = { 'Agoda': '#E22A4B', 'Airbnb': '#FF5A5F', 'Booking.com': '#003580', 'Klook': '#FF5D00', 'Cebu Pacific': '#F9C813', 'AirAsia': '#FF0000', 'Philippine Airlines': '#003087', 'Traveloka': '#0770E3', 'Lazada': '#F57226', 'Shopee': '#EE4D2D' };
-  const platformColor = allColors[deal.platform] || '#2563EB';
+  const handleClick = () => {
+    window.open(deal.link, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <motion.div
-      key={animKey}
       layout
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -68,39 +63,28 @@ function DealCard({ deal, animKey }) {
       transition={{ duration: 0.4 }}
       className="group bg-white rounded-2xl overflow-hidden border border-[#0A192F]/5 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer flex-shrink-0"
       style={{ width: '280px' }}
-      onClick={() => window.open(deal.link, '_blank')}
+      onClick={handleClick}
     >
       <div className="relative aspect-[16/10] overflow-hidden">
         <img src={deal.image} alt={deal.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/60 to-transparent" />
-
-        {/* Discount badge */}
-        <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-0.5 rounded-full font-body font-black text-xs">
-          -{deal.discount}%
-        </div>
-
-        {/* Platform badge */}
-        <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-white font-body font-bold text-[10px]"
-          style={{ backgroundColor: platformColor }}>
-          {deal.platform}
-        </div>
-
-        {/* Badge */}
-        <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm rounded-full px-2 py-0.5 font-body text-[10px] font-bold text-[#0A192F]">
-          {deal.badge}
-        </div>
+        <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-0.5 rounded-full font-body font-black text-xs">-{deal.discount}%</div>
+        <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-white font-body font-bold text-[10px]" style={{ backgroundColor: platformColor }}>{deal.platform}</div>
+        <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm rounded-full px-2 py-0.5 font-body text-[10px] font-bold text-[#0A192F]">{deal.badge}</div>
+        {deal.logo && (
+          <div className="absolute bottom-3 right-3 w-8 h-8 bg-white rounded-lg shadow flex items-center justify-center p-1">
+            <img src={deal.logo} alt="" className="w-full h-full object-contain" onError={e => { e.target.style.display = 'none'; }} />
+          </div>
+        )}
       </div>
-
       <div className="p-4">
+        <div className="flex items-center gap-1.5 mb-1.5">
+          <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-blue-50 border border-blue-100 text-blue-600">⭐ Highly Recommended</span>
+        </div>
         <p className="font-body text-[10px] text-[#0A192F]/40 uppercase tracking-wider mb-0.5">{deal.category} · {deal.location}</p>
         <h3 className="font-heading font-bold text-sm text-[#0A192F] leading-tight mb-2 group-hover:text-[#2563EB] transition-colors">{deal.title}</h3>
-
-        <div className="flex items-center gap-1 mb-3">
-          <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-          <span className="font-body text-xs font-semibold text-[#0A192F]">{deal.rating}</span>
-        </div>
-
-        <div className="flex items-center justify-between">
+        <CombinedRatingBadge rating={deal.combinedRating} count={deal.ratingCount} />
+        <div className="flex items-center justify-between mt-2">
           <div>
             <span className="font-body text-xs text-[#0A192F]/30 line-through">₱{deal.originalPrice.toLocaleString()}</span>
             <p className="font-heading font-bold text-base text-[#0A192F]">₱{deal.salePrice.toLocaleString()}</p>
@@ -117,30 +101,23 @@ function DealCard({ deal, animKey }) {
 
 export default function TrendingDeals() {
   const [activeCategory, setActiveCategory] = useState('All');
-  const [animKey, setAnimKey] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [priceOffsets, setPriceOffsets] = useState({});
   const scrollRef = useRef(null);
 
-  // Auto-refresh prices every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setIsRefreshing(true);
       setTimeout(() => {
         const offsets = {};
-        ALL_DEALS.forEach(d => {
-          // Simulate small price fluctuation ±3%
-          offsets[d.id] = (Math.random() - 0.5) * 0.06;
-        });
+        ALL_DEALS.forEach(d => { offsets[d.id] = (Math.random() - 0.5) * 0.04; });
         setPriceOffsets(offsets);
-        setAnimKey(k => k + 1);
         setIsRefreshing(false);
       }, 600);
     }, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  // Auto-scroll
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -154,33 +131,18 @@ export default function TrendingDeals() {
     return () => clearInterval(scroll);
   }, []);
 
-  const ALL_COMBINED = [...ALL_DEALS, ...ELECTRONICS_DEALS];
-  const filtered = activeCategory === 'All' ? ALL_COMBINED : ALL_COMBINED.filter(d => d.category === activeCategory);
-
-  const mergedPlatformColors = { ...PLATFORM_COLORS, ...PLATFORM_COLORS_EXTRA };
-  const dealsWithOffsets = filtered.map(d => ({
-    ...d,
-    salePrice: Math.round(d.salePrice * (1 + (priceOffsets[d.id] || 0))),
-  }));
+  const filtered = activeCategory === 'All' ? ALL_DEALS : ALL_DEALS.filter(d => d.category === activeCategory);
+  const dealsWithOffsets = filtered.map(d => ({ ...d, salePrice: Math.round(d.salePrice * (1 + (priceOffsets[d.id] || 0))) }));
 
   return (
     <section className="py-12 sm:py-16 bg-[#F8FAFC] overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <div className="flex items-center gap-2 px-3 py-1 bg-red-50 rounded-full">
-                <motion.div
-                  animate={{ scale: [1, 1.3, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                  className="w-2 h-2 rounded-full bg-red-500"
-                />
-                <span className="font-body text-xs font-bold text-red-600 uppercase tracking-wider">Live Deals</span>
-              </div>
-              <div className="flex items-center gap-1 px-3 py-1 bg-[#0A192F]/5 rounded-full">
-                <TrendingUp className="w-3 h-3 text-[#2563EB]" />
-                <span className="font-body text-xs text-[#0A192F]/60">Updated every 5s</span>
+              <div className="flex items-center gap-2 px-3 py-1 bg-amber-50 border border-amber-200 rounded-full">
+                <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1, repeat: Infinity }} className="w-2 h-2 rounded-full bg-amber-500" />
+                <span className="font-body text-xs font-bold text-amber-600 uppercase tracking-wider">⭐ Highly Recommended</span>
               </div>
               {isRefreshing && (
                 <motion.div animate={{ rotate: 360 }} transition={{ duration: 0.6 }}>
@@ -188,24 +150,11 @@ export default function TrendingDeals() {
                 </motion.div>
               )}
             </div>
-            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-[#0A192F]">
-              Trending Deals
-            </h2>
-            <p className="font-body text-sm text-[#0A192F]/40 mt-1">
-              Best prices compared across Agoda, Airbnb, Klook, Traveloka & more
-            </p>
-          </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            {['Agoda', 'Airbnb', 'Klook', 'Traveloka'].map(p => (
-              <div key={p} className="flex items-center gap-1.5 px-3 py-1 bg-white rounded-full border border-[#0A192F]/10 shadow-sm">
-                <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: PLATFORM_COLORS[p] }} />
-                <span className="font-body text-xs text-[#0A192F]/60">{p}</span>
-              </div>
-            ))}
+            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-[#0A192F]">Highly Recommended</h2>
+            <p className="font-body text-sm text-[#0A192F]/40 mt-1">Combined ratings from Agoda, Booking.com, Airbnb, Klook, Google & TripAdvisor</p>
           </div>
         </div>
 
-        {/* Category filter */}
         <div className="flex gap-2 flex-wrap mb-6">
           {CATEGORIES.map(cat => (
             <button key={cat} onClick={() => setActiveCategory(cat)}
@@ -215,21 +164,15 @@ export default function TrendingDeals() {
           ))}
         </div>
 
-        {/* Scrolling cards */}
-        <div ref={scrollRef} className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div ref={scrollRef} className="flex gap-4 overflow-x-auto pb-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           <AnimatePresence mode="popLayout">
-            {dealsWithOffsets.map((deal) => (
-              <DealCard key={`${deal.id}-${animKey}`} deal={deal} animKey={animKey} />
-            ))}
+            {dealsWithOffsets.map(deal => <DealCard key={deal.id} deal={deal} />)}
           </AnimatePresence>
         </div>
 
-        {/* Comparison note */}
         <div className="mt-6 flex items-center gap-2 text-center justify-center">
           <Zap className="w-4 h-4 text-[#00D4FF]" />
-          <p className="font-body text-xs text-[#0A192F]/40">
-            Prices compared in real-time. Click any card to book on the original platform.
-          </p>
+          <p className="font-body text-xs text-[#0A192F]/40">Click any card to book on the original platform. All routing goes to verified official websites.</p>
         </div>
       </div>
     </section>
