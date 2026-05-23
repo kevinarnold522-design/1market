@@ -5,7 +5,6 @@ import CategoryCards from '../components/home/CategoryCards';
 import Footer from '../components/home/Footer';
 import BrandingBanner from '../components/home/BrandingBanner';
 import WelcomeSplash from '../components/home/WelcomeSplash';
-import AskBar from '../components/home/AskBar';
 import BuySellElectronicsDeals from '../components/home/BuySellElectronicsDeals';
 import MovingWelcomeBanner from '../components/home/MovingWelcomeBanner';
 import CommunityAnimation from '../components/home/CommunityAnimation';
@@ -43,7 +42,6 @@ export default function Home() {
       <Navbar />
       <FilipinoPrideBanner />
       <SuggestionsBar />
-      <AskBar />
       <MovingWelcomeBanner />
       <BrandingBanner />
       <HeroSection heroImage={HERO_IMAGE} />
