@@ -239,6 +239,9 @@ const FOOD_SUBCATEGORIES = [
 
 const BUSINESS_ADMIN_FIELDS = [
   { key: 'name', label: 'Business Name' },
+  { key: 'image_url', label: 'Main Photo', type: 'image' },
+  { key: 'logo_url', label: 'Logo', type: 'image' },
+  { key: 'extra_images', label: 'Additional Photos', type: 'images' },
   { key: 'category', label: 'Category' },
   { key: 'type', label: 'Type' },
   { key: 'address', label: 'Address', type: 'textarea' },
@@ -248,7 +251,6 @@ const BUSINESS_ADMIN_FIELDS = [
   { key: 'phone', label: 'Phone' },
   { key: 'location', label: 'Location' },
   { key: 'area', label: 'Area' },
-  { key: 'image_url', label: 'Main Image URL' },
   { key: 'is_active', label: 'Active / Visible', type: 'boolean' },
 ];
 

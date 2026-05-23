@@ -38,7 +38,10 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
   const openModal = (e) => {
     e.stopPropagation();
     const initial = {};
-    fields.forEach(f => { initial[f.key] = record[f.key] ?? ''; });
+    fields.forEach(f => {
+      if (f.type === 'images') initial[f.key] = record[f.key] ?? [];
+      else initial[f.key] = record[f.key] ?? '';
+    });
     setForm(initial);
     setOpen(true);
   };
@@ -61,6 +64,7 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
     fields.forEach(f => {
       if (f.type === 'number') updates[f.key] = Number(form[f.key]) || 0;
       else if (f.type === 'boolean') updates[f.key] = Boolean(form[f.key]);
+      else if (f.type === 'images') updates[f.key] = Array.isArray(form[f.key]) ? form[f.key] : [];
       else updates[f.key] = form[f.key];
     });
     await base44.entities[entity].update(record.id, updates);
@@ -137,8 +141,8 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
                     {f.type === 'image' ? (
                       <div className="space-y-2">
                         {form[f.key] && (
-                          <div className="relative rounded-xl overflow-hidden aspect-video bg-white/5">
-                            <img src={form[f.key]} alt="preview" className="w-full h-full object-cover" />
+                          <div className="relative rounded-xl overflow-hidden bg-white/5">
+                            <img src={form[f.key]} alt="preview" className="w-full h-40 object-cover rounded-xl" />
                             <button onClick={() => setForm(v => ({ ...v, [f.key]: '' }))}
                               className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500/80 flex items-center justify-center">
                               <X className="w-3 h-3 text-white"/>
@@ -148,27 +152,54 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
                         <input
                           ref={el => fileRefs.current[f.key] = el}
                           type="file"
-                          accept="image/*"
+                          accept="image/jpeg,image/png,image/gif,image/webp,image/*"
                           className="hidden"
                           onChange={e => handleImageUpload(f.key, e.target.files[0])}
                         />
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => fileRefs.current[f.key]?.click()}
-                            disabled={uploadingKey === f.key}
-                            className="flex-1 py-2.5 border-2 border-dashed border-[#00D4FF]/30 hover:border-[#00D4FF]/70 rounded-xl text-[#00D4FF] font-body text-xs flex items-center justify-center gap-2 transition-colors">
-                            {uploadingKey === f.key
-                              ? <><div className="w-3 h-3 border border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin"/> Uploading...</>
-                              : <><Upload className="w-3.5 h-3.5"/> Upload from Device</>}
-                          </button>
+                        <button
+                          onClick={() => fileRefs.current[f.key]?.click()}
+                          disabled={uploadingKey === f.key}
+                          className="w-full py-3 border-2 border-dashed border-[#00D4FF]/40 hover:border-[#00D4FF]/80 rounded-xl text-[#00D4FF] font-body text-xs font-semibold flex items-center justify-center gap-2 transition-colors">
+                          {uploadingKey === f.key
+                            ? <><div className="w-3 h-3 border border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin"/> Uploading...</>
+                            : <><Upload className="w-3.5 h-3.5"/> Upload Image from Device (JPG, PNG, etc.)</>}
+                        </button>
+                      </div>
+                    ) : f.type === 'images' ? (
+                      <div className="space-y-2">
+                        <div className="flex flex-wrap gap-2">
+                          {(form[f.key] || []).map((url, i) => (
+                            <div key={i} className="relative">
+                              <img src={url} alt="" className="w-16 h-16 rounded-xl object-cover border border-white/10" />
+                              <button onClick={() => setForm(v => ({ ...v, [f.key]: v[f.key].filter((_, j) => j !== i) }))}
+                                className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center">✕</button>
+                            </div>
+                          ))}
                         </div>
                         <input
-                          type="text"
-                          value={form[f.key] || ''}
-                          onChange={e => setForm(v => ({ ...v, [f.key]: e.target.value }))}
-                          placeholder="Or paste image URL..."
-                          className="w-full border border-white/10 rounded-xl px-3 py-2 font-body text-xs text-white/60 bg-white/5 focus:outline-none focus:border-[#00D4FF] placeholder-white/20"
+                          ref={el => fileRefs.current[f.key] = el}
+                          type="file"
+                          accept="image/jpeg,image/png,image/gif,image/webp,image/*"
+                          multiple
+                          className="hidden"
+                          onChange={async e => {
+                            const files = Array.from(e.target.files);
+                            if (!files.length) return;
+                            setUploadingKey(f.key);
+                            const urls = await Promise.all(files.map(file => base44.integrations.Core.UploadFile({ file }).then(r => r.file_url)));
+                            setForm(v => ({ ...v, [f.key]: [...(v[f.key] || []), ...urls] }));
+                            setUploadingKey(null);
+                            e.target.value = '';
+                          }}
                         />
+                        <button
+                          onClick={() => fileRefs.current[f.key]?.click()}
+                          disabled={uploadingKey === f.key}
+                          className="w-full py-2.5 border-2 border-dashed border-white/20 hover:border-[#00D4FF]/60 rounded-xl text-white/50 font-body text-xs font-semibold flex items-center justify-center gap-2 transition-colors">
+                          {uploadingKey === f.key
+                            ? <><div className="w-3 h-3 border border-white/20 border-t-[#00D4FF] rounded-full animate-spin"/> Uploading...</>
+                            : <><Upload className="w-3.5 h-3.5"/> Add Photos from Device</>}
+                        </button>
                       </div>
                     ) : f.type === 'textarea' ? (
                       <textarea value={form[f.key] || ''} onChange={e => setForm(v => ({ ...v, [f.key]: e.target.value }))}

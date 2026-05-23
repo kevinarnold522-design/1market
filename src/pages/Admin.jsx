@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 
 const OWNER_EMAIL = 'Kevinarnold522@gmail.com';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Pencil, Trash2, X, Save, ArrowLeft, Building2, ShoppingBag, Search, Image, Upload } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Save, ArrowLeft, Building2, ShoppingBag, Search, Upload, User, BadgeCheck, Shield } from 'lucide-react';
+
+const ROLES = ['user', 'moderator', 'admin'];
 import { Link } from 'react-router-dom';
 
 const SECTIONS = ['food', 'travel', 'buysell'];
@@ -77,6 +79,74 @@ function ArrayField({ label, value, onChange, placeholder }) {
   );
 }
 
+// Reusable image uploader for Admin forms
+function ImageUploadField({ label, value, onChange }) {
+  const [uploading, setUploading] = useState(false);
+  const inputRef = React.useRef(null);
+
+  const handle = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    onChange(file_url);
+    setUploading(false);
+    e.target.value = '';
+  };
+
+  return (
+    <div>
+      <label className="block font-body text-xs font-semibold text-[#0A192F]/60 mb-1">{label}</label>
+      {value && (
+        <div className="relative mb-2 inline-block">
+          <img src={value} alt="preview" className="h-24 rounded-xl object-cover border border-[#0A192F]/10" onError={e => e.target.style.display='none'} />
+          <button onClick={() => onChange('')} className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center hover:bg-red-600">✕</button>
+        </div>
+      )}
+      <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/*" className="hidden" onChange={handle} />
+      <button onClick={() => inputRef.current?.click()} disabled={uploading}
+        className="flex items-center gap-2 px-4 py-2.5 border-2 border-dashed border-[#2563EB]/30 hover:border-[#2563EB]/70 rounded-xl text-[#2563EB] font-body text-xs font-semibold transition-colors disabled:opacity-50">
+        {uploading ? <><div className="w-3.5 h-3.5 border border-[#2563EB]/30 border-t-[#2563EB] rounded-full animate-spin"/> Uploading...</> : <><Upload className="w-3.5 h-3.5"/> Upload Image from Device</>}
+      </button>
+    </div>
+  );
+}
+
+// Multi-image uploader (replaces URL-only extra images)
+function MultiImageUploadField({ label, value, onChange }) {
+  const [uploading, setUploading] = useState(false);
+  const inputRef = React.useRef(null);
+
+  const handle = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    setUploading(true);
+    const urls = await Promise.all(files.map(f => base44.integrations.Core.UploadFile({ file: f }).then(r => r.file_url)));
+    onChange([...(value || []), ...urls]);
+    setUploading(false);
+    e.target.value = '';
+  };
+
+  return (
+    <div>
+      <label className="block font-body text-xs font-semibold text-[#0A192F]/60 mb-1">{label}</label>
+      <div className="flex flex-wrap gap-2 mb-2">
+        {(value || []).map((url, i) => (
+          <div key={i} className="relative">
+            <img src={url} alt="" className="w-16 h-16 rounded-xl object-cover border border-[#0A192F]/10" onError={e => e.target.style.display='none'} />
+            <button onClick={() => onChange(value.filter((_, j) => j !== i))} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center hover:bg-red-600">✕</button>
+          </div>
+        ))}
+      </div>
+      <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/*" multiple className="hidden" onChange={handle} />
+      <button onClick={() => inputRef.current?.click()} disabled={uploading}
+        className="flex items-center gap-2 px-4 py-2.5 border-2 border-dashed border-[#0A192F]/15 hover:border-[#2563EB]/50 rounded-xl text-[#0A192F]/50 font-body text-xs font-semibold transition-colors disabled:opacity-50">
+        {uploading ? <><div className="w-3.5 h-3.5 border border-[#0A192F]/20 border-t-[#2563EB] rounded-full animate-spin"/> Uploading...</> : <><Upload className="w-3.5 h-3.5"/> Add More Photos from Device</>}
+      </button>
+    </div>
+  );
+}
+
 function BusinessForm({ initial, onSave, onCancel }) {
   const [form, setForm] = useState(initial || EMPTY_BIZ);
   const set = (field, val) => setForm(f => ({ ...f, [field]: val }));
@@ -97,17 +167,10 @@ function BusinessForm({ initial, onSave, onCancel }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <FieldInput label="Logo URL (real company logo)" value={form.logo_url} onChange={v => set('logo_url', v)} placeholder="https://..." />
-          {form.logo_url && <img src={form.logo_url} alt="logo" className="mt-2 h-12 rounded-lg object-contain border border-[#0A192F]/10" onError={e => e.target.style.display='none'} />}
-        </div>
-        <div>
-          <FieldInput label="Main Establishment Photo URL" value={form.image_url} onChange={v => set('image_url', v)} placeholder="https://..." />
-          {form.image_url && <img src={form.image_url} alt="main" className="mt-2 h-20 rounded-lg object-cover w-full border border-[#0A192F]/10" onError={e => e.target.style.display='none'} />}
-        </div>
+        <ImageUploadField label="Logo (upload from device)" value={form.logo_url} onChange={v => set('logo_url', v)} />
+        <ImageUploadField label="Main Establishment Photo" value={form.image_url} onChange={v => set('image_url', v)} />
       </div>
-
-      <ArrayField label="Additional Establishment Photos (URLs)" value={form.extra_images} onChange={v => set('extra_images', v)} placeholder="Paste photo URL and press Add" />
+      <MultiImageUploadField label="Additional Establishment Photos" value={form.extra_images} onChange={v => set('extra_images', v)} />
       <ArrayField label="Menu Items / Key Offerings" value={form.menu} onChange={v => set('menu', v)} placeholder="e.g. Chickenjoy" />
       <FieldInput label="Description" value={form.description} onChange={v => set('description', v)} type="textarea" placeholder="Short description of the business..." />
 
@@ -181,11 +244,8 @@ function ListingForm({ initial, onSave, onCancel }) {
       <SelectField label="Condition" value={form.condition} onChange={v => set('condition', v)}
         options={['Brand New', 'Like New', 'Used', 'N/A']} />
 
-      <div>
-        <FieldInput label="Main Image URL" value={form.image_url} onChange={v => set('image_url', v)} placeholder="https://..." />
-        {form.image_url && <img src={form.image_url} alt="listing" className="mt-2 h-24 rounded-lg object-cover border border-[#0A192F]/10" onError={e => e.target.style.display='none'} />}
-      </div>
-      <ArrayField label="Additional Photos (URLs)" value={form.extra_images} onChange={v => set('extra_images', v)} placeholder="Paste URL and press Add" />
+      <ImageUploadField label="Main Image" value={form.image_url} onChange={v => set('image_url', v)} />
+      <MultiImageUploadField label="Additional Photos" value={form.extra_images} onChange={v => set('extra_images', v)} />
       <FieldInput label="Description" value={form.description} onChange={v => set('description', v)} type="textarea" />
 
       <div className="flex items-center gap-3">
@@ -211,12 +271,17 @@ export default function Admin() {
 
   useEffect(() => {
     base44.auth.me().then(user => {
-      setIsOwner(user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase());
+      setIsOwner(
+        user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase() ||
+        user?.role === 'admin' ||
+        user?.role === 'moderator'
+      );
       setAuthChecked(true);
     }).catch(() => setAuthChecked(true));
   }, []);
   const [businesses, setBusinesses] = useState([]);
   const [listings, setListings] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showBizForm, setShowBizForm] = useState(false);
   const [showListForm, setShowListForm] = useState(false);
@@ -230,13 +295,27 @@ export default function Admin() {
 
   const loadAll = async () => {
     setLoading(true);
-    const [bizs, lists] = await Promise.all([
+    const [bizs, lists, userList] = await Promise.all([
       base44.entities.Business.list('-created_date', 200),
       base44.entities.Listing.list('-created_date', 200),
+      base44.entities.User.list('-created_date', 200),
     ]);
     setBusinesses(bizs);
     setListings(lists);
+    setUsers(userList);
     setLoading(false);
+  };
+
+  const toggleVerified = async (u) => {
+    await base44.entities.User.update(u.id, { is_verified_seller: !u.is_verified_seller });
+    showToast(u.is_verified_seller ? 'Verified badge removed.' : '✅ Verified badge granted!');
+    loadAll();
+  };
+
+  const setUserRole = async (u, role) => {
+    await base44.entities.User.update(u.id, { role });
+    showToast(`Role updated to ${role}`);
+    loadAll();
   };
 
   useEffect(() => { loadAll(); }, []);
@@ -359,10 +438,11 @@ export default function Admin() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6 border-b border-[#0A192F]/10 pb-4">
+        <div className="flex gap-2 mb-6 border-b border-[#0A192F]/10 pb-4 flex-wrap">
           {[
             { key: 'businesses', label: 'Businesses', icon: Building2 },
             { key: 'listings', label: 'Buy & Sell Listings', icon: ShoppingBag },
+            { key: 'users', label: `Users (${users.length})`, icon: User },
           ].map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-semibold text-sm transition-all ${tab === t.key ? 'bg-[#0A192F] text-white' : 'bg-white border border-[#0A192F]/10 text-[#0A192F]/60 hover:border-[#0A192F]/20'}`}>
@@ -457,7 +537,7 @@ export default function Admin() {
               </motion.div>
             ))}
           </div>
-        ) : (
+        ) : tab === 'listings' ? (
           <div className="space-y-3">
             {filteredList.length === 0 && (
               <div className="text-center py-16 text-[#0A192F]/40 font-body">
@@ -497,6 +577,49 @@ export default function Admin() {
                 </div>
               </motion.div>
             ))}
+          </div>
+        ) : (
+          /* USERS TAB */
+          <div className="space-y-3">
+            {users.filter(u =>
+              u.full_name?.toLowerCase().includes(search.toLowerCase()) ||
+              u.email?.toLowerCase().includes(search.toLowerCase())
+            ).map(u => (
+              <motion.div key={u.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                className="bg-white rounded-2xl border border-[#0A192F]/5 p-4 flex items-center gap-4 flex-wrap">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-sm flex-shrink-0">
+                  {(u.full_name || u.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-heading font-bold text-sm text-[#0A192F] truncate">{u.full_name || 'No Name'}</p>
+                    {u.is_verified_seller && <BadgeCheck className="w-4 h-4 text-[#2563EB]" title="Verified Seller" />}
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold capitalize ${u.role === 'admin' ? 'bg-amber-100 text-amber-700' : u.role === 'moderator' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
+                      {u.role || 'user'}
+                    </span>
+                    {(u.is_seller || u.account_type === 'business_owner') && (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">Seller</span>
+                    )}
+                  </div>
+                  <p className="font-body text-xs text-[#0A192F]/40 truncate">{u.email}</p>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
+                  <select value={u.role || 'user'} onChange={e => setUserRole(u, e.target.value)}
+                    className="border border-[#0A192F]/10 rounded-xl px-2 py-1.5 font-body text-xs text-[#0A192F] bg-white focus:outline-none focus:border-[#2563EB]">
+                    {ROLES.map(r => <option key={r} value={r} className="capitalize">{r}</option>)}
+                  </select>
+                  <button onClick={() => toggleVerified(u)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body text-xs font-bold transition-colors border ${u.is_verified_seller ? 'bg-blue-50 text-[#2563EB] border-blue-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200' : 'bg-[#F8FAFC] text-[#0A192F]/50 border-[#0A192F]/10 hover:bg-blue-50 hover:text-[#2563EB] hover:border-blue-200'}`}
+                    title={u.is_verified_seller ? 'Remove Verified Badge' : 'Grant Verified Badge'}>
+                    <BadgeCheck className="w-3.5 h-3.5" />
+                    {u.is_verified_seller ? 'Verified ✓' : 'Verify'}
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+            {users.length === 0 && (
+              <div className="text-center py-16 text-[#0A192F]/40 font-body">No users found.</div>
+            )}
           </div>
         )}
       </div>

@@ -31,6 +31,8 @@ const SORT_OPTIONS = ['Latest Listings', 'Price: Low to High', 'Price: High to L
 
 const LISTING_ADMIN_FIELDS = [
   { key: 'title', label: 'Title' },
+  { key: 'image_url', label: 'Main Image', type: 'image' },
+  { key: 'extra_images', label: 'Additional Photos', type: 'images' },
   { key: 'type', label: 'Category' },
   { key: 'subcategory', label: 'Subcategory' },
   { key: 'price_label', label: 'Price Display' },
