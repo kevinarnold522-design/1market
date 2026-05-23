@@ -453,10 +453,15 @@ export default function Food() {
         {ratingBiz && <RateModal biz={ratingBiz} onClose={() => setRatingBiz(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
       </AnimatePresence>
-      {infoBiz && <BusinessBioModal business={infoBiz} onClose={() => setInfoBiz(null)} />}
-      <AdminQuickAddFAB defaultMode="business" onAdded={() => {
-        base44.entities.Business.filter({ section: 'food', is_active: true }).then(setDbBusinesses).catch(() => {});
-      }} />
+      {infoBiz && <BusinessBioModal business={infoBiz} onClose={() => setInfoBiz(null)} onUpdated={(updated) => setDbBusinesses(prev => prev.map(b => b.id === updated.id ? updated : b))} />}
+      <AdminQuickAddFAB
+        defaultMode="business"
+        forceSection="food"
+        forceSubcategory={selectedSubcat || undefined}
+        onAdded={() => {
+          base44.entities.Business.filter({ section: 'food', is_active: true }).then(setDbBusinesses).catch(() => {});
+        }}
+      />
     </div>
   );
 }
