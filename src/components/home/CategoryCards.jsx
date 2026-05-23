@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFireTransition, FireOverlay } from './FireTransition';
-import CategoryTransitionOverlay from '../transitions/CategoryTransitionOverlay';
+import CategoryTransitionOverlay, { getTransitionTypeForHref } from '../transitions/CategoryTransitionOverlay';
 import { useNavigate } from 'react-router-dom';
 
 const CATEGORIES = [
@@ -130,15 +130,13 @@ function CasinoCategoryCard({ cat, index, onFire }) {
 export default function CategoryCards() {
   const { firing, fireNavigate } = useFireTransition();
   const navigate = useNavigate();
-  const [transition, setTransition] = useState(null); // 'travel' | 'food' | null
+  const [transition, setTransition] = useState(null);
 
   const handleCategoryClick = (href) => {
-    if (href === '/travel') {
-      setTransition('travel');
-      setTimeout(() => { navigate('/travel'); setTransition(null); }, 1050);
-    } else if (href === '/food') {
-      setTransition('food');
-      setTimeout(() => { navigate('/food'); setTransition(null); }, 1050);
+    const type = getTransitionTypeForHref(href);
+    if (type) {
+      setTransition(type);
+      setTimeout(() => { navigate(href); setTransition(null); }, 1100);
     } else {
       fireNavigate(href);
     }
@@ -147,7 +145,7 @@ export default function CategoryCards() {
   return (
     <>
       <FireOverlay firing={firing} />
-      <CategoryTransitionOverlay type={transition} />
+      <CategoryTransitionOverlay type={transition} subtype={null} />
       <section className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
         <div className="mb-8 text-center">
           <span className="font-body text-xs tracking-[0.2em] uppercase text-[#2563EB]">Explore 1Marketph.com</span>

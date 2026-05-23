@@ -307,6 +307,7 @@ export default function Food() {
         onSelect={(key) => { setSelectedSubcat(key); if (key !== 'all') setActiveTypes([key]); else setActiveTypes([]); }}
         title="What are you craving?"
         subtitle="Pick a food category to explore"
+        category="food"
       />
       {/* Header */}
       <div className="relative bg-[#0A192F] overflow-hidden">

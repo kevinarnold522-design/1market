@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import CategoryTransitionOverlay, { getSubtypeForSubcategory } from './transitions/CategoryTransitionOverlay';
 
 const SUITS = ['♠', '♥', '♦', '♣'];
 const VALUES = ['A', 'K', 'Q', 'J', '10', '9'];
@@ -140,12 +141,26 @@ function CasinoCard({ sc, index, isActive, onClick }) {
   );
 }
 
-export default function SubcategorySplash({ subcategories, activeKey, onSelect, title, subtitle }) {
+export default function SubcategorySplash({ subcategories, activeKey, onSelect, title, subtitle, category }) {
   const [dismissed, setDismissed] = useState(false);
+  const [transition, setTransition] = useState(null);
+  const [transitionSubtype, setTransitionSubtype] = useState(null);
 
   const handleSelect = (key) => {
-    onSelect(key);
-    setTimeout(() => setDismissed(true), 400);
+    const sc = subcategories.find(s => s.key === key);
+    const subtype = getSubtypeForSubcategory(category || '', (sc?.label || key).toLowerCase());
+    if (category) {
+      setTransition(category);
+      setTransitionSubtype(subtype);
+      setTimeout(() => {
+        onSelect(key);
+        setDismissed(true);
+        setTransition(null);
+      }, 900);
+    } else {
+      onSelect(key);
+      setTimeout(() => setDismissed(true), 400);
+    }
   };
 
   if (dismissed) return null;
@@ -197,6 +212,7 @@ export default function SubcategorySplash({ subcategories, activeKey, onSelect, 
           </p>
         </motion.div>
       </motion.div>
+      <CategoryTransitionOverlay type={transition} subtype={transitionSubtype} />
     </AnimatePresence>
   );
 }

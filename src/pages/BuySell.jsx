@@ -337,6 +337,7 @@ export default function BuySell() {
         onSelect={setActiveCategory}
         title="What are you looking for?"
         subtitle="Select a category to browse listings"
+        category="buysell"
       />
       {/* Header */}
       <div className="relative bg-[#0A192F] overflow-hidden">
