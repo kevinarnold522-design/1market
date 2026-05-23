@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -74,6 +74,31 @@ function ImageUploader({ images, onAdd, onRemove }) {
         </label>
       </div>
     </div>
+  );
+}
+
+// Quick inline image-swap button on listing thumbnail
+function QuickImageUpload({ itemId, onUploaded }) {
+  const [uploading, setUploading] = useState(false);
+  const ref = React.useRef(null);
+  const handle = async (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    setUploading(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    await base44.entities.Listing.update(itemId, { image_url: file_url });
+    onUploaded(file_url);
+    setUploading(false);
+    e.target.value = '';
+  };
+  return (
+    <>
+      <input ref={ref} type="file" accept="image/*" className="hidden" onChange={handle}/>
+      <button onClick={() => ref.current?.click()} disabled={uploading}
+        className="absolute bottom-0 left-0 w-11 h-11 rounded-xl flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity"
+        title="Change photo">
+        {uploading ? <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-[#00D4FF] rounded-full animate-spin"/> : <Upload className="w-3.5 h-3.5 text-white"/>}
+      </button>
+    </>
   );
 }
 
@@ -737,10 +762,13 @@ export default function UserProfile() {
                     {listings.map(item => (
                       <motion.div key={item.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
                         className="rounded-xl border border-white/8 p-3 flex items-center gap-3" style={{ background: 'rgba(255,255,255,0.03)' }}>
-                        {item.image_url
-                          ? <img src={item.image_url} alt={item.title} className="w-11 h-11 rounded-xl object-cover flex-shrink-0 border border-white/10" onError={e=>e.target.style.display='none'}/>
-                          : <div className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0"><Package className="w-4 h-4 text-white/20"/></div>
-                        }
+                        <div className="relative flex-shrink-0 group">
+                          {item.image_url
+                            ? <img src={item.image_url} alt={item.title} className="w-11 h-11 rounded-xl object-cover border border-white/10" onError={e=>e.target.style.display='none'}/>
+                            : <div className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center"><Package className="w-4 h-4 text-white/20"/></div>
+                          }
+                          <QuickImageUpload itemId={item.id} onUploaded={(url) => setListings(prev => prev.map(l => l.id === item.id ? { ...l, image_url: url } : l))} />
+                        </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5 flex-wrap">
                             <h4 className="font-heading font-bold text-xs text-white">{item.title}</h4>
