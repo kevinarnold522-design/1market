@@ -6,6 +6,7 @@ import {
   ExternalLink, ChevronDown, LogOut, Upload, Heart, BadgeCheck,
   FileText, Eye, Settings, CheckCircle, Truck, User, Globe
 } from 'lucide-react';
+import OrdersTab from '../components/seller/OrdersTab';
 import { Link } from 'react-router-dom';
 import ParticleBackground from '../components/ParticleBackground';
 
@@ -33,12 +34,12 @@ const EMPTY_FORM = {
 };
 
 const NAV_TABS = [
-  { key: 'listings',  label: 'My Listings', icon: Package },
-  { key: 'drafts',    label: 'Drafts',       icon: FileText },
-  { key: 'orders',    label: 'Orders',       icon: Truck },
-  { key: 'favourites',label: 'Favourites',   icon: Heart },
-  { key: 'sellerpage',label: 'Seller Page',  icon: Globe },
-  { key: 'settings',  label: 'Settings',     icon: Settings },
+  { key: 'listings',   label: 'My Listings',      icon: Package },
+  { key: 'drafts',     label: 'Drafts',            icon: FileText },
+  { key: 'orders',     label: 'Orders',            icon: Truck },
+  { key: 'favourites', label: 'Favourites',        icon: Heart },
+  { key: 'sellerpage', label: 'Seller Page',       icon: Globe },
+  { key: 'settings',   label: 'Settings',          icon: Settings },
 ];
 
 function Field({ label, value, onChange, type = 'text', placeholder = '', required = false }) {
@@ -408,6 +409,12 @@ export default function SellerDashboard() {
             {isVerified && <BadgeCheck className="w-3.5 h-3.5 text-[#2563EB]" />}
           </div>
           <div className="flex items-center gap-2">
+            {user && (
+              <Link to={`/seller/${user.username || user.id}`}
+                className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-full bg-[#00D4FF]/10 border border-[#00D4FF]/25 text-[#00D4FF] font-body text-[9px] font-semibold hover:bg-[#00D4FF]/20 transition-colors">
+                <Globe className="w-2.5 h-2.5" /> View Profile
+              </Link>
+            )}
             {user?.seller_location ? (
               <div className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/10 border border-green-500/20">
                 <MapPin className="w-2.5 h-2.5 text-green-400" />
@@ -604,38 +611,14 @@ export default function SellerDashboard() {
 
         {/* ORDERS TAB */}
         {activeNav === 'orders' && (
-          <div className="space-y-3">
-            <h3 className="font-heading font-bold text-white text-sm">Incoming Orders ({orders.length})</h3>
-            {orders.length === 0 ? (
-              <div className="rounded-2xl p-8 text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <Truck className="w-8 h-8 text-white/15 mx-auto mb-2" />
-                <p className="font-body text-sm text-white/30">No orders yet.</p>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {orders.map(order => (
-                  <div key={order.id} className="rounded-xl p-3 flex items-center gap-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-heading font-bold text-xs text-white truncate">{order.listing_title}</p>
-                      <p className="font-body text-[10px] text-white/35">Buyer: {order.buyer_name || order.buyer_email}</p>
-                      <p className="font-body text-[10px] text-[#00D4FF]">{order.price_label}</p>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${order.status === 'completed' ? 'bg-green-500/20 text-green-400' : 'bg-amber-500/20 text-amber-400'}`}>
-                        {order.status}
-                      </span>
-                      {order.status !== 'completed' && !order.seller_confirmed_delivery && (
-                        <button onClick={() => confirmDelivery(order)}
-                          className="mt-1 flex items-center gap-1 px-2 py-1 rounded-lg bg-[#2563EB]/10 text-[#60a5fa] font-body text-[9px] font-bold hover:bg-[#2563EB]/20 transition-colors">
-                          <Truck className="w-2.5 h-2.5" /> Confirm Delivery
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <OrdersTab
+            orders={orders}
+            setOrders={setOrders}
+            listings={listings}
+            user={user}
+            confirmDelivery={confirmDelivery}
+            showToast={showToast}
+          />
         )}
 
         {/* FAVOURITES TAB */}

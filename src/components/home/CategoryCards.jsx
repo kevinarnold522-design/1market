@@ -8,6 +8,7 @@ const CATEGORIES = [
   { label: 'Buy & Sell', href: '/buysell', icon: '🛍️', desc: 'Shoes, Cars, Gadgets & More', accent: '#c084fc', suit: '♦', gradient: 'linear-gradient(135deg,#1e0050,#7e22ce)' },
   { label: 'For Rent', href: '/rent', icon: '🏠', desc: 'Homes, Vehicles & Equipment', accent: '#4ade80', suit: '♣', gradient: 'linear-gradient(135deg,#002a00,#15803d)' },
   { label: 'Services', href: '/services', icon: '🛠️', desc: 'Plumbers, Tutors & Freelancers', accent: '#fb923c', suit: '♠', gradient: 'linear-gradient(135deg,#2a1000,#c2410c)' },
+  { label: 'Jobs', href: '/jobs', icon: '💼', desc: 'Hiring, Freelance & Remote Work', accent: '#fbbf24', suit: '♦', gradient: 'linear-gradient(135deg,#1a1000,#b45309)' },
 ];
 
 const CARD_VALUES = ['A', 'K', 'Q', 'J', '10', '9'];
@@ -136,7 +137,7 @@ export default function CategoryCards() {
           <h2 className="font-heading font-bold text-3xl text-[#0A192F] mt-1">Browse by Category</h2>
           <p className="font-body text-xs text-[#0A192F]/40 mt-1">Hover to flip • Click to explore</p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
           {CATEGORIES.map((cat, i) => (
             <CasinoCategoryCard key={cat.label} cat={cat} index={i} onFire={fireNavigate} />
           ))}

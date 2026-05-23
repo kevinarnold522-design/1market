@@ -35,7 +35,8 @@ function TabBtn({ tab, active, onClick }) {
 export default function UserProfile() {
   const { user: authUser, logout } = useAuth();
   const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState('profile');
+  const urlTab = new URLSearchParams(window.location.search).get('tab') || 'profile';
+  const [activeTab, setActiveTab] = useState(urlTab);
   const [orders, setOrders] = useState([]);
   const [cart, setCart] = useState([]);
   const [favourites, setFavourites] = useState([]);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import StarField from '../components/StarField';
+import ParticleBackground from '../components/ParticleBackground';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, MapPin, ExternalLink, Phone, MessageSquare, AlertCircle } from 'lucide-react';
@@ -54,27 +54,28 @@ const listings = [
 function RentalCard({ item, onContact }) {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-2xl overflow-hidden border border-[#0A192F]/5 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+      className="rounded-2xl overflow-hidden hover:-translate-y-1 transition-all duration-300 group"
+      style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(0,212,255,0.12)', boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}>
       <div className="relative aspect-[4/3] overflow-hidden">
         <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#070F1A]/80 to-transparent" />
         <div className="absolute top-3 left-3 flex gap-1.5">
-          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${item.location === 'Manila' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}`}>📍 {item.area}</span>
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/90 text-[#0A192F]">{item.sub}</span>
+          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${item.location === 'Manila' ? 'bg-blue-500/80 text-white' : 'bg-emerald-500/80 text-white'}`}>📍 {item.area}</span>
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/15 text-white backdrop-blur-sm">{item.sub}</span>
         </div>
         {item.link && (
-          <button onClick={() => window.open(item.link, '_blank')} className="absolute top-3 right-3 w-7 h-7 bg-white/80 rounded-full flex items-center justify-center hover:bg-white">
-            <ExternalLink className="w-3.5 h-3.5 text-[#0A192F]" />
+          <button onClick={() => window.open(item.link, '_blank')} className="absolute top-3 right-3 w-7 h-7 bg-white/15 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+            <ExternalLink className="w-3.5 h-3.5 text-white" />
           </button>
         )}
       </div>
       <div className="p-4">
-        <h3 className="font-heading font-bold text-sm text-[#0A192F] leading-tight mb-1">{item.title}</h3>
-        <p className="font-body text-xs text-[#0A192F]/50 mb-3 line-clamp-2">{item.desc}</p>
+        <h3 className="font-heading font-bold text-sm text-white leading-tight mb-1">{item.title}</h3>
+        <p className="font-body text-xs text-white/40 mb-3 line-clamp-2">{item.desc}</p>
         <div className="flex items-center justify-between">
-          <span className="font-heading font-bold text-base text-[#2563EB]">{item.price}</span>
+          <span className="font-heading font-bold text-base text-[#00D4FF]">{item.price}</span>
           <button onClick={() => onContact(item)}
-            className="px-3 py-1.5 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-lg font-body text-xs font-semibold transition-colors">
+            className="px-3 py-1.5 bg-[#2563EB] hover:bg-[#00D4FF] hover:text-[#0A192F] text-white rounded-lg font-body text-xs font-semibold transition-colors">
             Inquire
           </button>
         </div>
@@ -86,27 +87,28 @@ function RentalCard({ item, onContact }) {
 function ContactModal({ item, onClose }) {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0A192F]/60 backdrop-blur-sm" onClick={onClose}>
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#070F1A]/80 backdrop-blur-sm" onClick={onClose}>
       <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} onClick={e => e.stopPropagation()}
-        className="w-full max-w-sm bg-white rounded-2xl overflow-hidden shadow-2xl">
+        className="w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl"
+        style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)' }}>
         <div className="relative h-24 overflow-hidden">
           <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/80 to-transparent" />
-          <button onClick={onClose} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-white text-xs hover:bg-white/30">✕</button>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#070F1A]/90 to-transparent" />
+          <button onClick={onClose} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/15 flex items-center justify-center text-white text-xs hover:bg-white/25">✕</button>
           <p className="absolute bottom-2 left-4 font-heading font-bold text-white text-sm">{item.title}</p>
         </div>
         <div className="p-5 space-y-3">
           <div className="flex gap-2">
-            <a href={`tel:${item.contact}`} className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[#0A192F] text-white rounded-xl font-body text-xs font-semibold hover:bg-[#2563EB] transition-colors">
+            <a href={`tel:${item.contact}`} className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[#2563EB] text-white rounded-xl font-body text-xs font-semibold hover:bg-[#00D4FF] hover:text-[#0A192F] transition-colors">
               <Phone className="w-3.5 h-3.5" /> Call
             </a>
-            <a href={`sms:${item.contact}`} className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[#F8FAFC] border border-[#0A192F]/10 text-[#0A192F] rounded-xl font-body text-xs font-semibold hover:bg-[#EFF6FF] transition-colors">
+            <a href={`sms:${item.contact}`} className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-white/10 border border-white/15 text-white rounded-xl font-body text-xs font-semibold hover:bg-white/20 transition-colors">
               <MessageSquare className="w-3.5 h-3.5" /> SMS
             </a>
           </div>
-          <div className="flex items-start gap-2 bg-amber-50 p-3 rounded-xl">
-            <AlertCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
-            <p className="font-body text-[10px] text-amber-700">Verify all agreements and documents directly with the owner before any payment.</p>
+          <div className="flex items-start gap-2 bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl">
+            <AlertCircle className="w-3.5 h-3.5 text-amber-400 flex-shrink-0 mt-0.5" />
+            <p className="font-body text-[10px] text-amber-300">Verify all agreements and documents directly with the owner before any payment.</p>
           </div>
         </div>
       </motion.div>
@@ -130,7 +132,7 @@ export default function ForRent() {
 
   return (
     <div className="min-h-screen bg-[#070F1A]">
-      <StarField />
+      <ParticleBackground />
       <SubcategorySplash
         subcategories={SUBCATEGORIES}
         activeKey={activeCategory}
@@ -161,13 +163,13 @@ export default function ForRent() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-8">
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-8">
           {SUBCATEGORIES.map(sc => (
             <button key={sc.key} onClick={() => setActiveCategory(sc.key)}
-              className={`p-3 rounded-2xl text-left transition-all border ${activeCategory === sc.key ? 'bg-[#0A192F] text-white border-[#0A192F]' : 'bg-white border-[#0A192F]/5 hover:border-[#0A192F]/20'}`}>
+              className={`p-3 rounded-2xl text-left transition-all border ${activeCategory === sc.key ? 'bg-[#00D4FF]/20 border-[#00D4FF] text-white' : 'bg-white/5 border-white/10 hover:border-white/25 text-white'}`}>
               <div className="text-xl mb-1">{sc.icon}</div>
-              <p className={`font-heading font-bold text-xs ${activeCategory === sc.key ? 'text-white' : 'text-[#0A192F]'}`}>{sc.label}</p>
+              <p className="font-heading font-bold text-xs">{sc.label}</p>
             </button>
           ))}
         </div>
@@ -175,7 +177,7 @@ export default function ForRent() {
         <div className="flex gap-2 mb-6 flex-wrap">
           {['All', 'Manila', 'Cavite'].map(loc => (
             <button key={loc} onClick={() => setLocationFilter(loc)}
-              className={`px-4 py-2 rounded-xl font-body font-semibold text-sm transition-all ${locationFilter === loc ? 'bg-[#0A192F] text-white' : 'bg-white border border-[#0A192F]/10 text-[#0A192F]/60 hover:border-[#0A192F]/20'}`}>
+              className={`px-4 py-2 rounded-xl font-body font-semibold text-sm transition-all ${locationFilter === loc ? 'bg-[#00D4FF] text-[#0A192F]' : 'bg-white/5 border border-white/15 text-white/60 hover:border-white/30'}`}>
               {loc}
             </button>
           ))}
@@ -186,11 +188,11 @@ export default function ForRent() {
             {filtered.map(item => <RentalCard key={item.id} item={item} onContact={setContactItem} />)}
           </div>
         ) : (
-          <div className="text-center py-24"><p className="font-body text-[#0A192F]/40">No rentals found. Try a different filter.</p></div>
+          <div className="text-center py-24"><p className="font-body text-white/30">No rentals found. Try a different filter.</p></div>
         )}
 
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="mt-12 bg-[#0A192F] rounded-2xl p-8 text-center">
+          className="mt-12 rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#0D1F3C,#112240)', border: '1px solid rgba(0,212,255,0.15)' }}>
           <h2 className="font-heading font-bold text-2xl text-white mb-2">Have a Property or Item to Rent Out?</h2>
           <p className="font-body text-sm text-white/50 mb-6 max-w-md mx-auto">List your property, vehicle, or equipment for free and reach renters across Manila and Cavite.</p>
           <button onClick={() => setShowSignup(true)} className="px-8 py-3 bg-[#00D4FF] text-[#0A192F] font-body font-bold rounded-xl hover:bg-white transition-colors">
