@@ -3,11 +3,12 @@ import StarField from '../components/StarField';
 import AdminEditOverlay from '../components/AdminEditOverlay';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, MapPin, Star, Filter, X, UtensilsCrossed, Clock, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, Star, Filter, X, UtensilsCrossed, Clock, ExternalLink, Pencil } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import MemberSignupModal from '../components/MemberSignupModal';
 import BusinessBioModal from '../components/home/BusinessBioModal';
+import { getAdminEditMode } from '../components/home/Navbar';
 
 const KNOWN_LOGOS = {
   'Jollibee': 'https://upload.wikimedia.org/wikipedia/en/thumb/8/84/Jollibee_logo.svg/220px-Jollibee_logo.svg.png',
@@ -265,12 +266,15 @@ export default function Food() {
   const [showFilters, setShowFilters] = useState(false);
   const [dbBusinesses, setDbBusinesses] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+  const [adminMode, setAdminMode] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(setCurrentUser).catch(() => {});
+    const t = setInterval(() => setAdminMode(getAdminEditMode()), 300);
+    return () => clearInterval(t);
   }, []);
 
-  const isAdminUser = currentUser?.role === 'admin' || currentUser?.email === 'Kevinarnold522@gmail.com';
+  const isAdminUser = currentUser?.role === 'admin' || currentUser?.role === 'moderator' || currentUser?.email === 'Kevinarnold522@gmail.com';
 
   useEffect(() => {
     base44.entities.Business.filter({ section: 'food', is_active: true }).then(setDbBusinesses).catch(() => {});
@@ -387,8 +391,11 @@ export default function Food() {
         {filtered.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {filtered.map((biz) => {
+              const isDbRecord = dbBusinesses.some(db => db.id === biz.id);
               const card = <BusinessCard key={biz.id} biz={biz} onRate={setRatingBiz} onInfo={setInfoBiz}/>;
-              if (isAdminUser && biz.id) {
+
+              // Admin mode: wrap DB records with inline edit overlay
+              if (isAdminUser && adminMode && isDbRecord) {
                 return (
                   <AdminEditOverlay key={biz.id} entity="Business" record={biz} fields={BUSINESS_ADMIN_FIELDS}
                     onSaved={(updated) => setDbBusinesses(prev => prev.map(b => b.id === updated.id ? updated : b))}
@@ -397,6 +404,27 @@ export default function Food() {
                   </AdminEditOverlay>
                 );
               }
+
+              // Admin mode + static record: show "Add to DB & Edit" overlay
+              if (isAdminUser && adminMode && !isDbRecord) {
+                return (
+                  <div key={biz.id} className="relative group">
+                    {card}
+                    <button
+                      onClick={async () => {
+                        const { id: _id, ...rest } = biz;
+                        const created = await base44.entities.Business.create({ ...rest, section: 'food', is_active: true });
+                        setDbBusinesses(prev => [...prev, created]);
+                      }}
+                      className="absolute top-2 right-2 z-30 w-8 h-8 rounded-full flex items-center justify-center shadow-lg bg-amber-500/90 opacity-0 group-hover:opacity-100 transition-opacity"
+                      title="Register & Edit this business"
+                    >
+                      <Pencil className="w-3.5 h-3.5 text-white"/>
+                    </button>
+                  </div>
+                );
+              }
+
               return card;
             })}
           </div>

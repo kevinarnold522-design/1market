@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFireTransition, FireOverlay } from './FireTransition';
+import CategoryTransitionOverlay from '../transitions/CategoryTransitionOverlay';
+import { useNavigate } from 'react-router-dom';
 
 const CATEGORIES = [
   { label: 'Travel', href: '/travel', icon: '✈️', desc: 'Hotels, Tours & Transport', accent: '#60a5fa', suit: '♠', gradient: 'linear-gradient(135deg,#0f2050,#1d4ed8)' },
@@ -127,10 +129,25 @@ function CasinoCategoryCard({ cat, index, onFire }) {
 
 export default function CategoryCards() {
   const { firing, fireNavigate } = useFireTransition();
+  const navigate = useNavigate();
+  const [transition, setTransition] = useState(null); // 'travel' | 'food' | null
+
+  const handleCategoryClick = (href) => {
+    if (href === '/travel') {
+      setTransition('travel');
+      setTimeout(() => { navigate('/travel'); setTransition(null); }, 1050);
+    } else if (href === '/food') {
+      setTransition('food');
+      setTimeout(() => { navigate('/food'); setTransition(null); }, 1050);
+    } else {
+      fireNavigate(href);
+    }
+  };
 
   return (
     <>
       <FireOverlay firing={firing} />
+      <CategoryTransitionOverlay type={transition} />
       <section className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
         <div className="mb-8 text-center">
           <span className="font-body text-xs tracking-[0.2em] uppercase text-[#2563EB]">Explore 1Marketph.com</span>
@@ -139,7 +156,7 @@ export default function CategoryCards() {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
           {CATEGORIES.map((cat, i) => (
-            <CasinoCategoryCard key={cat.label} cat={cat} index={i} onFire={fireNavigate} />
+            <CasinoCategoryCard key={cat.label} cat={cat} index={i} onFire={handleCategoryClick} />
           ))}
         </div>
       </section>
