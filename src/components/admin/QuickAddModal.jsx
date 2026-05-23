@@ -221,10 +221,16 @@ function ListingSubForm({ form, set }) {
 }
 
 // ─── Main modal ───────────────────────────────────────────────────────────────
-export default function QuickAddModal({ onClose, defaultMode = 'business', onAdded }) {
-  const [mode, setMode] = useState(defaultMode); // 'business' | 'listing'
-  const [bizForm, setBizForm] = useState(EMPTY_BIZ);
-  const [listForm, setListForm] = useState(EMPTY_LISTING);
+export default function QuickAddModal({ onClose, defaultMode = 'business', onAdded, isAdmin = false, isSeller = false, sellerEmail = '', sellerName = '', forceSection, forceSubcategory }) {
+  // Sellers can only add listings, not businesses (unless also admin)
+  const [mode, setMode] = useState(isAdmin ? defaultMode : 'listing');
+  const [bizForm, setBizForm] = useState({ ...EMPTY_BIZ, ...(forceSection ? { section: forceSection } : {}) });
+  const [listForm, setListForm] = useState({
+    ...EMPTY_LISTING,
+    seller_email: sellerEmail || '',
+    seller_name: sellerName || '',
+    ...(forceSubcategory ? { subcategory: forceSubcategory } : {}),
+  });
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState('');
 
@@ -242,7 +248,14 @@ export default function QuickAddModal({ onClose, defaultMode = 'business', onAdd
     } else {
       if (!listForm.title) return setToast('Listing title is required');
       setSaving(true);
-      await base44.entities.Listing.create({ ...listForm, price: Number(listForm.price) || 0, extra_images: listForm.extra_images || [] });
+      const payload = {
+        ...listForm,
+        price: Number(listForm.price) || 0,
+        extra_images: listForm.extra_images || [],
+        seller_email: sellerEmail || listForm.seller_email || '',
+        seller_name: sellerName || listForm.seller_name || '',
+      };
+      await base44.entities.Listing.create(payload);
       setSaving(false);
       setToast('Listing published!');
       setTimeout(() => { if (onAdded) onAdded('listing'); onClose(); }, 900);

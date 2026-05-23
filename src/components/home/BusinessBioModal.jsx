@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, MapPin, Clock, Phone, ExternalLink, Star, Calendar, User, Camera, Upload } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import MultiPlatformRating from '../MultiPlatformRating';
 
 export default function BusinessBioModal({ business, onClose, onUpdated }) {
   const [currentUser, setCurrentUser] = useState(null);
@@ -201,16 +202,11 @@ export default function BusinessBioModal({ business, onClose, onUpdated }) {
                   </div>
                 </div>
               )}
-              {localBiz.rating > 0 && (
-                <div className="flex items-start gap-2">
-                  <Star className="w-3.5 h-3.5 text-amber-400 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="font-body text-[10px] text-[#0A192F]/40 uppercase tracking-wider">Rating</p>
-                    <p className="font-body text-xs font-semibold text-[#0A192F]">{localBiz.rating}/5.0</p>
-                  </div>
-                </div>
-              )}
+              
             </div>
+
+            {/* Platform Ratings */}
+            <MultiPlatformRating bizName={localBiz.name} baseRating={localBiz.rating || 4.2} />
 
             {/* Menu preview */}
             {localBiz.menu && localBiz.menu.length > 0 && (

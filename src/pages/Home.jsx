@@ -19,6 +19,7 @@ import PhHotelDeals from '../components/home/PhHotelDeals';
 import StarField from '../components/StarField';
 import PhilippinesTravelBanner from '../components/home/PhilippinesTravelBanner';
 import ParticleBackground from '../components/ParticleBackground';
+import CustomerSupportButton from '../components/CustomerSupportButton';
 
 const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/be5b76b23_generated_1fcae122.png';
 
@@ -62,6 +63,7 @@ export default function Home() {
       <SuggestionBox />
       </div>
       <PhilippinesTravelBanner />
+      <CustomerSupportButton />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import AdminEditOverlay from '../components/AdminEditOverlay';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, MapPin, Star, Filter, X, UtensilsCrossed, Clock, ExternalLink, Pencil } from 'lucide-react';
+import MultiPlatformRating from '../components/MultiPlatformRating';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import MemberSignupModal from '../components/MemberSignupModal';
@@ -151,6 +152,9 @@ function BusinessCard({ biz, onRate, onInfo }) {
             <span key={i} className="px-2 py-0.5 bg-[#F8FAFC] text-[#0A192F]/60 text-[10px] rounded-full border border-[#0A192F]/5">{item}</span>
           ))}
           {menuItems.length > 3 && <span className="px-2 py-0.5 bg-[#F8FAFC] text-[#0A192F]/40 text-[10px] rounded-full border border-[#0A192F]/5">+{menuItems.length - 3} more</span>}
+        </div>
+        <div className="mb-3">
+          <MultiPlatformRating bizName={biz.name} baseRating={biz.rating || 4.2} compact />
         </div>
         <div className="flex gap-2">
           <button

@@ -323,6 +323,7 @@ export default function Travel() {
         onSelect={setTab}
         title="Where do you want to go?"
         subtitle="Pick a travel category to explore"
+        category="travel"
       />
       {/* Header */}
       <div className="relative bg-[#0A192F] overflow-hidden">

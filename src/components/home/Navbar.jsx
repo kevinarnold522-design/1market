@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Star, Package, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import MemberSignupModal from '../MemberSignupModal';
+import AccountTypeModal from '../AccountTypeModal';
 import NavUserBadge from './NavUserBadge';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -33,6 +33,7 @@ export default function Navbar() {
   const [editMode, setEditModeLocal] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const isAdmin = user?.role === 'admin' || user?.email === 'Kevinarnold522@gmail.com';
+  const isSeller = user?.is_seller || user?.account_type === 'business_owner';
 
   const toggleEditMode = () => {
     const next = !editMode;
@@ -123,7 +124,7 @@ export default function Navbar() {
                 Sign In
               </button>
               <button
-                onClick={() => base44.auth.redirectToLogin(window.location.href)}
+                onClick={() => setShowSignup(true)}
                 className="px-3 py-0.5 bg-[#0A192F] text-white rounded-full text-[11px] sm:text-xs font-bold hover:bg-[#2563EB] transition-colors whitespace-nowrap">
                 Sign Up →
               </button>
@@ -193,7 +194,8 @@ export default function Navbar() {
                                 <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>
                                   {accountTypeLabel}
                                 </span>
-                                {user?.is_verified_seller && <BadgeCheck className="w-3.5 h-3.5 text-[#2563EB]" title="Verified Seller" />}
+                                {user?.is_verified_seller && <BadgeCheck className="w-3.5 h-3.5 text-[#2563EB]" title="Verified Partner" />}
+                               {isAdmin && <BadgeCheck className="w-3.5 h-3.5 text-amber-400" title="Admin — Verified" />}
                               </div>
                               {/* Editable username */}
                               {editingName ? (
@@ -253,65 +255,80 @@ export default function Navbar() {
 
                         {/* Actions */}
                         <div className="p-2">
-                          {/* Customer quick links */}
-                          <Link to="/profile?tab=orders" onClick={() => setProfileOpen(false)}
-                            className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
-                            <History className="w-3.5 h-3.5 text-[#00D4FF]" /> Transaction History
-                          </Link>
-                          <Link to="/profile?tab=favourites" onClick={() => setProfileOpen(false)}
-                            className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
-                            <Heart className="w-3.5 h-3.5 text-pink-400" /> Favourites
-                          </Link>
-                          <Link to="/profile?tab=cart" onClick={() => setProfileOpen(false)}
-                            className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
-                            <ShoppingCart className="w-3.5 h-3.5 text-green-400" /> Cart
-                          </Link>
-                          <div className="border-t border-white/8 my-1" />
-                          <Link to="/profile" onClick={() => setProfileOpen(false)}
-                            className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
-                            <User className="w-3.5 h-3.5 text-[#00D4FF]"/> My Dashboard
-                          </Link>
-                          {isAdmin && (
-                            <>
-                              <Link to="/admin" onClick={() => setProfileOpen(false)}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-amber-400 font-body text-xs">
-                                <span className="text-sm">⚙️</span> Admin Dashboard
-                              </Link>
-                              <button
-                                onClick={() => { toggleEditMode(); setProfileOpen(false); }}
-                                className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold ${editMode ? 'bg-[#00D4FF]/15 text-[#00D4FF]' : 'hover:bg-white/10 text-amber-300'}`}
-                              >
-                                {editMode ? <><EyeOff className="w-3.5 h-3.5"/> Exit Edit Mode</> : <><Pencil className="w-3.5 h-3.5"/> ✏️ Enable Edit Mode</>}
-                              </button>
-                            </>
-                          )}
-                          {(user.is_seller || user.account_type === 'business_owner') && (
-                            <>
-                              <Link to="/profile?tab=listings" onClick={() => setProfileOpen(false)}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
-                                <Store className="w-3.5 h-3.5 text-[#00D4FF]"/> My Listings
-                              </Link>
-                              <Link to="/profile?tab=sellerorders" onClick={() => setProfileOpen(false)}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
-                                <Truck className="w-3.5 h-3.5 text-green-400"/> Seller Orders
-                              </Link>
-                              <Link to={`/seller/${user.username || user.id}`} onClick={() => setProfileOpen(false)}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
-                                <Globe className="w-3.5 h-3.5 text-green-400"/> View Seller Profile
-                              </Link>
-                            </>
-                          )}
-                          {!user.is_seller && user.account_type !== 'business_owner' && (
-                            <Link to="/profile?tab=profile" onClick={() => setProfileOpen(false)}
-                              className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-[#00D4FF] font-body text-xs font-semibold">
-                              <Store className="w-3.5 h-3.5"/> Become a Seller →
+                        {/* Buyer links */}
+                        <Link to="/profile?tab=orders" onClick={() => setProfileOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
+                          <History className="w-3.5 h-3.5 text-[#00D4FF]" /> My Orders
+                        </Link>
+                        <Link to="/profile?tab=favourites" onClick={() => setProfileOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
+                          <Heart className="w-3.5 h-3.5 text-pink-400" /> Saved Favourites
+                        </Link>
+                        <Link to="/profile?tab=cart" onClick={() => setProfileOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
+                          <ShoppingCart className="w-3.5 h-3.5 text-green-400" /> My Cart
+                        </Link>
+
+                        {/* Seller links */}
+                        {isSeller && (
+                          <>
+                            <div className="border-t border-white/8 my-1" />
+                            <p className="px-3 py-1 font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold">Seller Tools</p>
+                            <Link to="/profile?tab=listings" onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
+                              <Package className="w-3.5 h-3.5 text-[#00D4FF]"/> My Listings
                             </Link>
-                          )}
-                          <div className="border-t border-white/8 my-1" />
-                          <button onClick={() => { logout(true); setProfileOpen(false); }}
-                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 transition-colors text-red-400 font-body text-xs">
-                            <LogOut className="w-3.5 h-3.5" /> Sign Out
-                          </button>
+                            <Link to="/profile?tab=sellerorders" onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
+                              <Truck className="w-3.5 h-3.5 text-green-400"/> Seller Orders
+                            </Link>
+                            <Link to={`/seller/${user.username || user.id}`} onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
+                              <Globe className="w-3.5 h-3.5 text-green-400"/> My Seller Profile
+                            </Link>
+                            {user?.is_verified_seller && (
+                              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#2563EB]/10">
+                                <BadgeCheck className="w-3.5 h-3.5 text-[#2563EB]"/>
+                                <span className="font-body text-[10px] text-[#60a5fa] font-bold">✓ Verified Partner</span>
+                              </div>
+                            )}
+                          </>
+                        )}
+
+                        {!isSeller && (
+                          <Link to="/profile?tab=profile" onClick={() => setProfileOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-[#00D4FF] font-body text-xs font-semibold">
+                            <Store className="w-3.5 h-3.5"/> Become a Seller →
+                          </Link>
+                        )}
+
+                        {/* Admin links */}
+                        {isAdmin && (
+                          <>
+                            <div className="border-t border-white/8 my-1" />
+                            <p className="px-3 py-1 font-body text-[9px] text-amber-400/60 uppercase tracking-wider font-bold">Admin Panel</p>
+                            <Link to="/admin" onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-amber-500/10 transition-colors text-amber-400 font-body text-xs">
+                              <Settings className="w-3.5 h-3.5"/> Admin Dashboard
+                            </Link>
+                            <button
+                              onClick={() => { toggleEditMode(); setProfileOpen(false); }}
+                              className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold ${editMode ? 'bg-[#00D4FF]/15 text-[#00D4FF]' : 'hover:bg-white/10 text-amber-300'}`}
+                            >
+                              {editMode ? <><EyeOff className="w-3.5 h-3.5"/> Exit Edit Mode</> : <><Pencil className="w-3.5 h-3.5"/> Enable Edit Mode</>}
+                            </button>
+                          </>
+                        )}
+
+                        <div className="border-t border-white/8 my-1" />
+                        <Link to="/profile" onClick={() => setProfileOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
+                          <User className="w-3.5 h-3.5 text-[#00D4FF]"/> Account Settings
+                        </Link>
+                        <button onClick={() => { logout(true); setProfileOpen(false); }}
+                          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 transition-colors text-red-400 font-body text-xs">
+                          <LogOut className="w-3.5 h-3.5" /> Sign Out
+                        </button>
                         </div>
                       </motion.div>
                     )}
@@ -323,7 +340,7 @@ export default function Navbar() {
                     className="px-4 py-2 border border-white/20 text-white/80 rounded-lg font-body font-bold text-xs hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
                     Sign In
                   </button>
-                  <button onClick={() => base44.auth.redirectToLogin(window.location.href)}
+                  <button onClick={() => setShowSignup(true)}
                     className="px-4 py-2 bg-[#00D4FF] text-[#0A192F] rounded-lg font-body font-bold text-xs hover:bg-white transition-colors">
                     Sign Up Free
                   </button>
@@ -396,7 +413,7 @@ export default function Navbar() {
                       className="flex-1 py-2.5 border border-white/20 text-white rounded-xl font-body font-bold text-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
                       Sign In
                     </button>
-                    <button onClick={() => { setMenuOpen(false); base44.auth.redirectToLogin(window.location.href); }}
+                    <button onClick={() => { setMenuOpen(false); setShowSignup(true); }}
                       className="flex-1 py-2.5 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-sm hover:bg-white transition-colors">
                       Sign Up
                     </button>
@@ -409,7 +426,7 @@ export default function Navbar() {
       </nav>
 
       <AnimatePresence>
-        {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
+        {showSignup && <AccountTypeModal onClose={() => setShowSignup(false)} />}
       </AnimatePresence>
 
       {/* Floating Admin Edit Mode Bar */}

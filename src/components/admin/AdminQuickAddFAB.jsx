@@ -9,17 +9,23 @@ import QuickAddModal from './QuickAddModal';
  * defaultMode: 'business' | 'listing'
  * onAdded: optional callback after save
  */
-export default function AdminQuickAddFAB({ defaultMode = 'business', onAdded }) {
+export default function AdminQuickAddFAB({ defaultMode = 'business', onAdded, forceSection, forceSubcategory }) {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSeller, setIsSeller] = useState(false);
+  const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     base44.auth.me()
-      .then(u => setIsAdmin(u?.role === 'admin' || u?.role === 'moderator' || u?.email === 'Kevinarnold522@gmail.com'))
+      .then(u => {
+        setUser(u);
+        setIsAdmin(u?.role === 'admin' || u?.role === 'moderator' || u?.email === 'Kevinarnold522@gmail.com');
+        setIsSeller(u?.is_seller || u?.account_type === 'business_owner');
+      })
       .catch(() => {});
   }, []);
 
-  if (!isAdmin) return null;
+  if (!isAdmin && !isSeller) return null;
 
   return (
     <>
@@ -42,6 +48,12 @@ export default function AdminQuickAddFAB({ defaultMode = 'business', onAdded }) 
             defaultMode={defaultMode}
             onClose={() => setOpen(false)}
             onAdded={(type) => { if (onAdded) onAdded(type); }}
+            isAdmin={isAdmin}
+            isSeller={isSeller}
+            sellerEmail={user?.email}
+            sellerName={user?.full_name}
+            forceSection={forceSection}
+            forceSubcategory={forceSubcategory}
           />
         )}
       </AnimatePresence>
