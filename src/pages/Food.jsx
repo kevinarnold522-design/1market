@@ -268,6 +268,8 @@ export default function Food() {
     base44.auth.me().then(setCurrentUser).catch(() => {});
   }, []);
 
+  const isAdminUser = currentUser?.role === 'admin' || currentUser?.email === 'Kevinarnold522@gmail.com';
+
   useEffect(() => {
     base44.entities.Business.filter({ section: 'food', is_active: true }).then(setDbBusinesses).catch(() => {});
   }, []);
@@ -384,7 +386,7 @@ export default function Food() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {filtered.map((biz) => {
               const card = <BusinessCard key={biz.id} biz={biz} onRate={setRatingBiz} onInfo={setInfoBiz}/>;
-              if (currentUser?.role === 'admin' && biz.id) {
+              if (isAdminUser && biz.id) {
                 return (
                   <AdminEditOverlay key={biz.id} entity="Business" record={biz} fields={BUSINESS_ADMIN_FIELDS}
                     onSaved={(updated) => setDbBusinesses(prev => prev.map(b => b.id === updated.id ? updated : b))}

@@ -21,7 +21,7 @@
     },
     "username": {
       "type": "string",
-      "description": "Unique username \u2014 set once at signup"
+      "description": "Unique username \u2014 set at signup"
     },
     "username_set": {
       "type": "boolean",
@@ -50,12 +50,17 @@
     "is_verified_seller": {
       "type": "boolean",
       "default": false,
-      "description": "Admin grants blue checkmark after full document verification"
+      "description": "Admin grants blue checkmark after full verification"
     },
     "verification_submitted": {
       "type": "boolean",
       "default": false,
-      "description": "Seller has submitted documents for verification"
+      "description": "Seller has submitted request for verification"
+    },
+    "verification_requested": {
+      "type": "boolean",
+      "default": false,
+      "description": "Seller clicked the Become Verified Partner flow"
     },
     "member_type": {
       "type": "string",
@@ -69,6 +74,13 @@
     "location": {
       "type": "string",
       "description": "User's primary location"
+    },
+    "interests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "User interests selected at signup: traveller, food, shopper, services, rent, jobs"
     },
     "notifications_enabled": {
       "type": "boolean",

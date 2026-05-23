@@ -1,24 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Pencil, X, Save, Trash2 } from 'lucide-react';
+import { Pencil, X, Save, Trash2, Upload } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { getAdminEditMode } from './home/Navbar';
+
+function useGlobalEditMode() {
+  const [mode, setMode] = useState(getAdminEditMode());
+  useEffect(() => {
+    // poll every 300ms — lightweight enough
+    const t = setInterval(() => setMode(getAdminEditMode()), 300);
+    return () => clearInterval(t);
+  }, []);
+  return mode;
+}
 
 /**
- * Wraps any card/item and shows an edit pencil when admin is hovering.
+ * Wraps any card/item and shows an edit pencil on hover for admins OR the item owner (seller).
  * Props:
- *   entity      - 'Listing' | 'Business' | 'Review' (base44 entity name)
+ *   entity      - 'Listing' | 'Business' | etc.
  *   record      - the full data object
- *   fields      - array of { key, label, type? ('text'|'textarea'|'number'|'boolean') }
+ *   fields      - array of { key, label, type? ('text'|'textarea'|'number'|'boolean'|'image') }
  *   onSaved     - callback after save
  *   onDeleted   - optional callback after delete
+ *   isOwner     - if true, shows edit button for sellers editing their own items
  *   children    - the wrapped UI
  */
-export default function AdminEditOverlay({ entity, record, fields, onSaved, onDeleted, children }) {
+export default function AdminEditOverlay({ entity, record, fields, onSaved, onDeleted, isOwner = false, children }) {
+  const globalEditMode = useGlobalEditMode();
   const [hovered, setHovered] = useState(false);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [uploadingKey, setUploadingKey] = useState(null);
+  const fileRefs = useRef({});
 
   const openModal = (e) => {
     e.stopPropagation();
@@ -26,6 +41,18 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
     fields.forEach(f => { initial[f.key] = record[f.key] ?? ''; });
     setForm(initial);
     setOpen(true);
+  };
+
+  const handleImageUpload = async (key, file) => {
+    if (!file) return;
+    setUploadingKey(key);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setForm(v => ({ ...v, [key]: file_url }));
+    } catch (e) {
+      alert('Image upload failed. Please try again.');
+    }
+    setUploadingKey(null);
   };
 
   const handleSave = async () => {
@@ -43,7 +70,7 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
   };
 
   const handleDelete = async () => {
-    if (!window.confirm(`Delete this ${entity}?`)) return;
+    if (!window.confirm(`Delete this ${entity}? This cannot be undone.`)) return;
     setDeleting(true);
     await base44.entities[entity].delete(record.id);
     setDeleting(false);
@@ -56,17 +83,17 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
       <div className="relative" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
         {children}
         <AnimatePresence>
-          {hovered && (
+          {(hovered && (globalEditMode || isOwner)) && (
             <motion.button
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               onClick={openModal}
-              className="absolute top-2 right-2 z-30 w-7 h-7 rounded-full flex items-center justify-center shadow-lg"
-              style={{ background: 'rgba(0,212,255,0.9)', backdropFilter: 'blur(4px)' }}
-              title="Admin Edit"
+              className="absolute top-2 right-2 z-30 w-8 h-8 rounded-full flex items-center justify-center shadow-lg gap-1"
+              style={{ background: isOwner ? 'rgba(37,99,235,0.92)' : 'rgba(0,212,255,0.9)', backdropFilter: 'blur(4px)' }}
+              title={isOwner ? 'Edit Your Item' : 'Admin Edit'}
             >
-              <Pencil className="w-3.5 h-3.5 text-[#0A192F]"/>
+              <Pencil className="w-3.5 h-3.5 text-white"/>
             </motion.button>
           )}
         </AnimatePresence>
@@ -75,53 +102,109 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
       <AnimatePresence>
         {open && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[400] flex items-center justify-center p-4 bg-[#070F1A]/90 backdrop-blur-sm"
+            className="fixed inset-0 z-[400] flex items-end sm:items-center justify-center sm:p-4 bg-[#070F1A]/90 backdrop-blur-sm"
             onClick={() => setOpen(false)}>
-            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 40 }}
               onClick={e => e.stopPropagation()}
-              className="w-full max-w-md rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto"
+              className="w-full sm:max-w-lg rounded-t-3xl sm:rounded-2xl shadow-2xl max-h-[92vh] overflow-y-auto"
               style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.25)' }}>
-              <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between sticky top-0"
+
+              {/* Header */}
+              <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between sticky top-0 z-10"
                 style={{ background: '#0D1F3C' }}>
                 <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-body text-[9px] font-bold border border-amber-500/30">⚙️ Admin</span>
-                  <h3 className="font-heading font-bold text-white text-sm">Edit {entity}</h3>
+                  {isOwner ? (
+                    <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-body text-[9px] font-bold border border-blue-500/30">✏️ Edit Item</span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-body text-[9px] font-bold border border-amber-500/30">⚙️ Admin Edit</span>
+                  )}
+                  <h3 className="font-heading font-bold text-white text-sm">{record.title || record.name || entity}</h3>
                 </div>
-                <button onClick={() => setOpen(false)}><X className="w-4 h-4 text-white/40"/></button>
+                <button onClick={() => setOpen(false)} className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center">
+                  <X className="w-4 h-4 text-white/60"/>
+                </button>
               </div>
-              <div className="p-5 space-y-3">
+
+              {/* Fields */}
+              <div className="p-5 space-y-4">
                 {fields.map(f => (
                   <div key={f.key}>
-                    <label className="block font-body text-[10px] font-semibold text-white/45 mb-1 uppercase tracking-wider">{f.label}</label>
-                    {f.type === 'textarea' ? (
+                    <label className="block font-body text-[10px] font-semibold text-white/45 mb-1.5 uppercase tracking-wider">{f.label}</label>
+
+                    {f.type === 'image' ? (
+                      <div className="space-y-2">
+                        {form[f.key] && (
+                          <div className="relative rounded-xl overflow-hidden aspect-video bg-white/5">
+                            <img src={form[f.key]} alt="preview" className="w-full h-full object-cover" />
+                            <button onClick={() => setForm(v => ({ ...v, [f.key]: '' }))}
+                              className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500/80 flex items-center justify-center">
+                              <X className="w-3 h-3 text-white"/>
+                            </button>
+                          </div>
+                        )}
+                        <input
+                          ref={el => fileRefs.current[f.key] = el}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={e => handleImageUpload(f.key, e.target.files[0])}
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => fileRefs.current[f.key]?.click()}
+                            disabled={uploadingKey === f.key}
+                            className="flex-1 py-2.5 border-2 border-dashed border-[#00D4FF]/30 hover:border-[#00D4FF]/70 rounded-xl text-[#00D4FF] font-body text-xs flex items-center justify-center gap-2 transition-colors">
+                            {uploadingKey === f.key
+                              ? <><div className="w-3 h-3 border border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin"/> Uploading...</>
+                              : <><Upload className="w-3.5 h-3.5"/> Upload from Device</>}
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          value={form[f.key] || ''}
+                          onChange={e => setForm(v => ({ ...v, [f.key]: e.target.value }))}
+                          placeholder="Or paste image URL..."
+                          className="w-full border border-white/10 rounded-xl px-3 py-2 font-body text-xs text-white/60 bg-white/5 focus:outline-none focus:border-[#00D4FF] placeholder-white/20"
+                        />
+                      </div>
+                    ) : f.type === 'textarea' ? (
                       <textarea value={form[f.key] || ''} onChange={e => setForm(v => ({ ...v, [f.key]: e.target.value }))}
                         className="w-full border border-white/10 rounded-xl px-3 py-2 font-body text-xs resize-none h-20 bg-white/5 text-white placeholder-white/20 focus:outline-none focus:border-[#00D4FF]"/>
                     ) : f.type === 'boolean' ? (
-                      <button onClick={() => setForm(v => ({ ...v, [f.key]: !v[f.key] }))}
-                        className={`w-9 h-5 rounded-full relative transition-colors ${form[f.key] ? 'bg-[#2563EB]' : 'bg-white/15'}`}>
-                        <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${form[f.key] ? 'translate-x-4' : 'translate-x-0.5'}`}/>
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <button onClick={() => setForm(v => ({ ...v, [f.key]: !v[f.key] }))}
+                          className={`w-10 h-5 rounded-full relative transition-colors ${form[f.key] ? 'bg-[#2563EB]' : 'bg-white/15'}`}>
+                          <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${form[f.key] ? 'translate-x-5' : 'translate-x-0.5'}`}/>
+                        </button>
+                        <span className="font-body text-xs text-white/50">{form[f.key] ? 'Yes / Active' : 'No / Hidden'}</span>
+                      </div>
                     ) : (
-                      <input type={f.type === 'number' ? 'number' : 'text'}
-                        value={form[f.key] || ''} onChange={e => setForm(v => ({ ...v, [f.key]: e.target.value }))}
-                        className="w-full border border-white/10 rounded-xl px-3 py-2 font-body text-xs text-white bg-white/5 focus:outline-none focus:border-[#00D4FF]"/>
+                      <input
+                        type={f.type === 'number' ? 'number' : 'text'}
+                        value={form[f.key] || ''}
+                        onChange={e => setForm(v => ({ ...v, [f.key]: e.target.value }))}
+                        className="w-full border border-white/10 rounded-xl px-3 py-2 font-body text-xs text-white bg-white/5 focus:outline-none focus:border-[#00D4FF]"
+                      />
                     )}
                   </div>
                 ))}
-                <div className="flex gap-2 pt-2">
+
+                {/* Action buttons */}
+                <div className="flex gap-2 pt-2 pb-1">
                   <button onClick={handleSave} disabled={saving}
-                    className="flex-1 py-2.5 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-xs hover:bg-white transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5">
-                    {saving ? <div className="w-3 h-3 border border-[#0A192F]/30 border-t-[#0A192F] rounded-full animate-spin"/> : <Save className="w-3 h-3"/>}
+                    className="flex-1 py-3 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-sm hover:bg-white transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                    {saving ? <div className="w-4 h-4 border-2 border-[#0A192F]/30 border-t-[#0A192F] rounded-full animate-spin"/> : <Save className="w-4 h-4"/>}
                     Save Changes
                   </button>
                   {onDeleted && (
                     <button onClick={handleDelete} disabled={deleting}
-                      className="px-4 py-2.5 bg-red-500/10 border border-red-500/25 text-red-400 rounded-xl font-body text-xs font-bold hover:bg-red-500/20 transition-colors disabled:opacity-50 flex items-center gap-1">
-                      {deleting ? <div className="w-3 h-3 border border-red-400/30 border-t-red-400 rounded-full animate-spin"/> : <Trash2 className="w-3 h-3"/>}
-                      Delete
+                      className="px-4 py-3 bg-red-500/10 border border-red-500/25 text-red-400 rounded-xl font-body text-sm font-bold hover:bg-red-500/20 transition-colors disabled:opacity-50 flex items-center gap-1">
+                      {deleting ? <div className="w-4 h-4 border border-red-400/30 border-t-red-400 rounded-full animate-spin"/> : <Trash2 className="w-4 h-4"/>}
                     </button>
                   )}
-                  <button onClick={() => setOpen(false)} className="px-4 py-2.5 border border-white/10 text-white/40 rounded-xl font-body text-xs">Cancel</button>
                 </div>
               </div>
             </motion.div>

@@ -11,6 +11,7 @@ import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import ParticleBackground from '../components/ParticleBackground';
 import OrdersTab from '../components/seller/OrdersTab';
+import VerifiedPartnerBanner from '../components/VerifiedPartnerBanner';
 
 // ─── Shared helpers ───────────────────────────────────────────────────────────
 const LISTING_TYPES = ['product','shoes','cars','houses','electronics','clothing','furniture','food','services','other'];
@@ -263,6 +264,7 @@ export default function UserProfile() {
   const [user, setUser] = useState(null);
   const urlTab = new URLSearchParams(window.location.search).get('tab') || 'profile';
   const [activeTab, setActiveTab] = useState(urlTab);
+  const [showVerifiedBanner, setShowVerifiedBanner] = useState(false);
   const [orders, setOrders] = useState([]);
   const [sellerOrders, setSellerOrders] = useState([]);
   const [cart, setCart] = useState([]);
@@ -341,7 +343,7 @@ export default function UserProfile() {
   const completedOrders = orders.filter(o => o.status === 'completed');
   const isVerified = user?.is_verified_seller;
   const isSeller = user?.is_seller || user?.account_type === 'business_owner';
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role === 'admin' || user?.email === 'Kevinarnold522@gmail.com';
   const pendingSellerOrders = sellerOrders.filter(o => o.status !== 'completed' && o.status !== 'cancelled');
 
   // Build tabs based on account type
@@ -847,21 +849,24 @@ export default function UserProfile() {
                     </Link>
                   </div>
                 </div>
-                {!isVerified && (
-                  <div className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg,rgba(37,99,235,0.1),rgba(0,212,255,0.05))', border: '1px solid rgba(0,212,255,0.15)' }}>
-                    <div className="flex items-start gap-3">
-                      <BadgeCheck className="w-8 h-8 text-[#2563EB] flex-shrink-0 mt-0.5"/>
+                {!isVerified && !user?.verification_submitted && (
+                  <button
+                    onClick={() => setShowVerifiedBanner(true)}
+                    className="w-full rounded-2xl p-4 text-left transition-all hover:scale-[1.01]"
+                    style={{ background: 'linear-gradient(135deg,rgba(37,99,235,0.15),rgba(0,212,255,0.07))', border: '1px solid rgba(0,212,255,0.25)' }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <BadgeCheck className="w-8 h-8 text-[#2563EB] flex-shrink-0"/>
                       <div>
-                        <p className="font-heading font-bold text-white text-sm">Get Verified</p>
-                        <p className="font-body text-[10px] text-white/40 mb-3">Get a blue checkmark on all your listings and seller page.</p>
-                        {user?.verification_submitted
-                          ? <div className="flex items-center gap-2 text-amber-400 font-body text-xs"><CheckCircle className="w-3.5 h-3.5"/> Pending admin review</div>
-                          : <button onClick={submitVerification} className="flex items-center gap-1.5 px-4 py-2 bg-[#2563EB] text-white rounded-xl font-body font-bold text-xs hover:bg-[#00D4FF] hover:text-[#0A192F] transition-colors">
-                              <BadgeCheck className="w-3.5 h-3.5"/> Submit for Verification
-                            </button>
-                        }
+                        <p className="font-heading font-bold text-white text-sm">✨ Become a Verified Partner</p>
+                        <p className="font-body text-[10px] text-white/40">Get your blue ✅ badge, boosted listings & official partner status. Tap to learn more.</p>
                       </div>
                     </div>
+                  </button>
+                )}
+                {user?.verification_submitted && !isVerified && (
+                  <div className="flex items-center gap-2 text-amber-400 font-body text-xs p-3 rounded-xl" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
+                    <CheckCircle className="w-3.5 h-3.5"/> Verification request pending admin review (24–48 hrs)
                   </div>
                 )}
               </div>
@@ -922,6 +927,12 @@ export default function UserProfile() {
             style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)' }}>
             ✅ {toast}
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showVerifiedBanner && user && (
+          <VerifiedPartnerBanner user={user} onClose={() => setShowVerifiedBanner(false)} />
         )}
       </AnimatePresence>
     </div>

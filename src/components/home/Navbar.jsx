@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../MemberSignupModal';
@@ -7,12 +7,38 @@ import NavUserBadge from './NavUserBadge';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 
+// Global edit mode state (simple module-level so any component can read it)
+let _editModeListeners = [];
+let _editModeValue = false;
+export function getAdminEditMode() { return _editModeValue; }
+export function setAdminEditMode(val) {
+  _editModeValue = val;
+  _editModeListeners.forEach(fn => fn(val));
+}
+export function useAdminEditMode() {
+  const [editMode, setEditMode] = useState(_editModeValue);
+  useEffect(() => {
+    const handler = (v) => setEditMode(v);
+    _editModeListeners.push(handler);
+    return () => { _editModeListeners = _editModeListeners.filter(fn => fn !== handler); };
+  }, []);
+  return editMode;
+}
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [editMode, setEditModeLocal] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
+  const isAdmin = user?.role === 'admin' || user?.email === 'Kevinarnold522@gmail.com';
+
+  const toggleEditMode = () => {
+    const next = !editMode;
+    setEditModeLocal(next);
+    setAdminEditMode(next);
+  };
 
   // Inline edit states
   const [editingName, setEditingName] = useState(false);
@@ -69,14 +95,7 @@ export default function Navbar() {
     setNameSaving(false);
   };
 
-  const links = [
-    { label: 'Travel', href: '/travel' },
-    { label: 'Food', href: '/food' },
-    { label: 'Buy & Sell', href: '/buysell' },
-    { label: 'For Rent', href: '/rent' },
-    { label: 'Services', href: '/services' },
-    { label: 'Jobs', href: '/jobs' },
-  ];
+  const links = [];
 
   const initials = user ? (user.full_name || user.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
   const memberSince = user?.created_date ? new Date(user.created_date).toLocaleDateString('en-PH', { year: 'numeric', month: 'short' }) : '';
@@ -252,11 +271,19 @@ export default function Navbar() {
                             className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
                             <User className="w-3.5 h-3.5 text-[#00D4FF]"/> My Dashboard
                           </Link>
-                          {user.role === 'admin' && (
-                            <Link to="/admin" onClick={() => setProfileOpen(false)}
-                              className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-amber-400 font-body text-xs">
-                              <span className="text-sm">⚙️</span> Admin Dashboard
-                            </Link>
+                          {isAdmin && (
+                            <>
+                              <Link to="/admin" onClick={() => setProfileOpen(false)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-amber-400 font-body text-xs">
+                                <span className="text-sm">⚙️</span> Admin Dashboard
+                              </Link>
+                              <button
+                                onClick={() => { toggleEditMode(); setProfileOpen(false); }}
+                                className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold ${editMode ? 'bg-[#00D4FF]/15 text-[#00D4FF]' : 'hover:bg-white/10 text-amber-300'}`}
+                              >
+                                {editMode ? <><EyeOff className="w-3.5 h-3.5"/> Exit Edit Mode</> : <><Pencil className="w-3.5 h-3.5"/> ✏️ Enable Edit Mode</>}
+                              </button>
+                            </>
                           )}
                           {(user.is_seller || user.account_type === 'business_owner') && (
                             <>
@@ -383,6 +410,33 @@ export default function Navbar() {
 
       <AnimatePresence>
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
+      </AnimatePresence>
+
+      {/* Floating Admin Edit Mode Bar */}
+      <AnimatePresence>
+        {isAdmin && isAuthenticated && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[500] flex items-center gap-3 px-4 py-2.5 rounded-2xl shadow-2xl pointer-events-auto"
+            style={{
+              background: editMode ? 'rgba(0,212,255,0.95)' : 'rgba(13,31,60,0.97)',
+              border: `1.5px solid ${editMode ? 'rgba(0,212,255,0.5)' : 'rgba(245,158,11,0.4)'}`,
+              backdropFilter: 'blur(14px)'
+            }}
+          >
+            <Shield className={`w-4 h-4 ${editMode ? 'text-[#0A192F]' : 'text-amber-400'}`} />
+            <span className={`font-body text-xs font-bold whitespace-nowrap ${editMode ? 'text-[#0A192F]' : 'text-amber-300'}`}>
+              {editMode ? '✏️ Edit Mode ON — Hover any item to edit' : '🛡️ Admin Mode'}
+            </span>
+            <button
+              onClick={toggleEditMode}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs transition-all ${editMode ? 'bg-[#0A192F] text-[#00D4FF] hover:bg-[#0A192F]/80' : 'bg-amber-500 text-white hover:bg-amber-400'}`}
+            >
+              {editMode ? <><EyeOff className="w-3 h-3"/> Exit Edit</> : <><Pencil className="w-3 h-3"/> Edit Mode</>}
+            </button>
+          </motion.div>
+        )}
       </AnimatePresence>
     </>
   );

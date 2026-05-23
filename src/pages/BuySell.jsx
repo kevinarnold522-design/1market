@@ -307,7 +307,7 @@ export default function BuySell() {
   // Merge static + DB listings
   const allListings = [...staticListings, ...dbListings.map(l => ({ ...l, image: l.image_url }))];
 
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role === 'admin' || user?.email === 'Kevinarnold522@gmail.com';
   const isSeller = user?.is_seller || user?.account_type === 'business_owner';
 
   const filtered = allListings
