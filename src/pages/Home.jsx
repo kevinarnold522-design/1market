@@ -17,6 +17,7 @@ import WhatMakesUsSpecial from '../components/home/WhatMakesUsSpecial';
 import SuggestionBox from '../components/home/SuggestionBox';
 import PhFlightDeals from '../components/home/PhFlightDeals';
 import PhHotelDeals from '../components/home/PhHotelDeals';
+import StarField from '../components/StarField';
 
 const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/be5b76b23_generated_1fcae122.png';
 
@@ -35,7 +36,9 @@ const FEATURED_IMAGES = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pt-8 overflow-x-hidden">
+    <div className="min-h-screen bg-[#070F1A] pt-8 overflow-x-hidden relative">
+      <StarField />
+      <div className="relative z-10">
       <WelcomeSplash />
       <Navbar />
       <FilipinoPrideBanner />
@@ -56,6 +59,7 @@ export default function Home() {
       <CommunityAnimation />
       <Footer />
       <SuggestionBox />
+      </div>
     </div>
   );
 }

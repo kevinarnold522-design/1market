@@ -348,9 +348,11 @@ export default function BuySellElectronicsDeals() {
           <div
             ref={scrollRef}
             className="flex gap-4 overflow-x-auto pb-4"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
+            onTouchStart={() => setIsPaused(true)}
+            onTouchEnd={() => setTimeout(() => setIsPaused(false), 1500)}
           >
             <AnimatePresence mode="popLayout">
               {filtered.map(item => <PhoneCard key={item.id} item={item} onAbout={setAboutItem} />)}

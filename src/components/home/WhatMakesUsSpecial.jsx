@@ -20,14 +20,9 @@ export default function WhatMakesUsSpecial() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       className="w-full relative overflow-hidden"
-      style={{ background: 'linear-gradient(90deg,#0A192F,#112240,#1d4ed8,#0A192F)', backgroundSize: '300% 100%' }}
+      style={{ background: 'rgba(10,25,47,0.7)', borderBottom: '1px solid rgba(0,212,255,0.12)', backdropFilter: 'blur(8px)' }}
     >
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-        style={{ background: 'linear-gradient(90deg,transparent,rgba(0,212,255,0.07),transparent)', backgroundSize: '200% 100%' }}
-      />
+      <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(90deg,transparent,rgba(0,212,255,0.04),transparent)' }} />
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 flex-wrap flex-1 justify-center">
           <span className="font-heading font-bold text-[10px] sm:text-xs text-[#00D4FF] uppercase tracking-widest whitespace-nowrap">✨ What Makes Us Special:</span>

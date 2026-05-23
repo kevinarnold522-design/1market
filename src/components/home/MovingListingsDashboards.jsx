@@ -281,9 +281,11 @@ function ScrollingDashboard({ title, subtitle, emoji, items, type, bgClass }) {
           <div
             ref={scrollRef}
             className="flex gap-4 overflow-x-auto pb-3"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
+            onTouchStart={() => setIsPaused(true)}
+            onTouchEnd={() => setTimeout(() => setIsPaused(false), 1500)}
           >
             {filtered.map((item, i) => (
               <LightningCard key={item.id} item={item} type={type} onAbout={setAboutItem} index={i} />

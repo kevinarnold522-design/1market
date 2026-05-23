@@ -15,6 +15,7 @@ import SellerDashboard from './pages/SellerDashboard';
 import ForRent from './pages/ForRent';
 import Services from './pages/Services';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import UserProfile from './pages/UserProfile';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -51,6 +52,7 @@ const AuthenticatedApp = () => {
       <Route path="/rent" element={<ForRent />} />
       <Route path="/services" element={<Services />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/profile" element={<UserProfile />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

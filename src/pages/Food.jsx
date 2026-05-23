@@ -106,12 +106,16 @@ function BusinessCard({ biz, onRate, onInfo }) {
   const locationColor = biz.location === 'Manila' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700';
   const imgSrc = biz.image_url || biz.image;
   const menuItems = biz.menu || [];
+  const [touched, setTouched] = React.useState(false);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-2xl overflow-hidden border border-[#0A192F]/5 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+      onTouchStart={() => setTouched(true)}
+      onTouchEnd={() => setTimeout(() => setTouched(false), 800)}
+      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+      style={{ border: touched ? '1.5px solid #2563EB' : '1px solid rgba(10,25,47,0.06)', boxShadow: touched ? '0 0 24px rgba(37,99,235,0.3)' : undefined, transition: 'border 0.2s, box-shadow 0.2s' }}
     >
       <div className="relative aspect-[16/9] overflow-hidden">
         <img src={imgSrc} alt={biz.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
