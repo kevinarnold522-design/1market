@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import StarField from '../components/StarField';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, MapPin, Star, Filter, X, UtensilsCrossed, Clock, ExternalLink } from 'lucide-react';
@@ -268,7 +269,8 @@ export default function Food() {
   const caviteCount = filtered.filter(b => b.location === 'Cavite').length;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-[#070F1A]">
+      <StarField />
       <SubcategorySplash
         subcategories={FOOD_SUBCATEGORIES}
         activeKey={selectedSubcat}

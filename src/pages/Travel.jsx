@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import StarField from '../components/StarField';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, MapPin, Star, Plane, Hotel, Car, Search, ExternalLink, Building, Anchor, Mountain, Tent, Globe, Navigation, Ship, Bike, Camera } from 'lucide-react';
@@ -313,7 +314,8 @@ export default function Travel() {
   const items = getItems() || [];
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-[#070F1A]">
+      <StarField />
       <SubcategorySplash
         subcategories={TRAVEL_SUBCATEGORIES}
         activeKey={tab}

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, User, Mail, Shield, LogOut, Edit2, Check, Star, ShoppingBag, Package, Heart, Settings, Camera } from 'lucide-react';
+import { ArrowLeft, User, Mail, Shield, LogOut, Edit2, Check, Star, ShoppingBag, Package, Heart, Settings, Store, MapPin } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
+import StarField from '../components/StarField';
 
 const TABS = [
   { key: 'profile', label: 'Profile', icon: User },
@@ -56,19 +57,7 @@ export default function UserProfile() {
 
   return (
     <div className="min-h-screen bg-[#070F1A]">
-      {/* Stars bg */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
-        {Array.from({ length: 60 }).map((_, i) => (
-          <div key={i} className="absolute rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%`,
-              width: `${Math.random() * 2 + 1}px`, height: `${Math.random() * 2 + 1}px`,
-              background: i % 3 === 0 ? '#00D4FF' : i % 3 === 1 ? '#2563EB' : '#fff',
-              opacity: Math.random() * 0.5 + 0.1,
-              animation: `pulse ${Math.random() * 3 + 2}s ease-in-out infinite`,
-            }} />
-        ))}
-      </div>
+      <StarField />
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 py-8">
         {/* Back */}
@@ -168,21 +157,67 @@ export default function UserProfile() {
         <AnimatePresence mode="wait">
           <motion.div key={activeTab} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
             {activeTab === 'profile' && (
-              <div className="rounded-2xl p-6 space-y-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <h2 className="font-heading font-bold text-white text-lg">Account Information</h2>
-                <div className="space-y-3">
-                  {[
-                    { label: 'Full Name', value: user.full_name || '—' },
-                    { label: 'Email Address', value: user.email },
-                    { label: 'Account Role', value: user.role || 'user' },
-                    { label: 'Member Since', value: memberSince },
-                  ].map(({ label, value }) => (
-                    <div key={label} className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
-                      <span className="font-body text-xs text-white/40 uppercase tracking-wider">{label}</span>
-                      <span className="font-body text-sm text-white font-semibold">{value}</span>
-                    </div>
-                  ))}
+              <div className="space-y-4">
+                <div className="rounded-2xl p-6 space-y-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                  <h2 className="font-heading font-bold text-white text-lg">Account Information</h2>
+                  <div className="space-y-3">
+                    {[
+                      { label: 'Full Name', value: user.full_name || '—' },
+                      { label: 'Email Address', value: user.email },
+                      { label: 'Account Role', value: user.role || 'user' },
+                      { label: 'Member Since', value: memberSince },
+                    ].map(({ label, value }) => (
+                      <div key={label} className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
+                        <span className="font-body text-xs text-white/40 uppercase tracking-wider">{label}</span>
+                        <span className="font-body text-sm text-white font-semibold">{value}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
+
+                {/* Seller CTA */}
+                {!user.is_seller ? (
+                  <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+                    className="rounded-2xl p-5"
+                    style={{ background: 'linear-gradient(135deg,rgba(37,99,235,0.15),rgba(0,212,255,0.08))', border: '1px solid rgba(0,212,255,0.2)' }}>
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-[#00D4FF]/10 flex items-center justify-center flex-shrink-0">
+                        <Store className="w-5 h-5 text-[#00D4FF]" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-heading font-bold text-white text-sm mb-0.5">Start Selling on 1Marketph</h3>
+                        <p className="font-body text-xs text-white/50 leading-relaxed mb-3">List your products, services, or business for free. Reach thousands of buyers across the Philippines.</p>
+                        <Link to="/seller"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-xs hover:bg-white transition-colors">
+                          <Store className="w-3.5 h-3.5" /> Become a Seller →
+                        </Link>
+                      </div>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+                    className="rounded-2xl p-5"
+                    style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center">
+                          <Store className="w-5 h-5 text-green-400" />
+                        </div>
+                        <div>
+                          <p className="font-heading font-bold text-white text-sm">Active Seller Account</p>
+                          <p className="font-body text-xs text-white/50 flex items-center gap-1 mt-0.5">
+                            <MapPin className="w-3 h-3 text-green-400" />
+                            {user.seller_location || 'Location not set'}{user.seller_area ? ` · ${user.seller_area}` : ''}
+                          </p>
+                        </div>
+                      </div>
+                      <Link to="/seller"
+                        className="px-3 py-1.5 bg-green-500/10 border border-green-500/30 text-green-400 rounded-xl font-body text-xs font-semibold hover:bg-green-500/20 transition-colors">
+                        Dashboard →
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
               </div>
             )}
 

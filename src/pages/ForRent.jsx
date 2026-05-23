@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import StarField from '../components/StarField';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, MapPin, ExternalLink, Phone, MessageSquare, AlertCircle } from 'lucide-react';
@@ -128,7 +129,8 @@ export default function ForRent() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-[#070F1A]">
+      <StarField />
       <SubcategorySplash
         subcategories={SUBCATEGORIES}
         activeKey={activeCategory}
