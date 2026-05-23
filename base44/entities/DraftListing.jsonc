@@ -1,0 +1,63 @@
+{
+  "name": "DraftListing",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "subcategory": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "price_label": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "area": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "extra_images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "condition": {
+      "type": "string"
+    },
+    "brand": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "warranty": {
+      "type": "string"
+    },
+    "specs": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "seller_name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

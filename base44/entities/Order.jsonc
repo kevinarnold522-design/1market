@@ -1,0 +1,61 @@
+{
+  "name": "Order",
+  "type": "object",
+  "properties": {
+    "listing_id": {
+      "type": "string"
+    },
+    "listing_title": {
+      "type": "string"
+    },
+    "listing_image": {
+      "type": "string"
+    },
+    "price_label": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "buyer_email": {
+      "type": "string"
+    },
+    "buyer_name": {
+      "type": "string"
+    },
+    "seller_email": {
+      "type": "string"
+    },
+    "seller_name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "seller_confirmed",
+        "buyer_confirmed",
+        "completed",
+        "cancelled"
+      ],
+      "default": "pending",
+      "description": "Both parties must confirm for 'completed'"
+    },
+    "seller_confirmed_delivery": {
+      "type": "boolean",
+      "default": false
+    },
+    "buyer_confirmed_received": {
+      "type": "boolean",
+      "default": false
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "listing_id",
+    "buyer_email",
+    "seller_email"
+  ]
+}

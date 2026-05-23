@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../MemberSignupModal';
@@ -169,9 +169,12 @@ export default function Navbar() {
                             </div>
                             <div className="flex-1 min-w-0">
                               {/* Account type badge */}
-                              <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border mb-1 ${accountTypeBadge}`}>
-                                {accountTypeLabel}
-                              </span>
+                              <div className="flex items-center gap-1 mb-1">
+                                <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>
+                                  {accountTypeLabel}
+                                </span>
+                                {user?.is_verified_seller && <BadgeCheck className="w-3.5 h-3.5 text-[#2563EB]" title="Verified Seller" />}
+                              </div>
                               {/* Editable username */}
                               {editingName ? (
                                 <div className="flex items-center gap-1.5">

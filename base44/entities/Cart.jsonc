@@ -1,0 +1,41 @@
+{
+  "name": "Cart",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "listing_id": {
+      "type": "string"
+    },
+    "listing_title": {
+      "type": "string"
+    },
+    "listing_image": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "price_label": {
+      "type": "string"
+    },
+    "seller_name": {
+      "type": "string"
+    },
+    "seller_email": {
+      "type": "string"
+    },
+    "quantity": {
+      "type": "integer",
+      "default": 1
+    },
+    "area": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_email",
+    "listing_id"
+  ]
+}

@@ -10,18 +10,52 @@
         "user"
       ]
     },
-    "is_seller": {
+    "account_type": {
+      "type": "string",
+      "enum": [
+        "customer",
+        "business_owner"
+      ],
+      "default": "customer",
+      "description": "User account type"
+    },
+    "username": {
+      "type": "string",
+      "description": "Unique username \u2014 set once at signup"
+    },
+    "username_set": {
       "type": "boolean",
       "default": false,
-      "description": "Whether this user is a seller"
+      "description": "Whether the user has set their username"
+    },
+    "is_seller": {
+      "type": "boolean",
+      "default": false
     },
     "seller_location": {
-      "type": "string",
-      "description": "Primary selling location e.g. Manila, Cavite, Nationwide"
+      "type": "string"
     },
     "seller_area": {
+      "type": "string"
+    },
+    "seller_bio": {
       "type": "string",
-      "description": "Specific area/district of the seller"
+      "description": "Short seller/business bio"
+    },
+    "seller_page_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether seller has activated their public seller page"
+    },
+    "is_verified_seller": {
+      "type": "boolean",
+      "default": false,
+      "description": "Admin grants blue checkmark after full document verification"
+    },
+    "verification_submitted": {
+      "type": "boolean",
+      "default": false,
+      "description": "Seller has submitted documents for verification"
     },
     "member_type": {
       "type": "string",
@@ -30,8 +64,19 @@
         "seller",
         "both"
       ],
-      "default": "buyer",
-      "description": "Member type chosen at signup"
+      "default": "buyer"
+    },
+    "location": {
+      "type": "string",
+      "description": "User's primary location"
+    },
+    "notifications_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "email_updates": {
+      "type": "boolean",
+      "default": true
     }
   },
   "required": [
