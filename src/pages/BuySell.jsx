@@ -7,6 +7,7 @@ import { ArrowLeft, Search, X, ChevronDown, Phone, MessageSquare, AlertCircle, Z
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import { base44 } from '@/api/base44Client';
+import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
 
 const SUBCATEGORIES = [
   { key: 'shoes', label: 'Shoes', icon: '👟', desc: 'Sneakers, footwear & more' },
@@ -473,6 +474,11 @@ export default function BuySell() {
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
         {editItem && isAdmin && <AdminEditModal item={editItem} onClose={() => setEditItem(null)} onSave={handleAdminEditSave} />}
       </AnimatePresence>
+
+      <AdminQuickAddFAB defaultMode="listing" onAdded={async () => {
+        const items = await base44.entities.Listing.list('-created_date', 100);
+        setDbListings(items.filter(l => l.is_active));
+      }} />
 
       <AnimatePresence>
         {toast && (

@@ -9,6 +9,7 @@ import { base44 } from '@/api/base44Client';
 import MemberSignupModal from '../components/MemberSignupModal';
 import BusinessBioModal from '../components/home/BusinessBioModal';
 import { getAdminEditMode } from '../components/home/Navbar';
+import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
 
 const KNOWN_LOGOS = {
   'Jollibee': 'https://upload.wikimedia.org/wikipedia/en/thumb/8/84/Jollibee_logo.svg/220px-Jollibee_logo.svg.png',
@@ -452,6 +453,9 @@ export default function Food() {
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
       </AnimatePresence>
       {infoBiz && <BusinessBioModal business={infoBiz} onClose={() => setInfoBiz(null)} />}
+      <AdminQuickAddFAB defaultMode="business" onAdded={() => {
+        base44.entities.Business.filter({ section: 'food', is_active: true }).then(setDbBusinesses).catch(() => {});
+      }} />
     </div>
   );
 }

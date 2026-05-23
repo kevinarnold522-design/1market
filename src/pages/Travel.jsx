@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import StarField from '../components/StarField';
 import SubcategorySplash from '../components/SubcategorySplash';
+import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, MapPin, Star, Plane, Hotel, Car, Search, ExternalLink, Building, Anchor, Mountain, Tent, Globe, Navigation, Ship, Bike, Camera } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -469,6 +470,7 @@ export default function Travel() {
           </div>
         )}
       </div>
+      <AdminQuickAddFAB defaultMode="business" />
     </div>
   );
 }
