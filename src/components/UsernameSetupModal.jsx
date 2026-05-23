@@ -133,7 +133,7 @@ export default function UsernameSetupModal({ user, onComplete }) {
               <><User className="w-4 h-4" /> Create My Account</>
             )}
           </button>
-          <p className="font-body text-[9px] text-white/25 text-center">Username cannot be changed after this step.</p>
+          <p className="font-body text-[9px] text-white/25 text-center">You can update your username anytime from Settings.</p>
         </div>
       </motion.div>
     </motion.div>

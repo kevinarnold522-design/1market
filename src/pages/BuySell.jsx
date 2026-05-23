@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import StarField from '../components/StarField';
+import AdminEditOverlay from '../components/AdminEditOverlay';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, X, ChevronDown, Phone, MessageSquare, AlertCircle, ZoomIn, Heart, ShoppingCart, Pencil, Store } from 'lucide-react';
@@ -28,12 +29,27 @@ const staticListings = [
 
 const SORT_OPTIONS = ['Latest Listings', 'Price: Low to High', 'Price: High to Low'];
 
-function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites, onEdit, isAdmin }) {
+const LISTING_ADMIN_FIELDS = [
+  { key: 'title', label: 'Title' },
+  { key: 'type', label: 'Category' },
+  { key: 'subcategory', label: 'Subcategory' },
+  { key: 'price_label', label: 'Price Display' },
+  { key: 'price', label: 'Price (₱)', type: 'number' },
+  { key: 'location', label: 'Location' },
+  { key: 'area', label: 'Area' },
+  { key: 'description', label: 'Description', type: 'textarea' },
+  { key: 'seller_name', label: 'Seller Name' },
+  { key: 'phone', label: 'Phone' },
+  { key: 'condition', label: 'Condition' },
+  { key: 'is_active', label: 'Active / Visible', type: 'boolean' },
+];
+
+function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites, onEdit, isAdmin, onAdminSaved }) {
   const formatPrice = (p) => p ? `₱${Number(p).toLocaleString()}` : '—';
   const isFav = favourites.includes(String(item.id));
   const isOwner = user && item.created_by === user.email;
 
-  return (
+  const card = (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
       className="bg-white rounded-2xl overflow-hidden border border-[#0A192F]/5 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
       <div className="relative overflow-hidden" style={{ aspectRatio: '4/3' }}>
@@ -119,6 +135,16 @@ function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites,
       </div>
     </motion.div>
   );
+
+  if (isAdmin && item.id && !item._static) {
+    return (
+      <AdminEditOverlay entity="Listing" record={item} fields={LISTING_ADMIN_FIELDS}
+        onSaved={onAdminSaved} onDeleted={onAdminSaved}>
+        {card}
+      </AdminEditOverlay>
+    );
+  }
+  return card;
 }
 
 function ContactModal({ item, onClose }) {
@@ -408,7 +434,12 @@ export default function BuySell() {
             {filtered.map(item => (
               <ListingCard key={item.id} item={item} onExpand={setExpandedItem} onContact={setContactItem}
                 user={user} onFavourite={handleFavourite} favourites={favourites}
-                onEdit={setEditItem} isAdmin={isAdmin} />
+                onEdit={setEditItem} isAdmin={isAdmin}
+                onAdminSaved={async () => {
+                  const items = await base44.entities.Listing.list('-created_date', 100);
+                  setDbListings(items.filter(l => l.is_active));
+                  showToast('Listing updated!');
+                }} />
             ))}
           </div>
         ) : (

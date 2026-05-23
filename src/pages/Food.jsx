@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import StarField from '../components/StarField';
+import AdminEditOverlay from '../components/AdminEditOverlay';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, MapPin, Star, Filter, X, UtensilsCrossed, Clock, ExternalLink } from 'lucide-react';
@@ -236,6 +237,21 @@ const FOOD_SUBCATEGORIES = [
   { key: 'catering', label: 'Catering', icon: '🍽️', desc: 'Events' },
 ];
 
+const BUSINESS_ADMIN_FIELDS = [
+  { key: 'name', label: 'Business Name' },
+  { key: 'category', label: 'Category' },
+  { key: 'type', label: 'Type' },
+  { key: 'address', label: 'Address', type: 'textarea' },
+  { key: 'hours', label: 'Hours' },
+  { key: 'tag', label: 'Tag / Badge' },
+  { key: 'description', label: 'Description', type: 'textarea' },
+  { key: 'phone', label: 'Phone' },
+  { key: 'location', label: 'Location' },
+  { key: 'area', label: 'Area' },
+  { key: 'image_url', label: 'Main Image URL' },
+  { key: 'is_active', label: 'Active / Visible', type: 'boolean' },
+];
+
 export default function Food() {
   const [search, setSearch] = useState('');
   const [locationFilter, setLocationFilter] = useState('All');
@@ -246,6 +262,11 @@ export default function Food() {
   const [showSignup, setShowSignup] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [dbBusinesses, setDbBusinesses] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    base44.auth.me().then(setCurrentUser).catch(() => {});
+  }, []);
 
   useEffect(() => {
     base44.entities.Business.filter({ section: 'food', is_active: true }).then(setDbBusinesses).catch(() => {});
@@ -361,9 +382,19 @@ export default function Food() {
         {/* Grid */}
         {filtered.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {filtered.map((biz, i) => (
-              <BusinessCard key={biz.id} biz={biz} onRate={setRatingBiz} onInfo={setInfoBiz} />
-            ))}
+            {filtered.map((biz) => {
+              const card = <BusinessCard key={biz.id} biz={biz} onRate={setRatingBiz} onInfo={setInfoBiz}/>;
+              if (currentUser?.role === 'admin' && biz.id) {
+                return (
+                  <AdminEditOverlay key={biz.id} entity="Business" record={biz} fields={BUSINESS_ADMIN_FIELDS}
+                    onSaved={(updated) => setDbBusinesses(prev => prev.map(b => b.id === updated.id ? updated : b))}
+                    onDeleted={(id) => setDbBusinesses(prev => prev.filter(b => b.id !== id))}>
+                    {card}
+                  </AdminEditOverlay>
+                );
+              }
+              return card;
+            })}
           </div>
         ) : (
           <div className="text-center py-24">

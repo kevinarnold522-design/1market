@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../MemberSignupModal';
@@ -45,23 +45,23 @@ export default function Navbar() {
   }, []);
 
   const handleSaveName = async () => {
-    if (!nameVal.trim()) return;
+    const clean = nameVal.trim().toLowerCase().replace(/\s/g, '');
+    if (clean.length < 3) { setNameError('At least 3 characters required.'); return; }
+    if (!/^[a-zA-Z0-9_.-]+$/.test(clean)) { setNameError('Letters, numbers, _ . - only.'); return; }
     setNameSaving(true);
     setNameError('');
     try {
-      // Check uniqueness — query all users with same full_name
-      const existing = await base44.entities.User.filter({ full_name: nameVal.trim() });
+      const existing = await base44.entities.User.filter({ username: clean });
       const conflict = existing.find(u => u.id !== user.id);
       if (conflict) {
-        setNameError('This username is already taken. Please choose another.');
+        setNameError('This username is already taken.');
         setNameSaving(false);
         return;
       }
-      await base44.auth.updateMe({ full_name: nameVal.trim() });
+      await base44.auth.updateMe({ username: clean, username_set: true });
       setNameSaved(true);
       setEditingName(false);
       setTimeout(() => setNameSaved(false), 2000);
-      // Refresh
       window.location.reload();
     } catch (e) {
       setNameError('Could not save. Try again.');
@@ -248,6 +248,10 @@ export default function Navbar() {
                             <ShoppingCart className="w-3.5 h-3.5 text-green-400" /> Cart
                           </Link>
                           <div className="border-t border-white/8 my-1" />
+                          <Link to="/profile" onClick={() => setProfileOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
+                            <User className="w-3.5 h-3.5 text-[#00D4FF]"/> My Dashboard
+                          </Link>
                           {user.role === 'admin' && (
                             <Link to="/admin" onClick={() => setProfileOpen(false)}
                               className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-amber-400 font-body text-xs">
@@ -256,20 +260,24 @@ export default function Navbar() {
                           )}
                           {(user.is_seller || user.account_type === 'business_owner') && (
                             <>
-                              <Link to="/seller" onClick={() => setProfileOpen(false)}
+                              <Link to="/profile?tab=listings" onClick={() => setProfileOpen(false)}
                                 className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
-                                <Store className="w-3.5 h-3.5 text-[#00D4FF]" /> Seller Dashboard
+                                <Store className="w-3.5 h-3.5 text-[#00D4FF]"/> My Listings
+                              </Link>
+                              <Link to="/profile?tab=sellerorders" onClick={() => setProfileOpen(false)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
+                                <Truck className="w-3.5 h-3.5 text-green-400"/> Seller Orders
                               </Link>
                               <Link to={`/seller/${user.username || user.id}`} onClick={() => setProfileOpen(false)}
                                 className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
-                                <Globe className="w-3.5 h-3.5 text-green-400" /> View Seller Profile
+                                <Globe className="w-3.5 h-3.5 text-green-400"/> View Seller Profile
                               </Link>
                             </>
                           )}
                           {!user.is_seller && user.account_type !== 'business_owner' && (
-                            <Link to="/seller" onClick={() => setProfileOpen(false)}
+                            <Link to="/profile?tab=profile" onClick={() => setProfileOpen(false)}
                               className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-[#00D4FF] font-body text-xs font-semibold">
-                              <Store className="w-3.5 h-3.5" /> Start Selling →
+                              <Store className="w-3.5 h-3.5"/> Become a Seller →
                             </Link>
                           )}
                           <div className="border-t border-white/8 my-1" />
@@ -334,16 +342,20 @@ export default function Navbar() {
                 ))}
                 {isAuthenticated && user ? (
                   <>
+                    <Link to="/profile" onClick={() => setMenuOpen(false)}
+                      className="block text-[#00D4FF] font-body text-sm font-semibold py-2">
+                      🏠 My Dashboard
+                    </Link>
                     {(user.is_seller || user.account_type === 'business_owner') && (
-                      <Link to="/seller" onClick={() => setMenuOpen(false)}
+                      <Link to="/profile?tab=listings" onClick={() => setMenuOpen(false)}
                         className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
-                        🏪 Seller Dashboard
+                        🏪 My Listings
                       </Link>
                     )}
-                    {!user.is_seller && user.account_type !== 'business_owner' && (
-                      <Link to="/seller" onClick={() => setMenuOpen(false)}
-                        className="block text-[#00D4FF] font-body text-sm font-semibold py-2">
-                        🛍️ Start Selling →
+                    {user.role === 'admin' && (
+                      <Link to="/admin" onClick={() => setMenuOpen(false)}
+                        className="block text-amber-400 font-body text-sm font-semibold py-2">
+                        ⚙️ Admin Dashboard
                       </Link>
                     )}
                     <button onClick={() => { logout(true); setMenuOpen(false); }}
