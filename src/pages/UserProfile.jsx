@@ -105,8 +105,8 @@ export default function UserProfile() {
                 <Mail className="w-3.5 h-3.5 text-[#00D4FF]" /> {user.email}
               </p>
               <div className="flex flex-wrap gap-2">
-                <span className="px-2.5 py-1 rounded-full bg-[#2563EB]/20 text-[#00D4FF] font-body text-[10px] font-bold border border-[#2563EB]/30">
-                  🇵🇭 1Market Member
+                <span className={`px-2.5 py-1 rounded-full font-body text-[10px] font-bold border ${user.account_type === 'business_owner' ? 'bg-[#00D4FF]/15 text-[#00D4FF] border-[#00D4FF]/25' : 'bg-[#2563EB]/20 text-[#00D4FF] border-[#2563EB]/30'}`}>
+                  {user.account_type === 'business_owner' ? '🏪 Business Owner' : '🛍️ Customer'}
                 </span>
                 <span className="px-2.5 py-1 rounded-full bg-white/5 text-white/40 font-body text-[10px] border border-white/10">
                   Since {memberSince}
@@ -164,7 +164,8 @@ export default function UserProfile() {
                     {[
                       { label: 'Full Name', value: user.full_name || '—' },
                       { label: 'Email Address', value: user.email },
-                      { label: 'Account Role', value: user.role || 'user' },
+                      { label: 'User Type', value: user.account_type === 'business_owner' ? '🏪 Business Owner / Seller' : '🛍️ Customer' },
+                      { label: 'Account Role', value: user.role === 'admin' ? '⚙️ Admin' : 'User' },
                       { label: 'Member Since', value: memberSince },
                     ].map(({ label, value }) => (
                       <div key={label} className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
@@ -185,11 +186,11 @@ export default function UserProfile() {
                         <Store className="w-5 h-5 text-[#00D4FF]" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-heading font-bold text-white text-sm mb-0.5">Start Selling on 1Marketph</h3>
+                        <h3 className="font-heading font-bold text-white text-sm mb-0.5">Do You Want to Start Selling?</h3>
                         <p className="font-body text-xs text-white/50 leading-relaxed mb-3">List your products, services, or business for free. Reach thousands of buyers across the Philippines.</p>
                         <Link to="/seller"
                           className="inline-flex items-center gap-2 px-4 py-2 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-xs hover:bg-white transition-colors">
-                          <Store className="w-3.5 h-3.5" /> Become a Seller →
+                          <Store className="w-3.5 h-3.5" /> Start Selling for Free →
                         </Link>
                       </div>
                     </div>
