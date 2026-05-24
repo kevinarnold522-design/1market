@@ -307,8 +307,19 @@ export default function Admin() {
   };
 
   const toggleVerified = async (u) => {
-    await base44.entities.User.update(u.id, { is_verified_seller: !u.is_verified_seller });
-    showToast(u.is_verified_seller ? 'Verified badge removed.' : '✅ Verified badge granted!');
+    const newStatus = !u.is_verified_seller;
+    await base44.entities.User.update(u.id, { is_verified_seller: newStatus });
+    // Send verified partner email when granting verification
+    if (newStatus) {
+      try {
+        await base44.functions.invoke('sendVerifiedPartnerEmail', {
+          email: u.email,
+          name: u.full_name || u.email,
+          business_name: u.full_name || 'Your Business'
+        });
+      } catch (e) {}
+    }
+    showToast(newStatus ? '✅ Verified badge granted! Email sent.' : 'Verified badge removed.');
     loadAll();
   };
 

@@ -12,6 +12,7 @@ import { useAuth } from '@/lib/AuthContext';
 import ParticleBackground from '../components/ParticleBackground';
 import OrdersTab from '../components/seller/OrdersTab';
 import VerifiedPartnerBanner from '../components/VerifiedPartnerBanner';
+import PaymentSettings from '../components/settings/PaymentSettings';
 
 // ─── Shared helpers ───────────────────────────────────────────────────────────
 const LISTING_TYPES = ['product','shoes','cars','houses','electronics','clothing','furniture','food','services','other'];
@@ -458,7 +459,15 @@ export default function UserProfile() {
 
   const saveSettings = async (data) => {
     setSaving(true);
+    const wasNotSeller = !user?.is_seller && !user?.account_type === 'business_owner';
     await base44.auth.updateMe(data);
+    // Trigger seller welcome email if just became seller
+    if (wasNotSeller && (data.is_seller || data.account_type === 'business_owner')) {
+      try {
+        const me = await base44.auth.me();
+        await base44.functions.invoke('sendSellerWelcomeEmail', { email: me.email, name: me.full_name });
+      } catch (e) {}
+    }
     await reloadUser();
     setSaving(false); showSaved('Saved!');
   };
@@ -471,6 +480,20 @@ export default function UserProfile() {
   const submitVerification = async () => {
     await base44.auth.updateMe({ verification_submitted: true });
     await reloadUser(); showToast('Verification request submitted!');
+  };
+
+  const approveVerification = async (targetUser) => {
+    await base44.auth.updateMe({ is_verified_seller: true });
+    await reloadUser();
+    // Trigger verified partner email
+    try {
+      await base44.functions.invoke('sendVerifiedPartnerEmail', {
+        email: targetUser.email,
+        name: targetUser.full_name,
+        business_name: targetUser.full_name
+      });
+    } catch (e) {}
+    showToast('Verification approved! Email sent.');
   };
 
   return (
@@ -926,6 +949,8 @@ export default function UserProfile() {
                     Save Location
                   </button>
                 </div>
+                <PaymentSettings user={user} onToast={showToast} />
+
                 <div className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
                   <h2 className="font-heading font-bold text-white text-sm mb-3">Account</h2>
                   <div className="flex items-center justify-between p-3 rounded-xl mb-2" style={{ background: 'rgba(255,255,255,0.04)' }}>
