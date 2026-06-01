@@ -145,6 +145,7 @@ export default function SubcategorySplash({ subcategories, activeKey, onSelect, 
   const [dismissed, setDismissed] = useState(false);
   const [transition, setTransition] = useState(null);
   const [transitionSubtype, setTransitionSubtype] = useState(null);
+  const [filterQuery, setFilterQuery] = useState('');
 
   const handleSelect = (key) => {
     const sc = subcategories.find(s => s.key === key);
@@ -195,8 +196,18 @@ export default function SubcategorySplash({ subcategories, activeKey, onSelect, 
             <p className="font-body text-[10px] text-white/25 mt-1">Hover to flip • Tap to select</p>
           </div>
 
+          {/* Filter input */}
+          <div className="relative mb-4 z-10">
+            <input
+              value={filterQuery}
+              onChange={e => setFilterQuery(e.target.value)}
+              placeholder="🔍 Filter categories..."
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50"
+            />
+          </div>
+
           <div className={`grid gap-3 relative z-10 ${subcategories.length <= 4 ? 'grid-cols-2 sm:grid-cols-4' : subcategories.length <= 6 ? 'grid-cols-3 sm:grid-cols-6' : 'grid-cols-3 sm:grid-cols-4'}`}>
-            {subcategories.map((sc, i) => (
+            {subcategories.filter(sc => !filterQuery || sc.label.toLowerCase().includes(filterQuery.toLowerCase()) || sc.desc?.toLowerCase().includes(filterQuery.toLowerCase())).map((sc, i) => (
               <CasinoCard
                 key={sc.key}
                 sc={sc}

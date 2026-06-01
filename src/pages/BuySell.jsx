@@ -3,7 +3,8 @@ import StarField from '../components/StarField';
 import AdminEditOverlay from '../components/AdminEditOverlay';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, X, ChevronDown, Phone, MessageSquare, AlertCircle, ZoomIn, Heart, ShoppingCart, Pencil, Store } from 'lucide-react';
+import { ArrowLeft, Search, X, ChevronDown, Phone, MessageSquare, AlertCircle, ZoomIn, Heart, ShoppingCart, Pencil, Store, Flag } from 'lucide-react';
+import ReportModal from '../components/ReportModal';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import { base44 } from '@/api/base44Client';
@@ -47,7 +48,7 @@ const LISTING_ADMIN_FIELDS = [
   { key: 'is_active', label: 'Active / Visible', type: 'boolean' },
 ];
 
-function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites, onEdit, isAdmin, onAdminSaved }) {
+function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites, onEdit, isAdmin, onAdminSaved, onReport }) {
   const formatPrice = (p) => p ? `₱${Number(p).toLocaleString()}` : '—';
   const isFav = favourites.includes(String(item.id));
   const isOwner = user && item.created_by === user.email;
@@ -136,6 +137,12 @@ function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites,
             className="px-3 py-1.5 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-lg font-body text-xs font-semibold transition-colors">
             Contact
           </button>
+          {user && !item._static && (
+            <button onClick={() => onReport(item)}
+              className="p-1.5 rounded-lg bg-red-50 border border-red-100 text-red-400 hover:bg-red-100 transition-colors" title="Report listing">
+              <Flag className="w-3 h-3" />
+            </button>
+          )}
         </div>
         </div>
       </div>
@@ -258,6 +265,7 @@ export default function BuySell() {
   const [dbListings, setDbListings] = useState([]);
   const [favourites, setFavourites] = useState([]);
   const [editItem, setEditItem] = useState(null);
+  const [reportItem, setReportItem] = useState(null);
   const [toast, setToast] = useState('');
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
@@ -441,7 +449,7 @@ export default function BuySell() {
             {filtered.map(item => (
               <ListingCard key={item.id} item={item} onExpand={setExpandedItem} onContact={setContactItem}
                 user={user} onFavourite={handleFavourite} favourites={favourites}
-                onEdit={setEditItem} isAdmin={isAdmin}
+                onEdit={setEditItem} isAdmin={isAdmin} onReport={setReportItem}
                 onAdminSaved={async () => {
                   const items = await base44.entities.Listing.list('-created_date', 100);
                   setDbListings(items.filter(l => l.is_active));
@@ -477,6 +485,7 @@ export default function BuySell() {
         {expandedItem && <ImageModal item={expandedItem} onClose={() => setExpandedItem(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
         {editItem && isAdmin && <AdminEditModal item={editItem} onClose={() => setEditItem(null)} onSave={handleAdminEditSave} />}
+        {reportItem && user && <ReportModal listing={reportItem} user={user} onClose={() => { setReportItem(null); }} />}
       </AnimatePresence>
 
       <AdminQuickAddFAB defaultMode="listing" onAdded={async () => {
