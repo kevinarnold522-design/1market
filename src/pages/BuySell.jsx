@@ -407,7 +407,7 @@ export default function BuySell() {
               className="w-full pl-9 pr-4 py-2.5 bg-white border border-[#0A192F]/10 rounded-xl font-body text-sm text-[#0A192F] focus:outline-none focus:border-[#2563EB]/30" />
           </div>
           <div className="flex gap-2 flex-wrap">
-            {['All', 'Manila', 'Cavite'].map(loc => (
+            {['All', 'Metro Manila', 'Cavite', 'Cebu', 'Davao', 'Laguna', 'Batangas', 'Bulacan', 'Iloilo', 'Nationwide'].map(loc => (
               <button key={loc} onClick={() => setLocationFilter(loc)}
                 className={`px-3 py-2 rounded-xl font-body font-semibold text-sm transition-all ${locationFilter === loc ? 'bg-[#0A192F] text-white' : 'bg-white border border-[#0A192F]/10 text-[#0A192F]/60 hover:border-[#0A192F]/20'}`}>
                 {loc}

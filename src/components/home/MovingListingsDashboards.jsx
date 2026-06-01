@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Star, X, Phone, MapPin, Shield } from 'lucide-react';
+import { ExternalLink, Star, X, Phone, MapPin, Shield, Heart, Share2 } from 'lucide-react';
+import ShareModal from '../ShareModal';
+import { base44 } from '@/api/base44Client';
 
 // ─── FOR RENT DATA — nationwide PH ───────────────────────────────────────────
 const FOR_RENT = [
@@ -45,8 +47,22 @@ const SERVICES_LIST = [
 
 function LightningCard({ item, type, onAbout, index }) {
   const [hovered, setHovered] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [likeAnim, setLikeAnim] = useState(false);
+  const [showShare, setShowShare] = useState(false);
+
+  const handleLike = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setLiked(l => !l);
+    if (!liked) { setLikeAnim(true); setTimeout(() => setLikeAnim(false), 600); }
+  };
+
+  const listingUrl = item.listing_id ? `${window.location.origin}/listing/${item.listing_id}` : (item.link?.startsWith('http') ? item.link : window.location.href);
 
   return (
+    <>
+    {showShare && <ShareModal title={item.title} url={listingUrl} image={item.image} onClose={() => setShowShare(false)} />}
     <motion.div
       initial={{ opacity: 0, y: 30, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -98,15 +114,27 @@ function LightningCard({ item, type, onAbout, index }) {
           <span className="font-body text-[9px] text-[#0A192F]/60">{item.rating}</span>
         </div>
         <p className="font-heading font-bold text-sm text-[#0A192F] mb-2">{item.price}</p>
-        <div className="flex gap-1">
+        <div className="flex gap-1 mb-1.5">
           <button onClick={() => onAbout(item)} className="flex-1 py-1 rounded-lg bg-[#F8FAFC] border border-[#0A192F]/8 text-[9px] font-semibold text-[#0A192F]/60 hover:bg-[#0A192F] hover:text-white transition-all">ℹ️ About</button>
-          <a href={item.link} target={item.link.startsWith('http') ? '_blank' : '_self'} rel="noopener noreferrer"
+          <a href={item.listing_id ? `/listing/${item.listing_id}` : item.link} target={item.listing_id ? '_self' : (item.link?.startsWith('http') ? '_blank' : '_self')} rel="noopener noreferrer"
             className="flex-1 py-1 rounded-lg bg-[#00D4FF] hover:bg-[#0A192F] text-[#0A192F] hover:text-white text-[9px] font-semibold flex items-center justify-center gap-0.5 transition-colors">
             View <ExternalLink className="w-2 h-2" />
           </a>
         </div>
+        <div className="flex gap-1">
+          <button onClick={handleLike}
+            className={`flex-1 py-1 rounded-lg border text-[9px] font-semibold flex items-center justify-center gap-0.5 transition-all ${liked ? 'bg-red-50 border-red-200 text-red-500' : 'bg-[#F8FAFC] border-[#0A192F]/8 text-[#0A192F]/50 hover:border-red-200 hover:text-red-400'}`}>
+            <Heart className={`w-2.5 h-2.5 ${liked ? 'fill-red-500' : ''} ${likeAnim ? 'scale-150' : ''} transition-transform`} />
+            {liked ? 'Liked' : 'Like'}
+          </button>
+          <button onClick={(e) => { e.stopPropagation(); setShowShare(true); }}
+            className="flex-1 py-1 rounded-lg bg-[#F8FAFC] border border-[#0A192F]/8 text-[9px] font-semibold text-[#0A192F]/50 hover:bg-[#EFF6FF] hover:text-[#2563EB] flex items-center justify-center gap-0.5 transition-all">
+            <Share2 className="w-2.5 h-2.5" /> Share
+          </button>
+        </div>
       </div>
     </motion.div>
+    </>
   );
 }
 

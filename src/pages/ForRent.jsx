@@ -195,9 +195,9 @@ export default function ForRent() {
         </div>
 
         <div className="flex gap-2 mb-4 flex-wrap">
-          {['All', 'Manila', 'Cavite'].map(loc => (
+          {['All', 'Metro Manila', 'Cavite', 'Cebu', 'Davao', 'Laguna', 'Batangas', 'Bulacan', 'Pampanga', 'Rizal', 'Iloilo', 'Cagayan de Oro', 'Palawan', 'Boracay', 'Baguio City', 'Nationwide'].map(loc => (
             <button key={loc} onClick={() => setLocationFilter(loc)}
-              className={`px-4 py-2 rounded-xl font-body font-semibold text-sm transition-all ${locationFilter === loc ? 'bg-[#00D4FF] text-[#0A192F]' : 'bg-white/5 border border-white/15 text-white/60 hover:border-white/30'}`}>
+              className={`px-3 py-1.5 rounded-xl font-body font-semibold text-xs transition-all ${locationFilter === loc ? 'bg-[#00D4FF] text-[#0A192F]' : 'bg-white/5 border border-white/15 text-white/60 hover:border-white/30'}`}>
               {loc}
             </button>
           ))}

@@ -6,8 +6,8 @@ import HeroAnimation3D from './HeroAnimation3D';
 export default function HeroSection({ heroImage }) {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Background gradient — light blue */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#EFF6FF] via-[#DBEAFE] to-[#BAE6FD]" />
+      {/* Background gradient — deep blue */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#020B18] via-[#0A192F] to-[#0D2145]" />
 
       {/* Kinetic line decoration — hidden on mobile */}
       <motion.div
@@ -35,17 +35,17 @@ export default function HeroSection({ heroImage }) {
               </motion.div>
 
               <h1 className="font-heading font-bold leading-[0.95] tracking-tight">
-                <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl text-[#0A192F]">Welcome to</span>
-                <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl text-[#2563EB] mt-2">1Marketph.com</span>
+                <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl text-white">Welcome to</span>
+                <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl text-[#00D4FF] mt-2">1Marketph.com</span>
               </h1>
 
-              <p className="font-body text-sm sm:text-base lg:text-lg text-[#0A192F]/70 max-w-md leading-relaxed font-semibold">
+              <p className="font-body text-sm sm:text-base lg:text-lg text-white/70 max-w-md leading-relaxed font-semibold">
                 Building Dreams under 1Vision, Together.
               </p>
 
               <div className="h-[1px] w-16 bg-[#00D4FF]" />
 
-              <p className="font-body text-xs sm:text-sm text-[#0A192F]/55 max-w-lg leading-relaxed">
+              <p className="font-body text-xs sm:text-sm text-white/55 max-w-lg leading-relaxed">
                 Founded in 2026 by Kevin Roberto, 1Market was born from a simple vision: to bridge the gap between Filipino consumers and businesses that power our communities. Whether you're searching for your next home, a reliable service, or the best local deals, we provide a seamless, homegrown space where connections happen naturally. Proudly Filipino, built for Filipinos — because when we connect, we grow together.
               </p>
 
@@ -53,11 +53,11 @@ export default function HeroSection({ heroImage }) {
                 href="#categories"
                 className="inline-flex items-center gap-3 mt-4 group"
                 whileHover={{ y: 2 }}>
-                <span className="font-body text-sm font-medium text-[#0A192F]/70 group-hover:text-[#2563EB] transition-colors">
+                <span className="font-body text-sm font-medium text-white/70 group-hover:text-[#00D4FF] transition-colors">
                   Explore Categories
                 </span>
-                <div className="w-10 h-10 rounded-full border border-[#0A192F]/10 flex items-center justify-center group-hover:border-[#2563EB] group-hover:bg-[#2563EB]/5 transition-all">
-                  <ArrowDown className="w-4 h-4 text-[#0A192F]/40 group-hover:text-[#2563EB] transition-colors" />
+                <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:border-[#00D4FF] group-hover:bg-[#00D4FF]/5 transition-all">
+                  <ArrowDown className="w-4 h-4 text-white/40 group-hover:text-[#00D4FF] transition-colors" />
                 </div>
               </motion.a>
             </div>
@@ -74,16 +74,16 @@ export default function HeroSection({ heroImage }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.4 }}
-              className="absolute -bottom-4 -left-4 sm:-bottom-5 sm:-left-5 bg-white/90 backdrop-blur-xl rounded-xl shadow-xl shadow-[#0A192F]/5 px-4 py-3 border border-white/50">
-              <p className="font-heading font-bold text-base sm:text-lg text-[#0A192F]">We bring you!</p>
-              <p className="font-body text-[10px] text-[#0A192F]/50 tracking-wide">Local businesses, real connections</p>
+              className="absolute -bottom-4 -left-4 sm:-bottom-5 sm:-left-5 bg-[#0D1F3C]/90 backdrop-blur-xl rounded-xl shadow-xl shadow-black/30 px-4 py-3 border border-white/10">
+              <p className="font-heading font-bold text-base sm:text-lg text-white">We bring you!</p>
+              <p className="font-body text-[10px] text-[#00D4FF]/70 tracking-wide">Local businesses, real connections</p>
             </motion.div>
           </motion.div>
         </div>
       </div>
 
       {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#DBEAFE] to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#070F1A] to-transparent" />
     </section>
   );
 }
