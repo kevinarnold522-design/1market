@@ -92,11 +92,12 @@ export default function AccountTypeModal({ onClose }) {
     }
   };
 
-  const handleContinueToSignup = () => {
+  const handleContinueToSignup = async () => {
     // Store preferences in sessionStorage so we can use them after signup
     sessionStorage.setItem('signup_account_type', selectedType);
     sessionStorage.setItem('signup_preferences', JSON.stringify(answers));
-    base44.auth.redirectToLogin(window.location.href);
+    // Call the SDK method and wait for it to complete
+    await base44.auth.redirectToLogin(window.location.href);
   };
 
   const totalSteps = QUESTIONS.length + 2; // type + questions + confirm
