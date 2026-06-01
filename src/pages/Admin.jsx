@@ -593,7 +593,7 @@ export default function Admin() {
               </motion.div>
             ))}
           </div>
-        ) : (
+        ) : tab === 'users' ? (
           /* USERS TAB */
           <div className="space-y-3">
             {users.filter(u =>
