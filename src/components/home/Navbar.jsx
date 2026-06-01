@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Star, Package, Settings } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Star, Package, Settings, Gift } from 'lucide-react';
+import RewardDashboard from '../RewardDashboard';
+import VerifiedBadge from '../VerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import AccountTypeModal from '../AccountTypeModal';
@@ -31,6 +33,7 @@ export default function Navbar() {
   const [showSignup, setShowSignup] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [editMode, setEditModeLocal] = useState(false);
+  const [showRewards, setShowRewards] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const isAdmin = user?.role === 'admin' || user?.email === 'Kevinarnold522@gmail.com';
   const isSeller = user?.is_seller || user?.account_type === 'business_owner';
@@ -194,8 +197,8 @@ export default function Navbar() {
                                 <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>
                                   {accountTypeLabel}
                                 </span>
-                                {user?.is_verified_seller && <BadgeCheck className="w-3.5 h-3.5 text-[#2563EB]" title="Verified Partner" />}
-                               {isAdmin && <BadgeCheck className="w-3.5 h-3.5 text-amber-400" title="Admin — Verified" />}
+                                {user?.is_verified_seller && <VerifiedBadge size="sm" />}
+                              {isAdmin && <BadgeCheck className="w-3.5 h-3.5 text-amber-400" title="Admin — Verified" />}
                               </div>
                               {/* Editable username */}
                               {editingName ? (
@@ -268,6 +271,10 @@ export default function Navbar() {
                           className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
                           <ShoppingCart className="w-3.5 h-3.5 text-green-400" /> My Cart
                         </Link>
+                        <button onClick={() => { setShowRewards(true); setProfileOpen(false); }}
+                          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-purple-500/10 transition-colors text-purple-300 font-body text-xs">
+                          <Gift className="w-3.5 h-3.5" /> Daily Rewards 🎁
+                        </button>
 
                         {/* Seller links */}
                         {isSeller && (
@@ -286,10 +293,10 @@ export default function Navbar() {
                               className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
                               <Globe className="w-3.5 h-3.5 text-green-400"/> My Seller Profile
                             </Link>
-                            {user?.is_verified_seller && (
-                              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#2563EB]/10">
-                                <BadgeCheck className="w-3.5 h-3.5 text-[#2563EB]"/>
-                                <span className="font-body text-[10px] text-[#60a5fa] font-bold">✓ Verified Partner</span>
+                                        {user?.is_verified_seller && (
+                              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl" style={{ background: 'linear-gradient(90deg,rgba(168,85,247,0.15),rgba(236,72,153,0.1))', border: '1px solid rgba(168,85,247,0.2)' }}>
+                                <VerifiedBadge size="sm" />
+                                <span className="font-body text-[10px] font-bold" style={{ background: 'linear-gradient(90deg,#a855f7,#ec4899)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>✓ Verified Partner</span>
                               </div>
                             )}
                           </>
@@ -427,6 +434,7 @@ export default function Navbar() {
 
       <AnimatePresence>
         {showSignup && <AccountTypeModal onClose={() => setShowSignup(false)} />}
+        {showRewards && user && <RewardDashboard user={user} onClose={() => setShowRewards(false)} />}
       </AnimatePresence>
 
       {/* Floating Admin Edit Mode Bar */}

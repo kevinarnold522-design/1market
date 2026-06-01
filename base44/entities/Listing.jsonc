@@ -12,9 +12,38 @@
         "cars",
         "houses",
         "services",
-        "product"
+        "product",
+        "electronics",
+        "clothing",
+        "furniture",
+        "food",
+        "other",
+        "hotel",
+        "flights",
+        "vehicle_rental",
+        "space_rent",
+        "jobs",
+        "mods"
       ],
       "description": "Listing category"
+    },
+    "subcategory": {
+      "type": "string",
+      "description": "Subcategory within the type"
+    },
+    "space_type": {
+      "type": "string",
+      "enum": [
+        "Room",
+        "House",
+        "Bungalow",
+        "Dorm",
+        "Condo",
+        "2 Stories",
+        "3 Stories",
+        "Land"
+      ],
+      "description": "Type of space for rent listings"
     },
     "business_id": {
       "type": "string",
@@ -31,11 +60,18 @@
       "type": "string",
       "enum": [
         "Manila",
-        "Cavite"
+        "Cavite",
+        "Cebu",
+        "Davao",
+        "Nationwide"
       ]
     },
     "area": {
       "type": "string"
+    },
+    "meetup_location": {
+      "type": "string",
+      "description": "Preferred meetup location for buyer/seller exchange"
     },
     "seller_name": {
       "type": "string"
@@ -53,14 +89,23 @@
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "Additional product photos"
+    },
+    "video_url": {
+      "type": "string",
+      "description": "Optional product/listing video URL"
     },
     "condition": {
       "type": "string",
       "enum": [
         "Brand New",
         "Like New",
+        "Good as New",
+        "Lightly Used",
         "Used",
+        "Heavily Used",
+        "Damaged",
         "N/A"
       ]
     },
@@ -78,6 +123,23 @@
     },
     "transmission": {
       "type": "string"
+    },
+    "car_ownership": {
+      "type": "string",
+      "enum": [
+        "Brand New",
+        "1st Owner",
+        "2nd Owner",
+        "3rd Owner",
+        "4th Owner",
+        "5th Owner",
+        "6th Owner",
+        "7th Owner",
+        "8th Owner",
+        "9th Owner",
+        "10th Owner"
+      ],
+      "description": "Car ownership history"
     },
     "size": {
       "type": "string"
@@ -100,9 +162,148 @@
     "service_area": {
       "type": "string"
     },
+    "warranty": {
+      "type": "string",
+      "description": "Warranty details \u2014 mandatory for electronics"
+    },
+    "specs": {
+      "type": "string",
+      "description": "Full technical specifications \u2014 mandatory for electronics"
+    },
     "is_active": {
       "type": "boolean",
       "default": true
+    },
+    "admin_category_override": {
+      "type": "string"
+    },
+    "full_address": {
+      "type": "string"
+    },
+    "hotel_room_type": {
+      "type": "string"
+    },
+    "hotel_total_rooms": {
+      "type": "integer"
+    },
+    "hotel_available_rooms": {
+      "type": "integer"
+    },
+    "hotel_amenities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "hotel_check_in_time": {
+      "type": "string"
+    },
+    "hotel_check_out_time": {
+      "type": "string"
+    },
+    "hotel_max_guests": {
+      "type": "integer"
+    },
+    "hotel_unavailable_dates": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "hotel_min_nights": {
+      "type": "integer",
+      "default": 1
+    },
+    "hotel_rooms": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "flight_name": {
+      "type": "string"
+    },
+    "flight_number": {
+      "type": "string"
+    },
+    "flight_origin": {
+      "type": "string"
+    },
+    "flight_destination": {
+      "type": "string"
+    },
+    "flight_departure_date": {
+      "type": "string"
+    },
+    "flight_departure_time": {
+      "type": "string"
+    },
+    "flight_return_date": {
+      "type": "string"
+    },
+    "flight_seats": {
+      "type": "integer"
+    },
+    "flight_inclusions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "space_unit": {
+      "type": "string"
+    },
+    "space_sqm": {
+      "type": "string"
+    },
+    "lease_term": {
+      "type": "string"
+    },
+    "available_from": {
+      "type": "string"
+    },
+    "space_inclusions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rating": {
+      "type": "number",
+      "default": 0,
+      "description": "Average star rating 1-5"
+    },
+    "rating_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "social_facebook": {
+      "type": "string",
+      "description": "Facebook profile/page URL"
+    },
+    "social_instagram": {
+      "type": "string",
+      "description": "Instagram profile URL"
+    },
+    "social_tiktok": {
+      "type": "string",
+      "description": "TikTok profile URL"
+    },
+    "social_twitter": {
+      "type": "string",
+      "description": "X/Twitter profile URL"
+    },
+    "social_youtube": {
+      "type": "string",
+      "description": "YouTube channel URL"
+    },
+    "social_viber": {
+      "type": "string",
+      "description": "Viber number"
+    },
+    "social_telegram": {
+      "type": "string",
+      "description": "Telegram username or link"
     }
   },
   "required": [

@@ -3,13 +3,11 @@ import { motion } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
 import HeroAnimation3D from './HeroAnimation3D';
 
-const WARM_HERO = 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=1200&q=85';
-
 export default function HeroSection({ heroImage }) {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#F8FAFC] via-[#F8FAFC] to-[#E0F2FE]" />
+      {/* Background gradient — light blue */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#EFF6FF] via-[#DBEAFE] to-[#BAE6FD]" />
 
       {/* Kinetic line decoration — hidden on mobile */}
       <motion.div
@@ -17,7 +15,6 @@ export default function HeroSection({ heroImage }) {
         initial={{ height: 0 }}
         animate={{ height: '100%' }}
         transition={{ duration: 2, ease: 'easeOut' }} />
-      
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-screen py-24 lg:py-28">
@@ -26,42 +23,36 @@ export default function HeroSection({ heroImage }) {
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}>
-            
+
             <div className="space-y-5">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#0A192F]/5 rounded-full">
-                
                 <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
                 <span className="font-body text-xs font-medium tracking-widest uppercase text-[#0A192F]/60">1Marketph.com · Est. 2026</span>
               </motion.div>
 
               <h1 className="font-heading font-bold leading-[0.95] tracking-tight">
-                <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl text-[#0A192F]">
-                  Welcome to
-                </span>
-                <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl text-[#2563EB] mt-2">
-                  1 Market
-                </span>
+                <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl text-[#0A192F]">Welcome to</span>
+                <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl text-[#2563EB] mt-2">1Marketph.com</span>
               </h1>
 
-              <p className="font-body text-sm sm:text-base lg:text-lg text-[#0A192F]/60 max-w-md leading-relaxed">
-                We connect consumers to products and businesses to the right people — across Manila & Cavite.
+              <p className="font-body text-sm sm:text-base lg:text-lg text-[#0A192F]/70 max-w-md leading-relaxed font-semibold">
+                Building Dreams under 1Vision, Together.
               </p>
 
               <div className="h-[1px] w-16 bg-[#00D4FF]" />
 
-              <p className="font-body text-xs sm:text-sm text-[#0A192F]/40 max-w-sm leading-relaxed">Founded by Kevin Roberto in 2026 as a  business that helps consumers and Business owners connect— a growing community thanks to you.
-
+              <p className="font-body text-xs sm:text-sm text-[#0A192F]/55 max-w-lg leading-relaxed">
+                Founded in 2026 by Kevin Roberto, 1Market was born from a simple vision: to bridge the gap between Filipino consumers and businesses that power our communities. Whether you're searching for your next home, a reliable service, or the best local deals, we provide a seamless, homegrown space where connections happen naturally. Proudly Filipino, built for Filipinos — because when we connect, we grow together.
               </p>
 
               <motion.a
                 href="#categories"
                 className="inline-flex items-center gap-3 mt-4 group"
                 whileHover={{ y: 2 }}>
-                
                 <span className="font-body text-sm font-medium text-[#0A192F]/70 group-hover:text-[#2563EB] transition-colors">
                   Explore Categories
                 </span>
@@ -92,7 +83,7 @@ export default function HeroSection({ heroImage }) {
       </div>
 
       {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#F8FAFC] to-transparent" />
-    </section>);
-
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#DBEAFE] to-transparent" />
+    </section>
+  );
 }

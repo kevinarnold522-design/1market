@@ -54,7 +54,10 @@ function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites,
 
   const card = (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-2xl overflow-hidden border border-[#0A192F]/5 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+      className="bg-white rounded-2xl overflow-hidden border border-[#0A192F]/5 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+      onMouseEnter={e => e.currentTarget.style.boxShadow = '0 0 30px rgba(37,99,235,0.18), 0 8px 30px rgba(0,0,0,0.12)'}
+      onMouseLeave={e => e.currentTarget.style.boxShadow = ''}
+    >
       <div className="relative overflow-hidden" style={{ aspectRatio: '4/3' }}>
         <img src={item.image || item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           onError={e => { e.target.src = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=500&q=80'; }} />
@@ -119,21 +122,21 @@ function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites,
         )}
         <p className="font-body text-xs text-[#0A192F]/50 mb-3 line-clamp-2">{item.description}</p>
         <div className="flex items-center justify-between gap-2">
-          <span className="font-heading font-bold text-base text-[#0A192F]">
-            {item.type === 'services' ? (item.rate || item.price_label) : (item.price_label || formatPrice(item.price))}
-          </span>
-          <div className="flex gap-1.5">
-            {user && item.type !== 'services' && item.type !== 'houses' && (
-              <button onClick={() => onFavourite(item)}
-                className="px-2.5 py-1.5 bg-[#F8FAFC] border border-[#0A192F]/8 text-[#0A192F]/50 rounded-lg font-body text-xs font-semibold hover:bg-red-50 hover:text-red-500 transition-colors flex items-center gap-1">
-                <ShoppingCart className="w-3.5 h-3.5" /> Save
-              </button>
-            )}
-            <button onClick={() => onContact(item)}
-              className="px-3 py-1.5 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-lg font-body text-xs font-semibold transition-colors">
-              Contact
-            </button>
-          </div>
+        <span className="font-heading font-bold text-base text-[#0A192F]">
+          {item.type === 'services' ? (item.rate || item.price_label) : (item.price_label || formatPrice(item.price))}
+        </span>
+        <div className="flex gap-1.5">
+          {!item._static && item.id && (
+            <a href={`/listing/${item.id}`}
+              className="px-2.5 py-1.5 bg-[#EFF6FF] border border-[#2563EB]/15 text-[#2563EB] rounded-lg font-body text-xs font-semibold hover:bg-[#DBEAFE] transition-colors">
+              View
+            </a>
+          )}
+          <button onClick={() => onContact(item)}
+            className="px-3 py-1.5 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-lg font-body text-xs font-semibold transition-colors">
+            Contact
+          </button>
+        </div>
         </div>
       </div>
     </motion.div>

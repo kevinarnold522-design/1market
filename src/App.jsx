@@ -18,6 +18,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import UserProfile from './pages/UserProfile';
 import Jobs from './pages/Jobs';
 import SellerProfilePage from './pages/SellerProfilePage';
+import ListingDetail from './pages/ListingDetail';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -58,6 +59,7 @@ const AuthenticatedApp = () => {
       <Route path="/jobs" element={<Jobs />} />
       <Route path="/seller/:sellerId" element={<SellerProfilePage />} />
       <Route path="/seller-profile/:sellerId" element={<SellerProfilePage />} />
+      <Route path="/listing/:id" element={<ListingDetail />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

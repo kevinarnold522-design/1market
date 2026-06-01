@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ParticleBackground from '../components/ParticleBackground';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, MapPin, ExternalLink, Phone, MessageSquare, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Search, ExternalLink, Phone, MessageSquare, AlertCircle, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
+import { base44 } from '@/api/base44Client';
+import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
 
 const SUBCATEGORIES = [
   { key: 'all', label: 'All Rentals', icon: '🏘️', desc: 'Browse everything' },
@@ -14,6 +16,8 @@ const SUBCATEGORIES = [
   { key: 'equipment', label: 'Equipment', icon: '🔧', desc: 'Tools, sound, cameras' },
   { key: 'events', label: 'Event Venues', icon: '🎉', desc: 'Halls, function rooms' },
 ];
+
+const SPACE_TYPES = ['All Types', 'Room', 'House', 'Bungalow', 'Dorm', 'Condo', '2 Stories', '3 Stories', 'Land'];
 
 const listings = [
   // RESIDENTIAL
@@ -54,8 +58,11 @@ const listings = [
 function RentalCard({ item, onContact }) {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl overflow-hidden hover:-translate-y-1 transition-all duration-300 group"
-      style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(0,212,255,0.12)', boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}>
+      className="rounded-2xl overflow-hidden hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+      style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(0,212,255,0.12)', boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
+      onMouseEnter={e => e.currentTarget.style.boxShadow = '0 0 30px rgba(0,212,255,0.25), 0 8px 30px rgba(0,0,0,0.5)'}
+      onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.4)'}
+    >
       <div className="relative aspect-[4/3] overflow-hidden">
         <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#070F1A]/80 to-transparent" />
@@ -119,15 +126,28 @@ function ContactModal({ item, onClose }) {
 export default function ForRent() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [locationFilter, setLocationFilter] = useState('All');
+  const [spaceType, setSpaceType] = useState('All Types');
   const [search, setSearch] = useState('');
   const [contactItem, setContactItem] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isSeller, setIsSeller] = useState(false);
+
+  useEffect(() => {
+    base44.auth.me().then(u => {
+      setUser(u);
+      setIsAdmin(u?.role === 'admin' || u?.role === 'moderator');
+      setIsSeller(u?.is_seller || u?.account_type === 'business_owner');
+    }).catch(() => {});
+  }, []);
 
   const filtered = listings.filter(l => {
     const matchCat = !activeCategory || activeCategory === 'all' || l.type === activeCategory;
     const matchLoc = locationFilter === 'All' || l.location === locationFilter;
     const matchSearch = l.title.toLowerCase().includes(search.toLowerCase()) || l.area.toLowerCase().includes(search.toLowerCase()) || l.sub.toLowerCase().includes(search.toLowerCase());
-    return matchCat && matchLoc && matchSearch;
+    const matchSpace = spaceType === 'All Types' || l.sub?.toLowerCase().includes(spaceType.toLowerCase()) || l.title?.toLowerCase().includes(spaceType.toLowerCase());
+    return matchCat && matchLoc && matchSearch && matchSpace;
   });
 
   return (
@@ -174,7 +194,7 @@ export default function ForRent() {
           ))}
         </div>
 
-        <div className="flex gap-2 mb-6 flex-wrap">
+        <div className="flex gap-2 mb-4 flex-wrap">
           {['All', 'Manila', 'Cavite'].map(loc => (
             <button key={loc} onClick={() => setLocationFilter(loc)}
               className={`px-4 py-2 rounded-xl font-body font-semibold text-sm transition-all ${locationFilter === loc ? 'bg-[#00D4FF] text-[#0A192F]' : 'bg-white/5 border border-white/15 text-white/60 hover:border-white/30'}`}>
@@ -182,6 +202,28 @@ export default function ForRent() {
             </button>
           ))}
         </div>
+
+        {/* Space type filter */}
+        <div className="flex gap-2 mb-6 flex-wrap items-center">
+          <span className="font-body text-xs text-white/30 uppercase tracking-wider">Space Type:</span>
+          {SPACE_TYPES.map(t => (
+            <button key={t} onClick={() => setSpaceType(t)}
+              className={`px-3 py-1.5 rounded-xl font-body text-xs font-semibold transition-all ${spaceType === t ? 'bg-purple-500/80 text-white border-purple-500' : 'bg-white/5 border border-white/10 text-white/50 hover:border-white/25'}`}>
+              {t}
+            </button>
+          ))}
+        </div>
+
+        {/* Add Listing button for admins/sellers */}
+        {(isAdmin || isSeller) && (
+          <div className="mb-6">
+            <button onClick={() => {}} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
+              style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}
+              title="Use the + button to add a listing">
+              <Plus className="w-4 h-4" /> Add Rental Listing
+            </button>
+          </div>
+        )}
 
         {filtered.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
@@ -205,6 +247,8 @@ export default function ForRent() {
         {contactItem && <ContactModal item={contactItem} onClose={() => setContactItem(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
       </AnimatePresence>
+
+      <AdminQuickAddFAB defaultMode="listing" forceSubcategory="residential" />
     </div>
   );
 }

@@ -1,0 +1,27 @@
+{
+  "name": "UserReward",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "user_id": {
+      "type": "string"
+    },
+    "total_centavos": {
+      "type": "number",
+      "default": 0
+    },
+    "last_claimed_date": {
+      "type": "string",
+      "description": "ISO date YYYY-MM-DD of last daily claim"
+    },
+    "streak_days": {
+      "type": "integer",
+      "default": 0
+    }
+  },
+  "required": [
+    "user_email"
+  ]
+}

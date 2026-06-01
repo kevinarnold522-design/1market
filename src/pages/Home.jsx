@@ -20,6 +20,9 @@ import StarField from '../components/StarField';
 import PhilippinesTravelBanner from '../components/home/PhilippinesTravelBanner';
 import ParticleBackground from '../components/ParticleBackground';
 import CustomerSupportButton from '../components/CustomerSupportButton';
+import ReviewHighlights from '../components/home/ReviewHighlights';
+import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
+import HeroSlider from '../components/home/HeroSlider';
 
 const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/be5b76b23_generated_1fcae122.png';
 
@@ -48,6 +51,7 @@ export default function Home() {
       <SuggestionsBar />
       <MovingWelcomeBanner />
       <BrandingBanner />
+      <HeroSlider />
       <HeroSection heroImage={HERO_IMAGE} />
       <WhatMakesUsSpecial />
       <CategoryCards />
@@ -58,12 +62,14 @@ export default function Home() {
       <ShoesClothingDashboard />
       <ServicesDashboard />
       <HowItWorksSection />
+      <ReviewHighlights />
       <CommunityAnimation />
       <Footer />
       <SuggestionBox />
       </div>
       <PhilippinesTravelBanner />
       <CustomerSupportButton />
+      <AdminQuickAddFAB defaultMode="listing" />
     </div>
   );
 }
