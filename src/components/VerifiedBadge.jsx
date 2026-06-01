@@ -15,8 +15,8 @@ export default function VerifiedBadge({ size = 'sm', showLabel = false, variant 
 
   const gradStart = isYellow ? '#fbbf24' : '#a855f7';
   const gradEnd   = isYellow ? '#f97316' : '#ec4899';
-  const glowColor = isYellow ? 'rgba(251,191,36,0.7)' : 'rgba(168,85,247,0.7)';
-  const glowBlur  = isYellow ? '2' : '2.5';
+  const glowColor = isYellow ? 'rgba(251,191,36,0.7)' : 'rgba(168,85,247,0.9)';
+  const glowBlur  = isYellow ? '2' : '3.5';
   const dotColor  = isYellow ? 'linear-gradient(135deg,#fbbf24,#f97316)' : 'linear-gradient(135deg,#a855f7,#ec4899)';
   const dotGlow   = isYellow ? '#fbbf24' : '#a855f7';
   const labelGrad = isYellow ? 'linear-gradient(90deg,#fbbf24,#f97316)' : 'linear-gradient(90deg,#a855f7,#ec4899)';
@@ -34,7 +34,7 @@ export default function VerifiedBadge({ size = 'sm', showLabel = false, variant 
         {!isYellow && (
           <span className="absolute inset-0 rounded-full pointer-events-none"
             style={{
-              boxShadow: `0 0 ${hovered ? 14 : 8}px 3px rgba(168,85,247,0.65), 0 0 ${hovered ? 28 : 16}px 6px rgba(168,85,247,0.3)`,
+              boxShadow: `0 0 ${hovered ? 20 : 10}px 4px rgba(168,85,247,0.85), 0 0 ${hovered ? 40 : 22}px 10px rgba(168,85,247,0.45), 0 0 ${hovered ? 60 : 35}px 18px rgba(168,85,247,0.2)`,
               borderRadius: '50%',
               transition: 'box-shadow 0.3s',
             }}

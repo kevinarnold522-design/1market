@@ -166,17 +166,41 @@ export default function ListingDetail() {
         <div className="grid lg:grid-cols-5 gap-8">
           {/* Left: Images */}
           <div className="lg:col-span-3 space-y-3">
-            <div className="relative rounded-2xl overflow-hidden aspect-[4/3]"
+            <div className="rounded-2xl overflow-hidden aspect-[4/3] relative"
               style={{ boxShadow: '0 0 40px rgba(0,212,255,0.08)' }}>
-              <img src={images[activeImage] || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800'} alt={listing.title}
-                className="w-full h-full object-cover" />
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={activeImage}
+                  src={images[activeImage] || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800'}
+                  alt={listing.title}
+                  initial={{ opacity: 0, scale: 1.04 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.97 }}
+                  transition={{ duration: 0.35, ease: 'easeInOut' }}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              </AnimatePresence>
               <div className="absolute inset-0 bg-gradient-to-t from-[#070F1A]/40 to-transparent pointer-events-none" />
+              {images.length > 1 && (
+                <>
+                  <button onClick={() => setActiveImage(i => (i - 1 + images.length) % images.length)}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-white/80 hover:bg-black/70 transition-colors z-10">‹</button>
+                  <button onClick={() => setActiveImage(i => (i + 1) % images.length)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-white/80 hover:bg-black/70 transition-colors z-10">›</button>
+                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                    {images.map((_, i) => (
+                      <button key={i} onClick={() => setActiveImage(i)}
+                        className={`w-1.5 h-1.5 rounded-full transition-all ${i === activeImage ? 'bg-[#00D4FF] w-4' : 'bg-white/40'}`} />
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
             {images.length > 1 && (
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {images.map((img, i) => (
                   <button key={i} onClick={() => setActiveImage(i)}
-                    className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${i === activeImage ? 'border-[#00D4FF]' : 'border-white/10'}`}>
+                    className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${i === activeImage ? 'border-[#00D4FF] scale-105' : 'border-white/10'}`}>
                     <img src={img} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}

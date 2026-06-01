@@ -5,8 +5,10 @@ import {
   ArrowLeft, User, Mail, Shield, LogOut, Star, ShoppingBag, Package,
   Heart, Settings, Store, MapPin, Bell, ShoppingCart, CheckCircle,
   History, Edit2, Check, X, AlertCircle, BadgeCheck, Truck, FileText,
-  Plus, Pencil, Trash2, Save, Upload, Eye, Globe, Search
+  Plus, Pencil, Trash2, Save, Upload, Eye, Globe, Search, BarChart2,
+  Youtube, Instagram, Facebook, Camera, UserPlus, UserCheck
 } from 'lucide-react';
+import SellerAnalytics from '../components/seller/SellerAnalytics';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import ParticleBackground from '../components/ParticleBackground';
@@ -312,6 +314,14 @@ export default function UserProfile() {
   const [sellerBio, setSellerBio] = useState('');
   const [sellerPageEnabled, setSellerPageEnabled] = useState(false);
   const [toast, setToast] = useState('');
+  // Profile extras
+  const [bio, setBio] = useState('');
+  const [socialFb, setSocialFb] = useState('');
+  const [socialIg, setSocialIg] = useState('');
+  const [socialYt, setSocialYt] = useState('');
+  const [socialTt, setSocialTt] = useState('');
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const [uploadingPfp, setUploadingPfp] = useState(false);
 
   const showSaved = (msg) => { setSavedMsg(msg); setTimeout(() => setSavedMsg(''), 2500); };
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
@@ -337,6 +347,11 @@ export default function UserProfile() {
         setLocationVal(me.location || me.seller_location || 'Manila');
         setSellerBio(me.seller_bio || '');
         setSellerPageEnabled(me.seller_page_enabled || false);
+        setBio(me.bio || '');
+        setSocialFb(me.social_facebook || '');
+        setSocialIg(me.social_instagram || '');
+        setSocialYt(me.social_youtube || '');
+        setSocialTt(me.social_tiktok || '');
         await refresh(me);
       } catch (e) {}
       setLoading(false);
@@ -372,6 +387,36 @@ export default function UserProfile() {
   const isAdmin = user?.role === 'admin' || user?.email === 'Kevinarnold522@gmail.com';
   const pendingSellerOrders = sellerOrders.filter(o => o.status !== 'completed' && o.status !== 'cancelled');
 
+  const uploadCover = async (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    setUploadingCover(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    await base44.auth.updateMe({ cover_photo: file_url });
+    await reloadUser();
+    setUploadingCover(false);
+    showToast('Cover photo updated!');
+    e.target.value = '';
+  };
+
+  const uploadPfp = async (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    setUploadingPfp(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    await base44.auth.updateMe({ profile_picture: file_url });
+    await reloadUser();
+    setUploadingPfp(false);
+    showToast('Profile picture updated!');
+    e.target.value = '';
+  };
+
+  const saveProfileInfo = async () => {
+    setSaving(true);
+    await base44.auth.updateMe({ bio, social_facebook: socialFb, social_instagram: socialIg, social_youtube: socialYt, social_tiktok: socialTt });
+    await reloadUser();
+    setSaving(false);
+    showSaved('Profile saved!');
+  };
+
   // Build tabs based on account type
   const TABS = [
     { key: 'profile',    label: 'Profile',      icon: User },
@@ -383,6 +428,7 @@ export default function UserProfile() {
       { key: 'drafts',     label: 'Drafts',     icon: FileText },
       { key: 'sellerorders', label: 'Seller Orders', icon: Truck, badge: pendingSellerOrders.length },
       { key: 'sellerpage', label: 'Seller Page', icon: Globe },
+      { key: 'analytics',  label: 'Analytics',  icon: BarChart2 },
     ] : []),
     { key: 'settings',   label: 'Settings',     icon: Settings },
   ];
@@ -508,14 +554,35 @@ export default function UserProfile() {
         {/* Profile Header */}
         {user && (
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl p-4 mb-4"
+            className="rounded-2xl mb-4 overflow-hidden"
             style={{ background: 'linear-gradient(135deg,#0D1F3C,#112240)', border: '1px solid rgba(0,212,255,0.15)' }}>
-            <div className="flex items-center gap-3">
+            {/* Cover Photo */}
+            <div className="relative h-28 w-full overflow-hidden"
+              style={{ background: user.cover_photo ? 'none' : 'linear-gradient(135deg,#0D1F3C,#1e3a5f)' }}>
+              {user.cover_photo && <img src={user.cover_photo} alt="cover" className="w-full h-full object-cover" />}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0D1F3C]/80 to-transparent pointer-events-none" />
+              <label className="absolute bottom-2 right-2 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-black/50 border border-white/20 text-white/70 font-body text-[10px] cursor-pointer hover:bg-black/70 transition-colors">
+                {uploadingCover ? <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" /> : <Camera className="w-3 h-3" />}
+                Cover
+                <input type="file" accept="image/*" className="hidden" onChange={uploadCover} disabled={uploadingCover} />
+              </label>
+            </div>
+
+            <div className="p-4 -mt-8 relative">
+            <div className="flex items-end gap-3 mb-3">
               <div className="relative flex-shrink-0">
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center font-heading font-bold text-xl text-white"
-                  style={{ background: 'linear-gradient(135deg,#2563EB,#00D4FF)' }}>
-                  {initials}
-                </div>
+                {user.profile_picture ? (
+                  <img src={user.profile_picture} alt="pfp" className="w-16 h-16 rounded-2xl object-cover border-2 border-[#070F1A]" />
+                ) : (
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center font-heading font-bold text-2xl text-white border-2 border-[#070F1A]"
+                    style={{ background: 'linear-gradient(135deg,#2563EB,#00D4FF)' }}>
+                    {initials}
+                  </div>
+                )}
+                <label className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#2563EB] flex items-center justify-center border-2 border-[#070F1A] cursor-pointer hover:bg-[#00D4FF] transition-colors">
+                  {uploadingPfp ? <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" /> : <Camera className="w-3 h-3 text-white" />}
+                  <input type="file" accept="image/*" className="hidden" onChange={uploadPfp} disabled={uploadingPfp} />
+                </label>
                 {isVerified && (
                   <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#2563EB] flex items-center justify-center border-2 border-[#070F1A]">
                     <BadgeCheck className="w-3 h-3 text-white"/>
@@ -580,6 +647,7 @@ export default function UserProfile() {
                 ))}
               </div>
             )}
+            </div>{/* end p-4 */}
           </motion.div>
         )}
 
@@ -595,9 +663,43 @@ export default function UserProfile() {
         <AnimatePresence mode="wait">
           <motion.div key={activeTab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
 
+            {/* ANALYTICS */}
+            {activeTab === 'analytics' && isSeller && (
+              <SellerAnalytics listings={listings} user={user} />
+            )}
+
             {/* PROFILE */}
             {activeTab === 'profile' && user && (
               <div className="space-y-3">
+                {/* Bio & Socials */}
+                <div className="rounded-2xl p-4 space-y-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                  <h2 className="font-heading font-bold text-white text-sm">Bio & Socials</h2>
+                  <div>
+                    <label className="font-body text-[10px] text-white/40 uppercase tracking-wider mb-1 block">Bio</label>
+                    <textarea value={bio} onChange={e => setBio(e.target.value)} rows={3}
+                      placeholder="Tell people about yourself..."
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 font-body text-xs text-white placeholder-white/20 focus:outline-none focus:border-[#00D4FF] resize-none" />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {[
+                      { label: 'Facebook URL', val: socialFb, setter: setSocialFb, icon: '📘' },
+                      { label: 'Instagram URL', val: socialIg, setter: setSocialIg, icon: '📸' },
+                      { label: 'YouTube URL', val: socialYt, setter: setSocialYt, icon: '▶️' },
+                      { label: 'TikTok URL', val: socialTt, setter: setSocialTt, icon: '🎵' },
+                    ].map(({ label, val, setter, icon }) => (
+                      <div key={label}>
+                        <label className="font-body text-[9px] text-white/35 uppercase tracking-wider mb-1 block">{icon} {label}</label>
+                        <input value={val} onChange={e => setter(e.target.value)} placeholder="https://..."
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 font-body text-xs text-white placeholder-white/20 focus:outline-none focus:border-[#00D4FF]" />
+                      </div>
+                    ))}
+                  </div>
+                  <button onClick={saveProfileInfo} disabled={saving}
+                    className="flex items-center gap-1.5 px-4 py-2 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-xs hover:bg-white transition-colors disabled:opacity-50">
+                    {saving ? <div className="w-3 h-3 border border-[#0A192F]/30 border-t-[#0A192F] rounded-full animate-spin" /> : <Save className="w-3 h-3" />}
+                    Save Profile
+                  </button>
+                </div>
                 <div className="rounded-2xl p-4 space-y-2" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
                   <h2 className="font-heading font-bold text-white text-sm mb-3">Account Information</h2>
                   {[

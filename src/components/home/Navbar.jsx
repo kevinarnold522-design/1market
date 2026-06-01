@@ -103,7 +103,7 @@ export default function Navbar() {
 
   const initials = user ? (user.full_name || user.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
   const memberSince = user?.created_date ? new Date(user.created_date).toLocaleDateString('en-PH', { year: 'numeric', month: 'short' }) : '';
-  const accountTypeLabel = isAdmin ? '🛡️ Administrator' : user?.account_type === 'business_owner' ? '🏪 Business Owner' : '🛍️ Customer';
+  const accountTypeLabel = isAdmin ? '👑 CEO & Founder' : user?.account_type === 'business_owner' ? '🏪 Business Owner' : '🛍️ Customer';
   const accountTypeBadge = user?.account_type === 'business_owner'
     ? 'bg-[#00D4FF]/15 text-[#00D4FF] border-[#00D4FF]/25'
     : 'bg-[#2563EB]/15 text-[#60a5fa] border-[#2563EB]/20';
@@ -171,7 +171,7 @@ export default function Navbar() {
                     </div>
                     <div className="text-left hidden sm:block">
                       <p className="font-body text-xs text-white font-semibold leading-tight max-w-[80px] truncate">{user.full_name?.split(' ')[0] || 'Account'}</p>
-                      <p className="font-body text-[9px] text-[#00D4FF] leading-tight">{isAdmin ? 'Administrator' : user.account_type === 'business_owner' ? 'Business Owner' : 'Customer'}</p>
+                      <p className="font-body text-[9px] text-[#00D4FF] leading-tight">{isAdmin ? 'CEO & Founder' : user.account_type === 'business_owner' ? 'Business Owner' : 'Customer'}</p>
                     </div>
                     <ChevronDown className="w-3 h-3 text-white/40" />
                   </button>
