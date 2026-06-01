@@ -25,10 +25,13 @@ export default function SellerProfilePage() {
 
   useEffect(() => {
     const init = async () => {
+      let me = null;
       try {
-        const me = await base44.auth.me();
-        setCurrentUser(me);
+        const authed = await base44.auth.isAuthenticated();
+        if (authed) { me = await base44.auth.me(); setCurrentUser(me); }
+      } catch {}
 
+      try {
         // Fetch seller — by ID or by username
         let sellerData = null;
         if (sellerId) {
@@ -42,15 +45,16 @@ export default function SellerProfilePage() {
         if (sellerData) {
           setSeller(sellerData);
           setBioVal(sellerData.seller_bio || '');
-          setIsOwner(me.email === sellerData.email);
-          const [items, follows, myFollow] = await Promise.all([
+          if (me) setIsOwner(me.email === sellerData.email);
+          const followsPromises = [
             base44.entities.Listing.filter({ created_by: sellerData.email, is_active: true }),
             base44.entities.Follow.filter({ following_user_id: sellerData.id }),
-            base44.entities.Follow.filter({ follower_email: me.email, following_user_id: sellerData.id }),
-          ]);
-          setListings(items);
-          setFollowCount(follows.length);
-          setIsFollowing(myFollow.length > 0);
+          ];
+          if (me) followsPromises.push(base44.entities.Follow.filter({ follower_email: me.email, following_user_id: sellerData.id }));
+          const results2 = await Promise.all(followsPromises);
+          setListings(results2[0]);
+          setFollowCount(results2[1].length);
+          if (me && results2[2]) setIsFollowing(results2[2].length > 0);
         }
       } catch (e) {}
       setLoading(false);

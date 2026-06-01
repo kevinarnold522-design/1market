@@ -49,17 +49,26 @@ export default function HeroSection({ heroImage }) {
                 Founded in 2026 by Kevin Roberto, 1Market was born from a simple vision: to bridge the gap between Filipino consumers and businesses that power our communities. Whether you're searching for your next home, a reliable service, or the best local deals, we provide a seamless, homegrown space where connections happen naturally. Proudly Filipino, built for Filipinos — because when we connect, we grow together.
               </p>
 
-              <motion.a
-                href="#categories"
-                className="inline-flex items-center gap-3 mt-4 group"
-                whileHover={{ y: 2 }}>
-                <span className="font-body text-sm font-medium text-white/70 group-hover:text-[#00D4FF] transition-colors">
-                  Explore Categories
-                </span>
-                <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:border-[#00D4FF] group-hover:bg-[#00D4FF]/5 transition-all">
-                  <ArrowDown className="w-4 h-4 text-white/40 group-hover:text-[#00D4FF] transition-colors" />
-                </div>
-              </motion.a>
+              <div className="flex items-center gap-3 mt-4 flex-wrap">
+                <motion.a
+                  href="/explore"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
+                  style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 24px rgba(0,212,255,0.35)' }}
+                  whileHover={{ scale: 1.05 }}>
+                  Explore Now →
+                </motion.a>
+                <motion.a
+                  href="#categories"
+                  className="inline-flex items-center gap-3 group"
+                  whileHover={{ y: 2 }}>
+                  <span className="font-body text-sm font-medium text-white/70 group-hover:text-[#00D4FF] transition-colors">
+                    Browse Categories
+                  </span>
+                  <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:border-[#00D4FF] group-hover:bg-[#00D4FF]/5 transition-all">
+                    <ArrowDown className="w-4 h-4 text-white/40 group-hover:text-[#00D4FF] transition-colors" />
+                  </div>
+                </motion.a>
+              </div>
             </div>
           </motion.div>
 

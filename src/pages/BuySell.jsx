@@ -273,20 +273,18 @@ export default function BuySell() {
   useEffect(() => {
     const init = async () => {
       try {
+        // Always load listings
+        const items = await base44.entities.Listing.list('-created_date', 100);
+        setDbListings(items.filter(l => l.is_active));
+        // Auth check for favourites
         const authed = await base44.auth.isAuthenticated();
         if (authed) {
           const me = await base44.auth.me();
           setUser(me);
-          // Load DB listings
-          const items = await base44.entities.Listing.list('-created_date', 100);
-          setDbListings(items.filter(l => l.is_active));
-          // Load favourites
           const favs = await base44.entities.Favourite.filter({ user_email: me.email });
           setFavourites(favs.map(f => f.item_ref || f.listing_id));
         }
-      } catch (e) {
-        // not signed in
-      }
+      } catch (e) {}
     };
     init();
   }, []);

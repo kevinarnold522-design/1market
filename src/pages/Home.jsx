@@ -25,6 +25,7 @@ import FeaturedListings from '../components/home/FeaturedListings';
 import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
 import HeroSlider from '../components/home/HeroSlider';
 import AdManager from '../components/AdManager';
+import GetStartedButton from '../components/GetStartedButton';
 
 const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/be5b76b23_generated_1fcae122.png';
 
@@ -74,6 +75,7 @@ export default function Home() {
       <CustomerSupportButton />
       <AdminQuickAddFAB defaultMode="listing" />
       <AdManager />
+      <GetStartedButton />
     </div>
   );
 }

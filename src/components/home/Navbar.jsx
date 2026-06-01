@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Star, Package, Settings, Gift } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Star, Package, Settings, Gift, MessageSquare } from 'lucide-react';
 import RewardDashboard from '../RewardDashboard';
 import VerifiedBadge from '../VerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -150,6 +150,12 @@ export default function Navbar() {
             </a>
 
             <NavUserBadge />
+
+            {/* Messages button — visible to all */}
+            <Link to="/messages" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 border border-white/10 hover:border-[#00D4FF]/40 hover:bg-[#00D4FF]/10 transition-all text-white/70 hover:text-[#00D4FF]">
+              <MessageSquare className="w-4 h-4" />
+              <span className="font-body text-xs font-semibold">Messages</span>
+            </Link>
 
             {/* Desktop Links */}
             <div className="hidden md:flex items-center gap-6">
@@ -394,6 +400,10 @@ export default function Navbar() {
                 ))}
                 {isAuthenticated && user ? (
                   <>
+                    <Link to="/messages" onClick={() => setMenuOpen(false)}
+                      className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
+                      💬 Messages
+                    </Link>
                     <Link to="/profile" onClick={() => setMenuOpen(false)}
                       className="block text-[#00D4FF] font-body text-sm font-semibold py-2">
                       🏠 My Dashboard
@@ -416,6 +426,18 @@ export default function Navbar() {
                     </button>
                   </>
                 ) : (
+                  <>
+                    <Link to="/messages" onClick={() => setMenuOpen(false)}
+                      className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
+                      💬 Messages
+                    </Link>
+                    <Link to="/explore" onClick={() => setMenuOpen(false)}
+                      className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
+                      🔍 Explore Listings
+                    </Link>
+                  </>
+                )}
+                {!isAuthenticated && (
                   <div className="flex gap-2 mt-2">
                     <button onClick={() => { setMenuOpen(false); base44.auth.redirectToLogin(window.location.href); }}
                       className="flex-1 py-2.5 border border-white/20 text-white rounded-xl font-body font-bold text-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">

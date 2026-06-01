@@ -20,6 +20,8 @@ import Jobs from './pages/Jobs';
 import SellerProfilePage from './pages/SellerProfilePage';
 import ListingDetail from './pages/ListingDetail';
 import About from './pages/About';
+import ExplorePage from './pages/ExplorePage';
+import Messages from './pages/Messages';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -62,6 +64,8 @@ const AuthenticatedApp = () => {
       <Route path="/seller-profile/:sellerId" element={<SellerProfilePage />} />
       <Route path="/listing/:id" element={<ListingDetail />} />
       <Route path="/about" element={<About />} />
+      <Route path="/explore" element={<ExplorePage />} />
+      <Route path="/messages" element={<Messages />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
