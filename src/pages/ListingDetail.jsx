@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Facebook, Instagram } from 'lucide-react';
+import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag } from 'lucide-react';
+import ReportModal from '../components/ReportModal';
 import { base44 } from '@/api/base44Client';
 import Navbar from '../components/home/Navbar';
 import StarField from '../components/StarField';
@@ -57,6 +58,7 @@ export default function ListingDetail() {
   const [submitting, setSubmitting] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
   const [sellerProfile, setSellerProfile] = useState(null);
+  const [showReport, setShowReport] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -154,6 +156,7 @@ export default function ListingDetail() {
       <Navbar />
       <BlueHeartAnimation show={showHeartAnim} />
 
+      {showReport && <ReportModal listing={listing} user={user} onClose={() => setShowReport(false)} />}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-24 lg:py-28">
         <Link to={`/${listing.type === 'cars' || listing.type === 'shoes' || listing.type === 'electronics' ? 'buysell' : listing.type === 'hotel' ? 'travel' : 'buysell'}`}
           className="inline-flex items-center gap-2 text-white/50 hover:text-white font-body text-sm mb-6 transition-colors">
@@ -300,11 +303,19 @@ export default function ListingDetail() {
                 </div>
               )}
 
-              {/* Share */}
-              <button onClick={() => { if (navigator.share) { navigator.share({ title: listing.title, url: window.location.href }); } else { navigator.clipboard.writeText(window.location.href); }}}
-                className="mt-3 w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-white/5 border border-white/10 text-white/40 font-body text-xs hover:border-white/25 hover:text-white/70 transition-all">
-                <Share2 className="w-3.5 h-3.5" /> Share Listing
-              </button>
+              {/* Share + Report row */}
+              <div className="flex gap-2 mt-3">
+                <button onClick={() => { if (navigator.share) { navigator.share({ title: listing.title, url: window.location.href }); } else { navigator.clipboard.writeText(window.location.href); }}}
+                  className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl bg-white/5 border border-white/10 text-white/40 font-body text-xs hover:border-white/25 hover:text-white/70 transition-all">
+                  <Share2 className="w-3.5 h-3.5" /> Share
+                </button>
+                {user && (
+                  <button onClick={() => setShowReport(true)}
+                    className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl bg-red-500/5 border border-red-500/20 text-red-400/70 font-body text-xs hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/40 transition-all">
+                    <Flag className="w-3.5 h-3.5" /> Report
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Seller Profile snippet */}

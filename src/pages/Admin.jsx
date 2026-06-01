@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 
 const OWNER_EMAIL = 'Kevinarnold522@gmail.com';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Pencil, Trash2, X, Save, ArrowLeft, Building2, ShoppingBag, Search, Upload, User, BadgeCheck, Shield } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Save, ArrowLeft, Building2, ShoppingBag, Search, Upload, User, BadgeCheck, Shield, Flag, RotateCcw } from 'lucide-react';
 
 const ROLES = ['user', 'moderator', 'admin'];
 import { Link } from 'react-router-dom';
@@ -282,6 +282,7 @@ export default function Admin() {
   const [businesses, setBusinesses] = useState([]);
   const [listings, setListings] = useState([]);
   const [users, setUsers] = useState([]);
+  const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showBizForm, setShowBizForm] = useState(false);
   const [showListForm, setShowListForm] = useState(false);
@@ -295,14 +296,16 @@ export default function Admin() {
 
   const loadAll = async () => {
     setLoading(true);
-    const [bizs, lists, userList] = await Promise.all([
+    const [bizs, lists, userList, reportList] = await Promise.all([
       base44.entities.Business.list('-created_date', 200),
       base44.entities.Listing.list('-created_date', 200),
       base44.entities.User.list('-created_date', 200),
+      base44.entities.Report.list('-created_date', 200),
     ]);
     setBusinesses(bizs);
     setListings(lists);
     setUsers(userList);
+    setReports(reportList);
     setLoading(false);
   };
 
@@ -434,12 +437,13 @@ export default function Admin() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8">
           {[
             { label: 'Total Businesses', value: businesses.length, color: 'text-[#2563EB]' },
             { label: 'Food Listings', value: businesses.filter(b => b.section === 'food').length, color: 'text-emerald-600' },
             { label: 'Travel Listings', value: businesses.filter(b => b.section === 'travel').length, color: 'text-amber-600' },
             { label: 'Buy & Sell Items', value: listings.length, color: 'text-rose-600' },
+            { label: 'Pending Reports', value: reports.filter(r=>r.status==='pending').length, color: 'text-amber-600' },
           ].map(s => (
             <div key={s.label} className="bg-white rounded-2xl p-4 border border-[#0A192F]/5 shadow-sm">
               <p className={`font-heading font-bold text-2xl ${s.color}`}>{s.value}</p>
@@ -454,6 +458,7 @@ export default function Admin() {
             { key: 'businesses', label: 'Businesses', icon: Building2 },
             { key: 'listings', label: 'Buy & Sell Listings', icon: ShoppingBag },
             { key: 'users', label: `Users (${users.length})`, icon: User },
+            { key: 'reports', label: `Reports (${reports.filter(r=>r.status==='pending').length})`, icon: Flag },
           ].map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-semibold text-sm transition-all ${tab === t.key ? 'bg-[#0A192F] text-white' : 'bg-white border border-[#0A192F]/10 text-[#0A192F]/60 hover:border-[#0A192F]/20'}`}>
@@ -631,6 +636,67 @@ export default function Admin() {
             {users.length === 0 && (
               <div className="text-center py-16 text-[#0A192F]/40 font-body">No users found.</div>
             )}
+          </div>
+        )}
+
+        {tab === 'reports' && (
+          <div className="space-y-3">
+            {reports.length === 0 && (
+              <div className="text-center py-16 text-[#0A192F]/40 font-body">No reports yet.</div>
+            )}
+            {reports
+              .filter(r => r.listing_title?.toLowerCase().includes(search.toLowerCase()) || r.reporter_email?.toLowerCase().includes(search.toLowerCase()))
+              .map(report => (
+              <motion.div key={report.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                className="bg-white rounded-2xl border border-[#0A192F]/5 p-4 flex items-start gap-4 flex-wrap">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <h4 className="font-heading font-bold text-sm text-[#0A192F] truncate">{report.listing_title || report.listing_id}</h4>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold capitalize ${
+                      report.status === 'pending' ? 'bg-amber-100 text-amber-700' :
+                      report.status === 'reviewed' ? 'bg-blue-100 text-blue-700' :
+                      report.status === 'removed' ? 'bg-red-100 text-red-600' :
+                      'bg-gray-100 text-gray-600'
+                    }`}>{report.status}</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-100 text-orange-700 capitalize">{report.reason?.replace('_',' ')}</span>
+                  </div>
+                  <p className="font-body text-xs text-[#0A192F]/40">Reported by: {report.reporter_email}</p>
+                  {report.details && <p className="font-body text-xs text-[#0A192F]/60 mt-1 italic">"{report.details}"</p>}
+                </div>
+                <div className="flex gap-2 flex-shrink-0 flex-wrap">
+                  {report.status !== 'removed' && (
+                    <>
+                      {/* Restore listing */}
+                      <button
+                        onClick={async () => {
+                          await base44.entities.Listing.update(report.listing_id, { is_active: true, status: '' });
+                          await base44.entities.Report.update(report.id, { status: 'dismissed' });
+                          showToast('Listing restored & report dismissed.');
+                          loadAll();
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 transition-colors">
+                        <RotateCcw className="w-3.5 h-3.5" /> Restore
+                      </button>
+                      {/* Permanently remove listing */}
+                      <button
+                        onClick={async () => {
+                          if (!window.confirm('Permanently delete this listing? This cannot be undone.')) return;
+                          await base44.entities.Listing.delete(report.listing_id);
+                          await base44.entities.Report.update(report.id, { status: 'removed', admin_note: 'Permanently removed by admin.' });
+                          showToast('Listing permanently removed.');
+                          loadAll();
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors">
+                        <Trash2 className="w-3.5 h-3.5" /> Remove
+                      </button>
+                    </>
+                  )}
+                  {report.status === 'removed' && (
+                    <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-red-50 text-red-400 border border-red-100">Permanently Removed</span>
+                  )}
+                </div>
+              </motion.div>
+            ))}
           </div>
         )}
       </div>

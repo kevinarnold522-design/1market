@@ -1,0 +1,55 @@
+{
+  "name": "Report",
+  "type": "object",
+  "properties": {
+    "listing_id": {
+      "type": "string",
+      "description": "ID of the reported listing"
+    },
+    "listing_title": {
+      "type": "string"
+    },
+    "reporter_email": {
+      "type": "string"
+    },
+    "reporter_name": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "spam",
+        "scam",
+        "inappropriate",
+        "wrong_category",
+        "duplicate",
+        "other"
+      ],
+      "description": "Reason for report"
+    },
+    "details": {
+      "type": "string",
+      "description": "Additional details from reporter"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "reviewed",
+        "dismissed",
+        "removed"
+      ],
+      "default": "pending",
+      "description": "Admin review status"
+    },
+    "admin_note": {
+      "type": "string",
+      "description": "Admin's note after reviewing"
+    }
+  },
+  "required": [
+    "listing_id",
+    "reporter_email",
+    "reason"
+  ]
+}

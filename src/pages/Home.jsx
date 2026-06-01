@@ -21,9 +21,11 @@ import PhilippinesTravelBanner from '../components/home/PhilippinesTravelBanner'
 import ParticleBackground from '../components/ParticleBackground';
 import CustomerSupportButton from '../components/CustomerSupportButton';
 import ReviewHighlights from '../components/home/ReviewHighlights';
+import FeaturedListings from '../components/home/FeaturedListings';
 import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
 import HeroSlider from '../components/home/HeroSlider';
 import AdManager from '../components/AdManager';
+import FeaturedListings from '../components/home/FeaturedListings';
 
 const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/be5b76b23_generated_1fcae122.png';
 
@@ -58,6 +60,8 @@ export default function Home() {
       <CategoryCards />
       <PhFlightDeals />
       <PhHotelDeals />
+      <FeaturedListings />
+      <FeaturedListings />
       <BuySellElectronicsDeals />
       <RentDashboard />
       <ShoesClothingDashboard />

@@ -9,7 +9,7 @@ const SLIDES = [
     subline: 'Under 1Vision, Together.',
     tagline: 'Welcome to 1MarketPH',
     desc: 'Founded in 2026 by Kevin Roberto — bridging Filipino consumers and the businesses that power our communities.',
-    bg: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=1400&q=85',
+    bg: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1400&q=85',
     accent: '#00D4FF',
   },
   {
