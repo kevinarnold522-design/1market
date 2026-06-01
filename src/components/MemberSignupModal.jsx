@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, User, ShoppingBag, Star, Check, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 
 const MEMBER_TYPES = [
   { key: 'buyer', icon: ShoppingBag, label: 'Buyer / Customer', desc: 'Browse, save, and rate products & food' },
@@ -43,15 +42,13 @@ export default function MemberSignupModal({ onClose }) {
   const [step, setStep] = useState(1);
   const [memberType, setMemberType] = useState('');
 
-  const handleOAuth = () => {
-    // Redirect to Base44 login which supports Google, Microsoft, etc.
-    base44.auth.redirectToLogin(window.location.href);
+  const goToAuth = () => {
+    const redirect = encodeURIComponent(window.location.href);
+    window.location.assign(`/login?redirect=${redirect}`);
   };
 
-  const handleEmailSignup = () => {
-    // Redirect to Base44 login/signup page
-    base44.auth.redirectToLogin(window.location.href);
-  };
+  const handleOAuth = goToAuth;
+  const handleEmailSignup = goToAuth;
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
