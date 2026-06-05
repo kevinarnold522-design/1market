@@ -22,6 +22,7 @@ import ListingDetail from './pages/ListingDetail';
 import About from './pages/About';
 import ExplorePage from './pages/ExplorePage';
 import Messages from './pages/Messages';
+import Favourites from './pages/Favourites';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -66,6 +67,7 @@ const AuthenticatedApp = () => {
       <Route path="/about" element={<About />} />
       <Route path="/explore" element={<ExplorePage />} />
       <Route path="/messages" element={<Messages />} />
+      <Route path="/favourites" element={<Favourites />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

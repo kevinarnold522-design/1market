@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Star, Package, Settings, Gift, MessageSquare, Award } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Star, Package, Settings, Gift, MessageSquare, Award, Bookmark, Plus } from 'lucide-react';
 import RewardDashboard from '../RewardDashboard';
 import VerifiedBadge from '../VerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -121,17 +121,17 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <span className="font-body text-[11px] sm:text-xs font-semibold">🎉 Sign Up or Sign In to access deals & your account.</span>
+            <span className="font-body text-[11px] sm:text-xs font-semibold">Join 1Marketph.com — Buy, Sell, and Connect with local businesses!</span>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => base44.auth.redirectToLogin(window.location.href)}
                 className="px-3 py-0.5 bg-white/30 text-[#0A192F] rounded-full text-[11px] sm:text-xs font-bold hover:bg-white/50 transition-colors whitespace-nowrap">
-                Sign In
+                Login
               </button>
               <button
                 onClick={() => setShowSignup(true)}
                 className="px-3 py-0.5 bg-[#0A192F] text-white rounded-full text-[11px] sm:text-xs font-bold hover:bg-[#2563EB] transition-colors whitespace-nowrap">
-                Sign Up →
+                Get Started →
               </button>
             </div>
           </>
@@ -153,11 +153,28 @@ export default function Navbar() {
 
             <NavUserBadge />
 
-            {/* Messages button — visible to all */}
+            {/* Messages button */}
             <Link to="/messages" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 border border-white/10 hover:border-[#00D4FF]/40 hover:bg-[#00D4FF]/10 transition-all text-white/70 hover:text-[#00D4FF]">
               <MessageSquare className="w-4 h-4" />
               <span className="font-body text-xs font-semibold">Messages</span>
             </Link>
+
+            {/* Favourites bookmark — authenticated */}
+            {isAuthenticated && user && (
+              <Link to="/favourites" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 border border-white/10 hover:border-pink-400/40 hover:bg-pink-500/10 transition-all text-white/70 hover:text-pink-400">
+                <Bookmark className="w-4 h-4" />
+                <span className="font-body text-xs font-semibold">Saved</span>
+              </Link>
+            )}
+
+            {/* Quick Add Listing — sellers & business owners only */}
+            {isAuthenticated && user && isSeller && (
+              <Link to="/profile?tab=listings" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body text-xs font-bold transition-all text-[#0A192F]"
+                style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 12px rgba(0,212,255,0.3)' }}>
+                <Plus className="w-4 h-4" />
+                Add Listing
+              </Link>
+            )}
 
             {/* Desktop Links */}
             <div className="hidden md:flex items-center gap-6">
@@ -353,11 +370,12 @@ export default function Navbar() {
                 <div className="flex items-center gap-2">
                   <button onClick={() => base44.auth.redirectToLogin(window.location.href)}
                     className="px-4 py-2 border border-white/20 text-white/80 rounded-lg font-body font-bold text-xs hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
-                    Sign In
+                    Login
                   </button>
                   <button onClick={() => setShowSignup(true)}
-                    className="px-4 py-2 bg-[#00D4FF] text-[#0A192F] rounded-lg font-body font-bold text-xs hover:bg-white transition-colors">
-                    Sign Up Free
+                    className="px-4 py-2 rounded-lg font-body font-bold text-xs text-[#0A192F] transition-all hover:scale-105"
+                    style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 16px rgba(0,212,255,0.4)' }}>
+                    Get Started
                   </button>
                 </div>
               )}
@@ -438,15 +456,30 @@ export default function Navbar() {
                     </Link>
                   </>
                 )}
+                {/* Mobile: Favourites + Add Listing for sellers */}
+                {isAuthenticated && user && (
+                  <Link to="/favourites" onClick={() => setMenuOpen(false)}
+                    className="block text-pink-300 font-body text-sm font-medium py-2 transition-colors">
+                    Saved Favourites
+                  </Link>
+                )}
+                {isAuthenticated && user && isSeller && (
+                  <Link to="/profile?tab=listings" onClick={() => setMenuOpen(false)}
+                    className="block font-body text-sm font-bold py-2 transition-colors"
+                    style={{ color: '#00D4FF' }}>
+                    + Add New Listing
+                  </Link>
+                )}
                 {!isAuthenticated && (
                   <div className="flex gap-2 mt-2">
                     <button onClick={() => { setMenuOpen(false); base44.auth.redirectToLogin(window.location.href); }}
                       className="flex-1 py-2.5 border border-white/20 text-white rounded-xl font-body font-bold text-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
-                      Sign In
+                      Login
                     </button>
                     <button onClick={() => { setMenuOpen(false); setShowSignup(true); }}
-                      className="flex-1 py-2.5 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-sm hover:bg-white transition-colors">
-                      Sign Up
+                      className="flex-1 py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all"
+                      style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 14px rgba(0,212,255,0.35)' }}>
+                      Get Started
                     </button>
                   </div>
                 )}

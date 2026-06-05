@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, MapPin, Heart, MessageSquare, Share2, Flag, X } from 'lucide-react';
+import { Search, Filter, MapPin, Heart, MessageSquare, Share2, Flag, X, Bookmark, Star, SlidersHorizontal } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import StarField from '../components/StarField';
 import Navbar from '../components/home/Navbar';
@@ -88,6 +88,20 @@ function ListingCard({ item, user, onReport }) {
     else { navigator.clipboard.writeText(url); }
   };
 
+  const handleBookmark = async (e) => {
+    e.preventDefault(); e.stopPropagation();
+    if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
+    const existing = await base44.entities.Favourite.filter({ user_email: user.email, listing_id: item.id });
+    if (existing.length === 0) {
+      await base44.entities.Favourite.create({
+        user_email: user.email, listing_id: item.id,
+        title: item.title, image_url: item.image_url,
+        price_label: item.price_label || (item.price ? `₱${Number(item.price).toLocaleString()}` : ''),
+        category: item.type, area: item.area || item.location
+      });
+    }
+  };
+
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
       className="rounded-2xl overflow-hidden group hover:-translate-y-1 transition-all duration-300"
@@ -127,6 +141,9 @@ function ListingCard({ item, user, onReport }) {
           <button onClick={handleShare} className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/5 hover:bg-[#2563EB]/15 transition-all">
             <Share2 className="w-3.5 h-3.5 text-white/40" />
           </button>
+          <button onClick={handleBookmark} className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/5 hover:bg-pink-500/15 transition-all">
+            <Bookmark className="w-3.5 h-3.5 text-white/40 hover:text-pink-400" />
+          </button>
           {user && (
             <button onClick={(e) => { e.preventDefault(); onReport(item); }}
               className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/5 hover:bg-red-500/15 transition-all ml-auto">
@@ -153,6 +170,9 @@ export default function ExplorePage() {
   const [search, setSearch] = useState('');
   const [activeType, setActiveType] = useState('all');
   const [reportItem, setReportItem] = useState(null);
+  const [maxPrice, setMaxPrice] = useState('');
+  const [minRating, setMinRating] = useState(0);
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -170,7 +190,9 @@ export default function ExplorePage() {
   const filtered = listings.filter(l => {
     const matchType = activeType === 'all' || l.type === activeType;
     const matchSearch = !search || l.title.toLowerCase().includes(search.toLowerCase()) || (l.area || '').toLowerCase().includes(search.toLowerCase());
-    return matchType && matchSearch;
+    const matchPrice = !maxPrice || !l.price || Number(l.price) <= Number(maxPrice);
+    const matchRating = minRating === 0 || (l.rating || 0) >= minRating;
+    return matchType && matchSearch && matchPrice && matchRating;
   });
 
   return (
@@ -209,15 +231,49 @@ export default function ExplorePage() {
       </div>
 
       {/* Type filters */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-6">
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-4">
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide items-center">
           {TYPES.map(t => (
             <button key={t.key} onClick={() => setActiveType(t.key)}
               className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body text-xs font-semibold transition-all ${activeType === t.key ? 'bg-[#00D4FF] text-[#0A192F]' : 'bg-white/8 text-white/60 hover:bg-white/15 border border-white/10'}`}>
-              <span>{t.icon}</span> {t.label}
+              {t.label}
             </button>
           ))}
+          <button onClick={() => setShowFilters(f => !f)}
+            className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body text-xs font-semibold transition-all ml-1 ${showFilters ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40' : 'bg-white/8 text-white/60 hover:bg-white/15 border border-white/10'}`}>
+            <SlidersHorizontal className="w-3.5 h-3.5" /> Filters
+          </button>
         </div>
+
+        {/* Advanced filters panel */}
+        <AnimatePresence>
+          {showFilters && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+              className="mt-3 p-4 rounded-2xl flex flex-wrap gap-4 items-end"
+              style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(0,212,255,0.15)' }}>
+              <div>
+                <label className="font-body text-[10px] text-white/40 uppercase tracking-wider mb-1 block">Max Price (₱)</label>
+                <input type="number" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder="e.g. 5000"
+                  className="w-36 bg-white/5 border border-white/15 rounded-xl px-3 py-2 text-white font-body text-xs placeholder-white/25 focus:outline-none focus:border-[#00D4FF]" />
+              </div>
+              <div>
+                <label className="font-body text-[10px] text-white/40 uppercase tracking-wider mb-1 block">Min Rating</label>
+                <div className="flex items-center gap-1">
+                  {[0, 1, 2, 3, 4, 5].map(r => (
+                    <button key={r} onClick={() => setMinRating(r)}
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center font-body text-xs font-bold transition-all ${minRating === r ? 'bg-[#00D4FF] text-[#0A192F]' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>
+                      {r === 0 ? 'All' : `${r}+`}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <button onClick={() => { setMaxPrice(''); setMinRating(0); }}
+                className="px-3 py-2 rounded-xl bg-white/5 text-white/40 font-body text-xs hover:text-white hover:bg-white/10 transition-all border border-white/10">
+                Clear
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Grid */}

@@ -1,0 +1,48 @@
+{
+  "name": "ChatMessage",
+  "type": "object",
+  "properties": {
+    "listing_id": {
+      "type": "string",
+      "description": "Listing or business ID this chat is about"
+    },
+    "listing_title": {
+      "type": "string"
+    },
+    "seller_email": {
+      "type": "string"
+    },
+    "buyer_email": {
+      "type": "string"
+    },
+    "sender_email": {
+      "type": "string",
+      "description": "Who sent this message"
+    },
+    "sender_name": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false
+    },
+    "chat_type": {
+      "type": "string",
+      "enum": [
+        "listing",
+        "business"
+      ],
+      "default": "listing"
+    }
+  },
+  "required": [
+    "listing_id",
+    "seller_email",
+    "buyer_email",
+    "sender_email",
+    "message"
+  ]
+}

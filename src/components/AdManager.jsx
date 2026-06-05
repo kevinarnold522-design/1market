@@ -28,18 +28,35 @@ export default function AdManager() {
     }
 
     base44.auth.me().then(u => {
-      if (u?.role === 'admin' || u?.email === 'Kevinarnold522@gmail.com') {
+      // Block ads permanently for admin, sellers, and business owners
+      if (
+        u?.role === 'admin' ||
+        u?.email === 'Kevinarnold522@gmail.com' ||
+        u?.is_seller ||
+        u?.account_type === 'business_owner'
+      ) {
         setIsAdmin(true);
         return;
       }
-      // Start the 4-minute delay timer
+      // Start the 4-minute delay timer for regular users
       timerRef.current = setTimeout(() => {
         setShowAd(true);
       }, AD_DELAY_MS);
     }).catch(() => {
-      timerRef.current = setTimeout(() => {
-        setShowAd(true);
-      }, AD_DELAY_MS);
+      // Non-signed-in users: block ads for 5 minutes on first visit
+      const blockedUntil = localStorage.getItem('guest_ad_block_until');
+      const now = Date.now();
+      if (blockedUntil && parseInt(blockedUntil) > now) {
+        // Still in the 5-min block window, start timer for remaining time
+        const remaining = parseInt(blockedUntil) - now;
+        timerRef.current = setTimeout(() => setShowAd(true), remaining + 1000);
+      } else {
+        // Set a 5-minute block for guests
+        localStorage.setItem('guest_ad_block_until', (now + 5 * 60 * 1000).toString());
+        timerRef.current = setTimeout(() => {
+          setShowAd(true);
+        }, 5 * 60 * 1000);
+      }
     });
 
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };

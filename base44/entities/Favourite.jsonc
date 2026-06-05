@@ -1,0 +1,42 @@
+{
+  "name": "Favourite",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user who saved this"
+    },
+    "listing_id": {
+      "type": "string",
+      "description": "ID of the saved listing (if from DB)"
+    },
+    "item_ref": {
+      "type": "string",
+      "description": "Static item reference key (for hardcoded listings)"
+    },
+    "title": {
+      "type": "string",
+      "description": "Item title snapshot"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Image snapshot"
+    },
+    "price_label": {
+      "type": "string",
+      "description": "Price snapshot"
+    },
+    "category": {
+      "type": "string",
+      "description": "Category: buysell, food, travel, rent, services"
+    },
+    "area": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_email",
+    "title",
+    "category"
+  ]
+}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Heart, Share2, Flag, Bookmark } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const CATEGORY_COLORS = {
@@ -25,18 +25,75 @@ const CATEGORY_ICONS = {
   flights: '✈️', vehicle_rental: '🚙', space_rent: '🏢', mods: '⚙️',
 };
 
-function ListingCard({ item }) {
+function MiniHeartBtn({ listingId, user }) {
+  const [hearted, setHearted] = useState(false);
+  const [count, setCount] = useState(0);
+  const [anim, setAnim] = useState(false);
+
+  useEffect(() => {
+    base44.entities.ListingHeart.filter({ listing_id: listingId }).then(r => setCount(r.length));
+    if (user) base44.entities.ListingHeart.filter({ listing_id: listingId, user_email: user.email }).then(r => setHearted(r.length > 0));
+  }, [listingId, user]);
+
+  const toggle = async (e) => {
+    e.preventDefault(); e.stopPropagation();
+    if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
+    if (hearted) {
+      const ex = await base44.entities.ListingHeart.filter({ listing_id: listingId, user_email: user.email });
+      if (ex[0]) await base44.entities.ListingHeart.delete(ex[0].id);
+      setHearted(false); setCount(c => c - 1);
+    } else {
+      await base44.entities.ListingHeart.create({ listing_id: listingId, user_email: user.email });
+      setHearted(true); setCount(c => c + 1);
+      setAnim(true); setTimeout(() => setAnim(false), 700);
+    }
+  };
+
+  return (
+    <button onClick={toggle} className="relative flex items-center gap-0.5 px-1.5 py-1 rounded-lg bg-white/5 hover:bg-red-500/15 transition-all">
+      <AnimatePresence>
+        {anim && <motion.span initial={{ scale: 1, opacity: 1, y: 0 }} animate={{ scale: 2, opacity: 0, y: -14 }}
+          transition={{ duration: 0.6 }} className="absolute -top-2 left-1/2 -translate-x-1/2 text-sm pointer-events-none">❤️</motion.span>}
+      </AnimatePresence>
+      <Heart className={`w-3 h-3 ${hearted ? 'text-red-400 fill-red-400' : 'text-white/40'}`} />
+      <span className="font-body text-[9px] text-white/40">{count > 0 ? count : ''}</span>
+    </button>
+  );
+}
+
+function ListingCard({ item, user }) {
   const price = item.price_label || (item.price ? `₱${Number(item.price).toLocaleString()}` : null);
   const colorClass = CATEGORY_COLORS[item.type] || 'bg-gray-500/20 text-gray-300';
   const icon = CATEGORY_ICONS[item.type] || '📦';
 
+  const handleShare = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    const url = `${window.location.origin}/listing/${item.id}`;
+    if (navigator.share) navigator.share({ title: item.title, url });
+    else navigator.clipboard.writeText(url);
+  };
+
+  const handleBookmark = async (e) => {
+    e.preventDefault(); e.stopPropagation();
+    if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
+    const existing = await base44.entities.Favourite.filter({ user_email: user.email, listing_id: item.id });
+    if (existing.length === 0) {
+      await base44.entities.Favourite.create({
+        user_email: user.email, listing_id: item.id,
+        title: item.title, image_url: item.image_url,
+        price_label: item.price_label || (item.price ? `₱${Number(item.price).toLocaleString()}` : ''),
+        category: item.type, area: item.area || item.location
+      });
+    }
+  };
+
   return (
-    <Link to={`/listing/${item.id}`} className="block flex-shrink-0 w-52 group">
-      <motion.div
-        whileHover={{ y: -4, boxShadow: '0 0 30px rgba(0,212,255,0.2)' }}
-        className="rounded-2xl overflow-hidden transition-all duration-300"
-        style={{ background: 'rgba(13,31,60,0.9)', border: '1px solid rgba(0,212,255,0.1)' }}
-      >
+    <motion.div
+      whileHover={{ y: -4, boxShadow: '0 0 30px rgba(0,212,255,0.2)' }}
+      className="flex-shrink-0 w-52 rounded-2xl overflow-hidden transition-all duration-300 group"
+      style={{ background: 'rgba(13,31,60,0.9)', border: '1px solid rgba(0,212,255,0.1)' }}
+    >
+      <Link to={`/listing/${item.id}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden">
           <img
             src={item.image_url || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=70'}
@@ -49,24 +106,40 @@ function ListingCard({ item }) {
             {icon} {item.type}
           </span>
         </div>
-        <div className="p-3">
+        <div className="p-3 pb-1">
           <p className="font-heading font-bold text-sm text-white leading-tight line-clamp-2 mb-1">{item.title}</p>
-          <p className="font-body text-[10px] text-white/40 mb-2">{item.area || item.location}</p>
-          {price && (
-            <p className="font-heading font-bold text-base text-[#00D4FF]">{price}</p>
-          )}
+          <p className="font-body text-[10px] text-white/40 mb-1">{item.area || item.location}</p>
+          {price && <p className="font-heading font-bold text-base text-[#00D4FF]">{price}</p>}
         </div>
-      </motion.div>
-    </Link>
+      </Link>
+      {/* Action bar */}
+      <div className="px-3 pb-2.5 flex items-center gap-1">
+        <MiniHeartBtn listingId={item.id} user={user} />
+        <button onClick={handleShare} className="flex items-center px-1.5 py-1 rounded-lg bg-white/5 hover:bg-[#2563EB]/15 transition-all">
+          <Share2 className="w-3 h-3 text-white/40" />
+        </button>
+        <button onClick={handleBookmark} className="flex items-center px-1.5 py-1 rounded-lg bg-white/5 hover:bg-pink-500/15 transition-all">
+          <Bookmark className="w-3 h-3 text-white/40 hover:text-pink-400" />
+        </button>
+        <Link to={`/listing/${item.id}`} onClick={(e) => e.stopPropagation()}
+          className="ml-auto flex items-center px-1.5 py-1 rounded-lg bg-white/5 hover:bg-red-500/15 transition-all">
+          <Flag className="w-3 h-3 text-red-400/50" />
+        </Link>
+      </div>
+    </motion.div>
   );
 }
 
 export default function FeaturedListings() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
   const scrollRef = useRef(null);
 
   useEffect(() => {
+    base44.auth.isAuthenticated().then(ok => {
+      if (ok) base44.auth.me().then(u => setUser(u)).catch(() => {});
+    }).catch(() => {});
     base44.entities.Listing.filter({ is_active: true }, '-created_date', 20)
       .then(items => {
         setListings(items.filter(l => l.is_active !== false));
@@ -118,7 +191,7 @@ export default function FeaturedListings() {
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {listings.map(item => (
-          <ListingCard key={item.id} item={item} />
+          <ListingCard key={item.id} item={item} user={user} />
         ))}
       </div>
 
