@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ParticleBackground from '../components/ParticleBackground';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, MapPin, Briefcase, Clock, ExternalLink, X, Building2, DollarSign } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, Briefcase, Clock, ExternalLink, X, Building2, DollarSign, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
+import AddListingModal from '../components/AddListingModal';
+import { base44 } from '@/api/base44Client';
 
 const SUITS = ['♠', '♥', '♦', '♣'];
 const VALUES = ['A', 'K', 'Q', 'J', '10', '9'];
@@ -219,6 +221,19 @@ export default function Jobs() {
   const [search, setSearch] = useState('');
   const [applyJob, setApplyJob] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
+  const [showAddListing, setShowAddListing] = useState(false);
+  const [canAddListing, setCanAddListing] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    base44.auth.isAuthenticated().then(ok => {
+      if (ok) base44.auth.me().then(u => {
+        setCurrentUser(u);
+        const allowed = u.role === 'admin' || u.is_seller || u.account_type === 'business_owner' || u.email === 'Kevinarnold522@gmail.com';
+        setCanAddListing(allowed);
+      }).catch(() => {});
+    }).catch(() => {});
+  }, []);
 
   const handleSubcatSelect = (key) => { setActiveType(key); setShowSplash(false); };
 
@@ -279,7 +294,16 @@ export default function Jobs() {
               <div className="w-1.5 h-1.5 rounded-full bg-[#fbbf24] animate-pulse" />
               <span className="font-body text-xs tracking-[0.2em] uppercase text-[#fbbf24]">1Market Job Board</span>
             </div>
-            <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white mb-2">Jobs in Manila & Cavite</h1>
+            <div className="flex items-center gap-4 flex-wrap mb-2">
+              <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Jobs in Manila & Cavite</h1>
+              {canAddListing && (
+                <button onClick={() => setShowAddListing(true)}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
+                  style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 16px rgba(37,99,235,0.4)' }}>
+                  <Plus className="w-4 h-4" /> Post a Job
+                </button>
+              )}
+            </div>
             <p className="font-body text-sm text-white/50 max-w-xl">Full-time, part-time, freelance & remote — real jobs from real companies across the Philippines.</p>
           </motion.div>
           <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.2 }} className="mt-5 relative max-w-xl">
@@ -337,6 +361,7 @@ export default function Jobs() {
       <AnimatePresence>
         {applyJob && <ApplyModal job={applyJob} onClose={() => setApplyJob(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
+        {showAddListing && <AddListingModal onClose={() => setShowAddListing(false)} defaultType="jobs" user={currentUser} />}
       </AnimatePresence>
     </div>
   );

@@ -7,17 +7,26 @@ import Navbar from '../components/home/Navbar';
 import ReportModal from '../components/ReportModal';
 import { base44 } from '@/api/base44Client';
 
+const FILTER_GROUPS = {
+  operations: ['services', 'jobs', 'product', 'other'],
+  lifestyle: ['food', 'hotel', 'flights', 'vehicle_rental', 'space_rent', 'rent_lease', 'houses'],
+  hobbies: ['electronics', 'mods', 'clothing', 'shoes', 'furniture'],
+};
+
 const TYPES = [
-  { key: 'all', label: 'All', icon: '🛒' },
-  { key: 'shoes', label: 'Shoes', icon: '👟' },
-  { key: 'cars', label: 'Cars', icon: '🚗' },
-  { key: 'houses', label: 'Houses', icon: '🏠' },
-  { key: 'electronics', label: 'Electronics', icon: '📱' },
-  { key: 'services', label: 'Services', icon: '🔧' },
-  { key: 'hotel', label: 'Hotels', icon: '🏨' },
-  { key: 'food', label: 'Food', icon: '🍜' },
-  { key: 'jobs', label: 'Jobs', icon: '💼' },
-  { key: 'mods', label: 'Mods', icon: '🎮' },
+  { key: 'all', label: 'All' },
+  { key: 'shoes', label: 'Shoes' },
+  { key: 'cars', label: 'Cars' },
+  { key: 'houses', label: 'Houses' },
+  { key: 'electronics', label: 'Electronics' },
+  { key: 'services', label: 'Services' },
+  { key: 'hotel', label: 'Hotels' },
+  { key: 'food', label: 'Food' },
+  { key: 'jobs', label: 'Jobs' },
+  { key: 'mods', label: 'Mods' },
+  { key: 'rent_lease', label: 'For Rent' },
+  { key: 'clothing', label: 'Clothing' },
+  { key: 'product', label: 'Products' },
 ];
 
 function HeartButton({ listingId, user }) {
@@ -174,6 +183,10 @@ export default function ExplorePage() {
   const [minRating, setMinRating] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
 
+  // URL filter param support (from HomeCategoryBoxes)
+  const urlParams = new URLSearchParams(window.location.search);
+  const filterGroup = urlParams.get('filter'); // 'operations' | 'lifestyle' | 'hobbies'
+
   useEffect(() => {
     const init = async () => {
       try {
@@ -189,10 +202,11 @@ export default function ExplorePage() {
 
   const filtered = listings.filter(l => {
     const matchType = activeType === 'all' || l.type === activeType;
+    const matchGroup = !filterGroup || !FILTER_GROUPS[filterGroup] || FILTER_GROUPS[filterGroup].includes(l.type);
     const matchSearch = !search || l.title.toLowerCase().includes(search.toLowerCase()) || (l.area || '').toLowerCase().includes(search.toLowerCase());
     const matchPrice = !maxPrice || !l.price || Number(l.price) <= Number(maxPrice);
     const matchRating = minRating === 0 || (l.rating || 0) >= minRating;
-    return matchType && matchSearch && matchPrice && matchRating;
+    return matchType && matchGroup && matchSearch && matchPrice && matchRating;
   });
 
   return (
@@ -204,7 +218,15 @@ export default function ExplorePage() {
       <div className="pt-28 pb-10 px-4 sm:px-6 text-center">
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           className="font-heading font-bold text-3xl sm:text-5xl text-white mb-3">
-          Explore All <span className="text-[#00D4FF]">Listings</span>
+          {filterGroup ? (
+            <>
+              {filterGroup === 'operations' && <><span className="text-[#2563EB]">Operations</span> Listings</>}
+              {filterGroup === 'lifestyle' && <><span className="text-[#a855f7]">Lifestyle</span> Listings</>}
+              {filterGroup === 'hobbies' && <><span className="text-[#f59e0b]">Hobbies</span> Listings</>}
+            </>
+          ) : (
+            <>Explore All <span className="text-[#00D4FF]">Listings</span></>
+          )}
         </motion.h1>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
           className="font-body text-white/50 text-sm max-w-md mx-auto mb-6">
@@ -235,7 +257,8 @@ export default function ExplorePage() {
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide items-center">
           {TYPES.map(t => (
             <button key={t.key} onClick={() => setActiveType(t.key)}
-              className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body text-xs font-semibold transition-all ${activeType === t.key ? 'bg-[#00D4FF] text-[#0A192F]' : 'bg-white/8 text-white/60 hover:bg-white/15 border border-white/10'}`}>
+              className={`flex-shrink-0 px-3 py-1.5 rounded-xl font-body text-xs font-semibold transition-all ${activeType === t.key ? 'text-[#0A192F]' : 'bg-white/8 text-white/60 hover:bg-white/15 border border-white/10'}`}
+              style={activeType === t.key ? { background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' } : {}}>
               {t.label}
             </button>
           ))}

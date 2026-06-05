@@ -1,24 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import StarField from '../components/StarField';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, Phone, MessageSquare, Star, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Search, Phone, MessageSquare, Star, AlertCircle, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
+import AddListingModal from '../components/AddListingModal';
+import { base44 } from '@/api/base44Client';
 
 const SUBCATEGORIES = [
-  { key: 'all', label: 'All Services', icon: '⚡', desc: 'Browse everything' },
-  { key: 'home', label: 'Home Services', icon: '🏠', desc: 'Cleaning, repairs, plumbing' },
-  { key: 'tech', label: 'Tech & Digital', icon: '💻', desc: 'IT, web, design, repair' },
-  { key: 'beauty', label: 'Beauty & Wellness', icon: '💅', desc: 'Salon, spa, massage, nails' },
-  { key: 'events', label: 'Events & Catering', icon: '🎉', desc: 'Planning, catering, DJ' },
-  { key: 'professional', label: 'Professional', icon: '📋', desc: 'Legal, financial, HR' },
-  { key: 'transport', label: 'Transport & Delivery', icon: '🚚', desc: 'Movers, courier, trucking' },
-  { key: 'health', label: 'Health & Medical', icon: '⚕️', desc: 'Dental, therapy, caregiving' },
-  { key: 'legal', label: 'Legal Services', icon: '⚖️', desc: 'Lawyers, notary, contracts' },
-  { key: 'finance', label: 'Finance & Tax', icon: '💰', desc: 'Accounting, tax, investment' },
-  { key: 'education', label: 'Education & Tutoring', icon: '📚', desc: 'Tutors, coaching, training' },
-  { key: 'media', label: 'Media & Creative', icon: '🎨', desc: 'Video, design, photography' },
+  { key: 'all', label: 'All Services', desc: 'Browse everything' },
+  { key: 'home', label: 'Home Services', desc: 'Cleaning, repairs, plumbing' },
+  { key: 'tech', label: 'Tech & Digital', desc: 'IT, web, design, repair' },
+  { key: 'beauty', label: 'Beauty & Wellness', desc: 'Salon, spa, massage, nails' },
+  { key: 'events', label: 'Events & Catering', desc: 'Planning, catering, DJ' },
+  { key: 'professional', label: 'Professional', desc: 'Legal, financial, HR' },
+  { key: 'transport', label: 'Transport & Delivery', desc: 'Movers, courier, trucking' },
+  { key: 'health', label: 'Health & Medical', desc: 'Dental, therapy, caregiving' },
+  { key: 'legal', label: 'Legal Services', desc: 'Lawyers, notary, contracts' },
+  { key: 'finance', label: 'Finance & Tax', desc: 'Accounting, tax, investment' },
+  { key: 'education', label: 'Education & Tutoring', desc: 'Tutors, coaching, training' },
+  { key: 'media', label: 'Media & Creative', desc: 'Video, design, photography' },
 ];
 
 const services = [
@@ -165,6 +167,19 @@ export default function Services() {
   const [search, setSearch] = useState('');
   const [contactItem, setContactItem] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
+  const [showAddListing, setShowAddListing] = useState(false);
+  const [canAddListing, setCanAddListing] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    base44.auth.isAuthenticated().then(ok => {
+      if (ok) base44.auth.me().then(u => {
+        setCurrentUser(u);
+        const allowed = u.role === 'admin' || u.is_seller || u.account_type === 'business_owner' || u.email === 'Kevinarnold522@gmail.com';
+        setCanAddListing(allowed);
+      }).catch(() => {});
+    }).catch(() => {});
+  }, []);
 
   const typeMap = { legal: 'professional', finance: 'professional', education: 'professional', media: 'tech' };
 
@@ -198,7 +213,16 @@ export default function Services() {
               <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
               <span className="font-body text-xs tracking-[0.2em] uppercase text-[#00D4FF]">1Market Services</span>
             </div>
-            <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white mb-3">Services Provided</h1>
+            <div className="flex items-center gap-4 mb-3 flex-wrap">
+              <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Services Provided</h1>
+              {canAddListing && (
+                <button onClick={() => setShowAddListing(true)}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
+                  style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 16px rgba(37,99,235,0.4)' }}>
+                  <Plus className="w-4 h-4" /> Add Service Listing
+                </button>
+              )}
+            </div>
             <p className="font-body text-base text-white/50 max-w-xl">Home services, tech, beauty, events, professional & health services across Manila and Cavite.</p>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-6 relative max-w-xl">
@@ -213,8 +237,8 @@ export default function Services() {
         <div className="flex gap-2 flex-wrap mb-8">
           {SUBCATEGORIES.map(sc => (
             <button key={sc.key} onClick={() => setActiveCategory(sc.key)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-body font-semibold text-sm transition-all border ${activeCategory === sc.key ? 'bg-[#0A192F] text-white border-[#0A192F]' : 'bg-white border-[#0A192F]/5 hover:border-[#0A192F]/20 text-[#0A192F]/70'}`}>
-              <span>{sc.icon}</span> {sc.label}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-body font-semibold text-sm transition-all border ${activeCategory === sc.key ? 'bg-[#0033CC] text-white border-[#0033CC]' : 'bg-white border-[#0A192F]/5 hover:border-[#0A192F]/20 text-[#0A192F]/70'}`}>
+              {sc.label}
             </button>
           ))}
         </div>
@@ -250,6 +274,7 @@ export default function Services() {
       <AnimatePresence>
         {contactItem && <ContactModal item={contactItem} onClose={() => setContactItem(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
+        {showAddListing && <AddListingModal onClose={() => setShowAddListing(false)} defaultType="services" user={currentUser} />}
       </AnimatePresence>
     </div>
   );
