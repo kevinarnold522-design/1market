@@ -1,11 +1,144 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag } from 'lucide-react';
+import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock } from 'lucide-react';
 import ReportModal from '../components/ReportModal';
 import { base44 } from '@/api/base44Client';
 import Navbar from '../components/home/Navbar';
 import StarField from '../components/StarField';
+
+function HotelRoomSelector({ listing, user }) {
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
+  const [guests, setGuests] = useState(1);
+  const [booking, setBooking] = useState(false);
+  const [booked, setBooked] = useState(false);
+  const [guestName, setGuestName] = useState(user?.full_name || '');
+  const [guestEmail, setGuestEmail] = useState(user?.email || '');
+  const [guestPhone, setGuestPhone] = useState('');
+
+  const nights = checkIn && checkOut
+    ? Math.max(0, Math.round((new Date(checkOut) - new Date(checkIn)) / 86400000))
+    : 0;
+  const total = selectedRoom && nights > 0 ? (selectedRoom.price_per_night || 0) * nights : 0;
+
+  const handleBook = async () => {
+    if (!selectedRoom || !checkIn || !checkOut || !guestName || !guestEmail) return;
+    setBooking(true);
+    await base44.entities.Reservation.create({
+      listing_id: listing.id,
+      listing_title: listing.title,
+      hotel_name: listing.title,
+      room_type: selectedRoom.room_type || selectedRoom.name,
+      guest_name: guestName,
+      guest_email: guestEmail,
+      guest_phone: guestPhone,
+      check_in_date: checkIn,
+      check_out_date: checkOut,
+      num_guests: guests,
+      num_nights: nights,
+      total_price: total,
+      price_per_night: selectedRoom.price_per_night || 0,
+      status: 'pending',
+      payment_status: 'unpaid',
+      seller_email: listing.email_contact || '',
+    });
+    setBooking(false);
+    setBooked(true);
+  };
+
+  if (booked) return (
+    <div className="mb-4 p-4 rounded-2xl text-center" style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)' }}>
+      <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-2" />
+      <p className="font-heading font-bold text-white">Booking Request Sent!</p>
+      <p className="font-body text-xs text-white/50 mt-1">The hotel will confirm your reservation shortly.</p>
+    </div>
+  );
+
+  return (
+    <div className="mb-4 rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(0,212,255,0.2)', background: 'rgba(0,212,255,0.04)' }}>
+      <div className="p-3 border-b border-white/10" style={{ background: 'rgba(0,212,255,0.08)' }}>
+        <p className="font-heading font-bold text-white text-sm flex items-center gap-2">
+          <BedDouble className="w-4 h-4 text-[#00D4FF]" /> Select a Room
+        </p>
+      </div>
+      <div className="p-3 space-y-2">
+        {listing.hotel_rooms.map((room, i) => (
+          <button key={i} onClick={() => setSelectedRoom(room)}
+            className={`w-full text-left p-3 rounded-xl border transition-all ${selectedRoom === room ? 'border-[#00D4FF] bg-[#00D4FF]/10' : 'border-white/10 bg-white/3 hover:border-white/25'}`}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-body font-bold text-sm text-white">{room.name || room.room_type}</p>
+                {room.description && <p className="font-body text-[10px] text-white/40">{room.description}</p>}
+                {room.amenities && <p className="font-body text-[9px] text-[#00D4FF]/70 mt-0.5">{room.amenities}</p>}
+              </div>
+              <div className="text-right flex-shrink-0 ml-2">
+                <p className="font-heading font-bold text-[#00D4FF] text-sm">₱{Number(room.price_per_night || 0).toLocaleString()}</p>
+                <p className="font-body text-[9px] text-white/30">/night</p>
+                {room.available === false && <span className="px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-400 font-body text-[8px]">Unavailable</span>}
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {selectedRoom && (
+        <div className="px-3 pb-3 space-y-2">
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="block font-body text-[9px] text-white/40 uppercase tracking-wider mb-1 flex items-center gap-1">
+                <Calendar className="w-3 h-3" /> Check-in
+              </label>
+              <input type="date" value={checkIn} onChange={e => setCheckIn(e.target.value)} min={new Date().toISOString().split('T')[0]}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white font-body text-xs focus:outline-none focus:border-[#00D4FF]" />
+            </div>
+            <div>
+              <label className="block font-body text-[9px] text-white/40 uppercase tracking-wider mb-1 flex items-center gap-1">
+                <Clock className="w-3 h-3" /> Check-out
+              </label>
+              <input type="date" value={checkOut} onChange={e => setCheckOut(e.target.value)} min={checkIn || new Date().toISOString().split('T')[0]}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white font-body text-xs focus:outline-none focus:border-[#00D4FF]" />
+            </div>
+          </div>
+          <div>
+            <label className="block font-body text-[9px] text-white/40 uppercase tracking-wider mb-1">Guests</label>
+            <input type="number" min={1} max={listing.hotel_max_guests || 10} value={guests} onChange={e => setGuests(Number(e.target.value))}
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white font-body text-xs focus:outline-none focus:border-[#00D4FF]" />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="block font-body text-[9px] text-white/40 uppercase tracking-wider mb-1">Your Name</label>
+              <input value={guestName} onChange={e => setGuestName(e.target.value)} placeholder="Full name"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white font-body text-xs focus:outline-none focus:border-[#00D4FF]" />
+            </div>
+            <div>
+              <label className="block font-body text-[9px] text-white/40 uppercase tracking-wider mb-1">Email</label>
+              <input value={guestEmail} onChange={e => setGuestEmail(e.target.value)} placeholder="email@..."
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white font-body text-xs focus:outline-none focus:border-[#00D4FF]" />
+            </div>
+          </div>
+          <div>
+            <label className="block font-body text-[9px] text-white/40 uppercase tracking-wider mb-1">Phone</label>
+            <input value={guestPhone} onChange={e => setGuestPhone(e.target.value)} placeholder="+63..."
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white font-body text-xs focus:outline-none focus:border-[#00D4FF]" />
+          </div>
+          {nights > 0 && (
+            <div className="p-2 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+              <span className="font-body text-xs text-white/50">{nights} night{nights > 1 ? 's' : ''} × ₱{Number(selectedRoom.price_per_night || 0).toLocaleString()}</span>
+              <span className="font-heading font-bold text-[#00D4FF]">₱{total.toLocaleString()}</span>
+            </div>
+          )}
+          <button onClick={handleBook} disabled={booking || !checkIn || !checkOut || !guestName || !guestEmail || nights === 0}
+            className="w-full py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] disabled:opacity-40 transition-all"
+            style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}>
+            {booking ? 'Sending Request...' : `Book Now — ₱${total.toLocaleString()}`}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function BlueHeartAnimation({ show }) {
   return (
@@ -283,8 +416,35 @@ export default function ListingDetail() {
 
               {listing.description && (
                 <div className="mb-4">
-                  <p className="font-body text-xs text-white/50 mb-1">Description</p>
-                  <p className="font-body text-sm text-white/75 leading-relaxed">{listing.description}</p>
+                  <p className="font-body text-xs text-white/50 mb-1 uppercase tracking-wider">Description</p>
+                  <p className="font-body text-sm text-white/75 leading-relaxed whitespace-pre-line">{listing.description}</p>
+                </div>
+              )}
+
+              {/* Full specs — electronics */}
+              {listing.specs && (
+                <div className="mb-4 p-3 rounded-xl" style={{ background: 'rgba(0,212,255,0.05)', border: '1px solid rgba(0,212,255,0.15)' }}>
+                  <p className="font-body text-[10px] text-[#00D4FF] uppercase tracking-wider mb-1.5">Full Specifications</p>
+                  <p className="font-body text-xs text-white/65 leading-relaxed whitespace-pre-line">{listing.specs}</p>
+                </div>
+              )}
+              {listing.warranty && (
+                <div className="mb-4 flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.2)' }}>
+                  <CheckCircle className="w-3.5 h-3.5 text-green-400 flex-shrink-0" />
+                  <div>
+                    <p className="font-body text-[9px] text-green-400/60 uppercase tracking-wider">Warranty</p>
+                    <p className="font-body text-xs text-white/70">{listing.warranty}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Extra details grid */}
+              {(listing.brand || listing.model || listing.size || listing.condition) && (
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  {listing.brand && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Brand</p><p className="font-body text-xs text-white font-bold">{listing.brand}</p></div>}
+                  {listing.model && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Model</p><p className="font-body text-xs text-white font-bold">{listing.model}</p></div>}
+                  {listing.size && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Size</p><p className="font-body text-xs text-white font-bold">{listing.size}</p></div>}
+                  {listing.condition && listing.condition !== 'N/A' && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Condition</p><p className="font-body text-xs text-white font-bold">{listing.condition}</p></div>}
                 </div>
               )}
 
@@ -311,6 +471,11 @@ export default function ListingDetail() {
                     💬 SMS
                   </a>
                 </div>
+              )}
+
+              {/* Hotel Room Selector */}
+              {listing.type === 'hotel' && listing.hotel_rooms && listing.hotel_rooms.length > 0 && (
+                <HotelRoomSelector listing={listing} user={user} />
               )}
 
               {/* Social media */}
@@ -363,6 +528,39 @@ export default function ListingDetail() {
                 )}
               </div>
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* 1MarketPH Socials Footer */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-10">
+        <div className="rounded-2xl p-5 text-center" style={{ background: 'linear-gradient(135deg,rgba(0,51,204,0.2),rgba(0,26,128,0.3))', border: '1px solid rgba(0,212,255,0.15)' }}>
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <img src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
+              alt="1Market PH" className="w-10 h-10 rounded-xl object-cover" />
+            <div className="text-left">
+              <p className="font-heading font-bold text-white text-sm">1Market<span style={{ color: '#FFD700' }}>PH</span>.com</p>
+              <p className="font-body text-[10px] text-white/40">Philippines' Premier Marketplace</p>
+            </div>
+          </div>
+          <p className="font-body text-xs text-white/50 mb-4">Follow us and stay connected with the latest deals & listings!</p>
+          <div className="flex items-center justify-center flex-wrap gap-3">
+            <a href="https://facebook.com/1marketph" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600/20 text-blue-400 font-body text-xs font-bold hover:bg-blue-600/35 transition-colors border border-blue-600/25">
+              <Facebook className="w-3.5 h-3.5" /> Facebook
+            </a>
+            <a href="https://instagram.com/1marketph" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-pink-500/20 text-pink-400 font-body text-xs font-bold hover:bg-pink-500/35 transition-colors border border-pink-500/25">
+              <Instagram className="w-3.5 h-3.5" /> Instagram
+            </a>
+            <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 text-white font-body text-xs font-bold hover:bg-white/20 transition-colors border border-white/15">
+              🎵 TikTok
+            </a>
+            <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600/20 text-red-400 font-body text-xs font-bold hover:bg-red-600/35 transition-colors border border-red-600/25">
+              <Youtube className="w-3.5 h-3.5" /> YouTube
+            </a>
           </div>
         </div>
       </div>

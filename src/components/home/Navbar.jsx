@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Star, Package, Settings, Gift, MessageSquare, Award, Bookmark, Plus } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Bookmark, Plus } from 'lucide-react';
 import RewardDashboard from '../RewardDashboard';
 import VerifiedBadge from '../VerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import AccountTypeModal from '../AccountTypeModal';
 import NavUserBadge from './NavUserBadge';
+import NavCategoryBar from './NavCategoryBar';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 
@@ -103,7 +104,7 @@ export default function Navbar() {
 
   const initials = user ? (user.full_name || user.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
   const memberSince = user?.created_date ? new Date(user.created_date).toLocaleDateString('en-PH', { year: 'numeric', month: 'short' }) : '';
-  const accountTypeLabel = isAdmin ? '👑 CEO & Founder' : user?.account_type === 'business_owner' ? '🏪 Business Owner' : isSeller ? '⭐ Seller' : '🛍️ Customer';
+  const accountTypeLabel = isAdmin ? '✅ CEO & Founder' : user?.account_type === 'business_owner' ? '🏪 Business Owner' : isSeller ? '⭐ Seller' : '🛍️ Customer';
   const accountTypeBadge = user?.account_type === 'business_owner'
     ? 'bg-[#00D4FF]/15 text-[#00D4FF] border-[#00D4FF]/25'
     : isSeller
@@ -143,21 +144,40 @@ export default function Navbar() {
       </div>
 
       <nav className={`fixed top-12 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#001a80]/90 backdrop-blur-xl shadow-lg shadow-[#0033CC]/20' : 'bg-transparent'}`}>
+        {/* Category Bar */}
+        <div className="hidden md:block border-b border-white/8 bg-[#000d40]/80 backdrop-blur-sm">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <div className="flex items-center gap-2 h-9">
+              <NavCategoryBar />
+              {isAuthenticated && user && isSeller && (
+                <Link to="/profile?tab=listings"
+                  className="ml-auto flex items-center gap-1 px-3 py-1 rounded-lg font-body text-xs font-bold text-[#0A192F] transition-all"
+                  style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}>
+                  <Plus className="w-3 h-3" /> Add Listing
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 lg:h-20">
-            {/* Logo */}
-            <a href="/" className="flex items-center gap-2">
+          <div className="flex items-center h-14 lg:h-16 gap-3">
+            {/* Logo — LEFT */}
+            <a href="/" className="flex items-center gap-2 flex-shrink-0">
               <img
                 src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
                 alt="1Market Philippines"
-                className="h-9 w-9 rounded-lg object-cover"
+                className="h-8 w-8 rounded-lg object-cover"
               />
-              <span className="font-heading font-bold text-lg tracking-tight text-white hidden sm:block">
+              <span className="font-heading font-bold text-base tracking-tight text-white hidden sm:block">
                 1Market<span className="text-[#FFD700]">PH</span><span className="text-white/60">.com</span>
               </span>
             </a>
 
             <NavUserBadge />
+
+            {/* Spacer pushes right-side items to far right */}
+            <div className="flex-1" />
 
             {/* Messages button */}
             <Link to="/messages" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 border border-white/10 hover:border-[#00D4FF]/40 hover:bg-[#00D4FF]/10 transition-all text-white/70 hover:text-[#00D4FF]">
@@ -173,17 +193,8 @@ export default function Navbar() {
               </Link>
             )}
 
-            {/* Quick Add Listing — sellers & business owners only */}
-            {isAuthenticated && user && isSeller && (
-              <Link to="/profile?tab=listings" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body text-xs font-bold transition-all text-[#0A192F]"
-                style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 12px rgba(0,212,255,0.3)' }}>
-                <Plus className="w-4 h-4" />
-                Add Listing
-              </Link>
-            )}
-
             {/* Desktop Links */}
-            <div className="hidden md:flex items-center gap-6">
+            <div className="hidden md:flex items-center gap-4">
               {links.map((link) => (
                 <Link key={link.label} to={link.href}
                   className="relative font-body text-sm font-medium tracking-wide transition-colors duration-300 group text-white/80 hover:text-[#00D4FF]">
@@ -229,7 +240,7 @@ export default function Navbar() {
                                   {accountTypeLabel}
                                 </span>
                                 {user?.is_verified_seller && !isAdmin && <VerifiedBadge size="sm" variant={isSeller ? 'purple' : 'yellow'} />}
-                              {isAdmin && <BadgeCheck className="w-3.5 h-3.5 text-amber-400" title="Admin — Verified" />}
+                              {isAdmin && <BadgeCheck className="w-4 h-4 text-amber-400 fill-amber-400/20" title="Admin — Verified ✅" />}
                               </div>
                               {/* Editable username */}
                               {editingName ? (
@@ -361,7 +372,7 @@ export default function Navbar() {
                         <div className="border-t border-white/8 my-1" />
                         <Link to="/profile" onClick={() => setProfileOpen(false)}
                           className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
-                          <User className="w-3.5 h-3.5 text-[#00D4FF]"/> Account Settings
+                          <User className="w-3.5 h-3.5 text-[#00D4FF]"/> My Profile
                         </Link>
                         <button onClick={() => { logout(true); setProfileOpen(false); }}
                           className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 transition-colors text-red-400 font-body text-xs">

@@ -53,8 +53,10 @@ export default function AddListingModal({ onClose, defaultType = '', user }) {
     condition: 'N/A',
     seller_name: user?.full_name || '',
     space_type: '',
+    hotel_rooms: [],
     is_active: true,
   });
+  const [newRoom, setNewRoom] = useState({ name: '', price_per_night: '', description: '', amenities: '', available: true });
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -233,6 +235,58 @@ export default function AddListingModal({ onClose, defaultType = '', user }) {
                   <label className="block font-body text-xs text-white/50 mb-1 font-semibold">Apply Link (optional)</label>
                   <input value={form.apply_link} onChange={e => set('apply_link', e.target.value)} placeholder="https://..."
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
+                </div>
+              )}
+
+              {/* Hotel room management */}
+              {isHotel && (
+                <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(0,212,255,0.25)', background: 'rgba(0,212,255,0.04)' }}>
+                  <div className="px-4 py-3 border-b border-white/10" style={{ background: 'rgba(0,212,255,0.08)' }}>
+                    <p className="font-body font-bold text-white text-sm">🛏️ Room Types & Availability</p>
+                    <p className="font-body text-[10px] text-white/40">Add the different rooms guests can choose from.</p>
+                  </div>
+                  <div className="p-3 space-y-2">
+                    {(form.hotel_rooms || []).map((room, i) => (
+                      <div key={i} className="flex items-center justify-between p-2.5 rounded-lg bg-white/5 border border-white/10">
+                        <div>
+                          <p className="font-body font-bold text-xs text-white">{room.name}</p>
+                          <p className="font-body text-[9px] text-[#00D4FF]">₱{Number(room.price_per_night).toLocaleString()}/night</p>
+                          {room.amenities && <p className="font-body text-[9px] text-white/35">{room.amenities}</p>}
+                        </div>
+                        <button onClick={() => set('hotel_rooms', form.hotel_rooms.filter((_, j) => j !== i))}
+                          className="w-6 h-6 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center hover:bg-red-500/40 transition-colors text-xs">✕</button>
+                      </div>
+                    ))}
+                    <div className="space-y-2 pt-2 border-t border-white/8">
+                      <p className="font-body text-[10px] text-white/40 font-bold uppercase tracking-wider">Add Room Type</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input value={newRoom.name} onChange={e => setNewRoom(r => ({ ...r, name: e.target.value }))} placeholder="Room name (e.g. Deluxe Suite)"
+                          className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-white font-body text-xs placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
+                        <input type="number" value={newRoom.price_per_night} onChange={e => setNewRoom(r => ({ ...r, price_per_night: e.target.value }))} placeholder="₱ per night"
+                          className="bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-white font-body text-xs placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
+                      </div>
+                      <input value={newRoom.description} onChange={e => setNewRoom(r => ({ ...r, description: e.target.value }))} placeholder="Short description (optional)"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-white font-body text-xs placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
+                      <input value={newRoom.amenities} onChange={e => setNewRoom(r => ({ ...r, amenities: e.target.value }))} placeholder="Amenities (e.g. AC, WiFi, TV)"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-white font-body text-xs placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
+                      <div className="flex items-center justify-between">
+                        <label className="flex items-center gap-2 font-body text-xs text-white/50">
+                          <input type="checkbox" checked={newRoom.available} onChange={e => setNewRoom(r => ({ ...r, available: e.target.checked }))} className="accent-[#00D4FF]" />
+                          Mark as Available
+                        </label>
+                        <button
+                          onClick={() => {
+                            if (!newRoom.name || !newRoom.price_per_night) return;
+                            set('hotel_rooms', [...(form.hotel_rooms || []), { ...newRoom, price_per_night: Number(newRoom.price_per_night) }]);
+                            setNewRoom({ name: '', price_per_night: '', description: '', amenities: '', available: true });
+                          }}
+                          className="px-3 py-1.5 rounded-lg font-body text-xs font-bold text-[#0A192F] transition-all"
+                          style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}>
+                          + Add Room
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
