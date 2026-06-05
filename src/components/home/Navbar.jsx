@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Bookmark, Plus } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Bookmark, Plus, Camera } from 'lucide-react';
 import RewardDashboard from '../RewardDashboard';
-import VerifiedBadge from '../VerifiedBadge';
+import MetaVerifiedBadge from '../MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import AccountTypeModal from '../AccountTypeModal';
@@ -38,6 +38,19 @@ export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const isAdmin = user?.role === 'admin' || user?.email === 'Kevinarnold522@gmail.com';
   const isSeller = user?.is_seller || user?.account_type === 'business_owner';
+  const [uploadingPfp, setUploadingPfp] = useState(false);
+
+  const handleNavPfpUpload = async (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    setUploadingPfp(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      await base44.auth.updateMe({ profile_picture: file_url });
+      window.location.reload();
+    } catch (err) {}
+    setUploadingPfp(false);
+    e.target.value = '';
+  };
 
   const toggleEditMode = () => {
     const next = !editMode;
@@ -230,17 +243,28 @@ export default function Navbar() {
                         {/* Profile Header */}
                         <div className="p-4 border-b border-white/10">
                           <div className="flex items-center gap-3 mb-3">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-lg flex-shrink-0">
-                              {initials}
-                            </div>
+                            {/* Avatar with pfp upload */}
+                            <label className="relative w-12 h-12 rounded-xl flex-shrink-0 cursor-pointer group">
+                              {user?.profile_picture ? (
+                                <img src={user.profile_picture} alt="pfp" className="w-full h-full rounded-xl object-cover border border-white/20" />
+                              ) : (
+                                <div className="w-full h-full rounded-xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-lg">
+                                  {initials}
+                                </div>
+                              )}
+                              <div className="absolute inset-0 rounded-xl flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                                {uploadingPfp ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Camera className="w-4 h-4 text-white" />}
+                              </div>
+                              <input type="file" accept="image/*" className="hidden" onChange={handleNavPfpUpload} disabled={uploadingPfp} />
+                            </label>
                             <div className="flex-1 min-w-0">
                               {/* Account type badge */}
                               <div className="flex items-center gap-1 mb-1">
                                 <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>
                                   {accountTypeLabel}
                                 </span>
-                                {user?.is_verified_seller && !isAdmin && <VerifiedBadge size="sm" variant={isSeller ? 'purple' : 'yellow'} />}
-                              {isAdmin && <BadgeCheck className="w-4 h-4 text-amber-400 fill-amber-400/20" title="Admin — Verified ✅" />}
+                                {user?.is_verified_seller && !isAdmin && <MetaVerifiedBadge size="sm" label="" />}
+                              {isAdmin && <MetaVerifiedBadge size="sm" label="" />}
                               </div>
                               {/* Editable username */}
                               {editingName ? (
@@ -336,9 +360,8 @@ export default function Navbar() {
                               <Globe className="w-3.5 h-3.5 text-green-400"/> My Seller Profile
                             </Link>
                                         {user?.is_verified_seller && (
-                              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl" style={{ background: isAdmin || isSeller ? 'linear-gradient(90deg,rgba(168,85,247,0.15),rgba(236,72,153,0.1))' : 'linear-gradient(90deg,rgba(251,191,36,0.15),rgba(249,115,22,0.1))', border: isAdmin || isSeller ? '1px solid rgba(168,85,247,0.2)' : '1px solid rgba(251,191,36,0.25)' }}>
-                                <VerifiedBadge size="sm" variant={isAdmin || isSeller ? 'purple' : 'yellow'} />
-                                <span className="font-body text-[10px] font-bold" style={{ background: isAdmin || isSeller ? 'linear-gradient(90deg,#a855f7,#ec4899)' : 'linear-gradient(90deg,#fbbf24,#f97316)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>✓ {isAdmin || isSeller ? 'Verified Partner' : 'Verified Member'}</span>
+                              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl" style={{ background: 'linear-gradient(90deg,rgba(168,85,247,0.12),rgba(56,189,248,0.08))', border: '1px solid rgba(168,85,247,0.25)' }}>
+                                <MetaVerifiedBadge size="sm" label="Verified Partner" />
                               </div>
                             )}
                           </>

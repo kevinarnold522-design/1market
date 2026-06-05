@@ -14,6 +14,7 @@ import { useAuth } from '@/lib/AuthContext';
 import ParticleBackground from '../components/ParticleBackground';
 import OrdersTab from '../components/seller/OrdersTab';
 import VerifiedPartnerBanner from '../components/VerifiedPartnerBanner';
+import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
 import PaymentSettings from '../components/settings/PaymentSettings';
 
 // ─── Shared helpers ───────────────────────────────────────────────────────────
@@ -597,8 +598,8 @@ export default function UserProfile() {
                   <input type="file" accept="image/*" className="hidden" onChange={uploadPfp} disabled={uploadingPfp} />
                 </label>
                 {isVerified && (
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#2563EB] flex items-center justify-center border-2 border-[#070F1A]">
-                    <BadgeCheck className="w-3 h-3 text-white"/>
+                  <div className="absolute -bottom-1 -right-1">
+                    <MetaVerifiedBadge size="xs" label="" />
                   </div>
                 )}
               </div>

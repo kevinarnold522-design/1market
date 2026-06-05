@@ -1,17 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, Plus, ChevronDown } from 'lucide-react';
+import { X, Upload, Plus } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { SUBCATEGORIES, JOBS_SUBCATEGORIES, RENT_SUBCATEGORIES, MAIN_CATEGORIES } from '../lib/listingCategories';
+import { SUBCATEGORIES } from '../lib/listingCategories';
 
-const LOCATIONS = [
-  'Metro Manila', 'Quezon City', 'Makati', 'Taguig', 'Pasig', 'Mandaluyong',
-  'Marikina', 'Caloocan', 'Manila', 'Cavite', 'Bacoor', 'Dasmariñas',
-  'Laguna', 'Calamba', 'Sta. Rosa', 'Batangas', 'Batangas City',
-  'Bulacan', 'Malolos', 'Pampanga', 'Angeles City', 'Rizal', 'Antipolo',
-  'Cebu City', 'Davao City', 'Iloilo City', 'Cagayan de Oro',
-  'General Santos', 'Baguio City', 'Tagaytay', 'Boracay', 'El Nido', 'Nationwide',
+// Full Philippines location hierarchy
+const PH_LOCATIONS = [
+  // NCR
+  { group: 'NCR — Metro Manila', cities: ['Manila','Quezon City','Caloocan','Las Piñas','Makati','Malabon','Mandaluyong','Marikina','Muntinlupa','Navotas','Parañaque','Pasay','Pasig','Pateros','San Juan','Taguig','Valenzuela'] },
+  // Region I
+  { group: 'Region I — Ilocos Region', cities: ['Laoag (Ilocos Norte)','Vigan (Ilocos Sur)','San Fernando (La Union)','Dagupan (Pangasinan)','Lingayen (Pangasinan)'] },
+  // Region II
+  { group: 'Region II — Cagayan Valley', cities: ['Basco (Batanes)','Tuguegarao (Cagayan)','Santiago (Isabela)','Ilagan (Isabela)','Bayombong (Nueva Vizcaya)','Cabarroguis (Quirino)'] },
+  // Region III
+  { group: 'Region III — Central Luzon', cities: ['Baler (Aurora)','Balanga (Bataan)','Malolos (Bulacan)','Meycauayan (Bulacan)','Cabanatuan (Nueva Ecija)','Palayan (Nueva Ecija)','Angeles City (Pampanga)','San Fernando (Pampanga)','Tarlac City','Olongapo (Zambales)','Iba (Zambales)'] },
+  // Region IV-A
+  { group: 'Region IV-A — Calabarzon', cities: ['Batangas City','Lipa (Batangas)','Bacoor (Cavite)','Dasmariñas (Cavite)','General Trias (Cavite)','Imus (Cavite)','Tagaytay (Cavite)','Calamba (Laguna)','Santa Rosa (Laguna)','Biñan (Laguna)','San Pablo (Laguna)','Lucena (Quezon)','Lucban (Quezon)','Antipolo (Rizal)','Cainta (Rizal)'] },
+  // Region IV-B
+  { group: 'Region IV-B — Mimaropa', cities: ['Boac (Marinduque)','Mamburao (Occ. Mindoro)','Calapan (Or. Mindoro)','Romblon Town','Puerto Princesa (Palawan)','El Nido (Palawan)','Coron (Palawan)'] },
+  // Region V
+  { group: 'Region V — Bicol Region', cities: ['Legazpi (Albay)','Daraga (Albay)','Daet (Camarines Norte)','Naga (Camarines Sur)','Pili (Camarines Sur)','Virac (Catanduanes)','Masbate City','Sorsogon City'] },
+  // Region VI
+  { group: 'Region VI — Western Visayas', cities: ['Kalibo (Aklan)','Boracay (Aklan)','San Jose de Buenavista (Antique)','Roxas City (Capiz)','Jordan (Guimaras)','Iloilo City','Bacolod (Negros Occ.)'] },
+  // Region VII
+  { group: 'Region VII — Central Visayas', cities: ['Tagbilaran (Bohol)','Cebu City','Mandaue (Cebu)','Lapu-Lapu (Cebu)','Talisay (Cebu)','Danao (Cebu)','Siquijor'] },
+  // Region VIII
+  { group: 'Region VIII — Eastern Visayas', cities: ['Naval (Biliran)','Borongan (Eastern Samar)','Tacloban (Leyte)','Ormoc (Leyte)','Catarman (Northern Samar)','Catbalogan (Samar)','Maasin (Southern Leyte)'] },
+  // Region IX
+  { group: 'Region IX — Zamboanga Peninsula', cities: ['Dipolog (Zamboanga del Norte)','Pagadian (Zamboanga del Sur)','Zamboanga City','Ipil (Zamboanga Sibugay)','Isabela City'] },
+  // Region X
+  { group: 'Region X — Northern Mindanao', cities: ['Malaybalay (Bukidnon)','Mambajao (Camiguin)','Iligan City (Lanao del Norte)','Tubod (Lanao del Norte)','Oroquieta (Misamis Occ.)','Ozamiz (Misamis Occ.)','Cagayan de Oro (Misamis Or.)'] },
+  // Region XI
+  { group: 'Region XI — Davao Region', cities: ['Nabunturan (Davao de Oro)','Tagum (Davao del Norte)','Davao City','Digos (Davao del Sur)','Malita (Davao Occ.)','Mati (Davao Oriental)','Samal Island'] },
+  // Region XII
+  { group: 'Region XII — Soccsksargen', cities: ['Kidapawan (Cotabato)','Alabel (Sarangani)','Glan (Sarangani)','General Santos City','Koronadal (South Cotabato)','Isulan (Sultan Kudarat)'] },
+  // Region XIII
+  { group: 'Region XIII — Caraga', cities: ['Butuan (Agusan del Norte)','Cabadbaran (Agusan del Norte)','Prosperidad (Agusan del Sur)','San Jose (Dinagat Islands)','Surigao City','Tandag (Surigao del Sur)','Siargao (Surigao del Norte)'] },
+  // CAR
+  { group: 'CAR — Cordillera', cities: ['Bangued (Abra)','Kabugao (Apayao)','Baguio City','La Trinidad (Benguet)','Lagawe (Ifugao)','Tabuk (Kalinga)','Bontoc (Mountain Province)'] },
+  // BARMM
+  { group: 'BARMM — Bangsamoro', cities: ['Lamitan (Basilan)','Marawi (Lanao del Sur)','Datu Odin Sinsuat (Maguindanao Norte)','Buluan (Maguindanao Sur)','Jolo (Sulu)','Bongao (Tawi-Tawi)','Cotabato City'] },
+  // NIR
+  { group: 'Negros Island Region (NIR)', cities: ['Bacolod (Negros Occidental)','Dumaguete (Negros Oriental)'] },
+  // Special
+  { group: 'Nationwide / Remote', cities: ['Nationwide','Remote / Online'] },
 ];
+
+const ALL_CITIES = PH_LOCATIONS.flatMap(g => g.cities);
 
 const TYPE_OPTIONS = [
   { value: 'jobs', label: 'Jobs', main: 'jobs' },
@@ -45,6 +80,7 @@ export default function AddListingModal({ onClose, defaultType = '', user }) {
     price_label: '',
     location: '',
     area: '',
+    full_address: '',
     description: '',
     image_url: '',
     phone: '',
@@ -57,12 +93,12 @@ export default function AddListingModal({ onClose, defaultType = '', user }) {
     is_active: true,
   });
   const [newRoom, setNewRoom] = useState({ name: '', price_per_night: '', description: '', amenities: '', available: true });
+  const [locationMode, setLocationMode] = useState('select'); // 'select' | 'manual'
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    // Auto-set main_category from type
     const found = TYPE_OPTIONS.find(t => t.value === form.type);
     if (found) setForm(f => ({ ...f, main_category: found.main, subcategory: '' }));
   }, [form.type]);
@@ -97,6 +133,8 @@ export default function AddListingModal({ onClose, defaultType = '', user }) {
   const isRent = form.type === 'rent_lease' || form.type === 'space_rent';
   const isServices = form.type === 'services';
   const isHotel = form.type === 'hotel';
+
+  const sellerLabel = isJobs ? 'Business Name / Referrer' : 'Seller / Business Name';
 
   return (
     <AnimatePresence>
@@ -187,33 +225,58 @@ export default function AddListingModal({ onClose, defaultType = '', user }) {
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50 resize-none" />
               </div>
 
-              {/* Price */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-body text-xs text-white/50 mb-1 font-semibold">Price (₱)</label>
-                  <input type="number" value={form.price} onChange={e => set('price', e.target.value)} placeholder="0"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
+              {/* Price — hidden for Jobs */}
+              {!isJobs && (
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-body text-xs text-white/50 mb-1 font-semibold">Price (₱)</label>
+                    <input type="number" value={form.price} onChange={e => set('price', e.target.value)} placeholder="0"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
+                  </div>
+                  <div>
+                    <label className="block font-body text-xs text-white/50 mb-1 font-semibold">Price Label</label>
+                    <input value={form.price_label} onChange={e => set('price_label', e.target.value)} placeholder="e.g. ₱500/night, Negotiable"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
+                  </div>
                 </div>
-                <div>
-                  <label className="block font-body text-xs text-white/50 mb-1 font-semibold">Price Label</label>
-                  <input value={form.price_label} onChange={e => set('price_label', e.target.value)} placeholder="e.g. ₱500/night, Negotiable"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
-                </div>
-              </div>
+              )}
 
-              {/* Location */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-body text-xs text-white/50 mb-1 font-semibold">Location *</label>
+              {/* Location — grouped dropdown + manual toggle */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block font-body text-xs text-white/50 font-semibold">Location *</label>
+                  <button type="button" onClick={() => setLocationMode(m => m === 'select' ? 'manual' : 'select')}
+                    className="font-body text-[10px] text-[#00D4FF] hover:underline">
+                    {locationMode === 'select' ? '✏️ Type manually' : '📋 Pick from list'}
+                  </button>
+                </div>
+                {locationMode === 'select' ? (
                   <select value={form.location} onChange={e => set('location', e.target.value)}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white font-body text-sm focus:outline-none focus:border-[#00D4FF]/50">
                     <option value="">Select location...</option>
-                    {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
+                    {PH_LOCATIONS.map(g => (
+                      <optgroup key={g.group} label={g.group}>
+                        {g.cities.map(c => <option key={c} value={c}>{c}</option>)}
+                      </optgroup>
+                    ))}
                   </select>
-                </div>
+                ) : (
+                  <input value={form.location} onChange={e => set('location', e.target.value)}
+                    placeholder="e.g. Bacoor, Cavite or Iligan City"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
+                )}
+              </div>
+
+              {/* Area / Full address */}
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-body text-xs text-white/50 mb-1 font-semibold">Area / Barangay</label>
                   <input value={form.area} onChange={e => set('area', e.target.value)} placeholder="e.g. BGC, Ortigas"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
+                </div>
+                <div>
+                  <label className="block font-body text-xs text-white/50 mb-1 font-semibold">Full Address (optional)</label>
+                  <input value={form.full_address} onChange={e => set('full_address', e.target.value)} placeholder="Street, Building..."
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
                 </div>
               </div>
@@ -304,10 +367,11 @@ export default function AddListingModal({ onClose, defaultType = '', user }) {
                 </div>
               </div>
 
-              {/* Seller name */}
+              {/* Seller / Business name — label changes for jobs */}
               <div>
-                <label className="block font-body text-xs text-white/50 mb-1 font-semibold">Seller / Business Name</label>
-                <input value={form.seller_name} onChange={e => set('seller_name', e.target.value)} placeholder="Your name or business"
+                <label className="block font-body text-xs text-white/50 mb-1 font-semibold">{sellerLabel}</label>
+                <input value={form.seller_name} onChange={e => set('seller_name', e.target.value)}
+                  placeholder={isJobs ? 'Company or referrer name' : 'Your name or business'}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
               </div>
 
