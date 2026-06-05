@@ -6,8 +6,8 @@ import HeroAnimation3D from './HeroAnimation3D';
 export default function HeroSection({ heroImage }) {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Background gradient — deep blue */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#020B18] via-[#0A192F] to-[#0D2145]" />
+      {/* Background gradient — royal blue brand */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#000d40] via-[#0033CC] to-[#001a80]" />
 
       {/* Kinetic line decoration — hidden on mobile */}
       <motion.div
@@ -34,10 +34,19 @@ export default function HeroSection({ heroImage }) {
                 <span className="font-body text-xs font-medium tracking-widest uppercase text-[#0A192F]/60">1Marketph.com · Est. 2026</span>
               </motion.div>
 
-              <h1 className="font-heading font-bold leading-[0.95] tracking-tight">
-                <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl text-white">Welcome to</span>
-                <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl text-[#00D4FF] mt-2">1Marketph.com</span>
-              </h1>
+              {/* Brand Logo */}
+              <div className="flex items-center gap-4">
+                <img
+                  src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
+                  alt="1Market Philippines"
+                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shadow-2xl"
+                  style={{ boxShadow: '0 0 32px rgba(255,215,0,0.4)' }}
+                />
+                <h1 className="font-heading font-bold leading-[0.95] tracking-tight">
+                  <span className="block text-3xl sm:text-4xl lg:text-5xl text-white">Welcome to</span>
+                  <span className="block text-3xl sm:text-4xl lg:text-5xl mt-1" style={{ color: '#FFD700' }}>1Market PH™</span>
+                </h1>
+              </div>
 
               <p className="font-body text-sm sm:text-base lg:text-lg text-white/70 max-w-md leading-relaxed font-semibold">
                 Building Dreams under 1Vision, Together.

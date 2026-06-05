@@ -113,41 +113,47 @@ export default function Navbar() {
   return (
     <>
       {/* Top Banner */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-[#00D4FF] text-[#0A192F] py-2 px-3 text-center flex items-center justify-center flex-wrap gap-x-2">
+      <div className="fixed top-0 left-0 right-0 z-50 text-white py-3 px-4"
+        style={{ background: 'linear-gradient(90deg,#0033CC,#1a3de8,#0033CC)', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
         {isAuthenticated && user ? (
-          <>
-            <span className="font-body text-[11px] sm:text-xs font-semibold">👋 Welcome back, <strong>{user.full_name?.split(' ')[0] || 'Member'}</strong>! You're signed in.</span>
-            <span className="px-2 py-0.5 bg-[#0A192F]/15 rounded-full text-[10px] font-bold">{accountTypeLabel}</span>
-          </>
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            <span className="font-body text-xs sm:text-sm font-semibold">👋 Welcome back, <strong>{user.full_name?.split(' ')[0] || 'Member'}</strong>!</span>
+            <span className="px-3 py-1 bg-white/15 rounded-full text-xs font-bold border border-white/20">{accountTypeLabel}</span>
+          </div>
         ) : (
-          <>
-            <span className="font-body text-[11px] sm:text-xs font-semibold">Join 1Marketph.com — Buy, Sell, and Connect with local businesses!</span>
-            <div className="flex items-center gap-1">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+            <span className="font-body text-xs sm:text-sm font-semibold text-white/90 text-center">
+              🇵🇭 Join <strong>1Market Philippines</strong> — Buy, Sell & Connect!
+            </span>
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => base44.auth.redirectToLogin(window.location.href)}
-                className="px-3 py-0.5 bg-white/30 text-[#0A192F] rounded-full text-[11px] sm:text-xs font-bold hover:bg-white/50 transition-colors whitespace-nowrap">
+                className="px-5 py-2 bg-white/20 border border-white/30 text-white rounded-xl text-sm font-bold hover:bg-white/30 transition-all whitespace-nowrap">
                 Login
               </button>
               <button
                 onClick={() => setShowSignup(true)}
-                className="px-3 py-0.5 bg-[#0A192F] text-white rounded-full text-[11px] sm:text-xs font-bold hover:bg-[#2563EB] transition-colors whitespace-nowrap">
+                className="px-6 py-2 rounded-xl text-sm font-bold transition-all hover:scale-105 whitespace-nowrap"
+                style={{ background: '#FFD700', color: '#0033CC', boxShadow: '0 0 14px rgba(255,215,0,0.5)' }}>
                 Get Started →
               </button>
             </div>
-          </>
+          </div>
         )}
       </div>
 
-      <nav className={`fixed top-8 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#0A192F]/80 backdrop-blur-xl shadow-lg shadow-[#0A192F]/10' : 'bg-transparent'}`}>
+      <nav className={`fixed top-12 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#001a80]/90 backdrop-blur-xl shadow-lg shadow-[#0033CC]/20' : 'bg-transparent'}`}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
             <a href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-[#00D4FF] flex items-center justify-center">
-                <span className="text-[#0A192F] font-heading font-bold text-sm">1</span>
-              </div>
-              <span className="font-heading font-bold text-lg tracking-tight text-gray-50">
-                Marketph<span className="text-[#00D4FF]">.com</span>
+              <img
+                src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
+                alt="1Market Philippines"
+                className="h-9 w-9 rounded-lg object-cover"
+              />
+              <span className="font-heading font-bold text-lg tracking-tight text-white hidden sm:block">
+                1Market<span className="text-[#FFD700]">PH</span><span className="text-white/60">.com</span>
               </span>
             </a>
 
