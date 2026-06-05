@@ -15,6 +15,7 @@ const SUBCATEGORIES = [
   { key: 'cars', label: 'Cars & Vehicles', icon: '🚗', desc: 'Sedans, SUVs, motorcycles' },
   { key: 'houses', label: 'Houses & Real Estate', icon: '🏠', desc: 'Homes, lots, condos' },
   { key: 'electronics', label: 'Electronics', icon: '📱', desc: 'Phones, laptops & gadgets' },
+  { key: 'homeappliances', label: 'Home Appliances', icon: '🏠', desc: 'Ref, washer, AC & more' },
   { key: 'services', label: 'Services', icon: '🔧', desc: 'Freelancers, repairs & more' },
 ];
 

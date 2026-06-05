@@ -22,18 +22,23 @@ const GRADIENTS = [
 const ACCENTS = ['#fbbf24','#60a5fa','#34d399','#f87171','#c084fc','#fb923c','#38bdf8','#e879f9'];
 
 const JOB_SUBCATEGORIES = [
-  { key: 'all',        label: 'All Jobs',      icon: '💼', desc: 'Browse all' },
-  { key: 'tech',       label: 'Tech & IT',     icon: '💻', desc: 'Dev, IT, design' },
+  { key: 'all',        label: 'All Jobs',       icon: '💼', desc: 'Browse all' },
+  { key: 'tech',       label: 'Tech & IT',      icon: '💻', desc: 'Dev, IT, design' },
   { key: 'bpo',        label: 'BPO / Call Center', icon: '🎧', desc: 'CSR, agents' },
-  { key: 'sales',      label: 'Sales & Retail',icon: '🏪', desc: 'Sales, promodizer' },
-  { key: 'food',       label: 'Food & Resto',  icon: '🍳', desc: 'Chef, crew, cashier' },
+  { key: 'healthcare', label: 'Healthcare',     icon: '🏥', desc: 'Nurse, medical' },
+  { key: 'operations', label: 'Operations & HR',icon: '🏢', desc: 'Admin, HR, compliance' },
+  { key: 'finance',    label: 'Finance & Banking', icon: '💰', desc: 'Accounting, banking' },
+  { key: 'engineering',label: 'Engineering & Logistics', icon: '⚙️', desc: 'Civil, warehouse, supply' },
+  { key: 'sales',      label: 'Sales & Marketing', icon: '📣', desc: 'Sales, branding, SEO' },
+  { key: 'creative',   label: 'Creative & Design', icon: '🎨', desc: 'Graphic, video, UX' },
+  { key: 'education',  label: 'Education',      icon: '📚', desc: 'Teacher, tutor, counselor' },
+  { key: 'food',       label: 'Food & Resto',   icon: '🍳', desc: 'Chef, crew, cashier' },
   { key: 'drivers',    label: 'Drivers & Delivery', icon: '🚗', desc: 'Rider, driver' },
-  { key: 'domestic',   label: 'Household',     icon: '🏡', desc: 'Kasambahay, yaya' },
-  { key: 'healthcare', label: 'Healthcare',    icon: '🏥', desc: 'Nurse, medical' },
-  { key: 'remote',     label: 'Remote / Online', icon: '🌐', desc: 'WFH, freelance' },
+  { key: 'domestic',   label: 'Household',      icon: '🏡', desc: 'Kasambahay, yaya' },
+  { key: 'remote',     label: 'Remote / Online',icon: '🌐', desc: 'WFH, freelance, VA' },
   { key: 'skilled',    label: 'Skilled Trades', icon: '🔧', desc: 'Electrician, plumber' },
-  { key: 'events',     label: 'Events & Promo',icon: '🎉', desc: 'Events, performers' },
-  { key: 'education',  label: 'Education',     icon: '📚', desc: 'Tutor, teacher' },
+  { key: 'events',     label: 'Events & Promo', icon: '🎉', desc: 'Events, performers' },
+  { key: 'general',    label: 'General / Blue Collar', icon: '👷', desc: 'Guard, janitor, utility' },
 ];
 
 const JOBS = [
@@ -237,8 +242,18 @@ export default function Jobs() {
 
   const handleSubcatSelect = (key) => { setActiveType(key); setShowSplash(false); };
 
+  // Map new sector keys to old job type values for backward compat
+  const SECTOR_TYPE_MAP = {
+    operations: ['admin', 'hr', 'operations'],
+    finance: ['finance', 'accounting', 'banking'],
+    engineering: ['engineering', 'logistics', 'construction'],
+    creative: ['design', 'creative', 'media'],
+    general: ['general', 'utility', 'security'],
+  };
+
   const filtered = JOBS.filter(j => {
-    const matchType = activeType === 'all' || j.type === activeType;
+    const mappedTypes = SECTOR_TYPE_MAP[activeType];
+    const matchType = activeType === 'all' || j.type === activeType || (mappedTypes && mappedTypes.includes(j.type));
     const matchLoc = locationFilter === 'All' || j.location === locationFilter;
     const matchSearch = j.title.toLowerCase().includes(search.toLowerCase()) || j.company.toLowerCase().includes(search.toLowerCase()) || j.area.toLowerCase().includes(search.toLowerCase());
     return matchType && matchLoc && matchSearch;
@@ -296,8 +311,15 @@ export default function Jobs() {
             </div>
             <div className="flex items-center gap-4 flex-wrap mb-2">
               <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Jobs in Manila & Cavite</h1>
-              {canAddListing && (
+              {currentUser && (
                 <button onClick={() => setShowAddListing(true)}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
+                  style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 16px rgba(37,99,235,0.4)' }}>
+                  <Plus className="w-4 h-4" /> Post a Job
+                </button>
+              )}
+              {!currentUser && (
+                <button onClick={() => setShowSignup(true)}
                   className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
                   style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 16px rgba(37,99,235,0.4)' }}>
                   <Plus className="w-4 h-4" /> Post a Job

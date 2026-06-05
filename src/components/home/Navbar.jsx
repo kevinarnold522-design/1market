@@ -132,7 +132,8 @@ export default function Navbar() {
         {isAuthenticated && user ? (
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <span className="font-body text-xs sm:text-sm font-semibold">👋 Welcome back, <strong>{user.full_name?.split(' ')[0] || 'Member'}</strong>!</span>
-            <span className="px-3 py-1 bg-white/15 rounded-full text-xs font-bold border border-white/20">{accountTypeLabel}</span>
+            <span className="px-3 py-1 bg-white/15 rounded-full text-xs font-bold border border-white/20">{accountTypeLabel.replace(/^✅\s*/, '')}</span>
+            {isAdmin && <MetaVerifiedBadge size="sm" label="CEO & Founder" />}
           </div>
         ) : (
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">

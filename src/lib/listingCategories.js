@@ -18,7 +18,15 @@ export const SUBCATEGORIES = {
   furniture: ['Living Room', 'Bedroom', 'Office', 'Outdoor', 'Kitchen', 'Storage', 'Kids Furniture'],
   houses: ['House & Lot', 'Condominium', 'Townhouse', 'Apartment', 'Vacant Lot', 'Commercial Property', 'Foreclosed'],
   food: ['Baked Goods', 'Ready-to-Eat Meals', 'Beverages', 'Snacks', 'Ingredients / Grocery', 'Desserts', 'Health Food'],
-  product: ['General', 'Health & Beauty', 'Sports & Outdoors', 'Toys & Hobbies', 'Books & Media', 'Tools & Hardware', 'Garden & Outdoor', 'Baby & Kids'],
+  product: ['General', 'Health & Beauty', 'Sports & Outdoors', 'Toys & Hobbies', 'Books & Media', 'Tools & Hardware', 'Garden & Outdoor', 'Baby & Kids', 'Other / Type Manually'],
+  homeappliances: [
+    'Refrigerator / Freezer', 'Washing Machine', 'Dryer', 'Air Conditioner', 'Electric Fan',
+    'Microwave Oven', 'Electric Oven / Range', 'Rice Cooker', 'Electric Kettle', 'Coffee Maker',
+    'Blender / Juicer / Food Processor', 'Dishwasher', 'Vacuum Cleaner / Floor Polisher',
+    'Water Dispenser', 'Water Heater / Shower Heater', 'Electric Iron', 'Sewing Machine',
+    'TV / Smart TV', 'Home Theater / Sound System', 'Projector', 'Generator / Inverter',
+    'Other Appliance / Type Manually',
+  ],
   mods: ['Car Modifications', 'Motorcycle Mods', 'PC Builds / Upgrades', 'Console Mods', 'Custom Accessories'],
   other: ['Miscellaneous', 'Collectibles', 'Art & Crafts', 'Musical Instruments', 'Plants & Garden'],
   services: [
@@ -31,11 +39,53 @@ export const SUBCATEGORIES = {
     'Trucking', 'Courier', 'Airport Transfer', 'Habal-habal',
     'Dental', 'Caregiver', 'Online Doctor', 'Physical Therapy', 'Mental Health',
     'Tutoring', 'Online English', 'Coaching', 'Training',
+    'Other / Type Manually',
   ],
   jobs: [
-    'Tech & IT', 'BPO / Call Center', 'Sales & Retail', 'Food & Restaurant', 'Drivers & Delivery',
-    'Household / Kasambahay', 'Healthcare / Nursing', 'Remote / WFH', 'Skilled Trades',
-    'Events & Entertainment', 'Education & Tutoring', 'Finance & Accounting', 'Marketing', 'Admin & Clerical',
+    // IT & BPO
+    'Customer Service Representative (CSR)', 'Technical Support Representative (TSR)', 'Team Leader / Operations Supervisor',
+    'Operations Manager', 'Service Delivery Lead / Director', 'Workforce Management (WFM) Analyst',
+    'Real-Time Adherence (RTA) Specialist', 'Quality Assurance (QA) Analyst', 'Process Trainer / Product Trainer',
+    'Implementation Manager', 'Software Engineer / Developer', 'Data Engineer / Cloud Architect',
+    'Technical Project Manager', 'IT Helpdesk Specialist', 'Virtual Assistant (VA)',
+    // Healthcare
+    'Staff Nurse (ER / ICU / Ward)', 'Company Nurse / Occupational Health Nurse', 'Medical Technologist (MedTech)',
+    'Pharmacist', 'Physical Therapist', 'General Practitioner (GP) / Resident Physician',
+    'Medical Auditor', 'Medical Coder (ICD-10 / CPC)', 'Clinical Care Coordinator', 'Radiologic Technologist (RadTech)',
+    // Operations & HR
+    'Human Resources (HR) Generalist', 'Talent Acquisition / Recruitment Specialist', 'Payroll Specialist',
+    'Administrative Assistant / Executive Secretary', 'Office Manager', 'Document Controller',
+    'Process Excellence (Lean Six Sigma) Specialist', 'Compliance Officer', 'Risk Management Analyst', 'Legal Assistant / Paralegal',
+    // Finance & Accounting
+    'Bookkeeper', 'General Accountant', 'Certified Public Accountant (CPA)', 'Internal Auditor',
+    'Billing and Collection Specialist', 'Accounts Payable / Receivable Analyst', 'Financial Analyst',
+    'Credit and Loan Officer', 'Bank Teller', 'Investment Associate',
+    // Engineering & Logistics
+    'Civil Engineer', 'Project Engineer / Site Engineer', 'Safety Officer (BOSH / COSH Certified)',
+    'Warehouse Supervisor', 'Logistics / Supply Chain Coordinator', 'Procurement / Purchasing Officer',
+    'Inventory Controller', 'Customs Broker', 'Delivery Driver / Courier', 'Fleet Manager',
+    // Sales, Marketing & Creative
+    'Graphic Designer', 'UI/UX Designer', 'Video Editor', '3D Modeler / Motion Animator',
+    'Social Media Manager / Specialist', 'SEO Specialist', 'Content Writer / Copywriter',
+    'Digital Marketing Manager', 'Account Executive (Sales)', 'Brand Manager',
+    // Education, Retail & Public
+    'Public School Teacher (DepEd)', 'College Professor / Instructor', 'Guidance Counselor',
+    'Store Manager / Retail Supervisor', 'Cashier / Sales Clerk', 'Merchandiser / Stock Clerk',
+    'Government Administrative Officer (Civil Service)', 'Social Worker',
+    // Food & Restaurant
+    'Restaurant Manager', 'Assistant Restaurant Manager', 'Shift Manager / Supervisor (Fast Food)',
+    'Head Chef / Executive Chef', 'Sous Chef', 'Line Cook / Commis', 'Kitchen Helper',
+    'Service Crew (Fast Food)', 'Waiter / Waitress / Server', 'Bartender', 'Barista',
+    'Food Attendant / Buffet Server', 'Dishwasher / Utility Worker', 'Receptionist / Hostess',
+    'Delivery Rider (GrabFood / Foodpanda)',
+    // General / Blue Collar
+    'Janitor / Janitress / Sanitation Personnel', 'Messenger / Office Boy', 'Security Guard',
+    'Maintenance Personnel / Handyman', 'Helper / Loader (Construction / Warehouse)',
+    'Housekeeper / Room Attendant (Hotel)', 'Car Washer', 'Laundry Staff',
+    'Factory Worker / Production Line Worker', 'Gasoline Boy / Gas Station Attendant',
+    'Baggage Boy / Packer (Supermarket)',
+    // Other
+    'Other / Not Listed',
   ],
   rent_lease: [
     'Room for Rent', 'Apartment / Condo', 'House for Rent', 'Bedspace / Dorm', 'Commercial Space',
@@ -48,3 +98,4 @@ export const SUBCATEGORIES = {
 
 export const JOBS_SUBCATEGORIES = SUBCATEGORIES.jobs;
 export const RENT_SUBCATEGORIES = SUBCATEGORIES.rent_lease;
+export const HOMEAPPLIANCES_SUBCATEGORIES = SUBCATEGORIES.homeappliances;

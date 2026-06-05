@@ -62,6 +62,7 @@ const TYPE_OPTIONS = [
   { value: 'clothing', label: 'Clothing & Fashion', main: 'buysell' },
   { value: 'furniture', label: 'Furniture', main: 'buysell' },
   { value: 'houses', label: 'Real Estate / Houses', main: 'buysell' },
+  { value: 'homeappliances', label: 'Home Appliances', main: 'buysell' },
   { value: 'product', label: 'General Products', main: 'buysell' },
   { value: 'mods', label: 'Mods & Customization', main: 'buysell' },
   { value: 'other', label: 'Other', main: 'buysell' },
@@ -104,6 +105,10 @@ export default function AddListingModal({ onClose, defaultType = '', user }) {
   }, [form.type]);
 
   const subcats = SUBCATEGORIES[form.type] || [];
+  const isManualSubcat = form.subcategory === 'Other / Type Manually' || form.subcategory === 'Other Appliance / Type Manually' || form.subcategory === 'Other / Not Listed';
+  const isManualJobPosition = form.type === 'jobs';
+  const [manualSubcat, setManualSubcat] = useState('');
+  const [manualJobPosition, setManualJobPosition] = useState('');
 
   const handleUpload = async (e) => {
     const file = e.target.files[0];
@@ -195,12 +200,30 @@ export default function AddListingModal({ onClose, defaultType = '', user }) {
                 </div>
                 {subcats.length > 0 && (
                   <div>
-                    <label className="block font-body text-xs text-white/50 mb-1 font-semibold">Subcategory</label>
-                    <select value={form.subcategory} onChange={e => set('subcategory', e.target.value)}
+                    <label className="block font-body text-xs text-white/50 mb-1 font-semibold">
+                      {isManualJobPosition ? 'Job Position' : 'Subcategory'}
+                    </label>
+                    <select value={isManualJobPosition ? (subcats.includes(form.subcategory) ? form.subcategory : (form.subcategory ? 'Other / Not Listed' : '')) : (isManualSubcat ? form.subcategory : form.subcategory)} 
+                      onChange={e => {
+                        set('subcategory', e.target.value);
+                        if (e.target.value !== 'Other / Type Manually' && e.target.value !== 'Other Appliance / Type Manually' && e.target.value !== 'Other / Not Listed') setManualSubcat('');
+                        if (e.target.value !== 'Other / Not Listed') setManualJobPosition('');
+                      }}
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white font-body text-sm focus:outline-none focus:border-[#00D4FF]/50">
-                      <option value="">Select subcategory...</option>
+                      <option value="">{isManualJobPosition ? 'Select job position...' : 'Select subcategory...'}</option>
                       {subcats.map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
+                    {(isManualSubcat || (isManualJobPosition && form.subcategory === 'Other / Not Listed')) && (
+                      <input
+                        value={isManualJobPosition ? manualJobPosition : manualSubcat}
+                        onChange={e => {
+                          if (isManualJobPosition) { setManualJobPosition(e.target.value); set('subcategory', e.target.value); }
+                          else { setManualSubcat(e.target.value); set('subcategory', e.target.value); }
+                        }}
+                        placeholder={isManualJobPosition ? 'Type your job position...' : 'Type your subcategory...'}
+                        className="mt-2 w-full bg-white/5 border border-[#00D4FF]/30 rounded-xl px-3 py-2.5 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/60"
+                      />
+                    )}
                   </div>
                 )}
               </div>
