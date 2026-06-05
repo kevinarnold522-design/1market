@@ -431,7 +431,7 @@ export default function Navbar() {
                     </Link>
                     <Link to="/profile" onClick={() => setMenuOpen(false)}
                       className="block text-[#00D4FF] font-body text-sm font-semibold py-2">
-                      🏠 My Dashboard
+                      👤 My Profile
                     </Link>
                     {(user.is_seller || user.account_type === 'business_owner') && (
                       <Link to="/profile?tab=listings" onClick={() => setMenuOpen(false)}

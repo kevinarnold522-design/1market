@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 
 const OWNER_EMAIL = 'Kevinarnold522@gmail.com';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Pencil, Trash2, X, Save, ArrowLeft, Building2, ShoppingBag, Search, Upload, User, BadgeCheck, Shield, Flag } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Save, ArrowLeft, Building2, ShoppingBag, Search, Upload, User, BadgeCheck, Shield, Flag, CheckCircle, XCircle } from 'lucide-react';
 
 const ROLES = ['user', 'moderator', 'admin'];
 import { Link } from 'react-router-dom';
@@ -268,6 +268,7 @@ export default function Admin() {
   const [tab, setTab] = useState('businesses');
   const [authChecked, setAuthChecked] = useState(false);
   const [reports, setReports] = useState([]);
+  const [verifications, setVerifications] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
@@ -296,16 +297,18 @@ export default function Admin() {
 
   const loadAll = async () => {
     setLoading(true);
-    const [bizs, lists, userList, rpts] = await Promise.all([
+    const [bizs, lists, userList, rpts, verifs] = await Promise.all([
       base44.entities.Business.list('-created_date', 200),
       base44.entities.Listing.list('-created_date', 200),
       base44.entities.User.list('-created_date', 200),
       base44.entities.Report.list('-created_date', 200),
+      base44.entities.VerificationApplication.list('-created_date', 200),
     ]);
     setBusinesses(bizs);
     setListings(lists);
     setUsers(userList);
     setReports(rpts);
+    setVerifications(verifs);
     setLoading(false);
   };
 
@@ -458,6 +461,7 @@ export default function Admin() {
             { key: 'listings', label: 'Buy & Sell Listings', icon: ShoppingBag },
             { key: 'users', label: `Users (${users.length})`, icon: User },
             { key: 'reports', label: `Reports (${reports.filter(r=>r.status==='pending').length})`, icon: Flag },
+            { key: 'verifications', label: `Verify (${verifications.filter(v=>v.status==='pending').length})`, icon: BadgeCheck },
           ].map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-semibold text-sm transition-all ${tab === t.key ? 'bg-[#0A192F] text-white' : 'bg-white border border-[#0A192F]/10 text-[#0A192F]/60 hover:border-[#0A192F]/20'}`}>
@@ -693,6 +697,76 @@ export default function Admin() {
             ))}
             {reports.length === 0 && (
               <div className="text-center py-16 text-[#0A192F]/40 font-body">No reports yet.</div>
+            )}
+          </div>
+        ) : tab === 'verifications' ? (
+          <div className="space-y-3">
+            {verifications.filter(v =>
+              v.user_name?.toLowerCase().includes(search.toLowerCase()) ||
+              v.user_email?.toLowerCase().includes(search.toLowerCase())
+            ).map(v => (
+              <motion.div key={v.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                className="bg-white rounded-2xl border border-[#0A192F]/5 p-4 flex items-start gap-4 flex-wrap">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <BadgeCheck className="w-5 h-5 text-[#2563EB]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <p className="font-heading font-bold text-sm text-[#0A192F]">{v.user_name || v.user_email}</p>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold capitalize ${v.status === 'pending' ? 'bg-amber-100 text-amber-700' : v.status === 'approved' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
+                      {v.status}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-[#2563EB] capitalize">{v.account_type?.replace('_', ' ')}</span>
+                  </div>
+                  <p className="font-body text-xs text-[#0A192F]/50">{v.user_email}</p>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {[{ url: v.doc1_url, label: v.doc1_label || 'Doc 1' }, { url: v.doc2_url, label: v.doc2_label || 'Doc 2' }, { url: v.doc3_url, label: v.doc3_label || 'Doc 3' }]
+                      .filter(d => d.url)
+                      .map((doc, i) => (
+                        <a key={i} href={doc.url} target="_blank" rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-[#F8FAFC] border border-[#0A192F]/10 rounded-lg font-body text-[10px] text-[#2563EB] hover:underline">
+                          📄 {doc.label}
+                        </a>
+                      ))}
+                  </div>
+                </div>
+                {v.status === 'pending' && (
+                  <div className="flex gap-2 flex-shrink-0 flex-wrap">
+                    <button onClick={async () => {
+                        await base44.entities.VerificationApplication.update(v.id, { status: 'approved', reviewed_by: 'admin' });
+                        // Grant badge to user
+                        const targetUser = users.find(u => u.email === v.user_email);
+                        if (targetUser) {
+                          await base44.entities.User.update(targetUser.id, { is_verified_seller: true });
+                          try {
+                            await base44.functions.invoke('sendVerifiedPartnerEmail', {
+                              email: v.user_email, name: v.user_name, business_name: v.user_name
+                            });
+                          } catch(e) {}
+                        }
+                        showToast('✅ Verification approved & badge granted!');
+                        loadAll();
+                      }}
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-green-50 border border-green-200 text-green-700 font-body text-xs font-bold hover:bg-green-100 transition-colors">
+                      <CheckCircle className="w-3.5 h-3.5" /> Approve
+                    </button>
+                    <button onClick={async () => {
+                        await base44.entities.VerificationApplication.update(v.id, { status: 'rejected', reviewed_by: 'admin' });
+                        showToast('Application rejected.');
+                        loadAll();
+                      }}
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-red-50 border border-red-200 text-red-600 font-body text-xs font-bold hover:bg-red-100 transition-colors">
+                      <XCircle className="w-3.5 h-3.5" /> Reject
+                    </button>
+                  </div>
+                )}
+                {v.status !== 'pending' && (
+                  <span className="font-body text-xs text-[#0A192F]/30 italic self-center">Reviewed</span>
+                )}
+              </motion.div>
+            ))}
+            {verifications.length === 0 && (
+              <div className="text-center py-16 text-[#0A192F]/40 font-body">No verification applications yet.</div>
             )}
           </div>
         ) : null}

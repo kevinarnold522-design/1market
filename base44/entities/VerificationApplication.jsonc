@@ -1,0 +1,65 @@
+{
+  "name": "VerificationApplication",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "user_name": {
+      "type": "string"
+    },
+    "account_type": {
+      "type": "string",
+      "enum": [
+        "seller",
+        "business_owner"
+      ]
+    },
+    "doc1_url": {
+      "type": "string",
+      "description": "First business proof document URL"
+    },
+    "doc2_url": {
+      "type": "string",
+      "description": "Second business proof document URL"
+    },
+    "doc3_url": {
+      "type": "string",
+      "description": "Third business proof document URL"
+    },
+    "doc1_label": {
+      "type": "string"
+    },
+    "doc2_label": {
+      "type": "string"
+    },
+    "doc3_label": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "admin_note": {
+      "type": "string"
+    },
+    "reviewed_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_email",
+    "account_type",
+    "doc1_url",
+    "doc2_url",
+    "doc3_url"
+  ]
+}

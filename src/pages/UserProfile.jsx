@@ -523,9 +523,22 @@ export default function UserProfile() {
     await reloadUser(); showToast('Seller page updated!');
   };
 
-  const submitVerification = async () => {
+  const submitVerification = async (docs) => {
+    await base44.entities.VerificationApplication.create({
+      user_id: user.id,
+      user_email: user.email,
+      user_name: user.full_name || user.username || user.email,
+      account_type: user.account_type || 'seller',
+      doc1_url: docs[0]?.url || '',
+      doc1_label: docs[0]?.label || 'Document 1',
+      doc2_url: docs[1]?.url || '',
+      doc2_label: docs[1]?.label || 'Document 2',
+      doc3_url: docs[2]?.url || '',
+      doc3_label: docs[2]?.label || 'Document 3',
+      status: 'pending',
+    });
     await base44.auth.updateMe({ verification_submitted: true });
-    await reloadUser(); showToast('Verification request submitted!');
+    await reloadUser(); showToast('Verification request submitted! Admin will review within 24-48 hrs.');
   };
 
   const approveVerification = async (targetUser) => {
@@ -1087,7 +1100,7 @@ export default function UserProfile() {
 
       <AnimatePresence>
         {showVerifiedBanner && user && (
-          <VerifiedPartnerBanner user={user} onClose={() => setShowVerifiedBanner(false)} />
+          <VerifiedPartnerBanner user={user} onClose={() => setShowVerifiedBanner(false)} onSubmit={submitVerification} />
         )}
       </AnimatePresence>
     </div>
