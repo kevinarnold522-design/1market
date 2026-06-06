@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Bookmark, Plus, Camera, BarChart2, Building2 } from 'lucide-react';
 import PostListingMenu from '../PostListingMenu';
-import AddListingModal from '../AddListingModal';
-import TravelPostModal from '../travel/TravelPostModal';
 import RewardDashboard from '../RewardDashboard';
 import MetaVerifiedBadge from '../MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -43,13 +41,7 @@ export default function Navbar() {
   const isSeller = user?.is_seller || user?.account_type === 'business_owner';
   const isVerified = user?.is_verified_seller;
   const [uploadingPfp, setUploadingPfp] = useState(false);
-  const [quickPostType, setQuickPostType] = useState(null);
-  const [showTravelPost, setShowTravelPost] = useState(false);
 
-  useEffect(() => {
-    window._openAddListingModal = (type) => setQuickPostType(type);
-    return () => { delete window._openAddListingModal; };
-  }, []);
 
   const handleNavPfpUpload = async (e) => {
     const file = e.target.files[0]; if (!file) return;
@@ -348,22 +340,9 @@ export default function Navbar() {
                           {(isSeller || isAdmin) && (
                             <>
                               <div className="border-t border-white/8 my-1" />
-                              <p className="px-3 py-1 font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold">Post a Listing</p>
-                              {[
-                                { label: '💼 Post a Job', type: 'jobs', color: '#f59e0b' },
-                                { label: '🏠 Post for Rent/Lease', type: 'rent_lease', color: '#10b981' },
-                                { label: '🛍️ Post an Item for Sale', type: 'product', color: '#8b5cf6' },
-                                { label: '🍜 Post a Food Listing', type: 'food', color: '#f97316' },
-                                { label: '🔧 Post a Service', type: 'services', color: '#3b82f6' },
-                                { label: '✈️ Post Travel / Hotel', type: 'travel', color: '#0ea5e9' },
-                              ].map(item => (
-                                <button key={item.type}
-                                  onClick={() => { setProfileOpen(false); if (item.type === 'travel') { setShowTravelPost(true); } else { window._openAddListingModal?.(item.type); } }}
-                                  className="w-full flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-white/8 transition-colors font-body text-xs text-left"
-                                  style={{ color: item.color }}>
-                                  {item.label}
-                                </button>
-                              ))}
+                              <div className="px-3 py-1.5">
+                                <PostListingMenu user={user} compact={false} />
+                              </div>
                               <div className="border-t border-white/8 my-1" />
                               <p className="px-3 py-1 font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold">Seller Tools</p>
                               <Link to="/profile?tab=listings" onClick={() => setProfileOpen(false)}
@@ -512,22 +491,8 @@ export default function Navbar() {
                     </Link>
                     {(isSeller || isAdmin) && (
                       <>
-                        <div className="pt-1 pb-0.5">
-                          <p className="font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold mb-1">Post a Listing</p>
-                          {[
-                            { label: '💼 Post a Job', type: 'jobs' },
-                            { label: '🏠 Post for Rent/Lease', type: 'rent_lease' },
-                            { label: '🛍️ Post an Item for Sale', type: 'product' },
-                            { label: '🍜 Post a Food Listing', type: 'food' },
-                            { label: '🔧 Post a Service', type: 'services' },
-                            { label: '✈️ Post Travel / Hotel', type: 'travel' },
-                          ].map(item => (
-                            <button key={item.type}
-                              onClick={() => { setMenuOpen(false); if (item.type === 'travel') { setShowTravelPost(true); } else { setQuickPostType(item.type); } }}
-                              className="block w-full text-left text-white/70 hover:text-white font-body text-sm font-medium py-1.5 transition-colors">
-                              {item.label}
-                            </button>
-                          ))}
+                        <div className="py-1">
+                          <PostListingMenu user={user} compact={false} />
                         </div>
                         <Link to="/profile?tab=listings" onClick={() => setMenuOpen(false)}
                           className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
@@ -567,13 +532,7 @@ export default function Navbar() {
                       className="block text-pink-300 font-body text-sm font-medium py-2 transition-colors">
                       Saved Favourites
                     </Link>
-                    {isSeller && (
-                      <Link to="/profile?tab=listings" onClick={() => setMenuOpen(false)}
-                        className="block font-body text-sm font-bold py-2 transition-colors"
-                        style={{ color: '#00D4FF' }}>
-                        + Add New Listing
-                      </Link>
-                    )}
+
                     <button onClick={() => { logout(true); setMenuOpen(false); }}
                       className="w-full mt-2 py-2.5 border border-red-500/30 text-red-400 rounded-xl font-body font-bold text-sm hover:bg-red-500/10 transition-colors">
                       Sign Out
@@ -611,16 +570,7 @@ export default function Navbar() {
       <AnimatePresence>
         {showSignup && <AccountTypeModal onClose={() => setShowSignup(false)} />}
         {showRewards && user && <RewardDashboard user={user} onClose={() => setShowRewards(false)} />}
-        {quickPostType && (
-          <AddListingModal
-            user={user}
-            defaultType={quickPostType}
-            onClose={() => setQuickPostType(null)}
-          />
-        )}
-        {showTravelPost && (
-          <TravelPostModal user={user} onClose={() => setShowTravelPost(false)} />
-        )}
+
       </AnimatePresence>
 
       {/* Floating Admin Edit Mode Bar */}
