@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ParticleBackground from '../components/ParticleBackground';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, MapPin, Briefcase, Clock, ExternalLink, X, Building2, DollarSign, Plus } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, Briefcase, ExternalLink, X, Building2, DollarSign, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal';
@@ -227,17 +227,18 @@ export default function Jobs() {
   const [applyJob, setApplyJob] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
   const [showAddListing, setShowAddListing] = useState(false);
-  const [canAddListing, setCanAddListing] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [dbJobs, setDbJobs] = useState([]);
+  const [showPostedNotice, setShowPostedNotice] = useState(false);
 
   useEffect(() => {
     base44.auth.isAuthenticated().then(ok => {
-      if (ok) base44.auth.me().then(u => {
-        setCurrentUser(u);
-        const allowed = u.role === 'admin' || u.is_seller || u.account_type === 'business_owner' || u.email === 'Kevinarnold522@gmail.com';
-        setCanAddListing(allowed);
-      }).catch(() => {});
+      if (ok) base44.auth.me().then(u => setCurrentUser(u)).catch(() => {});
     }).catch(() => {});
+    // Load approved DB jobs
+    base44.entities.Listing.filter({ type: 'jobs', approval_status: 'approved', is_active: true }, '-created_date', 100)
+      .then(jobs => setDbJobs(jobs))
+      .catch(() => {});
   }, []);
 
   const handleSubcatSelect = (key) => { setActiveType(key); setShowSplash(false); };
@@ -251,11 +252,32 @@ export default function Jobs() {
     general: ['general', 'utility', 'security'],
   };
 
-  const filtered = JOBS.filter(j => {
+  // Merge static + DB jobs. DB jobs use subcategory as type for filtering.
+  const allJobs = [
+    ...JOBS,
+    ...dbJobs.map(j => ({
+      id: j.id,
+      type: j.subcategory?.toLowerCase().replace(/\s+/g, '') || 'other',
+      title: j.title,
+      company: j.seller_name || 'Posted on 1MarketPH',
+      location: j.location,
+      area: j.area || j.location,
+      pay: j.price_label || (j.price ? `₱${Number(j.price).toLocaleString()}` : 'Negotiable'),
+      type_label: j.subcategory || 'Job',
+      desc: j.description || '',
+      image: j.image_url || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=500&q=80',
+      contact: j.email_contact || j.phone || '',
+      link: j.apply_link || null,
+      urgent: false,
+      isDb: true,
+    }))
+  ];
+
+  const filtered = allJobs.filter(j => {
     const mappedTypes = SECTOR_TYPE_MAP[activeType];
     const matchType = activeType === 'all' || j.type === activeType || (mappedTypes && mappedTypes.includes(j.type));
     const matchLoc = locationFilter === 'All' || j.location === locationFilter;
-    const matchSearch = j.title.toLowerCase().includes(search.toLowerCase()) || j.company.toLowerCase().includes(search.toLowerCase()) || j.area.toLowerCase().includes(search.toLowerCase());
+    const matchSearch = j.title.toLowerCase().includes(search.toLowerCase()) || j.company.toLowerCase().includes(search.toLowerCase()) || (j.area || '').toLowerCase().includes(search.toLowerCase());
     return matchType && matchLoc && matchSearch;
   });
 
@@ -336,6 +358,21 @@ export default function Jobs() {
         </div>
       </div>
 
+      <AnimatePresence>
+        {showPostedNotice && (
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
+            className="relative z-20 mx-4 mt-2 mb-0 max-w-2xl mx-auto rounded-2xl p-4 flex items-center gap-3"
+            style={{ background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)' }}>
+            <span className="text-green-400 text-xl">✓</span>
+            <div>
+              <p className="font-body font-bold text-sm text-green-300">Job Posted! Pending Admin Approval</p>
+              <p className="font-body text-xs text-white/40">Your job listing has been submitted and is being reviewed. It will appear here once approved.</p>
+            </div>
+            <button onClick={() => setShowPostedNotice(false)} className="ml-auto text-white/30 hover:text-white"><X className="w-4 h-4" /></button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-8">
         {/* Subcategory filter pills */}
         <div className="flex gap-2 mb-5 overflow-x-auto pb-1" style={{ scrollbarWidth:'none' }}>
@@ -383,7 +420,7 @@ export default function Jobs() {
       <AnimatePresence>
         {applyJob && <ApplyModal job={applyJob} onClose={() => setApplyJob(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
-        {showAddListing && <AddListingModal onClose={() => setShowAddListing(false)} defaultType="jobs" user={currentUser} />}
+        {showAddListing && <AddListingModal onClose={() => { setShowAddListing(false); setShowPostedNotice(true); setTimeout(() => setShowPostedNotice(false), 6000); }} defaultType="jobs" user={currentUser} />}
       </AnimatePresence>
     </div>
   );

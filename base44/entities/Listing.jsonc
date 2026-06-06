@@ -41,6 +41,16 @@
       ],
       "description": "Listing category"
     },
+    "approval_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Admin approval status \u2014 jobs require approval before showing"
+    },
     "subcategory": {
       "type": "string",
       "description": "Subcategory within the type"

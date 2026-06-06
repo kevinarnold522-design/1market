@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, BadgeCheck, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Bookmark, Plus, Camera } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Bookmark, Plus, Camera, BarChart2 } from 'lucide-react';
 import RewardDashboard from '../RewardDashboard';
 import MetaVerifiedBadge from '../MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,7 +10,7 @@ import NavCategoryBar from './NavCategoryBar';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 
-// Global edit mode state (simple module-level so any component can read it)
+// Global edit mode state
 let _editModeListeners = [];
 let _editModeValue = false;
 export function getAdminEditMode() { return _editModeValue; }
@@ -38,6 +38,7 @@ export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const isAdmin = user?.role === 'admin' || user?.email === 'Kevinarnold522@gmail.com';
   const isSeller = user?.is_seller || user?.account_type === 'business_owner';
+  const isVerified = user?.is_verified_seller;
   const [uploadingPfp, setUploadingPfp] = useState(false);
 
   const handleNavPfpUpload = async (e) => {
@@ -58,7 +59,6 @@ export default function Navbar() {
     setAdminEditMode(next);
   };
 
-  // Inline edit states
   const [editingName, setEditingName] = useState(false);
   const [nameVal, setNameVal] = useState('');
   const [nameSaving, setNameSaving] = useState(false);
@@ -77,7 +77,6 @@ export default function Navbar() {
     if (user) setNameVal(user.full_name || '');
   }, [user]);
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handler = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -97,11 +96,7 @@ export default function Navbar() {
     try {
       const existing = await base44.entities.User.filter({ username: clean });
       const conflict = existing.find(u => u.id !== user.id);
-      if (conflict) {
-        setNameError('This username is already taken.');
-        setNameSaving(false);
-        return;
-      }
+      if (conflict) { setNameError('This username is already taken.'); setNameSaving(false); return; }
       await base44.auth.updateMe({ username: clean, username_set: true });
       setNameSaved(true);
       setEditingName(false);
@@ -113,11 +108,9 @@ export default function Navbar() {
     setNameSaving(false);
   };
 
-  const links = [];
-
   const initials = user ? (user.full_name || user.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
   const memberSince = user?.created_date ? new Date(user.created_date).toLocaleDateString('en-PH', { year: 'numeric', month: 'short' }) : '';
-  const accountTypeLabel = isAdmin ? '✅ CEO & Founder' : user?.account_type === 'business_owner' ? '🏪 Business Owner' : isSeller ? '⭐ Seller' : '🛍️ Customer';
+  const accountTypeLabel = isAdmin ? 'CEO & Founder' : user?.account_type === 'business_owner' ? 'Business Owner' : isSeller ? 'Seller' : 'Customer';
   const accountTypeBadge = user?.account_type === 'business_owner'
     ? 'bg-[#00D4FF]/15 text-[#00D4FF] border-[#00D4FF]/25'
     : isSeller
@@ -131,9 +124,11 @@ export default function Navbar() {
         style={{ background: 'linear-gradient(90deg,#0033CC,#1a3de8,#0033CC)', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
         {isAuthenticated && user ? (
           <div className="flex items-center justify-center gap-3 flex-wrap">
-            <span className="font-body text-xs sm:text-sm font-semibold">👋 Welcome back, <strong>{user.full_name?.split(' ')[0] || 'Member'}</strong>!</span>
-            <span className="px-3 py-1 bg-white/15 rounded-full text-xs font-bold border border-white/20">{accountTypeLabel.replace(/^✅\s*/, '')}</span>
-            {isAdmin && <MetaVerifiedBadge size="sm" label="CEO & Founder" />}
+            <span className="font-body text-xs sm:text-sm font-semibold">
+              Welcome back, <strong>{user.full_name?.split(' ')[0] || 'Member'}</strong>!
+            </span>
+            <span className="px-3 py-1 bg-white/15 rounded-full text-xs font-bold border border-white/20">{accountTypeLabel}</span>
+            {(isAdmin || isVerified) && <MetaVerifiedBadge size="sm" label={isAdmin ? 'CEO & Founder' : 'Verified Partner'} />}
           </div>
         ) : (
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
@@ -190,7 +185,7 @@ export default function Navbar() {
 
             <NavUserBadge />
 
-            {/* Spacer pushes right-side items to far right */}
+            {/* Spacer */}
             <div className="flex-1" />
 
             {/* Messages button */}
@@ -199,7 +194,7 @@ export default function Navbar() {
               <span className="font-body text-xs font-semibold">Messages</span>
             </Link>
 
-            {/* Favourites bookmark — authenticated */}
+            {/* Favourites */}
             {isAuthenticated && user && (
               <Link to="/favourites" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 border border-white/10 hover:border-pink-400/40 hover:bg-pink-500/10 transition-all text-white/70 hover:text-pink-400">
                 <Bookmark className="w-4 h-4" />
@@ -207,26 +202,27 @@ export default function Navbar() {
               </Link>
             )}
 
-            {/* Desktop Links */}
+            {/* Desktop Right */}
             <div className="hidden md:flex items-center gap-4">
-              {links.map((link) => (
-                <Link key={link.label} to={link.href}
-                  className="relative font-body text-sm font-medium tracking-wide transition-colors duration-300 group text-white/80 hover:text-[#00D4FF]">
-                  {link.label}
-                  <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#00D4FF] transition-all duration-300 group-hover:w-full" />
-                </Link>
-              ))}
-
               {isAuthenticated && user ? (
                 <div className="relative" ref={dropdownRef}>
                   <button
                     onClick={() => setProfileOpen(p => !p)}
                     className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 border border-white/10 hover:border-[#00D4FF]/40 transition-all">
-                    <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-xs">
-                      {initials}
+                    <div className="w-7 h-7 rounded-lg overflow-hidden flex-shrink-0">
+                      {user?.profile_picture ? (
+                        <img src={user.profile_picture} alt="pfp" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-xs">
+                          {initials}
+                        </div>
+                      )}
                     </div>
                     <div className="text-left hidden sm:block">
-                      <p className="font-body text-xs text-white font-semibold leading-tight max-w-[80px] truncate">{user.full_name?.split(' ')[0] || 'Account'}</p>
+                      <div className="flex items-center gap-1">
+                        <p className="font-body text-xs text-white font-semibold leading-tight max-w-[80px] truncate">{user.full_name?.split(' ')[0] || 'Account'}</p>
+                        {(isAdmin || isVerified) && <MetaVerifiedBadge size="xs" label="" />}
+                      </div>
                       <p className="font-body text-[9px] text-[#00D4FF] leading-tight">{isAdmin ? 'CEO & Founder' : user.account_type === 'business_owner' ? 'Business Owner' : isSeller ? 'Seller' : 'Customer'}</p>
                     </div>
                     <ChevronDown className="w-3 h-3 text-white/40" />
@@ -238,13 +234,12 @@ export default function Navbar() {
                         initial={{ opacity: 0, y: 8, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                        className="absolute right-0 top-full mt-2 w-72 rounded-2xl overflow-hidden shadow-2xl z-50"
+                        className="absolute left-0 top-full mt-2 w-72 rounded-2xl overflow-hidden shadow-2xl z-50"
                         style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)' }}>
 
                         {/* Profile Header */}
                         <div className="p-4 border-b border-white/10">
                           <div className="flex items-center gap-3 mb-3">
-                            {/* Avatar with pfp upload */}
                             <label className="relative w-12 h-12 rounded-xl flex-shrink-0 cursor-pointer group">
                               {user?.profile_picture ? (
                                 <img src={user.profile_picture} alt="pfp" className="w-full h-full rounded-xl object-cover border border-white/20" />
@@ -259,15 +254,14 @@ export default function Navbar() {
                               <input type="file" accept="image/*" className="hidden" onChange={handleNavPfpUpload} disabled={uploadingPfp} />
                             </label>
                             <div className="flex-1 min-w-0">
-                              {/* Account type badge */}
-                              <div className="flex items-center gap-1 mb-1">
+                              <div className="flex items-center gap-1 mb-1 flex-wrap">
                                 <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>
                                   {accountTypeLabel}
                                 </span>
-                                {user?.is_verified_seller && !isAdmin && <MetaVerifiedBadge size="sm" label="" />}
-                              {isAdmin && <MetaVerifiedBadge size="sm" label="" />}
+                                {(isVerified || isAdmin) && (
+                                  <MetaVerifiedBadge size="sm" label="Verified Partner" />
+                                )}
                               </div>
-                              {/* Editable username */}
                               {editingName ? (
                                 <div className="flex items-center gap-1.5">
                                   <input
@@ -292,14 +286,13 @@ export default function Navbar() {
                                     className="w-5 h-5 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center flex-shrink-0 transition-colors">
                                     <Edit2 className="w-2.5 h-2.5 text-white/50" />
                                   </button>
-                                  {nameSaved && <span className="text-[9px] text-green-400">✓ Saved</span>}
+                                  {nameSaved && <span className="text-[9px] text-green-400">Saved</span>}
                                 </div>
                               )}
                               {nameError && <p className="font-body text-[9px] text-red-400 mt-0.5">{nameError}</p>}
                             </div>
                           </div>
 
-                          {/* User details */}
                           <div className="space-y-1.5 text-[10px] font-body">
                             <div className="flex items-center gap-2 text-white/50">
                               <Mail className="w-3 h-3 text-[#00D4FF] flex-shrink-0" />
@@ -325,83 +318,99 @@ export default function Navbar() {
 
                         {/* Actions */}
                         <div className="p-2">
-                        {/* Buyer links */}
-                        <Link to="/profile?tab=orders" onClick={() => setProfileOpen(false)}
-                          className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
-                          <History className="w-3.5 h-3.5 text-[#00D4FF]" /> My Orders
-                        </Link>
-                        <Link to="/profile?tab=favourites" onClick={() => setProfileOpen(false)}
-                          className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
-                          <Heart className="w-3.5 h-3.5 text-pink-400" /> Saved Favourites
-                        </Link>
-                        <Link to="/profile?tab=cart" onClick={() => setProfileOpen(false)}
-                          className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
-                          <ShoppingCart className="w-3.5 h-3.5 text-green-400" /> My Cart
-                        </Link>
-                        <button onClick={() => { setShowRewards(true); setProfileOpen(false); }}
-                          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-purple-500/10 transition-colors text-purple-300 font-body text-xs">
-                          <Gift className="w-3.5 h-3.5" /> Daily Rewards 🎁
-                        </button>
-
-                        {/* Seller links */}
-                        {isSeller && (
-                          <>
-                            <div className="border-t border-white/8 my-1" />
-                            <p className="px-3 py-1 font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold">Seller Tools</p>
-                            <Link to="/profile?tab=listings" onClick={() => setProfileOpen(false)}
-                              className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
-                              <Package className="w-3.5 h-3.5 text-[#00D4FF]"/> My Listings
-                            </Link>
-                            <Link to="/profile?tab=sellerorders" onClick={() => setProfileOpen(false)}
-                              className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
-                              <Truck className="w-3.5 h-3.5 text-green-400"/> Seller Orders
-                            </Link>
-                            <Link to={`/seller/${user.username || user.id}`} onClick={() => setProfileOpen(false)}
-                              className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
-                              <Globe className="w-3.5 h-3.5 text-green-400"/> My Seller Profile
-                            </Link>
-                                        {user?.is_verified_seller && (
-                              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl" style={{ background: 'linear-gradient(90deg,rgba(168,85,247,0.12),rgba(56,189,248,0.08))', border: '1px solid rgba(168,85,247,0.25)' }}>
-                                <MetaVerifiedBadge size="sm" label="Verified Partner" />
-                              </div>
-                            )}
-                          </>
-                        )}
-
-                        {!isSeller && (
-                          <Link to="/profile?tab=profile" onClick={() => setProfileOpen(false)}
-                            className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-[#00D4FF] font-body text-xs font-semibold">
-                            <Store className="w-3.5 h-3.5"/> Become a Seller →
+                          {/* Buyer links */}
+                          <Link to="/profile?tab=orders" onClick={() => setProfileOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
+                            <History className="w-3.5 h-3.5 text-[#00D4FF]" /> My Orders
                           </Link>
-                        )}
+                          <Link to="/profile?tab=favourites" onClick={() => setProfileOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
+                            <Heart className="w-3.5 h-3.5 text-pink-400" /> Saved Favourites
+                          </Link>
+                          <Link to="/profile?tab=cart" onClick={() => setProfileOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
+                            <ShoppingCart className="w-3.5 h-3.5 text-green-400" /> My Cart
+                          </Link>
+                          <button onClick={() => { setShowRewards(true); setProfileOpen(false); }}
+                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-purple-500/10 transition-colors text-purple-300 font-body text-xs">
+                            <Gift className="w-3.5 h-3.5" /> Daily Rewards
+                          </button>
 
-                        {/* Admin links */}
-                        {isAdmin && (
-                          <>
-                            <div className="border-t border-white/8 my-1" />
-                            <p className="px-3 py-1 font-body text-[9px] text-amber-400/60 uppercase tracking-wider font-bold">Admin Panel</p>
-                            <Link to="/admin" onClick={() => setProfileOpen(false)}
-                              className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-amber-500/10 transition-colors text-amber-400 font-body text-xs">
-                              <Settings className="w-3.5 h-3.5"/> Admin Dashboard
+                          {/* Seller links */}
+                          {isSeller && (
+                            <>
+                              <div className="border-t border-white/8 my-1" />
+                              <p className="px-3 py-1 font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold">Seller Tools</p>
+                              <Link to="/profile?tab=listings" onClick={() => setProfileOpen(false)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
+                                <Package className="w-3.5 h-3.5 text-[#00D4FF]" /> My Listings
+                              </Link>
+                              <Link to="/profile?tab=sellerorders" onClick={() => setProfileOpen(false)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
+                                <Truck className="w-3.5 h-3.5 text-green-400" /> Seller Orders
+                              </Link>
+                              <Link to="/profile?tab=analytics" onClick={() => setProfileOpen(false)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
+                                <BarChart2 className="w-3.5 h-3.5 text-yellow-400" /> Statistics Dashboard
+                              </Link>
+                              <Link to={`/seller/${user.username || user.id}`} onClick={() => setProfileOpen(false)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
+                                <Globe className="w-3.5 h-3.5 text-green-400" /> My Seller Profile
+                              </Link>
+                              {isVerified && (
+                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl mt-1" style={{ background: 'linear-gradient(90deg,rgba(168,85,247,0.12),rgba(56,189,248,0.08))', border: '1px solid rgba(168,85,247,0.25)' }}>
+                                  <MetaVerifiedBadge size="sm" label="Verified Partner" />
+                                </div>
+                              )}
+                            </>
+                          )}
+
+                          {/* Become Verified Partner section — for non-verified sellers & business owners */}
+                          {isSeller && !isVerified && !isAdmin && (
+                            <>
+                              <div className="border-t border-white/8 my-1" />
+                              <Link to="/profile?tab=verification" onClick={() => setProfileOpen(false)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold"
+                                style={{ background: 'linear-gradient(90deg,rgba(168,85,247,0.12),rgba(56,189,248,0.08))', border: '1px solid rgba(168,85,247,0.2)' }}>
+                                <MetaVerifiedBadge size="xs" label="" />
+                                <span className="text-purple-300">Become a Verified Partner</span>
+                              </Link>
+                            </>
+                          )}
+
+                          {!isSeller && (
+                            <Link to="/profile?tab=profile" onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-[#00D4FF] font-body text-xs font-semibold">
+                              <Store className="w-3.5 h-3.5" /> Become a Seller →
                             </Link>
-                            <button
-                              onClick={() => { toggleEditMode(); setProfileOpen(false); }}
-                              className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold ${editMode ? 'bg-[#00D4FF]/15 text-[#00D4FF]' : 'hover:bg-white/10 text-amber-300'}`}
-                            >
-                              {editMode ? <><EyeOff className="w-3.5 h-3.5"/> Exit Edit Mode</> : <><Pencil className="w-3.5 h-3.5"/> Enable Edit Mode</>}
-                            </button>
-                          </>
-                        )}
+                          )}
 
-                        <div className="border-t border-white/8 my-1" />
-                        <Link to="/profile" onClick={() => setProfileOpen(false)}
-                          className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
-                          <User className="w-3.5 h-3.5 text-[#00D4FF]"/> My Profile
-                        </Link>
-                        <button onClick={() => { logout(true); setProfileOpen(false); }}
-                          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 transition-colors text-red-400 font-body text-xs">
-                          <LogOut className="w-3.5 h-3.5" /> Sign Out
-                        </button>
+                          {/* Admin links */}
+                          {isAdmin && (
+                            <>
+                              <div className="border-t border-white/8 my-1" />
+                              <p className="px-3 py-1 font-body text-[9px] text-amber-400/60 uppercase tracking-wider font-bold">Admin Panel</p>
+                              <Link to="/admin" onClick={() => setProfileOpen(false)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-amber-500/10 transition-colors text-amber-400 font-body text-xs">
+                                <Settings className="w-3.5 h-3.5" /> Admin Dashboard
+                              </Link>
+                              <button
+                                onClick={() => { toggleEditMode(); setProfileOpen(false); }}
+                                className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold ${editMode ? 'bg-[#00D4FF]/15 text-[#00D4FF]' : 'hover:bg-white/10 text-amber-300'}`}>
+                                {editMode ? <><EyeOff className="w-3.5 h-3.5" /> Exit Edit Mode</> : <><Pencil className="w-3.5 h-3.5" /> Enable Edit Mode</>}
+                              </button>
+                            </>
+                          )}
+
+                          <div className="border-t border-white/8 my-1" />
+                          <Link to="/profile" onClick={() => setProfileOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
+                            <User className="w-3.5 h-3.5 text-[#00D4FF]" /> My Profile
+                          </Link>
+                          <button onClick={() => { logout(true); setProfileOpen(false); }}
+                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 transition-colors text-red-400 font-body text-xs">
+                            <LogOut className="w-3.5 h-3.5" /> Sign Out
+                          </button>
                         </div>
                       </motion.div>
                     )}
@@ -445,39 +454,59 @@ export default function Navbar() {
                         {initials}
                       </div>
                       <div className="min-w-0">
-                        <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border mb-0.5 ${accountTypeBadge}`}>{accountTypeLabel}</span>
+                        <div className="flex items-center gap-1 mb-0.5">
+                          <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>{accountTypeLabel}</span>
+                          {(isAdmin || isVerified) && <MetaVerifiedBadge size="xs" label="" />}
+                        </div>
                         <p className="font-body text-xs font-bold text-white truncate">{user.full_name || 'Account'}</p>
                         <p className="font-body text-[10px] text-white/40 truncate">{user.email}</p>
                       </div>
                     </div>
                   </div>
                 )}
-                {links.map((link) => (
-                  <Link key={link.label} to={link.href} onClick={() => setMenuOpen(false)}
-                    className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
-                    {link.label}
-                  </Link>
-                ))}
                 {isAuthenticated && user ? (
                   <>
                     <Link to="/messages" onClick={() => setMenuOpen(false)}
                       className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
-                      💬 Messages
+                      Messages
                     </Link>
                     <Link to="/profile" onClick={() => setMenuOpen(false)}
                       className="block text-[#00D4FF] font-body text-sm font-semibold py-2">
-                      👤 My Profile
+                      My Profile
                     </Link>
-                    {(user.is_seller || user.account_type === 'business_owner') && (
-                      <Link to="/profile?tab=listings" onClick={() => setMenuOpen(false)}
-                        className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
-                        🏪 My Listings
+                    {isSeller && (
+                      <>
+                        <Link to="/profile?tab=listings" onClick={() => setMenuOpen(false)}
+                          className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
+                          My Listings
+                        </Link>
+                        <Link to="/profile?tab=analytics" onClick={() => setMenuOpen(false)}
+                          className="block text-yellow-300 font-body text-sm font-medium py-2 transition-colors">
+                          Statistics Dashboard
+                        </Link>
+                      </>
+                    )}
+                    {isSeller && !isVerified && !isAdmin && (
+                      <Link to="/profile?tab=verification" onClick={() => setMenuOpen(false)}
+                        className="block text-purple-300 font-body text-sm font-medium py-2 transition-colors">
+                        Become a Verified Partner
                       </Link>
                     )}
                     {user.role === 'admin' && (
                       <Link to="/admin" onClick={() => setMenuOpen(false)}
                         className="block text-amber-400 font-body text-sm font-semibold py-2">
-                        ⚙️ Admin Dashboard
+                        Admin Dashboard
+                      </Link>
+                    )}
+                    <Link to="/favourites" onClick={() => setMenuOpen(false)}
+                      className="block text-pink-300 font-body text-sm font-medium py-2 transition-colors">
+                      Saved Favourites
+                    </Link>
+                    {isSeller && (
+                      <Link to="/profile?tab=listings" onClick={() => setMenuOpen(false)}
+                        className="block font-body text-sm font-bold py-2 transition-colors"
+                        style={{ color: '#00D4FF' }}>
+                        + Add New Listing
                       </Link>
                     )}
                     <button onClick={() => { logout(true); setMenuOpen(false); }}
@@ -489,40 +518,24 @@ export default function Navbar() {
                   <>
                     <Link to="/messages" onClick={() => setMenuOpen(false)}
                       className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
-                      💬 Messages
+                      Messages
                     </Link>
                     <Link to="/explore" onClick={() => setMenuOpen(false)}
                       className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
-                      🔍 Explore Listings
+                      Explore Listings
                     </Link>
+                    <div className="flex gap-2 mt-2">
+                      <button onClick={() => { setMenuOpen(false); base44.auth.redirectToLogin(window.location.href); }}
+                        className="flex-1 py-2.5 border border-white/20 text-white rounded-xl font-body font-bold text-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
+                        Login
+                      </button>
+                      <button onClick={() => { setMenuOpen(false); setShowSignup(true); }}
+                        className="flex-1 py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all"
+                        style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 14px rgba(0,212,255,0.35)' }}>
+                        Get Started
+                      </button>
+                    </div>
                   </>
-                )}
-                {/* Mobile: Favourites + Add Listing for sellers */}
-                {isAuthenticated && user && (
-                  <Link to="/favourites" onClick={() => setMenuOpen(false)}
-                    className="block text-pink-300 font-body text-sm font-medium py-2 transition-colors">
-                    Saved Favourites
-                  </Link>
-                )}
-                {isAuthenticated && user && isSeller && (
-                  <Link to="/profile?tab=listings" onClick={() => setMenuOpen(false)}
-                    className="block font-body text-sm font-bold py-2 transition-colors"
-                    style={{ color: '#00D4FF' }}>
-                    + Add New Listing
-                  </Link>
-                )}
-                {!isAuthenticated && (
-                  <div className="flex gap-2 mt-2">
-                    <button onClick={() => { setMenuOpen(false); base44.auth.redirectToLogin(window.location.href); }}
-                      className="flex-1 py-2.5 border border-white/20 text-white rounded-xl font-body font-bold text-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
-                      Login
-                    </button>
-                    <button onClick={() => { setMenuOpen(false); setShowSignup(true); }}
-                      className="flex-1 py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all"
-                      style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 14px rgba(0,212,255,0.35)' }}>
-                      Get Started
-                    </button>
-                  </div>
                 )}
               </div>
             </motion.div>
@@ -546,17 +559,15 @@ export default function Navbar() {
               background: editMode ? 'rgba(0,212,255,0.95)' : 'rgba(13,31,60,0.97)',
               border: `1.5px solid ${editMode ? 'rgba(0,212,255,0.5)' : 'rgba(245,158,11,0.4)'}`,
               backdropFilter: 'blur(14px)'
-            }}
-          >
+            }}>
             <Shield className={`w-4 h-4 ${editMode ? 'text-[#0A192F]' : 'text-amber-400'}`} />
             <span className={`font-body text-xs font-bold whitespace-nowrap ${editMode ? 'text-[#0A192F]' : 'text-amber-300'}`}>
-              {editMode ? '✏️ Edit Mode ON — Hover any item to edit' : '🛡️ Admin Mode'}
+              {editMode ? 'Edit Mode ON — Hover any item to edit' : 'Admin Mode'}
             </span>
             <button
               onClick={toggleEditMode}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs transition-all ${editMode ? 'bg-[#0A192F] text-[#00D4FF] hover:bg-[#0A192F]/80' : 'bg-amber-500 text-white hover:bg-amber-400'}`}
-            >
-              {editMode ? <><EyeOff className="w-3 h-3"/> Exit Edit</> : <><Pencil className="w-3 h-3"/> Edit Mode</>}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs transition-all ${editMode ? 'bg-[#0A192F] text-[#00D4FF] hover:bg-[#0A192F]/80' : 'bg-amber-500 text-white hover:bg-amber-400'}`}>
+              {editMode ? <><EyeOff className="w-3 h-3" /> Exit Edit</> : <><Pencil className="w-3 h-3" /> Edit Mode</>}
             </button>
           </motion.div>
         )}

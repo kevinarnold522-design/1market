@@ -18,7 +18,7 @@ Deno.serve(async (req) => {
     await base44.integrations.Core.SendEmail({
       to: targetEmail,
       from_name: '1Marketph.com — Verification Team',
-      subject: '✅ You\'re Now a Verified Partner on 1Marketph.com! 🏅',
+      subject: 'Congratulations! You are now a Verified Partner on 1Marketph.com',
       body: `
 <!DOCTYPE html>
 <html>
@@ -64,7 +64,7 @@ Deno.serve(async (req) => {
     </div>
     <div class="ribbon">🌟 Welcome to the Verified Partner Program 🌟</div>
     <div class="body">
-      <p class="greeting">Congratulations, ${targetName}! 🎊</p>
+      <p class="greeting">Congratulations, ${targetName}!</p>
       <p class="message">
         Great news! Your business <strong>${businessName}</strong> has successfully passed our verification review and has been officially granted the <strong>Verified Partner</strong> status on 1Marketph.com.
         <br><br>
