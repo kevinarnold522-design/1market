@@ -38,8 +38,7 @@ export default function MetaVerifiedBadge({ size = 'md', label = 'Verified' }) {
         </span>
       )}
 
-      {/* Ribbon */}
-      <span className="meta-ribbon" style={{ fontSize: s.ribbon * 0.6, lineHeight: 1 }}>🎀</span>
+
 
       <style>{`
         @keyframes metaRing {

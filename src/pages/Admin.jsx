@@ -328,7 +328,7 @@ export default function Admin() {
         });
       } catch (e) {}
     }
-    showToast(newStatus ? '✅ Verified badge granted! Email sent.' : 'Verified badge removed.');
+    showToast(newStatus ? 'Verified badge granted! Email sent.' : 'Verified badge removed.');
     loadAll();
   };
 
@@ -748,7 +748,7 @@ export default function Admin() {
                             });
                           } catch(e) {}
                         }
-                        showToast('✅ Verification approved & badge granted!');
+                        showToast('Verification approved & badge granted!');
                         loadAll();
                       }}
                       className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-green-50 border border-green-200 text-green-700 font-body text-xs font-bold hover:bg-green-100 transition-colors">
@@ -845,7 +845,7 @@ export default function Admin() {
         {toast && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
             className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#0A192F] text-white px-6 py-3 rounded-xl font-body text-sm shadow-2xl z-50">
-            ✅ {toast}
+            {toast}
           </motion.div>
         )}
       </AnimatePresence>
