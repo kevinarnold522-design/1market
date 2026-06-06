@@ -159,6 +159,7 @@ function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites,
             )}
           </div>
         </div>
+      </div>
     </motion.div>
   );
 
