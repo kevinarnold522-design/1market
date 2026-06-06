@@ -9,6 +9,8 @@ import {
 import OrdersTab from '../components/seller/OrdersTab';
 import { Link } from 'react-router-dom';
 import ParticleBackground from '../components/ParticleBackground';
+import PostListingMenu from '../components/PostListingMenu';
+import AddListingModal from '../components/AddListingModal';
 
 const LISTING_TYPES = ['product', 'shoes', 'cars', 'houses', 'electronics', 'clothing', 'furniture', 'food', 'services', 'other'];
 const SUBCATEGORIES_MAP = {
@@ -262,6 +264,7 @@ export default function SellerDashboard() {
   const [favourites, setFavourites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [toast, setToast] = useState('');
@@ -489,9 +492,9 @@ export default function SellerDashboard() {
               )}
             </button>
           ))}
-          <button onClick={openAdd} className="ml-auto flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#00D4FF] hover:bg-white text-[#0A192F] font-body text-[10px] font-bold transition-colors whitespace-nowrap">
-            <Plus className="w-3 h-3" /> New Listing
-          </button>
+          <div className="ml-auto">
+            <PostListingMenu user={user} compact />
+          </div>
         </div>
       </nav>
 
@@ -548,7 +551,7 @@ export default function SellerDashboard() {
               <div className="text-center py-16 rounded-2xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <Package className="w-10 h-10 text-white/15 mx-auto mb-2" />
                 <p className="font-heading font-bold text-white/30 text-sm mb-1">No listings yet</p>
-                <button onClick={openAdd} className="px-5 py-2 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-semibold text-xs hover:bg-white transition-colors mt-2">
+                <button onClick={() => setShowAddModal(true)} className="px-5 py-2 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-semibold text-xs hover:bg-white transition-colors mt-2">
                   Add First Listing
                 </button>
               </div>
@@ -776,6 +779,20 @@ export default function SellerDashboard() {
           </div>
         )}
       </div>
+
+      {/* Add Listing Modal */}
+      <AnimatePresence>
+        {showAddModal && user && (
+          <AddListingModal
+            user={user}
+            onClose={async () => {
+              setShowAddModal(false);
+              const items = await base44.entities.Listing.filter({ created_by: user.email });
+              setListings(items);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Location Setup Modal */}
       <AnimatePresence>

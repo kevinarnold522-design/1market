@@ -8,6 +8,7 @@ import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
 import { base44 } from '@/api/base44Client';
 import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
+import PostListingMenu from '../components/PostListingMenu';
 
 const SUBCATEGORIES = [
   { key: 'all', label: 'All Rentals', Icon: Grid3X3, color: '#3E97F1', desc: 'Browse everything' },
@@ -302,14 +303,9 @@ export default function ForRent() {
           ))}
         </div>
 
-        {/* Add Listing button for admins/sellers */}
         {(isAdmin || isSeller) && (
           <div className="mb-6">
-            <button onClick={() => { setAddDefaultSub(''); setShowAddListing(true); }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
-              style={{ background: 'linear-gradient(135deg,#0033CC,#3E97F1)', boxShadow: '0 0 16px rgba(62,151,241,0.3)' }}>
-              <Plus className="w-4 h-4" /> Add Rental Listing
-            </button>
+            <PostListingMenu user={user} compact={false} />
           </div>
         )}
 

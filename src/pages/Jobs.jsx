@@ -5,6 +5,7 @@ import { ArrowLeft, Search, MapPin, Briefcase, ExternalLink, X, Building2, Dolla
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
+import PostListingMenu from '../components/PostListingMenu';
 import { base44 } from '@/api/base44Client';
 
 // Royal Blue theme colors
@@ -244,12 +245,7 @@ export default function Jobs() {
             </div>
             <div className="flex items-center gap-4 flex-wrap mb-2">
               <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Jobs in the Philippines</h1>
-              <button
-                onClick={() => currentUser ? setShowAddJob(true) : setShowSignup(true)}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm transition-all hover:scale-105"
-                style={{ background: THEME.accent, color: '#fff', boxShadow: `0 0 20px ${THEME.accent}66` }}>
-                <Plus className="w-4 h-4" /> Post a Job
-              </button>
+              <PostListingMenu user={currentUser} compact={false} />
             </div>
             <p className="font-body text-sm text-white/60 max-w-xl">Full-time, part-time, freelance & remote — real jobs from real companies across the Philippines.</p>
           </motion.div>
@@ -330,11 +326,9 @@ export default function Jobs() {
           style={{ background: `linear-gradient(135deg, ${THEME.primaryDark}, ${THEME.primary})`, border: `1px solid ${THEME.accent}44` }}>
           <h2 className="font-heading font-bold text-2xl text-white mb-2">Hiring? Post a Job for Free</h2>
           <p className="font-body text-sm text-white/60 mb-5 max-w-md mx-auto">Reach thousands of job seekers across the Philippines. Free job postings for all users.</p>
-          <button onClick={() => currentUser ? setShowAddJob(true) : setShowSignup(true)}
-            className="px-8 py-3 rounded-xl font-body font-bold text-white transition-all hover:scale-105"
-            style={{ background: THEME.accent, boxShadow: `0 0 20px ${THEME.accent}66` }}>
-            Post a Job Free →
-          </button>
+          <div className="flex justify-center">
+            <PostListingMenu user={currentUser} compact={false} />
+          </div>
         </motion.div>
       </div>
 

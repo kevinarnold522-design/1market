@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Bookmark, Plus, Camera, BarChart2, Building2 } from 'lucide-react';
+import PostListingMenu from '../PostListingMenu';
+import AddListingModal from '../AddListingModal';
 import RewardDashboard from '../RewardDashboard';
 import MetaVerifiedBadge from '../MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -40,6 +42,12 @@ export default function Navbar() {
   const isSeller = user?.is_seller || user?.account_type === 'business_owner';
   const isVerified = user?.is_verified_seller;
   const [uploadingPfp, setUploadingPfp] = useState(false);
+  const [quickPostType, setQuickPostType] = useState(null);
+
+  useEffect(() => {
+    window._openAddListingModal = (type) => setQuickPostType(type);
+    return () => { delete window._openAddListingModal; };
+  }, []);
 
   const handleNavPfpUpload = async (e) => {
     const file = e.target.files[0]; if (!file) return;
@@ -158,12 +166,10 @@ export default function Navbar() {
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="flex items-center gap-2 h-9">
               <NavCategoryBar />
-              {isAuthenticated && user && isSeller && (
-                <Link to="/profile?tab=listings"
-                  className="ml-auto flex items-center gap-1 px-3 py-1 rounded-lg font-body text-xs font-bold text-[#0A192F] transition-all"
-                  style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}>
-                  <Plus className="w-3 h-3" /> Add Listing
-                </Link>
+              {isAuthenticated && user && (
+                <div className="ml-auto">
+                  <PostListingMenu user={user} compact />
+                </div>
               )}
             </div>
           </div>
@@ -337,8 +343,24 @@ export default function Navbar() {
                           </button>
 
                           {/* Seller links */}
-                          {isSeller && (
+                          {(isSeller || isAdmin) && (
                             <>
+                              <div className="border-t border-white/8 my-1" />
+                              <p className="px-3 py-1 font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold">Post a Listing</p>
+                              {[
+                                { label: '💼 Post a Job', type: 'jobs', color: '#f59e0b' },
+                                { label: '🏠 Post for Rent/Lease', type: 'rent_lease', color: '#10b981' },
+                                { label: '🛍️ Post an Item for Sale', type: 'product', color: '#8b5cf6' },
+                                { label: '🍜 Post a Food Listing', type: 'food', color: '#f97316' },
+                                { label: '🔧 Post a Service', type: 'services', color: '#3b82f6' },
+                              ].map(item => (
+                                <button key={item.type}
+                                  onClick={() => { setProfileOpen(false); window._openAddListingModal?.(item.type); }}
+                                  className="w-full flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-white/8 transition-colors font-body text-xs text-left"
+                                  style={{ color: item.color }}>
+                                  {item.label}
+                                </button>
+                              ))}
                               <div className="border-t border-white/8 my-1" />
                               <p className="px-3 py-1 font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold">Seller Tools</p>
                               <Link to="/profile?tab=listings" onClick={() => setProfileOpen(false)}
@@ -485,8 +507,24 @@ export default function Navbar() {
                       className="block text-[#00D4FF] font-body text-sm font-semibold py-2">
                       My Profile
                     </Link>
-                    {isSeller && (
+                    {(isSeller || isAdmin) && (
                       <>
+                        <div className="pt-1 pb-0.5">
+                          <p className="font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold mb-1">Post a Listing</p>
+                          {[
+                            { label: '💼 Post a Job', type: 'jobs' },
+                            { label: '🏠 Post for Rent/Lease', type: 'rent_lease' },
+                            { label: '🛍️ Post an Item for Sale', type: 'product' },
+                            { label: '🍜 Post a Food Listing', type: 'food' },
+                            { label: '🔧 Post a Service', type: 'services' },
+                          ].map(item => (
+                            <button key={item.type}
+                              onClick={() => { setMenuOpen(false); setQuickPostType(item.type); }}
+                              className="block w-full text-left text-white/70 hover:text-white font-body text-sm font-medium py-1.5 transition-colors">
+                              {item.label}
+                            </button>
+                          ))}
+                        </div>
                         <Link to="/profile?tab=listings" onClick={() => setMenuOpen(false)}
                           className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
                           My Listings
@@ -569,6 +607,13 @@ export default function Navbar() {
       <AnimatePresence>
         {showSignup && <AccountTypeModal onClose={() => setShowSignup(false)} />}
         {showRewards && user && <RewardDashboard user={user} onClose={() => setShowRewards(false)} />}
+        {quickPostType && (
+          <AddListingModal
+            user={user}
+            defaultType={quickPostType}
+            onClose={() => setQuickPostType(null)}
+          />
+        )}
       </AnimatePresence>
 
       {/* Floating Admin Edit Mode Bar */}

@@ -6,6 +6,7 @@ import { ArrowLeft, Search, Phone, MessageSquare, Star, AlertCircle, Plus, Penci
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
+import PostListingMenu from '../components/PostListingMenu';
 import { base44 } from '@/api/base44Client';
 
 const SUBCATEGORIES = [
@@ -298,13 +299,7 @@ export default function Services() {
             </div>
             <div className="flex items-center gap-4 mb-3 flex-wrap">
               <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Services Provided</h1>
-              {canAddListing && (
-                <button onClick={() => setShowAddListing(true)}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
-                  style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 16px rgba(37,99,235,0.4)' }}>
-                  <Plus className="w-4 h-4" /> Add Service Listing
-                </button>
-              )}
+              {canAddListing && <PostListingMenu user={currentUser} compact={false} />}
             </div>
             <p className="font-body text-base text-white/50 max-w-xl">Home services, tech, beauty, events, professional & health services across Manila and Cavite.</p>
           </motion.div>
