@@ -29,10 +29,8 @@ import GetStartedButton from '../components/GetStartedButton';
 import LiveStatsBar from '../components/home/LiveStatsBar';
 import TrendingSearches from '../components/home/TrendingSearches';
 import FlashDealsSection from '../components/home/FlashDealsSection';
-import TestimonialsSection from '../components/home/TestimonialsSection';
 import TopSellersSection from '../components/home/TopSellersSection';
 import AppDownloadBanner from '../components/home/AppDownloadBanner';
-import NewsletterSection from '../components/home/NewsletterSection';
 import RecentlyViewed from '../components/home/RecentlyViewed';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
@@ -80,10 +78,8 @@ export default function Home() {
       <ShoesClothingDashboard />
       <ServicesDashboard />
       <HowItWorksSection />
-      <TestimonialsSection />
       <ReviewHighlights />
       <AppDownloadBanner />
-      <NewsletterSection />
       <CommunityAnimation />
       <RecentlyViewed />
       <Footer />

@@ -180,7 +180,7 @@ export default function Navbar() {
                 alt="1Market Philippines"
                 className="h-8 w-8 rounded-lg object-cover"
               />
-              <span className="font-heading font-bold text-base tracking-tight text-white hidden sm:block">
+              <span className="font-heading font-bold text-base tracking-tight text-white hidden lg:block">
                 1Market<span className="text-[#FFD700]">PH</span><span className="text-white/60">.com</span>
               </span>
             </a>

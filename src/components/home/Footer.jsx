@@ -1,6 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Youtube } from 'lucide-react';
+import { Facebook, Instagram, Youtube, Lock, CheckCircle, Zap, MessageCircle, Globe } from 'lucide-react';
+
+const TRUST_BADGES = [
+  { icon: Lock, label: 'SSL Secured', color: '#00D4FF' },
+  { icon: Globe, label: 'Made in PH', color: '#10b981' },
+  { icon: CheckCircle, label: 'DPA 2012 Compliant', color: '#a855f7' },
+  { icon: Zap, label: 'Fast & Reliable', color: '#f59e0b' },
+  { icon: MessageCircle, label: '24/7 Support', color: '#60a5fa' },
+];
 
 export default function Footer() {
   return (
@@ -44,7 +52,7 @@ export default function Footer() {
               <p className="font-heading font-bold text-white text-xl tracking-tight">
                 1Market<span style={{ color: '#FFD700' }}>PH</span><span className="text-white/40">.com</span>
               </p>
-              <p className="font-body text-[10px] text-white/35">Philippines' Premier Marketplace 🇵🇭</p>
+              <p className="font-body text-[10px] text-white/35">Philippines' Premier Marketplace</p>
             </div>
           </div>
           {/* Socials */}
@@ -62,7 +70,7 @@ export default function Footer() {
             <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-body text-xs font-bold text-white/80 transition-all hover:scale-105"
               style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)' }}>
-              🎵 TikTok
+              TikTok
             </a>
             <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-body text-xs font-bold text-red-400 transition-all hover:scale-105"
@@ -72,15 +80,15 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Links grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-10 mb-12">
+        {/* Links grid — 3 columns, no Account */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 mb-12">
           {/* About */}
           <div className="space-y-4">
             <h4 className="font-heading font-bold text-sm uppercase tracking-widest text-white/50">About</h4>
             <div className="space-y-2.5">
               <p className="font-body text-sm text-white/40">Founded by Kevin W. Roberto</p>
               <p className="font-body text-sm text-white/40">Manila, Philippines</p>
-              <Link to="/about" className="block font-body text-xs text-[#00D4FF]/60 hover:text-[#00D4FF] transition-colors">About 1MarketPH →</Link>
+              <Link to="/about" className="block font-body text-xs text-[#00D4FF]/60 hover:text-[#00D4FF] transition-colors">About 1MarketPH</Link>
               <Link to="/privacy-policy" className="block font-body text-xs text-white/25 hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
             </div>
           </div>
@@ -90,10 +98,10 @@ export default function Footer() {
             <h4 className="font-heading font-bold text-sm uppercase tracking-widest text-white/50">Marketplace</h4>
             <div className="space-y-2.5">
               {[
-                { label: '🛍️ Buy & Sell', href: '/buysell' },
-                { label: '🍜 Food', href: '/food' },
-                { label: '✈️ Travel', href: '/travel' },
-                { label: '🏠 For Rent', href: '/rent' },
+                { label: 'Buy & Sell', href: '/buysell' },
+                { label: 'Food', href: '/food' },
+                { label: 'Travel', href: '/travel' },
+                { label: 'For Rent', href: '/rent' },
               ].map(l => (
                 <Link key={l.label} to={l.href} className="block font-body text-sm text-white/40 hover:text-[#00D4FF] transition-colors">{l.label}</Link>
               ))}
@@ -105,23 +113,12 @@ export default function Footer() {
             <h4 className="font-heading font-bold text-sm uppercase tracking-widest text-white/50">Services</h4>
             <div className="space-y-2.5">
               {[
-                { label: '🔧 Services', href: '/services' },
-                { label: '💼 Jobs', href: '/jobs' },
-                { label: '🔍 Explore', href: '/explore' },
+                { label: 'Services', href: '/services' },
+                { label: 'Jobs', href: '/jobs' },
+                { label: 'Explore', href: '/explore' },
               ].map(l => (
                 <Link key={l.label} to={l.href} className="block font-body text-sm text-white/40 hover:text-[#00D4FF] transition-colors">{l.label}</Link>
               ))}
-            </div>
-          </div>
-
-          {/* Account */}
-          <div className="space-y-4">
-            <h4 className="font-heading font-bold text-sm uppercase tracking-widest text-white/50">Account</h4>
-            <div className="space-y-2.5">
-              <Link to="/profile" className="block font-body text-sm text-white/40 hover:text-[#00D4FF] transition-colors">My Profile</Link>
-              <Link to="/profile?tab=listings" className="block font-body text-sm text-white/40 hover:text-[#00D4FF] transition-colors">Seller Dashboard</Link>
-              <Link to="/messages" className="block font-body text-sm text-white/40 hover:text-[#00D4FF] transition-colors">Messages</Link>
-              <Link to="/favourites" className="block font-body text-sm text-white/40 hover:text-[#00D4FF] transition-colors">Saved Favourites</Link>
             </div>
           </div>
         </div>
@@ -131,38 +128,15 @@ export default function Footer() {
           <p className="font-heading font-bold text-white text-base sm:text-lg mb-1">
             Connecting Filipinos to <span style={{ color: '#FFD700' }}>Products</span>, <span style={{ color: '#00D4FF' }}>Services</span> & <span style={{ color: '#a855f7' }}>Opportunities</span>
           </p>
-          <p className="font-body text-xs text-white/35">Proudly Made in the Philippines 🇵🇭 — Since 2026</p>
+          <p className="font-body text-xs text-white/35">Proudly Made in the Philippines — Since 2026</p>
         </div>
 
-        {/* Trust badges */}
+        {/* Trust badges — lucide icons, single row */}
         <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
-          {[
-            { icon: '🔒', label: 'SSL Secured' },
-            { icon: '🇵🇭', label: 'Made in PH' },
-            { icon: '✅', label: 'DPA 2012 Compliant' },
-            { icon: '⚡', label: 'Fast & Reliable' },
-            { icon: '💬', label: '24/7 Support' },
-          ].map((b, i) => (
+          {TRUST_BADGES.map((b, i) => (
             <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <span className="text-sm">{b.icon}</span>
-              <span className="font-body text-[10px] text-white/40">{b.label}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Trust badges */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
-          {[
-            { icon: '🔒', label: 'SSL Secured' },
-            { icon: '🇵🇭', label: 'Made in PH' },
-            { icon: '✅', label: 'DPA 2012 Compliant' },
-            { icon: '⚡', label: 'Fast & Reliable' },
-            { icon: '💬', label: '24/7 Support' },
-          ].map((b, i) => (
-            <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <span className="text-sm">{b.icon}</span>
+              <b.icon className="w-3.5 h-3.5" style={{ color: b.color }} />
               <span className="font-body text-[10px] text-white/40">{b.label}</span>
             </div>
           ))}
