@@ -204,6 +204,7 @@ const EMPTY_FORM = {
   area: '',
   // pricing
   price: '',
+  original_price: '',
   price_label: '',
   // contact
   seller_name: '',
@@ -279,6 +280,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       area: form.area || (form.zip ? `Zip: ${form.zip}` : ''),
       full_address: [form.area, form.city, form.state_region, form.zip].filter(Boolean).join(', '),
       price: hidePrice ? 0 : (Number(form.price) || 0),
+      original_price: (!hidePrice && form.original_price && Number(form.original_price) > Number(form.price)) ? Number(form.original_price) : null,
       price_label: hidePrice ? '' : form.price_label,
       description: form.description,
       image_url: form.image_url,
@@ -468,13 +470,34 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
 
                   {/* Pricing — hidden for jobs */}
                   {!hidePrice && (
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className={labelCls}>Price (₱)</label>
-                        <input type="number" value={form.price} onChange={e => set('price', e.target.value)} placeholder="0" className={inputCls} />
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className={labelCls}>Current Price (₱) <span className="text-red-400">*</span></label>
+                          <input type="number" value={form.price} onChange={e => set('price', e.target.value)} placeholder="0" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls}>Original Price (₱) <span className="text-white/30">Optional</span></label>
+                          <input
+                            type="number"
+                            value={form.original_price}
+                            onChange={e => set('original_price', e.target.value)}
+                            placeholder="Higher original price"
+                            className={inputCls}
+                          />
+                          {form.original_price && Number(form.original_price) > 0 && Number(form.original_price) <= Number(form.price) && (
+                            <p className="font-body text-[9px] text-red-400 mt-1">Original price must be higher than current price.</p>
+                          )}
+                          {form.original_price && Number(form.original_price) > Number(form.price) && Number(form.price) > 0 && (
+                            <p className="font-body text-[9px] text-green-400 mt-1">
+                              Save {Math.round(((Number(form.original_price) - Number(form.price)) / Number(form.original_price)) * 100)}% badge will show on listing.
+                            </p>
+                          )}
+                        </div>
                       </div>
+                      <p className="font-body text-[9px] text-white/30 leading-relaxed">Enter the higher, previous price you want to cross out (e.g., 1,500). Leave blank if not on sale.</p>
                       <div>
-                        <label className={labelCls}>Price Display</label>
+                        <label className={labelCls}>Price Display Label</label>
                         <input value={form.price_label} onChange={e => set('price_label', e.target.value)} placeholder={isRent ? '₱18,000/mo' : '₱3,500 neg'} className={inputCls} />
                       </div>
                     </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Clock, Tag } from 'lucide-react';
+import { Zap, Clock, Tag, Pencil, X, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 
@@ -37,6 +37,30 @@ const FLASH = [
 const FLASH_END = Date.now() + 4 * 3600 * 1000 + 23 * 60 * 1000;
 
 export default function FlashDealsSection() {
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [editData, setEditData] = useState({});
+  const [deals, setDeals] = useState(FLASH);
+
+  useEffect(() => {
+    base44.auth.isAuthenticated().then(async (authed) => {
+      if (authed) {
+        const me = await base44.auth.me();
+        setIsAdmin(me?.role === 'admin');
+      }
+    }).catch(() => {});
+  }, []);
+
+  const startEdit = (item) => {
+    setEditingId(item.id);
+    setEditData({ title: item.title, price_label: item.price_label, original: item.original, discount: item.discount });
+  };
+
+  const saveEdit = (id) => {
+    setDeals(d => d.map(item => item.id === id ? { ...item, ...editData, discount: editData.original && editData.price_label ? Math.round(((parseFloat(editData.original.replace(/[₱,]/g,'')) - parseFloat(editData.price_label.replace(/[₱,]/g,''))) / parseFloat(editData.original.replace(/[₱,]/g,''))) * 100) : item.discount } : item));
+    setEditingId(null);
+  };
+
   return (
     <section className="py-8 px-4">
       <div className="max-w-7xl mx-auto">
@@ -59,37 +83,66 @@ export default function FlashDealsSection() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {FLASH.map((item, i) => (
+          {deals.map((item, i) => (
             <motion.div key={item.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.08 }}
               whileHover={{ y: -4 }}
-              className="rounded-2xl overflow-hidden cursor-pointer group"
+              className="rounded-2xl overflow-hidden cursor-pointer group relative"
               style={{ background: '#0D1F3C', border: '1px solid rgba(249,115,22,0.2)' }}>
-              <Link to={`/buysell`}>
-                <div className="relative h-32 overflow-hidden">
-                  <img src={item.image_url} alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0D1F3C] to-transparent" />
-                  <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full font-heading font-bold text-[10px] text-white"
-                    style={{ background: 'linear-gradient(135deg,#f97316,#ef4444)' }}>
-                    -{item.discount}%
+              {/* Admin Edit Button */}
+              {isAdmin && editingId !== item.id && (
+                <button onClick={(e) => { e.preventDefault(); startEdit(item); }}
+                  className="absolute top-2 right-2 z-20 w-6 h-6 rounded-full bg-amber-400 flex items-center justify-center shadow-lg hover:bg-amber-300 transition-colors">
+                  <Pencil className="w-3 h-3 text-[#0A192F]" />
+                </button>
+              )}
+              {/* Admin Edit Overlay */}
+              {isAdmin && editingId === item.id ? (
+                <div className="p-3 space-y-2">
+                  <input value={editData.title} onChange={e => setEditData(d => ({...d, title: e.target.value}))}
+                    className="w-full bg-white/10 border border-orange-400/40 rounded-lg px-2 py-1 text-white text-xs focus:outline-none" placeholder="Title" />
+                  <input value={editData.price_label} onChange={e => setEditData(d => ({...d, price_label: e.target.value}))}
+                    className="w-full bg-white/10 border border-orange-400/40 rounded-lg px-2 py-1 text-white text-xs focus:outline-none" placeholder="Sale Price (e.g. ₱4,800)" />
+                  <input value={editData.original} onChange={e => setEditData(d => ({...d, original: e.target.value}))}
+                    className="w-full bg-white/10 border border-orange-400/40 rounded-lg px-2 py-1 text-white text-xs focus:outline-none" placeholder="Original Price (e.g. ₱6,500)" />
+                  <div className="flex gap-2">
+                    <button onClick={() => saveEdit(item.id)}
+                      className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-green-500 rounded-lg text-white font-bold text-xs hover:bg-green-400 transition-colors">
+                      <Check className="w-3 h-3" /> Save
+                    </button>
+                    <button onClick={() => setEditingId(null)}
+                      className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-white/10 rounded-lg text-white/60 font-bold text-xs hover:bg-white/20 transition-colors">
+                      <X className="w-3 h-3" /> Cancel
+                    </button>
                   </div>
                 </div>
-                <div className="p-3">
-                  <p className="font-body text-[11px] text-white leading-tight line-clamp-2 mb-1.5">{item.title}</p>
-                  <div className="flex items-center gap-2">
-                    <span className="font-heading font-bold text-sm text-[#FFD700]">{item.price_label}</span>
-                    <span className="font-body text-[10px] text-white/30 line-through">{item.original}</span>
+              ) : (
+                <Link to={`/buysell`}>
+                  <div className="relative h-32 overflow-hidden">
+                    <img src={item.image_url} alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0D1F3C] to-transparent" />
+                    <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full font-heading font-bold text-[10px] text-white"
+                      style={{ background: 'linear-gradient(135deg,#f97316,#ef4444)' }}>
+                      -{item.discount}%
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1 mt-1.5">
-                    <Tag className="w-2.5 h-2.5 text-orange-400" />
-                    <span className="font-body text-[9px] text-orange-400">Flash Price</span>
+                  <div className="p-3">
+                    <p className="font-body text-[11px] text-white leading-tight line-clamp-2 mb-1.5">{item.title}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="font-heading font-bold text-sm text-[#FFD700]">{item.price_label}</span>
+                      <span className="font-body text-[10px] text-white/30 line-through">{item.original}</span>
+                    </div>
+                    <div className="flex items-center gap-1 mt-1.5">
+                      <Tag className="w-2.5 h-2.5 text-orange-400" />
+                      <span className="font-body text-[9px] text-orange-400">Flash Price</span>
+                    </div>
                   </div>
-                </div>
-              </Link>
+                </Link>
+              )}
             </motion.div>
           ))}
         </div>

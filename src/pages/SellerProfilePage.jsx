@@ -11,6 +11,7 @@ export default function SellerProfilePage({ sellerId }) {
   const [showContact, setShowContact] = useState(false);
   const [message, setMessage] = useState('');
   const [following, setFollowing] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -24,18 +25,19 @@ export default function SellerProfilePage({ sellerId }) {
           const follows = await base44.entities.Follow.filter({ follower_email: me.email, following_user_id: sellerId });
           setFollowing(follows.length > 0);
         }
+        // Load follower count
+        const allFollows = await base44.entities.Follow.filter({ following_user_id: sellerId });
+        setFollowerCount(allFollows.length);
+        // Load seller profile
+        const users = await base44.entities.User.filter({ 
+          $or: [{ id: sellerId }, { username: sellerId }] 
+        });
+        if (users.length > 0) {
+          setSeller(users[0]);
+          const items = await base44.entities.Listing.filter({ created_by: users[0].email, is_active: true });
+          setListings(items);
+        }
       } catch {}
-      
-      // Load seller profile
-      const users = await base44.entities.User.filter({ 
-        $or: [{ id: sellerId }, { username: sellerId }] 
-      });
-      if (users.length > 0) {
-        setSeller(users[0]);
-        // Load listings
-        const items = await base44.entities.Listing.filter({ created_by: users[0].email, is_active: true });
-        setListings(items);
-      }
       setLoading(false);
     };
     init();
@@ -188,17 +190,21 @@ export default function SellerProfilePage({ sellerId }) {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-3 mt-6 pt-6 border-t border-white/8">
+          <div className="grid grid-cols-4 gap-3 mt-6 pt-6 border-t border-white/8">
             <div className="text-center">
               <p className="font-heading font-bold text-xl text-white">{listings.length}</p>
               <p className="font-body text-[10px] text-white/35 uppercase tracking-wider">Listings</p>
             </div>
             <div className="text-center">
-              <p className="font-heading font-bold text-xl text-white">{isVerified ? 'Verified' : 'Active'}</p>
-              <p className="font-body text-[10px] text-white/35 uppercase tracking-wider">Status</p>
+              <p className="font-heading font-bold text-xl text-[#00D4FF]">{followerCount}</p>
+              <p className="font-body text-[10px] text-white/35 uppercase tracking-wider">Followers</p>
             </div>
             <div className="text-center">
-              <p className="font-heading font-bold text-xl text-white">{memberSince.split(' ')[1]}</p>
+              <p className="font-heading font-bold text-xl text-white">{isVerified ? '✓' : '—'}</p>
+              <p className="font-body text-[10px] text-white/35 uppercase tracking-wider">Verified</p>
+            </div>
+            <div className="text-center">
+              <p className="font-heading font-bold text-xl text-white">{memberSince.split(' ')[1] || '—'}</p>
               <p className="font-body text-[10px] text-white/35 uppercase tracking-wider">Joined</p>
             </div>
           </div>

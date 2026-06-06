@@ -126,29 +126,39 @@ function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites,
         )}
         <p className="font-body text-xs text-[#0A192F]/50 mb-3 line-clamp-2">{item.description}</p>
         <div className="flex items-center justify-between gap-2">
-        <span className="font-heading font-bold text-base text-[#0A192F]">
-          {item.type === 'services' ? (item.rate || item.price_label) : (item.price_label || formatPrice(item.price))}
-        </span>
-        <div className="flex gap-1.5">
-          {!item._static && item.id && (
-            <a href={`/listing/${item.id}`}
-              className="px-2.5 py-1.5 bg-[#EFF6FF] border border-[#2563EB]/15 text-[#2563EB] rounded-lg font-body text-xs font-semibold hover:bg-[#DBEAFE] transition-colors">
-              View
-            </a>
-          )}
-          <button onClick={() => onContact(item)}
-            className="px-3 py-1.5 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-lg font-body text-xs font-semibold transition-colors">
-            Contact
-          </button>
-          {user && !item._static && (
-            <button onClick={() => onReport(item)}
-              className="p-1.5 rounded-lg bg-red-50 border border-red-100 text-red-400 hover:bg-red-100 transition-colors" title="Report listing">
-              <Flag className="w-3 h-3" />
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-heading font-bold text-base text-[#0A192F]">
+              {item.type === 'services' ? (item.rate || item.price_label) : (item.price_label || formatPrice(item.price))}
+            </span>
+            {item.original_price && item.original_price > item.price && (
+              <>
+                <span className="font-body text-xs text-gray-400 line-through">₱{Number(item.original_price).toLocaleString()}</span>
+                <span className="px-1.5 py-0.5 rounded-full text-white font-heading font-bold text-[9px]"
+                  style={{ background: 'linear-gradient(135deg,#f97316,#ef4444)' }}>
+                  -{Math.round(((item.original_price - item.price) / item.original_price) * 100)}%
+                </span>
+              </>
+            )}
+          </div>
+          <div className="flex gap-1.5">
+            {!item._static && item.id && (
+              <a href={`/listing/${item.id}`}
+                className="px-2.5 py-1.5 bg-[#EFF6FF] border border-[#2563EB]/15 text-[#2563EB] rounded-lg font-body text-xs font-semibold hover:bg-[#DBEAFE] transition-colors">
+                View
+              </a>
+            )}
+            <button onClick={() => onContact(item)}
+              className="px-3 py-1.5 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-lg font-body text-xs font-semibold transition-colors">
+              Contact
             </button>
-          )}
+            {user && !item._static && (
+              <button onClick={() => onReport(item)}
+                className="p-1.5 rounded-lg bg-red-50 border border-red-100 text-red-400 hover:bg-red-100 transition-colors" title="Report listing">
+                <Flag className="w-3 h-3" />
+              </button>
+            )}
+          </div>
         </div>
-        </div>
-      </div>
     </motion.div>
   );
 

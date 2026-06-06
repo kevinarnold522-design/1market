@@ -49,18 +49,16 @@
         "rejected"
       ],
       "default": "pending",
-      "description": "Admin approval status \u2014 jobs require approval before showing"
+      "description": "Admin approval status"
     },
     "subcategory": {
-      "type": "string",
-      "description": "Subcategory within the type"
+      "type": "string"
     },
     "extra_subcategories": {
       "type": "array",
       "items": {
         "type": "string"
-      },
-      "description": "Additional subcategories this listing appears in"
+      }
     },
     "space_type": {
       "type": "string",
@@ -77,15 +75,17 @@
         "Residential",
         "Venue / Events",
         "Vehicle"
-      ],
-      "description": "Type of space for rent listings"
+      ]
     },
     "business_id": {
-      "type": "string",
-      "description": "Optional: linked business entity ID"
+      "type": "string"
     },
     "price": {
       "type": "number"
+    },
+    "original_price": {
+      "type": "number",
+      "description": "Optional compare-at / strikethrough price. Must be greater than current price."
     },
     "price_label": {
       "type": "string",
@@ -98,8 +98,7 @@
       "type": "string"
     },
     "meetup_location": {
-      "type": "string",
-      "description": "Preferred meetup location for buyer/seller exchange"
+      "type": "string"
     },
     "seller_name": {
       "type": "string"
@@ -108,12 +107,10 @@
       "type": "string"
     },
     "email_contact": {
-      "type": "string",
-      "description": "Contact email for listings"
+      "type": "string"
     },
     "apply_link": {
-      "type": "string",
-      "description": "External link to apply (jobs/services)"
+      "type": "string"
     },
     "description": {
       "type": "string"
@@ -125,12 +122,10 @@
       "type": "array",
       "items": {
         "type": "string"
-      },
-      "description": "Additional product photos"
+      }
     },
     "video_url": {
-      "type": "string",
-      "description": "Optional product/listing video URL"
+      "type": "string"
     },
     "condition": {
       "type": "string",
@@ -174,8 +169,7 @@
         "8th Owner",
         "9th Owner",
         "10th Owner"
-      ],
-      "description": "Car ownership history"
+      ]
     },
     "size": {
       "type": "string"
@@ -199,12 +193,10 @@
       "type": "string"
     },
     "warranty": {
-      "type": "string",
-      "description": "Warranty details \u2014 mandatory for electronics"
+      "type": "string"
     },
     "specs": {
-      "type": "string",
-      "description": "Full technical specifications \u2014 mandatory for electronics"
+      "type": "string"
     },
     "is_active": {
       "type": "boolean",
@@ -306,8 +298,7 @@
     },
     "rating": {
       "type": "number",
-      "default": 0,
-      "description": "Average star rating 1-5"
+      "default": 0
     },
     "rating_count": {
       "type": "integer",

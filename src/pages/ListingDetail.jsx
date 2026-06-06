@@ -411,11 +411,24 @@ export default function ListingDetail() {
               </div>
 
               <div className="mb-4">
-                <span className="font-heading font-bold text-2xl text-[#00D4FF]">
-                  {listing.price_label || (listing.price ? `₱${Number(listing.price).toLocaleString()}` : '—')}
-                </span>
+                <div className="flex items-center flex-wrap gap-2">
+                  <span className="font-heading font-bold text-2xl text-[#00D4FF]">
+                    {listing.price_label || (listing.price ? `₱${Number(listing.price).toLocaleString()}` : '—')}
+                  </span>
+                  {listing.original_price && listing.original_price > listing.price && (
+                    <>
+                      <span className="font-body text-sm text-white/35 line-through">
+                        ₱{Number(listing.original_price).toLocaleString()}
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full font-heading font-bold text-[10px] text-white"
+                        style={{ background: 'linear-gradient(135deg,#f97316,#ef4444)' }}>
+                        Save {Math.round(((listing.original_price - listing.price) / listing.original_price) * 100)}%
+                      </span>
+                    </>
+                  )}
+                </div>
                 {listing.condition && listing.condition !== 'N/A' && (
-                  <span className="ml-2 px-2 py-0.5 rounded-full bg-white/10 text-white/60 font-body text-[10px]">{listing.condition}</span>
+                  <span className="mt-1 inline-block px-2 py-0.5 rounded-full bg-white/10 text-white/60 font-body text-[10px]">{listing.condition}</span>
                 )}
               </div>
 

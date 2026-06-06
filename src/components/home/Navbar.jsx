@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Bookmark, Plus, Camera, BarChart2, Building2 } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Building2 } from 'lucide-react';
 import PostListingMenu from '../PostListingMenu';
 import RewardDashboard from '../RewardDashboard';
 import MetaVerifiedBadge from '../MetaVerifiedBadge';
@@ -199,7 +199,7 @@ export default function Navbar() {
             {/* Favourites */}
             {isAuthenticated && user && (
               <Link to="/favourites" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 border border-white/10 hover:border-pink-400/40 hover:bg-pink-500/10 transition-all text-white/70 hover:text-pink-400">
-                <Bookmark className="w-4 h-4" />
+                <Heart className="w-4 h-4" />
                 <span className="font-body text-xs font-semibold">Saved</span>
               </Link>
             )}
@@ -325,7 +325,7 @@ export default function Navbar() {
                             className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
                             <History className="w-3.5 h-3.5 text-[#00D4FF]" /> My Orders
                           </Link>
-                          <Link to="/profile?tab=favourites" onClick={() => setProfileOpen(false)}
+                          <Link to="/favourites" onClick={() => setProfileOpen(false)}
                             className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
                             <Heart className="w-3.5 h-3.5 text-pink-400" /> Saved Favourites
                           </Link>

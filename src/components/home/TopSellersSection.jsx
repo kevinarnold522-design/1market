@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Star, Award, TrendingUp } from 'lucide-react';
+import { Star, Award } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import MetaVerifiedBadge from '../MetaVerifiedBadge';
 
 export default function TopSellersSection() {
   const [sellers, setSellers] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    base44.auth.isAuthenticated().then(async (authed) => {
+      if (authed) {
+        const me = await base44.auth.me();
+        setIsAdmin(me?.role === 'admin');
+      }
+    }).catch(() => {});
     base44.entities.User.list('-created_date', 12)
       .then(users => {
         const s = users.filter(u => u.is_seller || u.account_type === 'business_owner').slice(0, 6);
@@ -16,7 +23,8 @@ export default function TopSellersSection() {
       }).catch(() => {});
   }, []);
 
-  if (sellers.length === 0) return null;
+  // Only admin can see Top Sellers section
+  if (!isAdmin || sellers.length === 0) return null;
 
   return (
     <section className="py-10 px-4">
