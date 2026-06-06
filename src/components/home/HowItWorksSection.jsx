@@ -32,14 +32,14 @@ function StepsFlow({ steps, color }) {
           >
             <motion.div
               whileHover={{ scale: 1.08 }}
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white border-2 flex items-center justify-center text-3xl shadow-md mb-3"
-              style={{ borderColor: color }}
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 flex items-center justify-center text-3xl shadow-md mb-3"
+              style={{ borderColor: color, background: 'rgba(255,255,255,0.06)' }}
             >
               {s.icon}
             </motion.div>
             <span className="font-body text-[9px] font-bold uppercase tracking-wider mb-0.5" style={{ color }}>{s.step}</span>
-            <p className="font-heading font-bold text-xs text-[#0A192F] mb-1 leading-tight">{s.title}</p>
-            <p className="font-body text-[10px] text-[#0A192F]/50 leading-relaxed">{s.desc}</p>
+            <p className="font-heading font-bold text-xs text-white mb-1 leading-tight">{s.title}</p>
+            <p className="font-body text-[10px] text-white/40 leading-relaxed">{s.desc}</p>
           </motion.div>
         ))}
       </div>
@@ -49,34 +49,34 @@ function StepsFlow({ steps, color }) {
 
 export default function HowItWorksSection() {
   return (
-    <section className="py-14 bg-gradient-to-b from-white to-[#F8FAFC] overflow-hidden">
+    <section className="py-14 overflow-hidden" style={{ background: 'linear-gradient(180deg,#0D1F3C 0%,#070F1A 100%)' }}>
       <div className="max-w-6xl mx-auto px-6">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
-          <span className="font-body text-xs tracking-[0.2em] uppercase text-[#2563EB]">How It Works</span>
-          <h2 className="font-heading font-bold text-2xl sm:text-3xl text-[#0A192F] mt-1">Two Journeys. One Market.</h2>
+          <span className="font-body text-xs tracking-[0.2em] uppercase text-[#00D4FF]">How It Works</span>
+          <h2 className="font-heading font-bold text-2xl sm:text-3xl text-white mt-1">Two Journeys. One Market.</h2>
         </motion.div>
 
         {/* Customer journey FIRST (on top) */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl" style={{ background: '#EFF6FF' }}>🛒</div>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl" style={{ background: 'rgba(0,212,255,0.12)', border: '1px solid rgba(0,212,255,0.25)' }}>🛒</div>
             <div>
-              <p className="font-heading font-bold text-base text-[#0A192F]">For Customers</p>
-              <p className="font-body text-xs text-[#0A192F]/40">Your journey from discovery to done</p>
+              <p className="font-heading font-bold text-base text-white">For Customers</p>
+              <p className="font-body text-xs text-white/40">Your journey from discovery to done</p>
             </div>
           </div>
           <StepsFlow steps={CUSTOMER_STEPS} color="#00D4FF" />
         </motion.div>
 
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-[#0A192F]/10 to-transparent my-10" />
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent my-10" />
 
         {/* Business journey */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl" style={{ background: '#F0FDF4' }}>🏪</div>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl" style={{ background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(37,99,235,0.25)' }}>🏪</div>
             <div>
-              <p className="font-heading font-bold text-base text-[#0A192F]">For Business Owners</p>
-              <p className="font-body text-xs text-[#0A192F]/40">From listing to your first sale</p>
+              <p className="font-heading font-bold text-base text-white">For Business Owners</p>
+              <p className="font-body text-xs text-white/40">From listing to your first sale</p>
             </div>
           </div>
           <StepsFlow steps={BUSINESS_STEPS} color="#2563EB" />

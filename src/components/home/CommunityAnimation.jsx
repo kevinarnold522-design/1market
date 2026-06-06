@@ -1,114 +1,111 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { base44 } from '@/api/base44Client';
+import { Users, TrendingUp, Star, ShoppingBag } from 'lucide-react';
 
-const ICONS = [
-  { emoji: '🏪', label: 'Business', delay: 0 },
-  { emoji: '👤', label: 'Buyer', delay: 0.3 },
-  { emoji: '📞', label: 'Connect', delay: 0.6 },
-  { emoji: '💵', label: 'Cash In', delay: 0.9 },
-  { emoji: '⭐', label: 'Review', delay: 1.2 },
-  { emoji: '🎉', label: 'Done!', delay: 1.5 },
+const COMMUNITY_AVATARS = [
+  { initials: 'MA', name: 'Maria A.', role: 'Verified Seller', color: 'from-pink-500 to-rose-600', img: null },
+  { initials: 'JD', name: 'Juan D.', role: 'Buyer', color: 'from-blue-500 to-cyan-500', img: null },
+  { initials: 'LM', name: 'Liza M.', role: 'Business Owner', color: 'from-purple-500 to-indigo-600', img: null },
+  { initials: 'CB', name: 'Carlo B.', role: 'Top Seller', color: 'from-amber-500 to-orange-500', img: null },
+  { initials: 'AR', name: 'Ana R.', role: 'Verified Partner', color: 'from-emerald-500 to-teal-600', img: null },
+  { initials: 'MV', name: 'Mark V.', role: 'Buyer', color: 'from-sky-500 to-blue-600', img: null },
 ];
 
-const FLOW_LABELS = [
-  { from: '🏪', to: '👤', label: 'lists on 1Market' },
-  { from: '👤', to: '📞', label: 'buyer contacts' },
-  { from: '📞', to: '💵', label: 'deal confirmed' },
-  { from: '💵', to: '⭐', label: 'payment & rate' },
+const STATS = [
+  { icon: Users, label: 'Active Members', value: '12,400+', color: '#00D4FF' },
+  { icon: ShoppingBag, label: 'Live Listings', value: '3,800+', color: '#a855f7' },
+  { icon: Star, label: 'Avg Rating', value: '4.9 / 5', color: '#fbbf24' },
+  { icon: TrendingUp, label: 'Deals Closed', value: '28,000+', color: '#34d399' },
 ];
 
 export default function CommunityAnimation() {
+  const [members, setMembers] = useState([]);
+
+  useEffect(() => {
+    base44.entities.User.list('-created_date', 12)
+      .then(users => {
+        if (users.length > 0) setMembers(users.slice(0, 12));
+      })
+      .catch(() => {});
+  }, []);
+
+  const displayAvatars = members.length > 0
+    ? members.map((u, i) => ({
+        initials: (u.full_name || u.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2),
+        name: u.full_name?.split(' ')[0] || 'Member',
+        role: u.account_type === 'business_owner' ? 'Business Owner' : u.is_seller ? 'Seller' : 'Member',
+        color: COMMUNITY_AVATARS[i % COMMUNITY_AVATARS.length].color,
+        img: u.profile_picture || null,
+      }))
+    : COMMUNITY_AVATARS;
+
   return (
-    <section className="py-14 bg-gradient-to-b from-[#F8FAFC] to-white overflow-hidden">
-      <div className="max-w-5xl mx-auto px-6 text-center">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <span className="font-body text-xs tracking-[0.2em] uppercase text-[#2563EB]">How It Works</span>
-          <h2 className="font-heading font-bold text-2xl sm:text-3xl text-[#0A192F] mt-1 mb-10">
-            From Listing to Done — in 4 Simple Steps
+    <section className="py-16 overflow-hidden" style={{ background: 'linear-gradient(180deg,#070F1A 0%,#0D1F3C 50%,#070F1A 100%)' }}>
+      <div className="max-w-6xl mx-auto px-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
+          <span className="font-body text-xs tracking-[0.2em] uppercase text-[#00D4FF]">Our Community</span>
+          <h2 className="font-heading font-bold text-2xl sm:text-3xl text-white mt-1">
+            Real People. Real Deals.
           </h2>
+          <p className="font-body text-sm text-white/40 mt-2 max-w-md mx-auto">
+            Join thousands of buyers, sellers, and business owners across the Philippines.
+          </p>
         </motion.div>
 
-        {/* Flow animation */}
-        <div className="relative flex items-center justify-center gap-0 flex-wrap sm:flex-nowrap">
-          {ICONS.map((icon, i) => (
-            <React.Fragment key={icon.emoji}>
-              <motion.div
-                initial={{ opacity: 0, scale: 0, y: 30 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: icon.delay, type: 'spring', stiffness: 200, damping: 15 }}
-                className="flex flex-col items-center gap-2 z-10"
-              >
-                <motion.div
-                  animate={{ y: [0, -8, 0], scale: [1, 1.08, 1] }}
-                  transition={{ duration: 2.5, delay: icon.delay, repeat: Infinity, ease: 'easeInOut' }}
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white shadow-lg border border-[#0A192F]/5 flex items-center justify-center text-3xl sm:text-4xl"
-                  style={{ boxShadow: '0 8px 32px rgba(0,212,255,0.10)' }}
-                >
-                  {icon.emoji}
-                </motion.div>
-                <p className="font-body text-[10px] font-semibold text-[#0A192F]/50">{icon.label}</p>
-              </motion.div>
-
-              {/* Arrow connector */}
-              {i < ICONS.length - 1 && (
-                <motion.div
-                  initial={{ scaleX: 0, opacity: 0 }}
-                  whileInView={{ scaleX: 1, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: icon.delay + 0.2, duration: 0.4 }}
-                  className="flex-1 hidden sm:flex items-center justify-center origin-left"
-                >
-                  <div className="h-0.5 w-full bg-gradient-to-r from-[#00D4FF]/40 to-[#2563EB]/40 relative">
-                    <motion.div
-                      animate={{ x: ['-100%', '100%'] }}
-                      transition={{ duration: 1.5, delay: icon.delay + 0.3, repeat: Infinity, ease: 'easeInOut' }}
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-[#00D4FF] to-transparent"
-                    />
-                  </div>
-                </motion.div>
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-
-        {/* Step labels */}
-        <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {FLOW_LABELS.map((fl, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.15 }}
-              className="bg-white rounded-xl p-3 border border-[#0A192F]/5 shadow-sm text-left"
-            >
-              <p className="font-body text-xs font-bold text-[#2563EB] mb-0.5">Step {i + 1}</p>
-              <p className="font-body text-xs text-[#0A192F]/70">{fl.from} → {fl.to}</p>
-              <p className="font-body text-[10px] text-[#0A192F]/40 mt-0.5">{fl.label}</p>
+        {/* Stats row */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
+          {STATS.map((stat, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+              className="rounded-2xl p-4 text-center"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <stat.icon className="w-5 h-5 mx-auto mb-2" style={{ color: stat.color }} />
+              <p className="font-heading font-bold text-xl text-white">{stat.value}</p>
+              <p className="font-body text-[10px] text-white/40 mt-0.5">{stat.label}</p>
             </motion.div>
           ))}
         </div>
 
-        {/* Floating cash/call particles */}
-        <div className="relative h-16 mt-6 overflow-hidden">
-          {['💰', '📲', '🤝', '💳', '📦', '⭐', '💵', '📞'].map((e, i) => (
-            <motion.span
-              key={i}
-              animate={{
-                y: [20, -60],
-                x: [0, (i % 2 === 0 ? 1 : -1) * (10 + i * 8)],
-                opacity: [0, 1, 0],
-                scale: [0.6, 1.1, 0.6],
-              }}
-              transition={{ duration: 3, delay: i * 0.4, repeat: Infinity, ease: 'easeOut' }}
-              className="absolute text-xl"
-              style={{ left: `${10 + i * 10}%` }}
+        {/* Member profile grid */}
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 mb-10">
+          {displayAvatars.map((member, i) => (
+            <motion.div key={i}
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.07, type: 'spring', stiffness: 200, damping: 18 }}
+              whileHover={{ y: -6, scale: 1.05 }}
+              className="flex flex-col items-center gap-2 group cursor-default"
             >
-              {e}
-            </motion.span>
+              <div className="relative">
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${member.color} flex items-center justify-center shadow-lg overflow-hidden`}
+                  style={{ boxShadow: `0 8px 24px rgba(0,0,0,0.3)` }}>
+                  {member.img ? (
+                    <img src={member.img} alt={member.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="font-heading font-bold text-white text-base">{member.initials}</span>
+                  )}
+                </div>
+                {/* Online dot */}
+                <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-green-400 border-2 border-[#0D1F3C]" />
+              </div>
+              <div className="text-center">
+                <p className="font-body font-bold text-[10px] text-white truncate w-16">{member.name}</p>
+                <p className="font-body text-[8px] text-white/35 truncate w-16">{member.role}</p>
+              </div>
+            </motion.div>
           ))}
         </div>
+
+        {/* Join CTA */}
+        <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          className="text-center">
+          <button onClick={() => base44.auth.redirectToLogin(window.location.href)}
+            className="inline-flex items-center gap-2 px-8 py-3 rounded-2xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
+            style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 30px rgba(0,212,255,0.35)' }}>
+            <Users className="w-4 h-4" /> Join the Community
+          </button>
+        </motion.div>
       </div>
     </section>
   );

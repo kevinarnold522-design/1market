@@ -393,6 +393,7 @@ export default function Navbar() {
                               <Link to="/admin" onClick={() => setProfileOpen(false)}
                                 className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-amber-500/10 transition-colors text-amber-400 font-body text-xs">
                                 <Settings className="w-3.5 h-3.5" /> Admin Dashboard
+                                <MetaVerifiedBadge size="xs" label="" />
                               </Link>
                               <button
                                 onClick={() => { toggleEditMode(); setProfileOpen(false); }}

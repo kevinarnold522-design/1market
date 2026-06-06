@@ -16,6 +16,11 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     checkAppState();
+
+    // Re-check auth when user returns to the tab (e.g. after login redirect)
+    const handleFocus = () => { checkAppState(); };
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
   }, []);
 
   const checkAppState = async () => {
