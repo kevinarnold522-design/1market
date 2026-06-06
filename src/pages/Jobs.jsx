@@ -1,47 +1,41 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ParticleBackground from '../components/ParticleBackground';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, MapPin, Briefcase, ExternalLink, X, Building2, DollarSign, Plus } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, Briefcase, ExternalLink, X, Building2, DollarSign, Plus, Clock, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
-import AddListingModal from '../components/AddListingModal';
+import AddJobModal from '../components/AddJobModal';
 import { base44 } from '@/api/base44Client';
 
-const SUITS = ['♠', '♥', '♦', '♣'];
-const VALUES = ['A', 'K', 'Q', 'J', '10', '9'];
-const GRADIENTS = [
-  'linear-gradient(135deg,#1a1000,#b45309)',
-  'linear-gradient(135deg,#0f172a,#1e1b4b)',
-  'linear-gradient(135deg,#0d1b2a,#1b4332)',
-  'linear-gradient(135deg,#1a0a00,#78350f)',
-  'linear-gradient(135deg,#0f2050,#1d4ed8)',
-  'linear-gradient(135deg,#1a0030,#3b0764)',
-  'linear-gradient(135deg,#1a1a2e,#2d6a4f)',
-  'linear-gradient(135deg,#0a1628,#1d4ed8)',
-];
-const ACCENTS = ['#fbbf24','#60a5fa','#34d399','#f87171','#c084fc','#fb923c','#38bdf8','#e879f9'];
+// Royal Blue theme colors
+const THEME = {
+  primary: '#0040D0',
+  primaryDark: '#0033C4',
+  accent: '#3E97F1',
+  deep: '#011640',
+};
 
 const JOB_SUBCATEGORIES = [
-  { key: 'all',        label: 'All Jobs',       icon: '💼', desc: 'Browse all' },
-  { key: 'tech',       label: 'Tech & IT',      icon: '💻', desc: 'Dev, IT, design' },
-  { key: 'bpo',        label: 'BPO / Call Center', icon: '🎧', desc: 'CSR, agents' },
-  { key: 'healthcare', label: 'Healthcare',     icon: '🏥', desc: 'Nurse, medical' },
-  { key: 'operations', label: 'Operations & HR',icon: '🏢', desc: 'Admin, HR, compliance' },
-  { key: 'finance',    label: 'Finance & Banking', icon: '💰', desc: 'Accounting, banking' },
-  { key: 'engineering',label: 'Engineering & Logistics', icon: '⚙️', desc: 'Civil, warehouse, supply' },
-  { key: 'sales',      label: 'Sales & Marketing', icon: '📣', desc: 'Sales, branding, SEO' },
-  { key: 'creative',   label: 'Creative & Design', icon: '🎨', desc: 'Graphic, video, UX' },
-  { key: 'education',  label: 'Education',      icon: '📚', desc: 'Teacher, tutor, counselor' },
-  { key: 'food',       label: 'Food & Resto',   icon: '🍳', desc: 'Chef, crew, cashier' },
-  { key: 'drivers',    label: 'Drivers & Delivery', icon: '🚗', desc: 'Rider, driver' },
-  { key: 'domestic',   label: 'Household',      icon: '🏡', desc: 'Kasambahay, yaya' },
-  { key: 'remote',     label: 'Remote / Online',icon: '🌐', desc: 'WFH, freelance, VA' },
-  { key: 'skilled',    label: 'Skilled Trades', icon: '🔧', desc: 'Electrician, plumber' },
-  { key: 'events',     label: 'Events & Promo', icon: '🎉', desc: 'Events, performers' },
-  { key: 'general',    label: 'General / Blue Collar', icon: '👷', desc: 'Guard, janitor, utility' },
+  { key: 'all',        label: 'All Jobs',       icon: '💼', color: '#3E97F1' },
+  { key: 'tech',       label: 'Tech & IT',      icon: '💻', color: '#6366f1' },
+  { key: 'bpo',        label: 'BPO / Call Center', icon: '🎧', color: '#0ea5e9' },
+  { key: 'healthcare', label: 'Healthcare',     icon: '🏥', color: '#10b981' },
+  { key: 'operations', label: 'Operations & HR',icon: '🏢', color: '#f59e0b' },
+  { key: 'finance',    label: 'Finance & Banking', icon: '💰', color: '#22c55e' },
+  { key: 'engineering',label: 'Engineering',    icon: '⚙️', color: '#64748b' },
+  { key: 'sales',      label: 'Sales & Marketing', icon: '📣', color: '#f97316' },
+  { key: 'creative',   label: 'Creative & Design', icon: '🎨', color: '#ec4899' },
+  { key: 'education',  label: 'Education',      icon: '📚', color: '#8b5cf6' },
+  { key: 'food',       label: 'Food & Resto',   icon: '🍳', color: '#ef4444' },
+  { key: 'drivers',    label: 'Drivers & Delivery', icon: '🚗', color: '#14b8a6' },
+  { key: 'domestic',   label: 'Household',      icon: '🏡', color: '#84cc16' },
+  { key: 'remote',     label: 'Remote / Online',icon: '🌐', color: '#06b6d4' },
+  { key: 'skilled',    label: 'Skilled Trades', icon: '🔧', color: '#a78bfa' },
+  { key: 'events',     label: 'Events & Promo', icon: '🎉', color: '#fb923c' },
+  { key: 'general',    label: 'General / Blue Collar', icon: '👷', color: '#94a3b8' },
 ];
 
-const JOBS = [
+const STATIC_JOBS = [
   { id:1, type:'tech', title:'React Developer – Remote', company:'TechStart PH', location:'Manila', area:'Remote', pay:'₱50,000–₱80,000/mo', type_label:'Full-time', desc:'Build and maintain web applications using React, Node.js. Min 2 yrs experience.', image:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&q=80', contact:'hr@techstartph.com', urgent:true },
   { id:2, type:'bpo', title:'Customer Service Rep – Ortigas', company:'Global BPO Inc.', location:'Manila', area:'Ortigas', pay:'₱18,000–₱22,000/mo', type_label:'Full-time', desc:'Handle inbound US-based customer calls. Night shift. HMO Day 1.', image:'https://images.unsplash.com/photo-1553775282-20af80779df7?w=500&q=80', contact:'recruitment@globalbpo.com', urgent:false },
   { id:3, type:'food', title:'Restaurant Crew – Jollibee Bacoor', company:'Jollibee Foods Corp', location:'Cavite', area:'Bacoor', pay:'₱570/day', type_label:'Part-time', desc:'Counter crew for busy Bacoor branch. No experience needed. Training provided.', image:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80', contact:'09171234567', urgent:true },
@@ -56,120 +50,68 @@ const JOBS = [
   { id:12, type:'education', title:'Online Math Tutor – Grades 6–10', company:'TutorPH Online', location:'Manila', area:'Online', pay:'₱300–₱500/hr', type_label:'Freelance', desc:'Teach math to elementary & high school students online. Flexible schedule.', image:'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=500&q=80', contact:'tutors@tutorph.com', urgent:false },
 ];
 
-// Casino card for subcategory splash
-function JobSubcatCard({ sc, index, onClick }) {
-  const ref = useRef(null);
-  const [flipped, setFlipped] = useState(false);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [cardIdx, setCardIdx] = useState(index % VALUES.length);
-  const accent = ACCENTS[index % ACCENTS.length];
-  const suit = SUITS[index % SUITS.length];
-  const gradient = GRADIENTS[index % GRADIENTS.length];
-  const isRed = suit === '♥' || suit === '♦';
-
-  useEffect(() => {
-    const t = setInterval(() => setCardIdx(i => (i + 1) % VALUES.length), 850);
-    return () => clearInterval(t);
-  }, []);
-
-  const calcTilt = (e) => {
-    const el = ref.current; if (!el) return;
-    const r = el.getBoundingClientRect();
-    setTilt({ x: ((e.clientY - r.top - r.height/2) / (r.height/2)) * -8, y: ((e.clientX - r.left - r.width/2) / (r.width/2)) * 8 });
-  };
-
-  return (
-    <motion.div ref={ref}
-      initial={{ opacity:0, scale:0.85, y:24 }} animate={{ opacity:1, scale:1, y:0 }}
-      transition={{ delay: index * 0.05, type:'spring', stiffness:200, damping:18 }}
-      style={{ perspective:'700px' }}
-      onMouseEnter={() => setFlipped(true)} onMouseLeave={() => { setFlipped(false); setTilt({x:0,y:0}); }}
-      onMouseMove={calcTilt}
-      onClick={() => onClick(sc.key)}
-      className="cursor-pointer select-none"
-    >
-      <motion.div style={{
-        transformStyle:'preserve-3d',
-        transform:`perspective(700px) rotateY(${flipped ? 180 : tilt.y}deg) rotateX(${tilt.x}deg)`,
-        transition: flipped ? 'transform 0.45s cubic-bezier(0.4,0,0.2,1)' : 'transform 0.1s ease',
-        aspectRatio:'1/1.1', position:'relative',
-      }}>
-        {/* FRONT */}
-        <div className="absolute inset-0 rounded-2xl overflow-hidden"
-          style={{ backfaceVisibility:'hidden', background:gradient, border:`1.5px solid ${accent}44`,
-            boxShadow:`0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)` }}>
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none rounded-2xl" />
-          <div className="absolute top-1.5 left-2 text-[9px] font-black leading-none" style={{ color:accent }}>
-            <div>{VALUES[cardIdx]}</div><div>{suit}</div>
-          </div>
-          <div className="absolute bottom-1.5 right-2 text-[9px] font-black leading-none rotate-180" style={{ color:accent }}>
-            <div>{VALUES[cardIdx]}</div><div>{suit}</div>
-          </div>
-          <div className="relative z-10 flex flex-col items-center justify-center h-full p-2">
-            <div className="text-2xl sm:text-3xl mb-1.5 drop-shadow-lg">{sc.icon}</div>
-            <p className="font-heading font-bold text-xs text-white leading-tight text-center">{sc.label}</p>
-            <p className="font-body text-[9px] mt-0.5 text-white/50 text-center hidden sm:block">{sc.desc}</p>
-          </div>
-        </div>
-        {/* BACK */}
-        <div className="absolute inset-0 rounded-2xl overflow-hidden flex flex-col items-center justify-center"
-          style={{ backfaceVisibility:'hidden', transform:'rotateY(180deg)',
-            background:'linear-gradient(135deg,#0f172a,#1e1b4b)', border:`1.5px solid ${accent}88`,
-            boxShadow:`0 0 28px 6px ${accent}33` }}>
-          <div className="absolute inset-1 rounded-xl border border-white/5"
-            style={{ background:'repeating-linear-gradient(45deg,rgba(255,255,255,0.02) 0,rgba(255,255,255,0.02) 2px,transparent 2px,transparent 10px)' }} />
-          <div className="relative z-10 flex flex-col items-center gap-1">
-            <AnimatePresence mode="wait">
-              <motion.div key={cardIdx}
-                initial={{ scale:0, rotate:-20, opacity:0 }} animate={{ scale:1, rotate:0, opacity:1 }}
-                exit={{ scale:0, rotate:20, opacity:0 }} transition={{ duration:0.2 }}
-                className="text-center">
-                <p className="font-heading font-black text-3xl text-white drop-shadow">{VALUES[cardIdx]}</p>
-                <p className="text-xl" style={{ color: isRed ? '#f87171' : '#f8fafc' }}>{suit}</p>
-              </motion.div>
-            </AnimatePresence>
-            <p className="font-body text-[9px] font-bold mt-0.5" style={{ color:accent }}>{sc.label}</p>
-          </div>
-          <div className="absolute top-1.5 left-2 text-[9px] font-black" style={{ color:accent }}>
-            <div>{VALUES[cardIdx]}</div><div style={{ color: isRed ? '#f87171' : '#f8fafc' }}>{suit}</div>
-          </div>
-          <div className="absolute bottom-1.5 right-2 text-[9px] font-black rotate-180" style={{ color:accent }}>
-            <div>{VALUES[cardIdx]}</div><div style={{ color: isRed ? '#f87171' : '#f8fafc' }}>{suit}</div>
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
+function getCatColor(type) {
+  return JOB_SUBCATEGORIES.find(s => s.key === type)?.color || '#3E97F1';
+}
+function getCatIcon(type) {
+  return JOB_SUBCATEGORIES.find(s => s.key === type)?.icon || '💼';
 }
 
 function JobCard({ job, onApply }) {
+  const catColor = getCatColor(job.type);
+  const catIcon = getCatIcon(job.type);
+
   return (
-    <motion.div initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }}
-      className="rounded-2xl overflow-hidden hover:-translate-y-1 transition-all duration-300 group"
-      style={{ background:'rgba(13,31,60,0.85)', border:'1px solid rgba(0,212,255,0.12)' }}>
-      <div className="relative h-32 overflow-hidden">
-        <img src={job.image} alt={job.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#070F1A]/85 to-transparent" />
-        <div className="absolute top-2 left-2 flex gap-1.5 flex-wrap">
-          {job.urgent && <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-red-500/90 text-white">🔥 Urgent</span>}
-          <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-white/15 text-white backdrop-blur-sm">{job.type_label}</span>
-        </div>
-        <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#2563EB]/80 text-white flex items-center gap-1">
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -4 }}
+      className="rounded-2xl overflow-hidden transition-all duration-300 group cursor-pointer"
+      style={{ background: `linear-gradient(160deg, #011640 0%, #0D1F3C 100%)`, border: `1px solid ${catColor}33` }}
+    >
+      {/* Image */}
+      <div className="relative h-36 overflow-hidden">
+        <img
+          src={job.image || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=500&q=80'}
+          alt={job.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          onError={e => { e.target.src = 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=500&q=80'; }}
+        />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(to top, #011640 0%, transparent 60%)` }} />
+        {/* Category badge */}
+        <span className="absolute top-2 left-2 px-2.5 py-1 rounded-full text-[10px] font-bold backdrop-blur-sm text-white flex items-center gap-1"
+          style={{ background: `${catColor}CC` }}>
+          {catIcon} {job.type_label || job.type}
+        </span>
+        {job.urgent && (
+          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[9px] font-bold bg-red-500 text-white">
+            🔥 Urgent
+          </span>
+        )}
+        <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full text-[9px] font-bold text-white flex items-center gap-1"
+          style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}>
           <MapPin className="w-2.5 h-2.5" />{job.area}
         </span>
       </div>
-      <div className="p-3">
-        <h3 className="font-heading font-bold text-sm text-white leading-tight mb-0.5">{job.title}</h3>
-        <p className="font-body text-[10px] text-[#00D4FF] font-semibold mb-0.5 flex items-center gap-1">
+
+      {/* Content */}
+      <div className="p-4">
+        {/* Category color bar */}
+        <div className="w-8 h-1 rounded-full mb-2" style={{ background: catColor }} />
+        <h3 className="font-heading font-bold text-sm text-white leading-tight mb-1 line-clamp-2">{job.title}</h3>
+        <p className="font-body text-[10px] font-semibold mb-1 flex items-center gap-1" style={{ color: catColor }}>
           <Building2 className="w-2.5 h-2.5" />{job.company}
         </p>
-        <p className="font-body text-xs text-white/40 mb-2 line-clamp-2">{job.desc}</p>
+        <p className="font-body text-xs text-white/40 mb-3 line-clamp-2">{job.desc}</p>
         <div className="flex items-center justify-between">
-          <span className="font-heading font-bold text-sm text-[#fbbf24] flex items-center gap-1">
+          <span className="font-heading font-bold text-sm text-amber-400 flex items-center gap-1">
             <DollarSign className="w-3 h-3" />{job.pay}
           </span>
-          <button onClick={() => onApply(job)}
-            className="px-3 py-1.5 bg-[#2563EB] hover:bg-[#00D4FF] hover:text-[#0A192F] text-white rounded-lg font-body text-xs font-semibold transition-colors">
+          <button
+            onClick={() => onApply(job)}
+            className="px-4 py-1.5 rounded-lg font-body text-xs font-bold text-white transition-all hover:scale-105"
+            style={{ background: `linear-gradient(135deg, ${THEME.primary}, ${THEME.accent})` }}
+          >
             Apply
           </button>
         </div>
@@ -179,36 +121,41 @@ function JobCard({ job, onApply }) {
 }
 
 function ApplyModal({ job, onClose }) {
+  const catColor = getCatColor(job.type);
   return (
-    <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#070F1A]/85 backdrop-blur-sm" onClick={onClose}>
-      <motion.div initial={{ scale:0.95, y:20 }} animate={{ scale:1, y:0 }} onClick={e => e.stopPropagation()}
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
+      style={{ background: 'rgba(1,22,64,0.9)' }}
+      onClick={onClose}>
+      <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} onClick={e => e.stopPropagation()}
         className="w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl"
-        style={{ background:'#0D1F3C', border:'1px solid rgba(0,212,255,0.2)' }}>
-        <div className="relative h-24 overflow-hidden">
-          <img src={job.image} alt={job.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0D1F3C]/95 to-transparent" />
-          <button onClick={onClose} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/15 flex items-center justify-center text-white text-xs">✕</button>
+        style={{ background: '#0D1F3C', border: `1px solid ${catColor}44` }}>
+        <div className="relative h-28 overflow-hidden">
+          <img src={job.image || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=500&q=80'} alt={job.title} className="w-full h-full object-cover" />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #0D1F3C 20%, transparent)' }} />
+          <button onClick={onClose} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/15 flex items-center justify-center text-white">✕</button>
           <p className="absolute bottom-2 left-4 font-heading font-bold text-white text-sm">{job.title}</p>
         </div>
         <div className="p-5 space-y-3">
           <div>
-            <p className="font-body text-xs text-[#00D4FF] font-bold mb-0.5">{job.company} · {job.area}</p>
+            <p className="font-body text-xs font-bold mb-0.5" style={{ color: catColor }}>{getCatIcon(job.type)} {job.company} · {job.area}</p>
             <p className="font-body text-xs text-white/50">{job.desc}</p>
           </div>
-          <div className="p-3 rounded-xl bg-[#fbbf24]/10 border border-[#fbbf24]/20">
-            <p className="font-body text-[10px] text-[#fbbf24]">💰 Pay: <strong>{job.pay}</strong></p>
+          <div className="p-3 rounded-xl" style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)' }}>
+            <p className="font-body text-[10px] text-amber-400">💰 Pay: <strong>{job.pay}</strong></p>
           </div>
           <div className="space-y-2">
             <p className="font-body text-[10px] text-white/40 uppercase tracking-wider">Contact / Apply via:</p>
             {job.link ? (
               <a href={job.link} target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-2.5 bg-[#2563EB] text-white rounded-xl font-body text-xs font-semibold hover:bg-[#00D4FF] hover:text-[#0A192F] transition-colors">
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body text-xs font-bold text-white transition-all"
+                style={{ background: `linear-gradient(135deg,${THEME.primary},${THEME.accent})` }}>
                 <ExternalLink className="w-3.5 h-3.5" /> Open Application Page
               </a>
             ) : (
               <a href={`mailto:${job.contact}`}
-                className="flex items-center justify-center gap-2 w-full py-2.5 bg-[#2563EB] text-white rounded-xl font-body text-xs font-semibold hover:bg-[#00D4FF] hover:text-[#0A192F] transition-colors">
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body text-xs font-bold text-white transition-all"
+                style={{ background: `linear-gradient(135deg,${THEME.primary},${THEME.accent})` }}>
                 📧 {job.contact}
               </a>
             )}
@@ -220,13 +167,12 @@ function ApplyModal({ job, onClose }) {
 }
 
 export default function Jobs() {
-  const [showSplash, setShowSplash] = useState(true);
   const [activeType, setActiveType] = useState('all');
   const [locationFilter, setLocationFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [applyJob, setApplyJob] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
-  const [showAddListing, setShowAddListing] = useState(false);
+  const [showAddJob, setShowAddJob] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [dbJobs, setDbJobs] = useState([]);
   const [showPostedNotice, setShowPostedNotice] = useState(false);
@@ -235,15 +181,11 @@ export default function Jobs() {
     base44.auth.isAuthenticated().then(ok => {
       if (ok) base44.auth.me().then(u => setCurrentUser(u)).catch(() => {});
     }).catch(() => {});
-    // Load approved DB jobs
     base44.entities.Listing.filter({ type: 'jobs', approval_status: 'approved', is_active: true }, '-created_date', 100)
       .then(jobs => setDbJobs(jobs))
       .catch(() => {});
   }, []);
 
-  const handleSubcatSelect = (key) => { setActiveType(key); setShowSplash(false); };
-
-  // Map new sector keys to old job type values for backward compat
   const SECTOR_TYPE_MAP = {
     operations: ['admin', 'hr', 'operations'],
     finance: ['finance', 'accounting', 'banking'],
@@ -252,9 +194,8 @@ export default function Jobs() {
     general: ['general', 'utility', 'security'],
   };
 
-  // Merge static + DB jobs. DB jobs use subcategory as type for filtering.
   const allJobs = [
-    ...JOBS,
+    ...STATIC_JOBS,
     ...dbJobs.map(j => ({
       id: j.id,
       type: j.subcategory?.toLowerCase().replace(/\s+/g, '') || 'other',
@@ -282,91 +223,52 @@ export default function Jobs() {
   });
 
   return (
-    <div className="min-h-screen bg-[#070F1A]">
+    <div className="min-h-screen" style={{ background: THEME.deep }}>
       <ParticleBackground />
 
-      {/* Subcategory Splash — casino cards */}
-      <AnimatePresence>
-        {showSplash && (
-          <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0, y:-20 }}
-            className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-[#070E1A]/90 backdrop-blur-md">
-            <motion.div initial={{ opacity:0, scale:0.95, y:40 }} animate={{ opacity:1, scale:1, y:0 }}
-              exit={{ opacity:0, scale:0.95 }} transition={{ type:'spring', stiffness:160, damping:20 }}
-              className="w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden"
-              style={{ background:'linear-gradient(135deg,#0f172a,#1e1b4b)', border:'1px solid rgba(251,191,36,0.15)' }}>
-              <div className="absolute inset-0 pointer-events-none"
-                style={{ background:'repeating-linear-gradient(60deg,transparent,transparent 20px,rgba(255,255,255,0.01) 20px,rgba(255,255,255,0.01) 21px)' }} />
-              <div className="text-center mb-6 relative z-10">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#fbbf24] animate-pulse" />
-                  <span className="font-body text-xs tracking-[0.2em] uppercase text-[#fbbf24]">1Marketph Jobs</span>
-                </div>
-                <h2 className="font-heading font-bold text-2xl sm:text-3xl text-white">Find Your Next Job</h2>
-                <p className="font-body text-sm text-white/40 mt-1">Pick a job category below</p>
-                <p className="font-body text-[10px] text-white/20 mt-1">Hover to flip • Tap to select</p>
-              </div>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 relative z-10">
-                {JOB_SUBCATEGORIES.map((sc, i) => (
-                  <JobSubcatCard key={sc.key} sc={sc} index={i} onClick={handleSubcatSelect} />
-                ))}
-              </div>
-              <p className="text-center font-body text-[10px] text-white/20 mt-5 relative z-10">
-                Tap a category to continue — you can change it anytime
-              </p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Header */}
-      <div className="relative bg-[#0A192F] overflow-hidden">
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage:`url(https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1600&q=80)`, backgroundSize:'cover', backgroundPosition:'center' }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0A192F]/70 to-[#0A192F]" />
-        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-8 pb-14">
+      <div className="relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${THEME.primaryDark} 0%, ${THEME.primary} 100%)` }}>
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1600&q=80)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-14">
           <Link to="/" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors mb-6 font-body text-sm">
             <ArrowLeft className="w-4 h-4" /> Back to 1Market.ph
           </Link>
-          <motion.div initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }}>
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#fbbf24] animate-pulse" />
-              <span className="font-body text-xs tracking-[0.2em] uppercase text-[#fbbf24]">1Market Job Board</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+              <span className="font-body text-xs tracking-[0.2em] uppercase text-amber-300">1Market Job Board</span>
             </div>
             <div className="flex items-center gap-4 flex-wrap mb-2">
-              <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Jobs in Manila & Cavite</h1>
-              {currentUser && (
-                <button onClick={() => setShowAddListing(true)}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
-                  style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 16px rgba(37,99,235,0.4)' }}>
-                  <Plus className="w-4 h-4" /> Post a Job
-                </button>
-              )}
-              {!currentUser && (
-                <button onClick={() => setShowSignup(true)}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
-                  style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 16px rgba(37,99,235,0.4)' }}>
-                  <Plus className="w-4 h-4" /> Post a Job
-                </button>
-              )}
+              <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Jobs in the Philippines</h1>
+              <button
+                onClick={() => currentUser ? setShowAddJob(true) : setShowSignup(true)}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm transition-all hover:scale-105"
+                style={{ background: THEME.accent, color: '#fff', boxShadow: `0 0 20px ${THEME.accent}66` }}>
+                <Plus className="w-4 h-4" /> Post a Job
+              </button>
             </div>
-            <p className="font-body text-sm text-white/50 max-w-xl">Full-time, part-time, freelance & remote — real jobs from real companies across the Philippines.</p>
+            <p className="font-body text-sm text-white/60 max-w-xl">Full-time, part-time, freelance & remote — real jobs from real companies across the Philippines.</p>
           </motion.div>
-          <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.2 }} className="mt-5 relative max-w-xl">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+          {/* Search */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-5 relative max-w-xl">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search jobs, companies, locations..."
-              className="w-full pl-11 pr-4 py-3 bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder-white/30 font-body text-sm focus:outline-none focus:border-[#fbbf24]/50 transition-all" />
+              className="w-full pl-11 pr-4 py-3 rounded-xl text-white placeholder-white/30 font-body text-sm focus:outline-none transition-all"
+              style={{ background: 'rgba(255,255,255,0.1)', border: `1px solid rgba(255,255,255,0.2)` }} />
           </motion.div>
         </div>
       </div>
 
+      {/* Posted notice */}
       <AnimatePresence>
         {showPostedNotice && (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-            className="relative z-20 mx-4 mt-2 mb-0 max-w-2xl mx-auto rounded-2xl p-4 flex items-center gap-3"
+            className="max-w-2xl mx-auto mt-3 mx-4 rounded-2xl p-4 flex items-center gap-3"
             style={{ background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)' }}>
             <span className="text-green-400 text-xl">✓</span>
             <div>
               <p className="font-body font-bold text-sm text-green-300">Job Posted! Pending Admin Approval</p>
-              <p className="font-body text-xs text-white/40">Your job listing has been submitted and is being reviewed. It will appear here once approved.</p>
+              <p className="font-body text-xs text-white/40">Your job listing will appear here once approved.</p>
             </div>
             <button onClick={() => setShowPostedNotice(false)} className="ml-auto text-white/30 hover:text-white"><X className="w-4 h-4" /></button>
           </motion.div>
@@ -374,24 +276,36 @@ export default function Jobs() {
       </AnimatePresence>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-8">
-        {/* Subcategory filter pills */}
-        <div className="flex gap-2 mb-5 overflow-x-auto pb-1" style={{ scrollbarWidth:'none' }}>
+        {/* Category pills */}
+        <div className="flex gap-2 mb-5 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
           {JOB_SUBCATEGORIES.map(sc => (
             <button key={sc.key} onClick={() => setActiveType(sc.key)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-body text-xs font-semibold whitespace-nowrap transition-all ${activeType === sc.key ? 'bg-[#fbbf24] text-[#0A192F]' : 'bg-white/5 border border-white/15 text-white/60 hover:border-white/30 hover:text-white'}`}>
-              <span>{sc.icon}</span> {sc.label}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-body text-xs font-semibold whitespace-nowrap transition-all border"
+              style={activeType === sc.key
+                ? { background: sc.color, color: '#fff', borderColor: sc.color, boxShadow: `0 0 12px ${sc.color}66` }
+                : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.12)' }}>
+              {sc.icon} {sc.label}
             </button>
           ))}
         </div>
 
         {/* Location filter */}
         <div className="flex gap-2 mb-6">
-          {['All','Manila','Cavite'].map(loc => (
+          {['All', 'Manila', 'Cavite', 'Nationwide'].map(loc => (
             <button key={loc} onClick={() => setLocationFilter(loc)}
-              className={`px-4 py-2 rounded-xl font-body font-semibold text-sm transition-all ${locationFilter === loc ? 'bg-[#00D4FF] text-[#0A192F]' : 'bg-white/5 border border-white/15 text-white/60 hover:border-white/30'}`}>
+              className="px-4 py-2 rounded-xl font-body font-semibold text-sm transition-all"
+              style={locationFilter === loc
+                ? { background: THEME.accent, color: '#fff' }
+                : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.5)' }}>
               {loc}
             </button>
           ))}
+        </div>
+
+        {/* Job count */}
+        <div className="flex items-center gap-2 mb-5">
+          <Users className="w-4 h-4" style={{ color: THEME.accent }} />
+          <span className="font-body text-sm text-white/50">{filtered.length} jobs found</span>
         </div>
 
         {/* Grid */}
@@ -407,11 +321,14 @@ export default function Jobs() {
         )}
 
         {/* CTA */}
-        <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
-          className="mt-12 rounded-2xl p-8 text-center" style={{ background:'linear-gradient(135deg,#0D1F3C,#112240)', border:'1px solid rgba(251,191,36,0.2)' }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          className="mt-14 rounded-2xl p-8 text-center"
+          style={{ background: `linear-gradient(135deg, ${THEME.primaryDark}, ${THEME.primary})`, border: `1px solid ${THEME.accent}44` }}>
           <h2 className="font-heading font-bold text-2xl text-white mb-2">Hiring? Post a Job for Free</h2>
-          <p className="font-body text-sm text-white/50 mb-5 max-w-md mx-auto">Reach thousands of job seekers across Manila and Cavite. Free job postings for verified businesses.</p>
-          <button onClick={() => setShowSignup(true)} className="px-8 py-3 bg-[#fbbf24] text-[#0A192F] font-body font-bold rounded-xl hover:bg-white transition-colors">
+          <p className="font-body text-sm text-white/60 mb-5 max-w-md mx-auto">Reach thousands of job seekers across the Philippines. Free job postings for all users.</p>
+          <button onClick={() => currentUser ? setShowAddJob(true) : setShowSignup(true)}
+            className="px-8 py-3 rounded-xl font-body font-bold text-white transition-all hover:scale-105"
+            style={{ background: THEME.accent, boxShadow: `0 0 20px ${THEME.accent}66` }}>
             Post a Job Free →
           </button>
         </motion.div>
@@ -420,7 +337,17 @@ export default function Jobs() {
       <AnimatePresence>
         {applyJob && <ApplyModal job={applyJob} onClose={() => setApplyJob(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
-        {showAddListing && <AddListingModal onClose={() => { setShowAddListing(false); setShowPostedNotice(true); setTimeout(() => setShowPostedNotice(false), 6000); }} defaultType="jobs" user={currentUser} />}
+        {showAddJob && (
+          <AddJobModal
+            user={currentUser}
+            categories={JOB_SUBCATEGORIES.filter(s => s.key !== 'all')}
+            onClose={() => {
+              setShowAddJob(false);
+              setShowPostedNotice(true);
+              setTimeout(() => setShowPostedNotice(false), 6000);
+            }}
+          />
+        )}
       </AnimatePresence>
     </div>
   );

@@ -41,7 +41,7 @@ export default function CommunityAnimation() {
     : COMMUNITY_AVATARS;
 
   return (
-    <section className="py-16 overflow-hidden" style={{ background: 'linear-gradient(180deg,#070F1A 0%,#0D1F3C 50%,#070F1A 100%)' }}>
+    <section className="py-16 overflow-hidden" style={{ background: 'linear-gradient(180deg,#011640 0%,#0033C4 60%,#011640 100%)' }}>
       <div className="max-w-6xl mx-auto px-6">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
           <span className="font-body text-xs tracking-[0.2em] uppercase text-[#00D4FF]">Our Community</span>

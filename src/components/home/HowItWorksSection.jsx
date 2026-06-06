@@ -49,7 +49,7 @@ function StepsFlow({ steps, color }) {
 
 export default function HowItWorksSection() {
   return (
-    <section className="py-14 overflow-hidden" style={{ background: 'linear-gradient(180deg,#0D1F3C 0%,#070F1A 100%)' }}>
+    <section className="py-14 overflow-hidden" style={{ background: 'linear-gradient(180deg,#011640 0%,#0040D0 50%,#011640 100%)' }}>
       <div className="max-w-6xl mx-auto px-6">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
           <span className="font-body text-xs tracking-[0.2em] uppercase text-[#00D4FF]">How It Works</span>

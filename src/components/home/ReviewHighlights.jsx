@@ -52,7 +52,7 @@ export default function ReviewHighlights() {
   const review = reviews[current];
 
   return (
-    <section className="py-14 overflow-hidden" style={{ background: 'linear-gradient(180deg,#070F1A 0%,#0A192F 50%,#070F1A 100%)' }}>
+    <section className="py-14 overflow-hidden" style={{ background: 'linear-gradient(180deg,#011640 0%,#0040D0 40%,#0033C4 60%,#011640 100%)' }}>
       <div className="max-w-4xl mx-auto px-6">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
           <span className="font-body text-xs tracking-[0.2em] uppercase text-[#00D4FF]">Community Reviews</span>
