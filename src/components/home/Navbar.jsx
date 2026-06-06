@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Bookmark, Plus, Camera, BarChart2 } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Bookmark, Plus, Camera, BarChart2, Building2 } from 'lucide-react';
 import RewardDashboard from '../RewardDashboard';
 import MetaVerifiedBadge from '../MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -379,10 +379,20 @@ export default function Navbar() {
                           )}
 
                           {!isSeller && (
-                            <Link to="/profile?tab=profile" onClick={() => setProfileOpen(false)}
-                              className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-[#00D4FF] font-body text-xs font-semibold">
-                              <Store className="w-3.5 h-3.5" /> Become a Seller →
-                            </Link>
+                            <>
+                              <div className="border-t border-white/8 my-1" />
+                              <p className="px-3 py-1 font-body text-[9px] text-[#3E97F1]/60 uppercase tracking-wider font-bold">Grow with 1Market</p>
+                              <Link to="/profile?tab=profile" onClick={() => setProfileOpen(false)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold"
+                                style={{ background: 'linear-gradient(90deg,rgba(0,64,208,0.2),rgba(62,151,241,0.1))', border: '1px solid rgba(62,151,241,0.2)' }}>
+                                <Store className="w-3.5 h-3.5 text-[#3E97F1]" /> <span className="text-[#3E97F1]">Become a Seller</span>
+                              </Link>
+                              <Link to="/profile?tab=profile" onClick={() => setProfileOpen(false)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold mt-1"
+                                style={{ background: 'linear-gradient(90deg,rgba(0,64,208,0.2),rgba(62,151,241,0.1))', border: '1px solid rgba(62,151,241,0.2)' }}>
+                                <Building2 className="w-3.5 h-3.5 text-[#3E97F1]" /> <span className="text-[#3E97F1]">Register a Business</span>
+                              </Link>
+                            </>
                           )}
 
                           {/* Admin links */}
@@ -492,6 +502,18 @@ export default function Navbar() {
                         className="block text-purple-300 font-body text-sm font-medium py-2 transition-colors">
                         Become a Verified Partner
                       </Link>
+                    )}
+                    {!isSeller && (
+                      <>
+                        <Link to="/profile?tab=profile" onClick={() => setMenuOpen(false)}
+                          className="block text-[#3E97F1] font-body text-sm font-semibold py-2 transition-colors">
+                          🏪 Become a Seller
+                        </Link>
+                        <Link to="/profile?tab=profile" onClick={() => setMenuOpen(false)}
+                          className="block text-[#3E97F1] font-body text-sm font-semibold py-2 transition-colors">
+                          🏢 Register a Business
+                        </Link>
+                      </>
                     )}
                     {user.role === 'admin' && (
                       <Link to="/admin" onClick={() => setMenuOpen(false)}

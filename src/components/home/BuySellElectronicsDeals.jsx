@@ -313,7 +313,7 @@ export default function BuySellElectronicsDeals() {
 
   return (
     <>
-      <section className="py-12 sm:py-16 bg-[#0D1F3C] overflow-hidden">
+      <section className="py-12 sm:py-16 overflow-hidden" style={{ background: 'linear-gradient(180deg,#0033C4,#0040D0,#011640)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">

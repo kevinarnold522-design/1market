@@ -29,9 +29,10 @@ export default function HeroSection({ heroImage }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#0A192F]/5 rounded-full">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
-                <span className="font-body text-xs font-medium tracking-widest uppercase text-[#0A192F]/60">1Marketph.com · Est. 2026</span>
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full"
+                style={{ background: 'rgba(0,64,208,0.3)', border: '1px solid rgba(62,151,241,0.3)' }}>
+                <div className="w-1.5 h-1.5 rounded-full bg-[#3E97F1] animate-pulse" />
+                <span className="font-body text-xs font-medium tracking-widest uppercase text-[#3E97F1]">1Marketph.com · Est. 2026</span>
               </motion.div>
 
               {/* Brand Logo */}
@@ -43,8 +44,8 @@ export default function HeroSection({ heroImage }) {
                   style={{ boxShadow: '0 0 32px rgba(255,215,0,0.4)' }}
                 />
                 <h1 className="font-heading font-bold leading-[0.95] tracking-tight">
-                  <span className="block text-3xl sm:text-4xl lg:text-5xl text-white">Welcome to</span>
-                  <span className="block text-3xl sm:text-4xl lg:text-5xl mt-1" style={{ color: '#FFD700' }}>1Market PH™</span>
+                  <span className="block text-3xl sm:text-4xl lg:text-5xl" style={{ color: '#3E97F1' }}>Welcome to</span>
+                  <span className="block text-3xl sm:text-4xl lg:text-5xl mt-1" style={{ background: 'linear-gradient(135deg,#0040D0,#3E97F1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>1Market PH™</span>
                 </h1>
               </div>
 

@@ -147,7 +147,7 @@ export default function PhHotelDeals() {
   }, [isPaused]);
 
   return (
-    <section className="py-12 sm:py-16 bg-[#0A192F] overflow-hidden">
+    <section className="py-12 sm:py-16 overflow-hidden" style={{ background: 'linear-gradient(180deg,#011640,#0040D0,#0033C4,#011640)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>

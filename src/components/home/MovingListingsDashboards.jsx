@@ -69,13 +69,15 @@ function LightningCard({ item, type, onAbout, index }) {
       transition={{ delay: index * 0.06, type: 'spring', stiffness: 200, damping: 20 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="group bg-white rounded-2xl overflow-hidden border border-[#0A192F]/5 flex-shrink-0 cursor-pointer relative"
+      className="group rounded-2xl overflow-hidden flex-shrink-0 cursor-pointer relative"
       style={{
         width: '220px',
+        background: hovered ? 'linear-gradient(160deg,#0A1F4E,#0D2860)' : 'linear-gradient(160deg,#011640,#0A1F4E)',
+        border: hovered ? '1.5px solid rgba(62,151,241,0.5)' : '1.5px solid rgba(255,255,255,0.1)',
         boxShadow: hovered
-          ? '0 0 0 2px #00D4FF, 0 8px 32px rgba(0,212,255,0.25), 0 20px 40px rgba(10,25,47,0.15)'
-          : '0 2px 12px rgba(10,25,47,0.07)',
-        transition: 'box-shadow 0.25s ease, transform 0.25s ease',
+          ? '0 0 0 1px rgba(62,151,241,0.3), 0 8px 32px rgba(0,64,208,0.4)'
+          : '0 2px 12px rgba(0,0,0,0.3)',
+        transition: 'box-shadow 0.25s ease, transform 0.25s ease, border 0.25s ease, background 0.25s ease',
         transform: hovered ? 'translateY(-6px)' : 'translateY(0)',
       }}
     >
@@ -107,28 +109,29 @@ function LightningCard({ item, type, onAbout, index }) {
         )}
       </div>
       <div className="p-3">
-        <h3 className="font-heading font-bold text-xs text-[#0A192F] leading-tight mb-0.5 line-clamp-2">{item.title}</h3>
-        <p className="font-body text-[9px] text-[#2563EB] font-semibold mb-1">{item.area}</p>
+        <h3 className="font-heading font-bold text-xs text-white leading-tight mb-0.5 line-clamp-2">{item.title}</h3>
+        <p className="font-body text-[9px] text-[#3E97F1] font-semibold mb-1">{item.area}</p>
         <div className="flex items-center gap-1 mb-2">
           <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
-          <span className="font-body text-[9px] text-[#0A192F]/60">{item.rating}</span>
+          <span className="font-body text-[9px] text-white/50">{item.rating}</span>
         </div>
-        <p className="font-heading font-bold text-sm text-[#0A192F] mb-2">{item.price}</p>
+        <p className="font-heading font-bold text-sm text-white mb-2">{item.price}</p>
         <div className="flex gap-1 mb-1.5">
-          <button onClick={() => onAbout(item)} className="flex-1 py-1 rounded-lg bg-[#F8FAFC] border border-[#0A192F]/8 text-[9px] font-semibold text-[#0A192F]/60 hover:bg-[#0A192F] hover:text-white transition-all">ℹ️ About</button>
+          <button onClick={() => onAbout(item)} className="flex-1 py-1 rounded-lg bg-white/8 border border-white/10 text-[9px] font-semibold text-white/60 hover:bg-white/15 hover:text-white transition-all">ℹ️ About</button>
           <a href={item.listing_id ? `/listing/${item.listing_id}` : item.link} target={item.listing_id ? '_self' : (item.link?.startsWith('http') ? '_blank' : '_self')} rel="noopener noreferrer"
-            className="flex-1 py-1 rounded-lg bg-[#00D4FF] hover:bg-[#0A192F] text-[#0A192F] hover:text-white text-[9px] font-semibold flex items-center justify-center gap-0.5 transition-colors">
+            className="flex-1 py-1 rounded-lg text-white text-[9px] font-semibold flex items-center justify-center gap-0.5 transition-colors"
+            style={{ background: 'linear-gradient(135deg,#0040D0,#3E97F1)' }}>
             View <ExternalLink className="w-2 h-2" />
           </a>
         </div>
         <div className="flex gap-1">
           <button onClick={handleLike}
-            className={`flex-1 py-1 rounded-lg border text-[9px] font-semibold flex items-center justify-center gap-0.5 transition-all ${liked ? 'bg-red-50 border-red-200 text-red-500' : 'bg-[#F8FAFC] border-[#0A192F]/8 text-[#0A192F]/50 hover:border-red-200 hover:text-red-400'}`}>
-            <Heart className={`w-2.5 h-2.5 ${liked ? 'fill-red-500' : ''} ${likeAnim ? 'scale-150' : ''} transition-transform`} />
+            className={`flex-1 py-1 rounded-lg border text-[9px] font-semibold flex items-center justify-center gap-0.5 transition-all ${liked ? 'bg-red-500/20 border-red-500/30 text-red-400' : 'bg-white/5 border-white/10 text-white/50 hover:border-red-400/30 hover:text-red-400'}`}>
+            <Heart className={`w-2.5 h-2.5 ${liked ? 'fill-red-400' : ''} ${likeAnim ? 'scale-150' : ''} transition-transform`} />
             {liked ? 'Liked' : 'Like'}
           </button>
           <button onClick={(e) => { e.stopPropagation(); setShowShare(true); }}
-            className="flex-1 py-1 rounded-lg bg-[#F8FAFC] border border-[#0A192F]/8 text-[9px] font-semibold text-[#0A192F]/50 hover:bg-[#EFF6FF] hover:text-[#2563EB] flex items-center justify-center gap-0.5 transition-all">
+            className="flex-1 py-1 rounded-lg bg-white/5 border border-white/10 text-[9px] font-semibold text-white/50 hover:bg-white/10 hover:text-[#3E97F1] flex items-center justify-center gap-0.5 transition-all">
             <Share2 className="w-2.5 h-2.5" /> Share
           </button>
         </div>
@@ -226,7 +229,7 @@ function AboutModal({ item, onClose }) {
 
 // ─── LIGHTNING SCROLLING SECTION ──────────────────────────────────────────────
 
-function ScrollingDashboard({ title, subtitle, emoji, items, type, bgClass }) {
+function ScrollingDashboard({ title, subtitle, emoji, items, type, bgClass, bgStyle }) {
   const scrollRef = useRef(null);
   const [isPaused, setIsPaused] = useState(false);
   const [aboutItem, setAboutItem] = useState(null);
@@ -259,13 +262,13 @@ function ScrollingDashboard({ title, subtitle, emoji, items, type, bgClass }) {
 
   return (
     <>
-      <section className={`py-10 overflow-hidden ${bgClass}`}>
+      <section className={`py-10 overflow-hidden ${bgClass}`} style={bgStyle}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-lg">{emoji}</span>
-                <span className="font-body text-xs font-bold text-[#2563EB] uppercase tracking-wider">{title}</span>
+                <span className="font-body text-xs font-bold text-[#3E97F1] uppercase tracking-wider">{title}</span>
                 <motion.span
                   animate={{ opacity: [0.5, 1, 0.5], color: ['#00D4FF', '#2563EB', '#00D4FF'] }}
                   transition={{ duration: 2, repeat: Infinity }}
@@ -275,12 +278,13 @@ function ScrollingDashboard({ title, subtitle, emoji, items, type, bgClass }) {
                   ⭐ Highly Recommended
                 </motion.span>
               </div>
-              <p className="font-body text-xs text-[#0A192F]/40">{subtitle}</p>
+              <p className="font-body text-xs text-white/50">{subtitle}</p>
             </div>
             <div className="flex gap-2 flex-wrap">
               {filters.map(f => (
                 <button key={f} onClick={() => setActiveFilter(f)}
-                  className={`px-3 py-1 rounded-full font-body text-xs font-semibold transition-all ${activeFilter === f ? 'bg-[#0A192F] text-white' : 'bg-white border border-[#0A192F]/10 text-[#0A192F]/50 hover:border-[#0A192F]/20'}`}>
+                  className={`px-3 py-1 rounded-full font-body text-xs font-semibold transition-all ${activeFilter === f ? 'text-white' : 'text-white/50 hover:text-white/80'}`}
+                  style={activeFilter === f ? { background: 'linear-gradient(135deg,#0040D0,#3E97F1)' } : { background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}>
                   {f}
                 </button>
               ))}
@@ -331,13 +335,13 @@ function ScrollingDashboard({ title, subtitle, emoji, items, type, bgClass }) {
 // ─── EXPORTS ─────────────────────────────────────────────────────────────────
 
 export function RentDashboard() {
-  return <ScrollingDashboard title="For Rent" subtitle="Apartments, condos, villas & commercial spaces across the Philippines" emoji="🏠" items={FOR_RENT} type="rent" bgClass="bg-white" />;
+  return <ScrollingDashboard title="For Rent" subtitle="Apartments, condos, villas & commercial spaces across the Philippines" emoji="🏠" items={FOR_RENT} type="rent" bgClass="" bgStyle={{ background: 'linear-gradient(180deg,#011640,#0040D0,#0033C4)' }} />;
 }
 
 export function ShoesClothingDashboard() {
-  return <ScrollingDashboard title="Shoes & Clothing" subtitle="Authentic brands with verified store links — shipped nationwide" emoji="👟" items={SHOES_CLOTHING} type="shoes" bgClass="bg-[#F8FAFC]" />;
+  return <ScrollingDashboard title="Shoes & Clothing" subtitle="Authentic brands with verified store links — shipped nationwide" emoji="👟" items={SHOES_CLOTHING} type="shoes" bgClass="" bgStyle={{ background: 'linear-gradient(180deg,#0033C4,#0040D0,#011640)' }} />;
 }
 
 export function ServicesDashboard() {
-  return <ScrollingDashboard title="Local Services" subtitle="Trusted providers for repairs, cleaning, tutoring & more nationwide" emoji="🔧" items={SERVICES_LIST} type="services" bgClass="bg-white" />;
+  return <ScrollingDashboard title="Local Services" subtitle="Trusted providers for repairs, cleaning, tutoring & more nationwide" emoji="🔧" items={SERVICES_LIST} type="services" bgClass="" bgStyle={{ background: 'linear-gradient(180deg,#011640,#0033C4,#0040D0)' }} />;
 }

@@ -96,9 +96,9 @@ export default function HeroSlider() {
 
             <p className="font-body text-base sm:text-lg text-white/60 mt-4 max-w-lg leading-relaxed">{slide.desc}</p>
 
-            <div className="flex gap-3 mt-8">
-              <a href="#categories" className="px-6 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
-                style={{ background: `linear-gradient(135deg, ${slide.accent}, #2563EB)` }}>
+            <div className="flex flex-wrap gap-3 mt-8">
+              <a href="#categories" className="px-6 py-3 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
+                style={{ background: `linear-gradient(135deg, #0040D0, #3E97F1)` }}>
                 Explore Now →
               </a>
               <a href="/buysell" className="px-6 py-3 rounded-xl font-body font-bold text-sm text-white border border-white/20 hover:border-white/50 transition-all">
