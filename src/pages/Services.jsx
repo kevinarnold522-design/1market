@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import StarField from '../components/StarField';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, Phone, MessageSquare, Star, AlertCircle, Plus } from 'lucide-react';
+import { ArrowLeft, Search, Phone, MessageSquare, Star, AlertCircle, Plus, Pencil, Trash2, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
@@ -92,13 +92,14 @@ const services = [
   { id: 55, type: 'transport', title: 'Van for Hire – Day Tour', provider: 'VanKo Tours', rate: '₱2,500–₱5,000/day', location: 'Both', area: 'Manila & Cavite', stars: 4.6, reviews: 61, image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=500&q=80', desc: 'Air-conditioned van with driver. Tagaytay, Batangas, Manila tour packages.', contact: '09151234321' },
 ];
 
-function ServiceCard({ svc, onContact }) {
+function ServiceCard({ svc, onContact, user, isAdmin, onEdit }) {
   const [touched, setTouched] = React.useState(false);
+  const isOwner = user && svc.id && (svc.email_contact === user.email);
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
       onTouchStart={() => setTouched(true)}
       onTouchEnd={() => setTimeout(() => setTouched(false), 800)}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group relative"
       style={{ border: touched ? '1.5px solid #2563EB' : '1px solid rgba(10,25,47,0.06)', boxShadow: touched ? '0 0 24px rgba(37,99,235,0.3), 0 8px 30px rgba(0,0,0,0.1)' : undefined, transition: 'border 0.2s, box-shadow 0.2s' }}>
       <div className="relative aspect-[16/10] overflow-hidden">
         <img src={svc.image} alt={svc.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -119,9 +120,16 @@ function ServiceCard({ svc, onContact }) {
         <p className="font-body text-xs text-[#0A192F]/50 mb-3 line-clamp-2">{svc.desc}</p>
         <div className="flex items-center justify-between">
           <span className="font-heading font-bold text-sm text-[#0A192F]">{svc.rate}</span>
-          <button onClick={() => onContact(svc)} className="px-3 py-1.5 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-lg font-body text-xs font-semibold transition-colors">
-            Book Now
-          </button>
+          <div className="flex items-center gap-1.5">
+            {(isAdmin || isOwner) && svc.id && (
+              <button onClick={() => onEdit(svc)} className="p-1.5 rounded-lg bg-[#EFF6FF] border border-[#2563EB]/15 text-[#2563EB] hover:bg-[#DBEAFE] transition-colors">
+                <Pencil className="w-3 h-3" />
+              </button>
+            )}
+            <button onClick={() => onContact(svc)} className="px-3 py-1.5 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-lg font-body text-xs font-semibold transition-colors">
+              Book Now
+            </button>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -162,20 +170,29 @@ function ContactModal({ item, onClose }) {
 }
 
 export default function Services() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlSub = urlParams.get('sub');
+
   const [activeCategory, setActiveCategory] = useState(null);
   const [locationFilter, setLocationFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [contactItem, setContactItem] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
   const [showAddListing, setShowAddListing] = useState(false);
+  const [addDefaultSub, setAddDefaultSub] = useState(urlSub || '');
   const [canAddListing, setCanAddListing] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [editItem, setEditItem] = useState(null);
+  const [toast, setToast] = useState('');
 
   useEffect(() => {
     base44.auth.isAuthenticated().then(ok => {
       if (ok) base44.auth.me().then(u => {
         setCurrentUser(u);
-        const allowed = u.role === 'admin' || u.is_seller || u.account_type === 'business_owner' || u.email === 'Kevinarnold522@gmail.com';
+        const admin = u.role === 'admin' || u.email === 'Kevinarnold522@gmail.com';
+        setIsAdmin(admin);
+        const allowed = admin || u.is_seller || u.account_type === 'business_owner';
         setCanAddListing(allowed);
       }).catch(() => {});
     }).catch(() => {});
@@ -259,7 +276,7 @@ export default function Services() {
 
         {filtered.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {filtered.map(svc => <ServiceCard key={svc.id} svc={svc} onContact={setContactItem} />)}
+            {filtered.map(svc => <ServiceCard key={svc.id} svc={svc} onContact={setContactItem} user={currentUser} isAdmin={isAdmin} onEdit={setEditItem} />)}
           </div>
         ) : (
           <div className="text-center py-24"><p className="font-body text-[#0A192F]/40">No services found. Try a different filter.</p></div>
@@ -278,7 +295,33 @@ export default function Services() {
       <AnimatePresence>
         {contactItem && <ContactModal item={contactItem} onClose={() => setContactItem(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
-        {showAddListing && <AddListingModal onClose={() => setShowAddListing(false)} defaultType="services" user={currentUser} />}
+        {showAddListing && <AddListingModal onClose={() => setShowAddListing(false)} defaultType="services" defaultSubcategory={addDefaultSub} user={currentUser} />}
+        {editItem && editItem.id && isAdmin && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0A192F]/80 backdrop-blur-sm" onClick={() => setEditItem(null)}>
+            <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} onClick={e => e.stopPropagation()}
+              className="w-full max-w-sm bg-white rounded-2xl p-5 shadow-2xl space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="font-heading font-bold text-[#0A192F] text-sm">Admin: Edit Listing</h3>
+                <button onClick={() => setEditItem(null)}><X className="w-4 h-4 text-[#0A192F]/40" /></button>
+              </div>
+              <p className="font-body text-xs text-[#0A192F]/50 truncate">{editItem.title}</p>
+              <button onClick={async () => { if (!window.confirm('Delete this listing?')) return; await base44.entities.Listing.delete(editItem.id); setEditItem(null); setToast('Deleted.'); setTimeout(() => setToast(''), 2500); }}
+                className="w-full flex items-center justify-center gap-2 py-2.5 bg-red-50 border border-red-200 text-red-600 rounded-xl font-body text-sm font-bold hover:bg-red-100 transition-colors">
+                <Trash2 className="w-4 h-4" /> Delete Listing
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {toast && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-2.5 rounded-xl font-body text-sm shadow-2xl z-50 text-white"
+            style={{ background: '#0A192F', border: '1px solid rgba(0,212,255,0.2)' }}>
+            {toast}
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );

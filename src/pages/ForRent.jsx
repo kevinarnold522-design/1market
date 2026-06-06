@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ParticleBackground from '../components/ParticleBackground';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, ExternalLink, Phone, MessageSquare, AlertCircle, Plus, Home, Building2, Car, Wrench, CalendarDays, Grid3X3 } from 'lucide-react';
+import { ArrowLeft, Search, ExternalLink, Phone, MessageSquare, AlertCircle, Plus, Home, Building2, Car, Wrench, CalendarDays, Grid3X3, Pencil, Trash2, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
@@ -56,10 +56,62 @@ const listings = [
   { id: 24, type: 'events', title: 'Event Tent Rental – Imus, Cavite', sub: 'Tent Rental', price: '₱8,000/event', location: 'Cavite', area: 'Imus', desc: 'Heavy-duty white wedding tent. 100 pax. With lights & fans.', image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=500&q=80', contact: '09264445566' },
 ];
 
-function RentalCard({ item, onContact }) {
+function AdminListingEditModal({ item, isAdmin, onClose, onSave, onDelete }) {
+  const [title, setTitle] = useState(item.title || '');
+  const [priceLabel, setPriceLabel] = useState(item.price_label || '');
+  const [saving, setSaving] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    await base44.entities.Listing.update(item.id, { title, price_label: priceLabel });
+    setSaving(false);
+    onSave();
+  };
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#070F1A]/85 backdrop-blur-sm" onClick={onClose}>
+      <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} onClick={e => e.stopPropagation()}
+        className="w-full max-w-sm rounded-2xl p-5 shadow-2xl space-y-3"
+        style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)' }}>
+        <div className="flex items-center justify-between">
+          <h3 className="font-heading font-bold text-white text-sm">Edit Listing</h3>
+          <button onClick={onClose}><X className="w-4 h-4 text-white/40" /></button>
+        </div>
+        <div>
+          <label className="font-body text-[10px] text-white/40 uppercase tracking-wider mb-1 block">Title</label>
+          <input value={title} onChange={e => setTitle(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 font-body text-sm text-white focus:outline-none focus:border-[#00D4FF]" />
+        </div>
+        <div>
+          <label className="font-body text-[10px] text-white/40 uppercase tracking-wider mb-1 block">Price Label</label>
+          <input value={priceLabel} onChange={e => setPriceLabel(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 font-body text-sm text-white focus:outline-none focus:border-[#00D4FF]" />
+        </div>
+        <button onClick={handleSave} disabled={saving} className="w-full py-2.5 bg-[#2563EB] text-white rounded-xl font-body font-bold text-sm hover:bg-[#00D4FF] hover:text-[#0A192F] transition-colors disabled:opacity-50">
+          {saving ? 'Saving...' : 'Save Changes'}
+        </button>
+        {isAdmin && (
+          confirming ? (
+            <div className="flex gap-2">
+              <button onClick={onDelete} className="flex-1 py-2 bg-red-500 text-white rounded-xl font-body font-bold text-xs">Confirm Delete</button>
+              <button onClick={() => setConfirming(false)} className="flex-1 py-2 bg-white/10 text-white/60 rounded-xl font-body text-xs">Cancel</button>
+            </div>
+          ) : (
+            <button onClick={() => setConfirming(true)} className="w-full flex items-center justify-center gap-2 py-2 border border-red-500/30 text-red-400 rounded-xl font-body text-xs font-bold hover:bg-red-500/10 transition-colors">
+              <Trash2 className="w-3.5 h-3.5" /> Delete Listing
+            </button>
+          )
+        )}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function RentalCard({ item, onContact, user, isAdmin, onEdit }) {
+  const isOwner = user && (item.created_by_id === user.id || item.email_contact === user.email);
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl overflow-hidden hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+      className="rounded-2xl overflow-hidden hover:-translate-y-1 transition-all duration-300 group cursor-pointer relative"
       style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(0,212,255,0.12)', boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
       onMouseEnter={e => e.currentTarget.style.boxShadow = '0 0 30px rgba(0,212,255,0.25), 0 8px 30px rgba(0,0,0,0.5)'}
       onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.4)'}
@@ -78,19 +130,27 @@ function RentalCard({ item, onContact }) {
         )}
       </div>
       <div className="p-4">
-        <h3 className="font-heading font-bold text-sm text-white leading-tight mb-1">{item.title}</h3>
-        <p className="font-body text-xs text-white/40 mb-3 line-clamp-2">{item.desc}</p>
-        <div className="flex items-center justify-between">
-          <span className="font-heading font-bold text-base text-[#00D4FF]">{item.price}</span>
+      <h3 className="font-heading font-bold text-sm text-white leading-tight mb-1">{item.title}</h3>
+      <p className="font-body text-xs text-white/40 mb-3 line-clamp-2">{item.desc || item.description}</p>
+      <div className="flex items-center justify-between">
+        <span className="font-heading font-bold text-base text-[#00D4FF]">{item.price || item.price_label}</span>
+        <div className="flex items-center gap-1.5">
+          {(isAdmin || isOwner) && item.id && (
+            <button onClick={() => onEdit(item)}
+              className="p-1.5 rounded-lg bg-[#2563EB]/20 border border-[#2563EB]/30 text-[#00D4FF] hover:bg-[#2563EB]/40 transition-colors">
+              <Pencil className="w-3 h-3" />
+            </button>
+          )}
           <button onClick={() => onContact(item)}
             className="px-3 py-1.5 bg-[#2563EB] hover:bg-[#00D4FF] hover:text-[#0A192F] text-white rounded-lg font-body text-xs font-semibold transition-colors">
             Inquire
           </button>
         </div>
       </div>
-    </motion.div>
-  );
-}
+      </div>
+      </motion.div>
+      );
+      }
 
 function ContactModal({ item, onClose }) {
   return (
@@ -125,16 +185,26 @@ function ContactModal({ item, onClose }) {
 }
 
 export default function ForRent() {
-  const [activeCategory, setActiveCategory] = useState(null);
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlType = urlParams.get('type');
+  const urlSub = urlParams.get('sub');
+
+  const [activeCategory, setActiveCategory] = useState(urlType || null);
   const [locationFilter, setLocationFilter] = useState('All');
   const [spaceType, setSpaceType] = useState('All Types');
   const [search, setSearch] = useState('');
   const [contactItem, setContactItem] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
   const [showAddListing, setShowAddListing] = useState(false);
+  const [addDefaultSub, setAddDefaultSub] = useState(urlSub || '');
+  const [editItem, setEditItem] = useState(null);
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSeller, setIsSeller] = useState(false);
+  const [dbListings, setDbListings] = useState([]);
+  const [toast, setToast] = useState('');
+
+  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
 
   useEffect(() => {
     base44.auth.me().then(u => {
@@ -142,13 +212,20 @@ export default function ForRent() {
       setIsAdmin(u?.role === 'admin' || u?.role === 'moderator');
       setIsSeller(u?.is_seller || u?.account_type === 'business_owner');
     }).catch(() => {});
+    base44.entities.Listing.filter({ type: 'rent_lease', is_active: true }, '-created_date', 50)
+      .then(items => setDbListings(items)).catch(() => {});
   }, []);
 
-  const filtered = listings.filter(l => {
+  const allRentals = [
+    ...listings,
+    ...dbListings.map(l => ({ ...l, sub: l.subcategory || '', price: l.price_label || (l.price ? `₱${Number(l.price).toLocaleString()}` : ''), type: 'residential' })),
+  ];
+
+  const filtered = allRentals.filter(l => {
     const matchCat = !activeCategory || activeCategory === 'all' || l.type === activeCategory;
     const matchLoc = locationFilter === 'All' || l.location === locationFilter;
-    const matchSearch = l.title.toLowerCase().includes(search.toLowerCase()) || l.area.toLowerCase().includes(search.toLowerCase()) || l.sub.toLowerCase().includes(search.toLowerCase());
-    const matchSpace = spaceType === 'All Types' || l.sub?.toLowerCase().includes(spaceType.toLowerCase()) || l.title?.toLowerCase().includes(spaceType.toLowerCase());
+    const matchSearch = l.title.toLowerCase().includes(search.toLowerCase()) || (l.area||'').toLowerCase().includes(search.toLowerCase()) || (l.sub||'').toLowerCase().includes(search.toLowerCase());
+    const matchSpace = spaceType === 'All Types' || (l.sub||'').toLowerCase().includes(spaceType.toLowerCase()) || l.title.toLowerCase().includes(spaceType.toLowerCase());
     return matchCat && matchLoc && matchSearch && matchSpace;
   });
 
@@ -226,7 +303,8 @@ export default function ForRent() {
         {/* Add Listing button for admins/sellers */}
         {(isAdmin || isSeller) && (
           <div className="mb-6">
-            <button onClick={() => setShowAddListing(true)} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
+            <button onClick={() => { setAddDefaultSub(''); setShowAddListing(true); }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
               style={{ background: 'linear-gradient(135deg,#0033CC,#3E97F1)', boxShadow: '0 0 16px rgba(62,151,241,0.3)' }}>
               <Plus className="w-4 h-4" /> Add Rental Listing
             </button>
@@ -235,7 +313,7 @@ export default function ForRent() {
 
         {filtered.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {filtered.map(item => <RentalCard key={item.id} item={item} onContact={setContactItem} />)}
+            {filtered.map(item => <RentalCard key={item.id} item={item} onContact={setContactItem} user={user} isAdmin={isAdmin} onEdit={setEditItem} />)}
           </div>
         ) : (
           <div className="text-center py-24"><p className="font-body text-white/30">No rentals found. Try a different filter.</p></div>
@@ -254,7 +332,21 @@ export default function ForRent() {
       <AnimatePresence>
         {contactItem && <ContactModal item={contactItem} onClose={() => setContactItem(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
-        {showAddListing && <AddListingModal onClose={() => setShowAddListing(false)} defaultType="rent_lease" user={user} />}
+        {showAddListing && <AddListingModal onClose={() => { setShowAddListing(false); base44.entities.Listing.filter({ type: 'rent_lease', is_active: true }, '-created_date', 50).then(items => setDbListings(items)).catch(() => {}); }} defaultType="rent_lease" defaultSubcategory={addDefaultSub} user={user} />}
+        {editItem && editItem.id && (
+          <AdminListingEditModal item={editItem} isAdmin={isAdmin} onClose={() => setEditItem(null)}
+            onSave={async () => { setEditItem(null); showToast('Updated!'); const items = await base44.entities.Listing.filter({ type: 'rent_lease', is_active: true }, '-created_date', 50); setDbListings(items); }}
+            onDelete={async () => { await base44.entities.Listing.delete(editItem.id); setEditItem(null); showToast('Deleted.'); setDbListings(prev => prev.filter(l => l.id !== editItem.id)); }} />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {toast && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-2.5 rounded-xl font-body text-xs shadow-2xl z-50 text-white"
+            style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)' }}>
+            {toast}
+          </motion.div>
+        )}
       </AnimatePresence>
 
       <AdminQuickAddFAB defaultMode="listing" forceSubcategory="residential" />

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, MapPin, Briefcase, ExternalLink, X, Building2, DollarSign, Plus, Clock, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
-import AddJobModal from '../components/AddJobModal';
+import AddListingModal from '../components/AddListingModal.jsx';
 import { base44 } from '@/api/base44Client';
 
 // Royal Blue theme colors
@@ -167,12 +167,16 @@ function ApplyModal({ job, onClose }) {
 }
 
 export default function Jobs() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlSub = urlParams.get('sub');
+
   const [activeType, setActiveType] = useState('all');
   const [locationFilter, setLocationFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [applyJob, setApplyJob] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
   const [showAddJob, setShowAddJob] = useState(false);
+  const [addDefaultSub, setAddDefaultSub] = useState(urlSub || '');
   const [currentUser, setCurrentUser] = useState(null);
   const [dbJobs, setDbJobs] = useState([]);
   const [showPostedNotice, setShowPostedNotice] = useState(false);
@@ -338,9 +342,10 @@ export default function Jobs() {
         {applyJob && <ApplyModal job={applyJob} onClose={() => setApplyJob(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
         {showAddJob && (
-          <AddJobModal
+          <AddListingModal
             user={currentUser}
-            categories={JOB_SUBCATEGORIES.filter(s => s.key !== 'all')}
+            defaultType="jobs"
+            defaultSubcategory={addDefaultSub}
             onClose={() => {
               setShowAddJob(false);
               setShowPostedNotice(true);

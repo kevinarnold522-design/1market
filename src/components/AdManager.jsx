@@ -3,10 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Clock, ShieldOff } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
-// All ads are blocked for 5 minutes on every page load/visit
-const INITIAL_BLOCK_MS = 5 * 60 * 1000;
-// After first ad closes, freeze ads for 5 more minutes
-const FREEZE_DURATION_MS = 5 * 60 * 1000;
+// Ads appear after 4 minutes on every session
+const INITIAL_BLOCK_MS = 4 * 60 * 1000;
+// After closing an ad, freeze for 4 more minutes
+const FREEZE_DURATION_MS = 4 * 60 * 1000;
 // Stagger delay between multiple ads (ms)
 const STAGGER_MS = 8000;
 
@@ -52,12 +52,8 @@ export default function AdManager() {
   const isPrivilegedUser = useCallback(async () => {
     try {
       const u = await base44.auth.me();
-      return (
-        u?.role === 'admin' ||
-        u?.email === 'Kevinarnold522@gmail.com' ||
-        u?.is_seller ||
-        u?.account_type === 'business_owner'
-      );
+      // Only admins are permanently exempt from ads
+      return u?.role === 'admin' || u?.email === 'Kevinarnold522@gmail.com';
     } catch {
       return false;
     }

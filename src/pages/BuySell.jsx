@@ -7,6 +7,7 @@ import { ArrowLeft, Search, X, ChevronDown, Phone, MessageSquare, AlertCircle, Z
 import ReportModal from '../components/ReportModal';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
+import AddListingModal from '../components/AddListingModal.jsx';
 import { base44 } from '@/api/base44Client';
 import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
 
@@ -261,6 +262,7 @@ export default function BuySell() {
   const [contactItem, setContactItem] = useState(null);
   const [expandedItem, setExpandedItem] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
+  const [showAddListing, setShowAddListing] = useState(false);
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [user, setUser] = useState(null);
   const [dbListings, setDbListings] = useState([]);
@@ -374,9 +376,9 @@ export default function BuySell() {
                 </button>
               </div>
             ) : isSeller ? (
-              <Link to="/seller" className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-sm hover:bg-white transition-colors">
-                <Store className="w-4 h-4" /> Go to Seller Dashboard
-              </Link>
+              <button onClick={() => setShowAddListing(true)} className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-sm hover:bg-white transition-colors">
+                <Store className="w-4 h-4" /> Add New Listing
+              </button>
             ) : (
               <div className="inline-flex items-center gap-3 px-4 py-2.5 bg-white/10 backdrop-blur-sm border border-[#00D4FF]/30 rounded-xl">
                 <span className="font-body text-sm text-white/70">Want to start selling?</span>
