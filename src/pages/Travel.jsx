@@ -4,8 +4,10 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Search, Star, Heart, Share2, ChevronRight, MapPin } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import ParticleBackground from '../components/ParticleBackground';
-import PostListingMenu from '../components/PostListingMenu';
 import { AnimatePresence } from 'framer-motion';
+import TravelPostModal from '../components/travel/TravelPostModal';
+import MemberSignupModal from '../components/MemberSignupModal';
+import { Plus } from 'lucide-react';
 
 const TRAVEL_CATEGORIES = [
   { key: 'hotel',       label: 'Hotels',         icon: '🏨', color: '#6366f1' },
@@ -182,6 +184,13 @@ export default function Travel() {
   const [dbListings, setDbListings] = useState([]);
   const [shareTarget, setShareTarget] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [showTravelPost, setShowTravelPost] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
+
+  const handleAddListing = () => {
+    if (!currentUser) { setShowSignup(true); return; }
+    setShowTravelPost(true);
+  };
 
   useEffect(() => {
     base44.auth.isAuthenticated().then(ok => {
@@ -256,7 +265,11 @@ export default function Travel() {
             </div>
             <div className="flex items-center gap-4 flex-wrap mb-2">
               <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Explore the Philippines</h1>
-              <PostListingMenu user={currentUser} compact={false} />
+              <button onClick={handleAddListing}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105"
+                style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }}>
+                <Plus className="w-3.5 h-3.5" /> Add a Listing
+              </button>
             </div>
             <p className="font-body text-sm text-white/60 max-w-xl">Hotels, resorts, tours, island hopping, diving, surfing and more.</p>
           </motion.div>
@@ -317,13 +330,19 @@ export default function Travel() {
           <h2 className="font-heading font-bold text-2xl text-white mb-2">List Your Travel Business</h2>
           <p className="font-body text-sm text-white/60 mb-5 max-w-md mx-auto">Hotels, tours, rentals, activities — reach thousands of Filipino travelers.</p>
           <div className="flex justify-center">
-            <PostListingMenu user={currentUser} compact={false} />
+            <button onClick={handleAddListing}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105"
+              style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }}>
+              <Plus className="w-3.5 h-3.5" /> Add a Listing
+            </button>
           </div>
         </motion.div>
       </div>
 
       <AnimatePresence>
         {shareTarget && <ShareModal listing={shareTarget} onClose={() => setShareTarget(null)} />}
+        {showTravelPost && <TravelPostModal user={currentUser} onClose={() => setShowTravelPost(false)} />}
+        {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
       </AnimatePresence>
     </div>
   );
