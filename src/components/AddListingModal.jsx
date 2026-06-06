@@ -249,6 +249,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [dpaAccepted, setDpaAccepted] = useState(false);
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -538,8 +539,16 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                     <label htmlFor="publish-toggle" className="font-body text-xs text-white/50">Publish publicly</label>
                   </div>
 
+                  {/* DPA Consent */}
+                  <div className={`flex items-start gap-2.5 p-3 rounded-xl border ${dpaAccepted ? 'border-green-500/30 bg-green-500/5' : 'border-amber-500/30 bg-amber-500/5'}`}>
+                    <input type="checkbox" id="dpa-consent" checked={dpaAccepted} onChange={e => setDpaAccepted(e.target.checked)} className="w-4 h-4 mt-0.5 accent-[#00D4FF] flex-shrink-0" />
+                    <label htmlFor="dpa-consent" className="font-body text-[11px] text-white/60 leading-relaxed cursor-pointer">
+                      I agree to the <span className="text-[#00D4FF]">Data Privacy Act of 2012 (Republic Act 10173)</span>. I consent to the collection and processing of my personal information for this listing and acknowledge that 1MarketPH may store and display this information publicly.
+                    </label>
+                  </div>
+
                   {/* Submit */}
-                  <button onClick={handleSubmit} disabled={!form.title || submitting}
+                  <button onClick={handleSubmit} disabled={!form.title || submitting || !dpaAccepted}
                     className="w-full py-3 rounded-xl font-body font-bold text-sm text-white transition-all disabled:opacity-40 hover:scale-[1.01]"
                     style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 16px rgba(37,99,235,0.4)' }}>
                     {submitting

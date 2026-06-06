@@ -25,7 +25,8 @@ export default function WelcomeSplash() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.1 }}
           transition={{ duration: 0.6 }}
-          className="fixed inset-0 z-[200] flex items-center justify-center overflow-hidden bg-[#0A192F]"
+          className="fixed inset-0 z-[200] flex items-center justify-center overflow-hidden"
+          style={{ background: 'linear-gradient(135deg, #0033CC 0%, #001a80 50%, #000d40 100%)' }}
           onClick={() => setDismissed(true)}
         >
           {/* Animated background rings */}

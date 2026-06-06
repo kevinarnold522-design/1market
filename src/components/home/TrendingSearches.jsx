@@ -1,22 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
 
 const TRENDING = [
-  { label: 'iPhone 15', icon: '📱', link: '/buysell?q=iphone' },
-  { label: 'Honda Civic', icon: '🚗', link: '/buysell?q=honda+civic' },
-  { label: 'Room for Rent Manila', icon: '🏠', link: '/rent?q=manila' },
-  { label: 'Hotel Tagaytay', icon: '🏨', link: '/travel?q=tagaytay' },
-  { label: 'Palawan Tour', icon: '🌴', link: '/travel?q=palawan' },
-  { label: 'Web Developer', icon: '💼', link: '/jobs?q=developer' },
-  { label: 'Samsung TV', icon: '📺', link: '/buysell?q=samsung+tv' },
-  { label: 'Boracay Resort', icon: '🏖️', link: '/travel?q=boracay' },
+  { label: 'iPhone 15', link: '/buysell?q=iphone' },
+  { label: 'Honda Civic', link: '/buysell?q=honda+civic' },
+  { label: 'Room for Rent Manila', link: '/rent?q=manila' },
+  { label: 'Hotel Tagaytay', link: '/travel?q=tagaytay' },
+  { label: 'Palawan Tour', link: '/travel?q=palawan' },
+  { label: 'Web Developer', link: '/jobs?q=developer' },
+  { label: 'Samsung TV', link: '/buysell?q=samsung+tv' },
+  { label: 'Boracay Resort', link: '/travel?q=boracay' },
 ];
 
 export default function TrendingSearches() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    base44.auth.isAuthenticated().then(setIsAuthenticated).catch(() => {});
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -44,23 +50,25 @@ export default function TrendingSearches() {
           </button>
         </form>
 
-        {/* Trending */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex items-center gap-1 text-white/30 flex-shrink-0">
-            <TrendingUp className="w-3 h-3" />
-            <span className="font-body text-[10px] uppercase tracking-wider">Trending:</span>
+        {/* Trending — only for signed-in users */}
+        {isAuthenticated && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-1 text-white/30 flex-shrink-0">
+              <TrendingUp className="w-3 h-3" />
+              <span className="font-body text-[10px] uppercase tracking-wider">Trending:</span>
+            </div>
+            {TRENDING.map((t, i) => (
+              <motion.a key={i} href={t.link}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.04 }}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full font-body text-[11px] text-white/60 hover:text-white transition-all cursor-pointer hover:scale-105"
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                {t.label}
+              </motion.a>
+            ))}
           </div>
-          {TRENDING.map((t, i) => (
-            <motion.a key={i} href={t.link}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.04 }}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full font-body text-[11px] text-white/60 hover:text-white transition-all cursor-pointer hover:scale-105"
-              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <span>{t.icon}</span> {t.label}
-            </motion.a>
-          ))}
-        </div>
+        )}
       </div>
     </div>
   );

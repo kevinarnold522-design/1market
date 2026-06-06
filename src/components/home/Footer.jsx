@@ -131,17 +131,6 @@ export default function Footer() {
           <p className="font-body text-xs text-white/35">Proudly Made in the Philippines — Since 2026</p>
         </div>
 
-        {/* Trust badges — lucide icons, single row */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
-          {TRUST_BADGES.map((b, i) => (
-            <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <b.icon className="w-3.5 h-3.5" style={{ color: b.color }} />
-              <span className="font-body text-[10px] text-white/40">{b.label}</span>
-            </div>
-          ))}
-        </div>
-
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/8">
           <p className="font-body text-xs text-white/25 text-center sm:text-left">

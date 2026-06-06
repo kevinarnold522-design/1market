@@ -30,7 +30,6 @@ import LiveStatsBar from '../components/home/LiveStatsBar';
 import TrendingSearches from '../components/home/TrendingSearches';
 import FlashDealsSection from '../components/home/FlashDealsSection';
 import TopSellersSection from '../components/home/TopSellersSection';
-import AppDownloadBanner from '../components/home/AppDownloadBanner';
 import RecentlyViewed from '../components/home/RecentlyViewed';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
@@ -79,7 +78,6 @@ export default function Home() {
       <ServicesDashboard />
       <HowItWorksSection />
       <ReviewHighlights />
-      <AppDownloadBanner />
       <CommunityAnimation />
       <RecentlyViewed />
       <Footer />

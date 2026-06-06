@@ -33,6 +33,7 @@ export default function AddJobModal({ onClose, user, categories = [] }) {
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [dpaAccepted, setDpaAccepted] = useState(false);
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -246,13 +247,21 @@ export default function AddJobModal({ onClose, user, categories = [] }) {
                 )}
               </div>
 
+              {/* DPA Consent */}
+              <div className={`flex items-start gap-2.5 p-3 rounded-xl border ${dpaAccepted ? 'border-green-500/30 bg-green-500/5' : 'border-amber-500/30 bg-amber-500/5'}`}>
+                <input type="checkbox" id="dpa-job-consent" checked={dpaAccepted} onChange={e => setDpaAccepted(e.target.checked)} className="w-4 h-4 mt-0.5 accent-[#3E97F1] flex-shrink-0" />
+                <label htmlFor="dpa-job-consent" className="font-body text-[11px] text-white/60 leading-relaxed cursor-pointer">
+                  I agree to the <span className="text-[#3E97F1]">Data Privacy Act of 2012 (Republic Act 10173)</span>. I consent to the collection and processing of my personal information for this job listing and acknowledge that 1MarketPH may store and display this information publicly.
+                </label>
+              </div>
+
               {/* Actions */}
               <div className="flex gap-3 pt-2">
                 <button onClick={onClose}
                   className="flex-1 py-3 rounded-xl font-body font-bold text-sm text-white/50 border border-white/10 hover:bg-white/5 transition-colors">
                   Cancel
                 </button>
-                <button onClick={handleSave} disabled={!form.title || !form.location || saving}
+                <button onClick={handleSave} disabled={!form.title || !form.location || saving || !dpaAccepted}
                   className="flex-1 py-3 rounded-xl font-body font-bold text-sm text-white transition-all disabled:opacity-40 hover:scale-105"
                   style={{ background: 'linear-gradient(135deg, #0033C4, #3E97F1)', boxShadow: '0 0 16px rgba(62,151,241,0.4)' }}>
                   {saving ? 'Submitting...' : 'Submit Job Listing'}
