@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, MapPin, Heart, MessageSquare, Share2, Flag, X, Bookmark, Star, SlidersHorizontal } from 'lucide-react';
+import { Search, Filter, MapPin, Heart, MessageSquare, Share2, Flag, X, Bookmark, Star, SlidersHorizontal, Grid, List, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import StarField from '../components/StarField';
 import Navbar from '../components/home/Navbar';
 import ReportModal from '../components/ReportModal';
 import { base44 } from '@/api/base44Client';
+import ScrollToTop from '../components/ScrollToTop';
+import QuickViewModal from '../components/QuickViewModal';
 
 const FILTER_GROUPS = {
   operations: ['services', 'jobs', 'product', 'other'],
@@ -182,12 +184,17 @@ export default function ExplorePage() {
   const [maxPrice, setMaxPrice] = useState('');
   const [minRating, setMinRating] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
+  const [quickView, setQuickView] = useState(null);
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
+  const [sortBy, setSortBy] = useState('newest'); // 'newest' | 'price_asc' | 'price_desc' | 'rating'
 
-  // URL filter param support (from HomeCategoryBoxes)
+  // URL filter param support
   const urlParams = new URLSearchParams(window.location.search);
-  const filterGroup = urlParams.get('filter'); // 'operations' | 'lifestyle' | 'hobbies'
+  const filterGroup = urlParams.get('filter');
+  const urlQ = urlParams.get('q') || '';
 
   useEffect(() => {
+    if (urlQ) setSearch(urlQ);
     const init = async () => {
       try {
         const authed = await base44.auth.isAuthenticated();
@@ -200,13 +207,20 @@ export default function ExplorePage() {
     init();
   }, []);
 
+  const effectiveSearch = search;
+
   const filtered = listings.filter(l => {
     const matchType = activeType === 'all' || l.type === activeType;
     const matchGroup = !filterGroup || !FILTER_GROUPS[filterGroup] || FILTER_GROUPS[filterGroup].includes(l.type);
-    const matchSearch = !search || l.title.toLowerCase().includes(search.toLowerCase()) || (l.area || '').toLowerCase().includes(search.toLowerCase());
+    const matchSearch = !effectiveSearch || l.title.toLowerCase().includes(effectiveSearch.toLowerCase()) || (l.area || '').toLowerCase().includes(effectiveSearch.toLowerCase()) || (l.description || '').toLowerCase().includes(effectiveSearch.toLowerCase());
     const matchPrice = !maxPrice || !l.price || Number(l.price) <= Number(maxPrice);
     const matchRating = minRating === 0 || (l.rating || 0) >= minRating;
     return matchType && matchGroup && matchSearch && matchPrice && matchRating;
+  }).sort((a, b) => {
+    if (sortBy === 'price_asc') return (a.price || 0) - (b.price || 0);
+    if (sortBy === 'price_desc') return (b.price || 0) - (a.price || 0);
+    if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
+    return new Date(b.created_date) - new Date(a.created_date);
   });
 
   return (
@@ -311,8 +325,29 @@ export default function ExplorePage() {
           </div>
         ) : (
           <>
-            <p className="font-body text-xs text-white/30 mb-4">{filtered.length} listings found</p>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+            <p className="font-body text-xs text-white/30">{filtered.length} listings found</p>
+            <div className="flex items-center gap-2">
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)}
+                className="bg-white/5 border border-white/15 rounded-xl px-3 py-1.5 text-white/70 font-body text-xs focus:outline-none focus:border-[#00D4FF]">
+                <option value="newest">Newest First</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
+              </select>
+              <div className="flex rounded-xl overflow-hidden border border-white/10">
+                <button onClick={() => setViewMode('grid')}
+                  className={`p-2 transition-colors ${viewMode === 'grid' ? 'bg-[#2563EB] text-white' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>
+                  <Grid className="w-3.5 h-3.5" />
+                </button>
+                <button onClick={() => setViewMode('list')}
+                  className={`p-2 transition-colors ${viewMode === 'list' ? 'bg-[#2563EB] text-white' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>
+                  <List className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+            <div className={viewMode === 'grid' ? 'grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'flex flex-col gap-3'}>
               {filtered.map(item => (
                 <ListingCard key={item.id} item={item} user={user} onReport={setReportItem} />
               ))}
@@ -323,7 +358,9 @@ export default function ExplorePage() {
 
       <AnimatePresence>
         {reportItem && user && <ReportModal listing={reportItem} user={user} onClose={() => setReportItem(null)} />}
+        {quickView && <QuickViewModal listing={quickView} user={user} onClose={() => setQuickView(null)} />}
       </AnimatePresence>
+      <ScrollToTop />
     </div>
   );
 }

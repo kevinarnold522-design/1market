@@ -26,6 +26,16 @@ import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
 import HeroSlider from '../components/home/HeroSlider';
 import AdManager from '../components/AdManager';
 import GetStartedButton from '../components/GetStartedButton';
+import LiveStatsBar from '../components/home/LiveStatsBar';
+import TrendingSearches from '../components/home/TrendingSearches';
+import FlashDealsSection from '../components/home/FlashDealsSection';
+import TestimonialsSection from '../components/home/TestimonialsSection';
+import TopSellersSection from '../components/home/TopSellersSection';
+import AppDownloadBanner from '../components/home/AppDownloadBanner';
+import NewsletterSection from '../components/home/NewsletterSection';
+import RecentlyViewed from '../components/home/RecentlyViewed';
+import ScrollToTop from '../components/ScrollToTop';
+import CookieBanner from '../components/CookieBanner';
 
 const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/be5b76b23_generated_1fcae122.png';
 
@@ -50,6 +60,8 @@ export default function Home() {
       <div className="relative z-10">
       <WelcomeSplash />
       <Navbar />
+      <LiveStatsBar />
+      <TrendingSearches />
       <FilipinoPrideBanner />
       <SuggestionsBar />
       <MovingWelcomeBanner />
@@ -57,7 +69,9 @@ export default function Home() {
       <HeroSlider />
       <HeroSection heroImage={HERO_IMAGE} />
       <WhatMakesUsSpecial />
+      <FlashDealsSection />
       <CategoryCards />
+      <TopSellersSection />
       <PhFlightDeals />
       <PhHotelDeals />
       <FeaturedListings />
@@ -66,8 +80,12 @@ export default function Home() {
       <ShoesClothingDashboard />
       <ServicesDashboard />
       <HowItWorksSection />
+      <TestimonialsSection />
       <ReviewHighlights />
+      <AppDownloadBanner />
+      <NewsletterSection />
       <CommunityAnimation />
+      <RecentlyViewed />
       <Footer />
       <SuggestionBox />
       </div>
@@ -76,6 +94,8 @@ export default function Home() {
       <AdminQuickAddFAB defaultMode="listing" />
       <AdManager />
       <GetStartedButton />
+      <ScrollToTop />
+      <CookieBanner />
     </div>
   );
 }

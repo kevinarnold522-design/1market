@@ -7,6 +7,7 @@ import ParticleBackground from '../components/ParticleBackground';
 import { AnimatePresence } from 'framer-motion';
 import TravelPostModal from '../components/travel/TravelPostModal';
 import MemberSignupModal from '../components/MemberSignupModal';
+import ScrollToTop from '../components/ScrollToTop';
 import { Plus } from 'lucide-react';
 
 const TRAVEL_CATEGORIES = [
@@ -344,6 +345,7 @@ export default function Travel() {
         {showTravelPost && <TravelPostModal user={currentUser} onClose={() => setShowTravelPost(false)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
       </AnimatePresence>
+      <ScrollToTop />
     </div>
   );
 }

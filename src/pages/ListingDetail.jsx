@@ -3,9 +3,12 @@ import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock } from 'lucide-react';
 import ReportModal from '../components/ReportModal';
+import ScrollToTop from '../components/ScrollToTop';
 import { base44 } from '@/api/base44Client';
 import Navbar from '../components/home/Navbar';
 import StarField from '../components/StarField';
+import SimilarListings from '../components/SimilarListings';
+import { recordView } from '../components/home/RecentlyViewed';
 
 function HotelRoomSelector({ listing, user }) {
   const [selectedRoom, setSelectedRoom] = useState(null);
@@ -215,6 +218,8 @@ export default function ListingDetail() {
           // Load hearts
           const hts = await base44.entities.ListingHeart.filter({ listing_id: id });
           setHearts(hts.length);
+          // Track recently viewed
+          recordView(found);
         }
       } catch {}
       setLoading(false);
@@ -507,6 +512,9 @@ export default function ListingDetail() {
               </div>
             </div>
 
+            {/* Similar Listings */}
+            <SimilarListings listing={listing} />
+
             {/* Seller Profile snippet */}
             {listing.seller_name && (
               <div className="rounded-2xl p-4" style={{ background: 'rgba(13,31,60,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
@@ -532,6 +540,7 @@ export default function ListingDetail() {
         </div>
       </div>
 
+      <ScrollToTop />
       {/* 1MarketPH Socials Footer */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-10">
         <div className="rounded-2xl p-5 text-center" style={{ background: 'linear-gradient(135deg,rgba(0,51,204,0.2),rgba(0,26,128,0.3))', border: '1px solid rgba(0,212,255,0.15)' }}>
