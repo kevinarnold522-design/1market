@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Plus, Briefcase, Home, ShoppingBag, UtensilsCrossed, Wrench, Plane, X } from 'lucide-react';
 import AddListingModal from './AddListingModal';
 import MemberSignupModal from './MemberSignupModal';
+import TravelPostModal from './travel/TravelPostModal';
 
 const POST_SECTIONS = [
   {
@@ -66,6 +67,7 @@ export default function PostListingMenu({ user, compact = false }) {
   const [selectedSection, setSelectedSection] = useState(null);
   const [posterType, setPosterType] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showTravelModal, setShowTravelModal] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const ref = useRef(null);
 
@@ -84,7 +86,11 @@ export default function PostListingMenu({ user, compact = false }) {
   const handlePost = () => {
     setOpen(false);
     setSelectedSection(null);
-    setShowModal(true);
+    if (selectedSection?.key === 'travel') {
+      setShowTravelModal(true);
+    } else {
+      setShowModal(true);
+    }
   };
 
   return (
@@ -172,6 +178,9 @@ export default function PostListingMenu({ user, compact = false }) {
             defaultType={selectedSection?.defaultType || ''}
             onClose={() => { setShowModal(false); setSelectedSection(null); }}
           />
+        )}
+        {showTravelModal && (
+          <TravelPostModal user={user} onClose={() => { setShowTravelModal(false); setSelectedSection(null); }} />
         )}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
       </AnimatePresence>
