@@ -1,9 +1,18 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
 import HeroAnimation3D from './HeroAnimation3D';
+import AccountTypeModal from '../AccountTypeModal';
+import { base44 } from '@/api/base44Client';
 
 export default function HeroSection({ heroImage }) {
+  const [isAuth, setIsAuth] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
+
+  useEffect(() => {
+    base44.auth.isAuthenticated().then(setIsAuth).catch(() => {});
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background gradient — royal blue brand */}
@@ -60,13 +69,31 @@ export default function HeroSection({ heroImage }) {
               </p>
 
               <div className="flex items-center gap-3 mt-4 flex-wrap">
-                <motion.a
-                  href="/explore"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
-                  style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 24px rgba(0,212,255,0.35)' }}
-                  whileHover={{ scale: 1.05 }}>
-                  Explore Now →
-                </motion.a>
+                {!isAuth ? (
+                  <>
+                    <motion.button
+                      onClick={() => base44.auth.redirectToLogin(window.location.href)}
+                      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl font-body font-bold text-sm text-white border border-white/25 hover:border-[#00D4FF] hover:text-[#00D4FF] transition-all"
+                      whileHover={{ scale: 1.04 }}>
+                      Login
+                    </motion.button>
+                    <motion.button
+                      onClick={() => setShowSignup(true)}
+                      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
+                      style={{ background: 'linear-gradient(135deg,#FFD700,#FFA500)', boxShadow: '0 0 24px rgba(255,215,0,0.4)' }}
+                      whileHover={{ scale: 1.05 }}>
+                      Get Started Free →
+                    </motion.button>
+                  </>
+                ) : (
+                  <motion.a
+                    href="/explore"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
+                    style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 24px rgba(0,212,255,0.35)' }}
+                    whileHover={{ scale: 1.05 }}>
+                    Explore Now →
+                  </motion.a>
+                )}
                 <motion.a
                   href="#categories"
                   className="inline-flex items-center gap-3 group"
@@ -79,6 +106,8 @@ export default function HeroSection({ heroImage }) {
                   </div>
                 </motion.a>
               </div>
+
+
             </div>
           </motion.div>
 
@@ -103,6 +132,10 @@ export default function HeroSection({ heroImage }) {
 
       {/* Bottom gradient fade */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#070F1A] to-transparent" />
+
+      <AnimatePresence>
+        {showSignup && <AccountTypeModal onClose={() => setShowSignup(false)} />}
+      </AnimatePresence>
     </section>
   );
 }

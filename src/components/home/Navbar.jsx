@@ -135,23 +135,10 @@ export default function Navbar() {
             {(isAdmin || isVerified) && <MetaVerifiedBadge size="sm" label={isAdmin ? 'CEO & Founder' : 'Verified Partner'} />}
           </div>
         ) : (
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+          <div className="flex items-center justify-center">
             <span className="font-body text-xs sm:text-sm font-semibold text-white/90 text-center">
-              🇵🇭 Join <strong>1Market Philippines</strong> — Buy, Sell & Connect!
+              Join <strong>1Market Philippines</strong> — Buy, Sell &amp; Connect with thousands of Filipinos!
             </span>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => base44.auth.redirectToLogin(window.location.origin + window.location.pathname)}
-                className="px-5 py-2 bg-white/20 border border-white/30 text-white rounded-xl text-sm font-bold hover:bg-white/30 transition-all whitespace-nowrap">
-                Login
-              </button>
-              <button
-                onClick={() => setShowSignup(true)}
-                className="px-6 py-2 rounded-xl text-sm font-bold transition-all hover:scale-105 whitespace-nowrap"
-                style={{ background: '#FFD700', color: '#0033CC', boxShadow: '0 0 14px rgba(255,215,0,0.5)' }}>
-                Get Started →
-              </button>
-            </div>
           </div>
         )}
       </div>
@@ -190,11 +177,13 @@ export default function Navbar() {
             {/* Spacer */}
             <div className="flex-1" />
 
-            {/* Messages button */}
-            <Link to="/messages" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 border border-white/10 hover:border-[#00D4FF]/40 hover:bg-[#00D4FF]/10 transition-all text-white/70 hover:text-[#00D4FF]">
-              <MessageSquare className="w-4 h-4" />
-              <span className="font-body text-xs font-semibold">Messages</span>
-            </Link>
+            {/* Messages button — signed-in only */}
+            {isAuthenticated && user && (
+              <Link to="/messages" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 border border-white/10 hover:border-[#00D4FF]/40 hover:bg-[#00D4FF]/10 transition-all text-white/70 hover:text-[#00D4FF]">
+                <MessageSquare className="w-4 h-4" />
+                <span className="font-body text-xs font-semibold">Messages</span>
+              </Link>
+            )}
 
             {/* Favourites */}
             {isAuthenticated && user && (
@@ -435,7 +424,7 @@ export default function Navbar() {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <button onClick={() => base44.auth.redirectToLogin(window.location.origin + window.location.pathname)}
+                  <button onClick={() => base44.auth.redirectToLogin(window.location.href)}
                     className="px-4 py-2 border border-white/20 text-white/80 rounded-lg font-body font-bold text-xs hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
                     Login
                   </button>
@@ -542,16 +531,12 @@ export default function Navbar() {
                   </>
                 ) : (
                   <>
-                    <Link to="/messages" onClick={() => setMenuOpen(false)}
-                      className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
-                      Messages
-                    </Link>
                     <Link to="/explore" onClick={() => setMenuOpen(false)}
                       className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
                       Explore Listings
                     </Link>
                     <div className="flex gap-2 mt-2">
-                      <button onClick={() => { setMenuOpen(false); base44.auth.redirectToLogin(window.location.origin + window.location.pathname); }}
+                      <button onClick={() => { setMenuOpen(false); base44.auth.redirectToLogin(window.location.href); }}
                         className="flex-1 py-2.5 border border-white/20 text-white rounded-xl font-body font-bold text-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
                         Login
                       </button>
