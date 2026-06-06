@@ -39,9 +39,11 @@ export default function Navbar() {
   const [showRewards, setShowRewards] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const isAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
-  const isSeller = user?.is_seller || user?.account_type === 'business_owner';
+  const isSeller = user?.user_type === 'seller' || user?.user_type === 'business' || user?.is_seller || user?.account_type === 'business_owner';
+  const isBusiness = user?.user_type === 'business';
+  const isCustomer = !isSeller && !isBusiness;
   const isVerified = user?.is_verified_seller;
-  const adminLabel = isAdmin ? 'CEO & Founder' : user?.account_type === 'business_owner' ? 'Business Owner' : isSeller ? 'Seller' : 'Customer';
+  const adminLabel = isAdmin ? 'CEO & Founder' : isBusiness ? (user?.business_name || 'Business Owner') : isSeller ? 'Seller' : 'Customer';
   const [uploadingPfp, setUploadingPfp] = useState(false);
 
 
@@ -374,14 +376,14 @@ export default function Navbar() {
                             </>
                           )}
 
-                          {!isSeller && (
+                          {isCustomer && (
                             <>
                               <div className="border-t border-white/8 my-1" />
                               <p className="px-3 py-1 font-body text-[9px] text-[#3E97F1]/60 uppercase tracking-wider font-bold">Grow with 1Market</p>
                               <Link to="/profile?tab=profile" onClick={() => setProfileOpen(false)}
                                 className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold"
-                                style={{ background: 'linear-gradient(90deg,rgba(0,64,208,0.2),rgba(62,151,241,0.1))', border: '1px solid rgba(62,151,241,0.2)' }}>
-                                <Store className="w-3.5 h-3.5 text-[#3E97F1]" /> <span className="text-[#3E97F1]">Become a Seller</span>
+                                style={{ background: 'linear-gradient(90deg,rgba(16,185,129,0.15),rgba(0,212,255,0.08))', border: '1px solid rgba(16,185,129,0.2)' }}>
+                                <Store className="w-3.5 h-3.5 text-emerald-400" /> <span className="text-emerald-400">Become a Seller</span>
                               </Link>
                               <Link to="/profile?tab=profile" onClick={() => setProfileOpen(false)}
                                 className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold mt-1"
@@ -502,10 +504,10 @@ export default function Navbar() {
                         Become a Verified Partner
                       </Link>
                     )}
-                    {!isSeller && (
+                    {isCustomer && (
                       <>
                         <Link to="/profile?tab=profile" onClick={() => setMenuOpen(false)}
-                          className="block text-[#3E97F1] font-body text-sm font-semibold py-2 transition-colors">
+                          className="block text-emerald-400 font-body text-sm font-semibold py-2 transition-colors">
                           Become a Seller
                         </Link>
                         <Link to="/profile?tab=profile" onClick={() => setMenuOpen(false)}

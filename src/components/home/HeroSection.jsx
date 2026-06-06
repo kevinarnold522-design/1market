@@ -3,12 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
 import HeroAnimation3D from './HeroAnimation3D';
 import AccountTypeModal from '../AccountTypeModal';
+import LoginModal from '@/components/LoginModal';
 import { base44 } from '@/api/base44Client';
-import { redirectToLogin } from '@/lib/loginRedirect';
 
 export default function HeroSection({ heroImage }) {
   const [isAuth, setIsAuth] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
     base44.auth.isAuthenticated().then(setIsAuth).catch(() => {});
@@ -73,7 +74,7 @@ export default function HeroSection({ heroImage }) {
                 {!isAuth ? (
                   <>
                     <motion.button
-                      onClick={redirectToLogin}
+                      onClick={() => setShowLogin(true)}
                       className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl font-body font-bold text-sm text-white border border-white/25 hover:border-[#00D4FF] hover:text-[#00D4FF] transition-all"
                       whileHover={{ scale: 1.04 }}>
                       Login
@@ -107,8 +108,6 @@ export default function HeroSection({ heroImage }) {
                   </div>
                 </motion.a>
               </div>
-
-
             </div>
           </motion.div>
 
@@ -136,6 +135,7 @@ export default function HeroSection({ heroImage }) {
 
       <AnimatePresence>
         {showSignup && <AccountTypeModal onClose={() => setShowSignup(false)} />}
+        {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
       </AnimatePresence>
     </section>
   );

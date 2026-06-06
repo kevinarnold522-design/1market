@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingBag, Store, Users, Check, ArrowRight, Shield, Star, Package, Briefcase } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { redirectToLogin } from '@/lib/loginRedirect';
 
 const ACCOUNT_TYPES = [
   {
@@ -94,11 +93,15 @@ export default function AccountTypeModal({ onClose }) {
   };
 
   const handleContinueToSignup = async () => {
-    // Store preferences in sessionStorage so we can use them after signup
     sessionStorage.setItem('signup_account_type', selectedType);
     sessionStorage.setItem('signup_preferences', JSON.stringify(answers));
-    // Call the SDK method and wait for it to complete
-    redirectToLogin();
+    const cleanUrl = window.location.origin + window.location.pathname;
+    const loginUrl = `/login?next=${encodeURIComponent(cleanUrl)}`;
+    const popup = window.open(loginUrl, 'base44_login', 'width=500,height=650,left=200,top=100');
+    if (!popup) { window.open(loginUrl, '_blank'); return; }
+    const timer = setInterval(() => {
+      if (!popup || popup.closed) { clearInterval(timer); window.location.reload(); }
+    }, 600);
   };
 
   const totalSteps = QUESTIONS.length + 2; // type + questions + confirm

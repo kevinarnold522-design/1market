@@ -12,39 +12,43 @@
       "default": "user"
     },
     "bio": {
-      "type": "string",
-      "description": "User's public bio / about"
+      "type": "string"
     },
     "profile_picture": {
-      "type": "string",
-      "description": "Profile picture URL"
+      "type": "string"
     },
     "cover_photo": {
-      "type": "string",
-      "description": "Cover photo URL for profile page"
+      "type": "string"
     },
     "social_facebook": {
-      "type": "string",
-      "description": "Facebook profile URL"
+      "type": "string"
     },
     "social_instagram": {
-      "type": "string",
-      "description": "Instagram profile URL"
+      "type": "string"
     },
     "social_youtube": {
-      "type": "string",
-      "description": "YouTube channel URL"
+      "type": "string"
     },
     "social_tiktok": {
+      "type": "string"
+    },
+    "user_type": {
       "type": "string",
-      "description": "TikTok profile URL"
+      "enum": [
+        "customer",
+        "seller",
+        "business"
+      ],
+      "default": "customer",
+      "description": "The user's marketplace type. customer=browse only, seller=can list, business=listed under business name"
     },
     "account_type": {
       "type": "string",
       "enum": [
         "customer",
         "business_owner"
-      ]
+      ],
+      "description": "Legacy field \u2014 use user_type instead"
     },
     "is_seller": {
       "type": "boolean",
@@ -67,6 +71,13 @@
       "type": "boolean",
       "default": false
     },
+    "seller_products": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Product/service categories this seller sells"
+    },
     "location": {
       "type": "string"
     },
@@ -81,6 +92,31 @@
     },
     "member_type": {
       "type": "string"
+    },
+    "business_name": {
+      "type": "string",
+      "description": "Business name shown publicly instead of personal name"
+    },
+    "business_type": {
+      "type": "string",
+      "description": "Type of business e.g. food, retail, services"
+    },
+    "business_categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Business product/service categories"
+    },
+    "business_pending": {
+      "type": "boolean",
+      "default": false,
+      "description": "True while business account is awaiting admin approval"
+    },
+    "seller_pending": {
+      "type": "boolean",
+      "default": false,
+      "description": "True while seller account is awaiting admin approval"
     }
   }
 }

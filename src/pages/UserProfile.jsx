@@ -6,7 +6,7 @@ import {
   Heart, Settings, Store, MapPin, Bell, ShoppingCart, CheckCircle,
   History, Edit2, Check, X, AlertCircle, BadgeCheck, Truck, FileText,
   Plus, Pencil, Trash2, Save, Upload, Eye, Globe, Search, BarChart2,
-  Youtube, Instagram, Facebook, Camera, UserPlus, UserCheck
+  Youtube, Instagram, Facebook, Camera, UserPlus, UserCheck, Building2
 } from 'lucide-react';
 import SellerAnalytics from '../components/seller/SellerAnalytics';
 import { base44 } from '@/api/base44Client';
@@ -16,6 +16,8 @@ import OrdersTab from '../components/seller/OrdersTab';
 import VerifiedPartnerBanner from '../components/VerifiedPartnerBanner';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
 import PaymentSettings from '../components/settings/PaymentSettings';
+import BecomeSellerModal from '../components/BecomeSellerModal';
+import BecomeBusinessModal from '../components/BecomeBusinessModal';
 
 // ─── Shared helpers ───────────────────────────────────────────────────────────
 const LISTING_TYPES = ['product','shoes','cars','houses','electronics','clothing','furniture','food','services','other'];
@@ -294,6 +296,8 @@ export default function UserProfile() {
   const urlTab = new URLSearchParams(window.location.search).get('tab') || 'profile';
   const [activeTab, setActiveTab] = useState(urlTab);
   const [showVerifiedBanner, setShowVerifiedBanner] = useState(false);
+  const [showSellerModal, setShowSellerModal] = useState(false);
+  const [showBusinessModal, setShowBusinessModal] = useState(false);
   const [orders, setOrders] = useState([]);
   const [sellerOrders, setSellerOrders] = useState([]);
   const [cart, setCart] = useState([]);
@@ -384,7 +388,11 @@ export default function UserProfile() {
   const memberSince = user?.created_date ? new Date(user.created_date).toLocaleDateString('en-PH', { year: 'numeric', month: 'short' }) : '';
   const completedOrders = orders.filter(o => o.status === 'completed');
   const isVerified = user?.is_verified_seller;
-  const isSeller = user?.is_seller || user?.account_type === 'business_owner';
+  const isSeller = user?.user_type === 'seller' || user?.user_type === 'business' || user?.is_seller || user?.account_type === 'business_owner';
+  const isBusiness = user?.user_type === 'business';
+  const isSellerOnly = user?.user_type === 'seller';
+  const isCustomer = !isSeller && !isBusiness;
+  const isPendingBusiness = user?.business_pending === true;
   const isAdmin = user?.role === 'admin' || user?.email === 'Kevinarnold522@gmail.com';
   const pendingSellerOrders = sellerOrders.filter(o => o.status !== 'completed' && o.status !== 'cancelled');
 
@@ -606,9 +614,12 @@ export default function UserProfile() {
               <div className="flex-1 min-w-0">
                 <UsernameEditor user={user} onSaved={async () => { await reloadUser(); }}/>
                 <div className="flex flex-wrap gap-1 mt-1">
-                  <span className={`px-2 py-0.5 rounded-full font-body text-[9px] font-bold border ${isSeller ? 'bg-[#00D4FF]/15 text-[#00D4FF] border-[#00D4FF]/25' : 'bg-[#2563EB]/20 text-[#60a5fa] border-[#2563EB]/20'}`}>
-                    {isSeller ? '🏪 Business Owner' : '🛍️ Customer'}
+                  <span className={`px-2 py-0.5 rounded-full font-body text-[9px] font-bold border ${isBusiness ? 'bg-purple-500/20 text-purple-300 border-purple-500/25' : isSeller ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25' : 'bg-[#2563EB]/20 text-[#60a5fa] border-[#2563EB]/20'}`}>
+                    {isBusiness ? `🏢 ${user.business_name || 'Business'}` : isSeller ? '🏪 Seller' : '🛍️ Customer'}
                   </span>
+                  {isPendingBusiness && !isBusiness && (
+                    <span className="px-2 py-0.5 rounded-full font-body text-[9px] font-bold border bg-amber-500/15 text-amber-400 border-amber-500/20">⏳ Pending Business</span>
+                  )}
                   <span className="px-2 py-0.5 rounded-full bg-white/5 text-white/30 font-body text-[9px] border border-white/8">Since {memberSince}</span>
                   {isAdmin && (
                     <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-body text-[9px] font-bold border border-amber-500/30">
@@ -731,34 +742,90 @@ export default function UserProfile() {
                   ))}
                 </div>
 
-                {!isSeller ? (
-                  <div className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg,rgba(37,99,235,0.12),rgba(0,212,255,0.06))', border: '1px solid rgba(0,212,255,0.18)' }}>
-                    <div className="flex items-center gap-3">
-                      <Store className="w-8 h-8 text-[#00D4FF] flex-shrink-0"/>
-                      <div className="flex-1">
-                        <p className="font-heading font-bold text-white text-sm">Start Selling on 1Market</p>
-                        <p className="font-body text-[10px] text-white/40 mb-2">List products, services, or businesses for free.</p>
-                        <button onClick={() => saveSettings({ is_seller: true, account_type: 'business_owner', member_type: 'seller' })}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-xs hover:bg-white transition-colors">
-                          <Store className="w-3 h-3"/> Become a Seller →
-                        </button>
+                {/* Account type status cards */}
+                {isCustomer && (
+                  <div className="space-y-2">
+                    {/* Become Seller */}
+                    <div className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg,rgba(16,185,129,0.10),rgba(0,212,255,0.05))', border: '1px solid rgba(16,185,129,0.2)' }}>
+                      <div className="flex items-start gap-3">
+                        <Store className="w-8 h-8 text-emerald-400 flex-shrink-0 mt-0.5"/>
+                        <div className="flex-1">
+                          <p className="font-heading font-bold text-white text-sm">Become a Seller</p>
+                          <p className="font-body text-[10px] text-white/40 mb-2">Post listings under your personal name. Free to join.</p>
+                          <button onClick={() => setShowSellerModal(true)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 text-white rounded-xl font-body font-bold text-xs hover:bg-emerald-400 transition-colors">
+                            <Store className="w-3 h-3"/> Start Selling →
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Become Business */}
+                    <div className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg,rgba(37,99,235,0.10),rgba(0,212,255,0.05))', border: '1px solid rgba(37,99,235,0.2)' }}>
+                      <div className="flex items-start gap-3">
+                        <Building2 className="w-8 h-8 text-[#3E97F1] flex-shrink-0 mt-0.5"/>
+                        <div className="flex-1">
+                          <p className="font-heading font-bold text-white text-sm">Register a Business</p>
+                          <p className="font-body text-[10px] text-white/40 mb-2">List under your business name. Requires 3 documents + admin approval. Get the Verified Partner badge ✅.</p>
+                          <button onClick={() => setShowBusinessModal(true)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB] text-white rounded-xl font-body font-bold text-xs hover:bg-[#3E97F1] transition-colors">
+                            <Building2 className="w-3 h-3"/> Register Business →
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                ) : (
-                  <div className="rounded-2xl p-4" style={{ background: 'rgba(34,197,94,0.07)', border: '1px solid rgba(34,197,94,0.18)' }}>
+                )}
+
+                {isSellerOnly && (
+                  <div className="space-y-2">
+                    <div className="rounded-2xl p-4" style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.18)' }}>
+                      <div className="flex items-center gap-3">
+                        <Store className="w-5 h-5 text-emerald-400"/>
+                        <div>
+                          <p className="font-heading font-bold text-white text-sm flex items-center gap-1">
+                            ✅ Active Seller {isVerified && <BadgeCheck className="w-4 h-4 text-[#2563EB]"/>}
+                          </p>
+                          <p className="font-body text-[10px] text-white/40">{user.seller_location || 'Location not set'} · {(user.seller_products || []).join(', ') || 'No categories set'}</p>
+                        </div>
+                        <button onClick={() => setActiveTab('listings')} className="ml-auto px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 rounded-xl font-body text-xs font-semibold hover:bg-emerald-500/20 transition-colors">
+                          Manage →
+                        </button>
+                      </div>
+                    </div>
+                    {/* Upgrade to business */}
+                    <div className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg,rgba(37,99,235,0.08),rgba(0,212,255,0.04))', border: '1px solid rgba(37,99,235,0.15)' }}>
+                      <div className="flex items-start gap-3">
+                        <Building2 className="w-7 h-7 text-[#3E97F1] flex-shrink-0 mt-0.5"/>
+                        <div className="flex-1">
+                          <p className="font-heading font-bold text-white text-sm">Upgrade to Business Account</p>
+                          <p className="font-body text-[10px] text-white/40 mb-2">List under your business name & get the Verified Partner badge. Requires admin approval.</p>
+                          <button onClick={() => setShowBusinessModal(true)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB] text-white rounded-xl font-body font-bold text-xs hover:bg-[#3E97F1] transition-colors">
+                            <Building2 className="w-3 h-3"/> Register Business →
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {isBusiness && (
+                  <div className="rounded-2xl p-4" style={{ background: 'rgba(37,99,235,0.07)', border: '1px solid rgba(37,99,235,0.18)' }}>
                     <div className="flex items-center gap-3">
-                      <Store className="w-5 h-5 text-green-400"/>
+                      <Building2 className="w-5 h-5 text-[#3E97F1]"/>
                       <div>
                         <p className="font-heading font-bold text-white text-sm flex items-center gap-1">
-                          Active Seller {isVerified && <BadgeCheck className="w-4 h-4 text-[#2563EB]"/>}
+                          🏢 {user.business_name || 'Business Account'} {isVerified && <BadgeCheck className="w-4 h-4 text-[#2563EB]"/>}
                         </p>
-                        <p className="font-body text-[10px] text-white/40">{user.seller_location || 'Location not set'}</p>
+                        <p className="font-body text-[10px] text-white/40">Verified Business · Listings show as {user.business_name}</p>
                       </div>
-                      <button onClick={() => setActiveTab('listings')} className="ml-auto px-3 py-1.5 bg-green-500/10 border border-green-500/25 text-green-400 rounded-xl font-body text-xs font-semibold hover:bg-green-500/20 transition-colors">
-                        Manage →
-                      </button>
                     </div>
+                  </div>
+                )}
+
+                {isPendingBusiness && !isBusiness && (
+                  <div className="flex items-center gap-2 text-amber-400 font-body text-xs p-3 rounded-xl" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
+                    <AlertCircle className="w-3.5 h-3.5 flex-shrink-0"/> Business application for <strong className="mx-1">{user.business_name}</strong> is pending admin review (24–48 hrs)
                   </div>
                 )}
 
@@ -1102,6 +1169,12 @@ export default function UserProfile() {
       <AnimatePresence>
         {showVerifiedBanner && user && (
           <VerifiedPartnerBanner user={user} onClose={() => setShowVerifiedBanner(false)} onSubmit={submitVerification} />
+        )}
+        {showSellerModal && user && (
+          <BecomeSellerModal user={user} onClose={() => setShowSellerModal(false)} onSuccess={async () => { await reloadUser(); showToast('You are now a Seller! 🎉'); }} />
+        )}
+        {showBusinessModal && user && (
+          <BecomeBusinessModal user={user} onClose={() => setShowBusinessModal(false)} onSuccess={async () => { await reloadUser(); showToast('Business application submitted! 📋'); }} />
         )}
       </AnimatePresence>
     </div>

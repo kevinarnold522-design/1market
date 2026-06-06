@@ -620,18 +620,36 @@ export default function Admin() {
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold capitalize ${u.role === 'admin' ? 'bg-amber-100 text-amber-700' : u.role === 'moderator' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
                       {u.role || 'user'}
                     </span>
-                    {(u.is_seller || u.account_type === 'business_owner') && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">Seller</span>
+                    {(u.user_type === 'seller' || u.user_type === 'business' || u.is_seller) && (
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${u.user_type === 'business' ? 'bg-purple-100 text-purple-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                        {u.user_type === 'business' ? `🏢 ${u.business_name || 'Business'}` : '🏪 Seller'}
+                      </span>
                     )}
                   </div>
                   <p className="font-body text-xs text-[#0A192F]/40 truncate">{u.email}</p>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
-                  <select value={u.role || 'user'} onChange={e => setUserRole(u, e.target.value)}
-                    className="border border-[#0A192F]/10 rounded-xl px-2 py-1.5 font-body text-xs text-[#0A192F] bg-white focus:outline-none focus:border-[#2563EB]">
-                    {ROLES.map(r => <option key={r} value={r} className="capitalize">{r}</option>)}
-                  </select>
-                  <button onClick={() => toggleVerified(u)}
+                 <select value={u.role || 'user'} onChange={e => setUserRole(u, e.target.value)}
+                   className="border border-[#0A192F]/10 rounded-xl px-2 py-1.5 font-body text-xs text-[#0A192F] bg-white focus:outline-none focus:border-[#2563EB]">
+                   {ROLES.map(r => <option key={r} value={r} className="capitalize">{r}</option>)}
+                 </select>
+                 <select value={u.user_type || 'customer'} onChange={async e => {
+                     const newType = e.target.value;
+                     const updateData = { user_type: newType };
+                     if (newType === 'seller' || newType === 'business') {
+                       updateData.is_seller = true;
+                       updateData.account_type = 'business_owner';
+                     }
+                     await base44.entities.User.update(u.id, updateData);
+                     showToast(`User type changed to ${newType}`);
+                     loadAll();
+                   }}
+                   className="border border-[#0A192F]/10 rounded-xl px-2 py-1.5 font-body text-xs text-[#0A192F] bg-white focus:outline-none focus:border-[#2563EB]">
+                   <option value="customer">Customer</option>
+                   <option value="seller">Seller</option>
+                   <option value="business">Business</option>
+                 </select>
+                 <button onClick={() => toggleVerified(u)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body text-xs font-bold transition-colors border ${u.is_verified_seller ? 'bg-blue-50 text-[#2563EB] border-blue-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200' : 'bg-[#F8FAFC] text-[#0A192F]/50 border-[#0A192F]/10 hover:bg-blue-50 hover:text-[#2563EB] hover:border-blue-200'}`}
                     title={u.is_verified_seller ? 'Remove Verified Badge' : 'Grant Verified Badge'}>
                     <BadgeCheck className="w-3.5 h-3.5" />
@@ -737,20 +755,38 @@ export default function Admin() {
                 {v.status === 'pending' && (
                   <div className="flex gap-2 flex-shrink-0 flex-wrap">
                     <button onClick={async () => {
-                        await base44.entities.VerificationApplication.update(v.id, { status: 'approved', reviewed_by: 'admin' });
-                        // Grant badge to user
-                        const targetUser = users.find(u => u.email === v.user_email);
-                        if (targetUser) {
-                          await base44.entities.User.update(targetUser.id, { is_verified_seller: true });
-                          try {
-                            await base44.functions.invoke('sendVerifiedPartnerEmail', {
-                              email: v.user_email, name: v.user_name, business_name: v.user_name
-                            });
-                          } catch(e) {}
-                        }
-                        showToast('Verification approved & badge granted!');
-                        loadAll();
-                      }}
+                       await base44.entities.VerificationApplication.update(v.id, { status: 'approved', reviewed_by: 'admin' });
+                       const targetUser = users.find(u => u.email === v.user_email);
+                       if (targetUser) {
+                         const isBizApp = v.account_type === 'business_owner';
+                         const updateData = {
+                           is_verified_seller: true,
+                           ...(isBizApp ? {
+                             user_type: 'business',
+                             is_seller: true,
+                             account_type: 'business_owner',
+                             business_pending: false,
+                             member_type: 'business',
+                           } : {})
+                         };
+                         await base44.entities.User.update(targetUser.id, updateData);
+                         try {
+                           if (isBizApp) {
+                             await base44.functions.invoke('sendBusinessWelcomeEmail', {
+                               email: v.user_email,
+                               name: v.user_name,
+                               business_name: targetUser.business_name || v.user_name,
+                             });
+                           } else {
+                             await base44.functions.invoke('sendVerifiedPartnerEmail', {
+                               email: v.user_email, name: v.user_name, business_name: v.user_name
+                             });
+                           }
+                         } catch(e) {}
+                       }
+                       showToast('Verification approved & badge granted! Email sent.');
+                       loadAll();
+                     }}
                       className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-green-50 border border-green-200 text-green-700 font-body text-xs font-bold hover:bg-green-100 transition-colors">
                       <CheckCircle className="w-3.5 h-3.5" /> Approve
                     </button>
