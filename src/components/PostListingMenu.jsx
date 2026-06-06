@@ -85,8 +85,9 @@ export default function PostListingMenu({ user, compact = false }) {
 
   const handlePost = () => {
     setOpen(false);
+    const isTravel = selectedSection?.key === 'travel';
     setSelectedSection(null);
-    if (selectedSection?.key === 'travel') {
+    if (isTravel) {
       setShowTravelModal(true);
     } else {
       setShowModal(true);

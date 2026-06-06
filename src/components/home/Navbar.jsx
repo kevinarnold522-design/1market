@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Bookmark, Plus, Camera, BarChart2, Building2 } from 'lucide-react';
 import PostListingMenu from '../PostListingMenu';
 import AddListingModal from '../AddListingModal';
+import TravelPostModal from '../travel/TravelPostModal';
 import RewardDashboard from '../RewardDashboard';
 import MetaVerifiedBadge from '../MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -43,6 +44,7 @@ export default function Navbar() {
   const isVerified = user?.is_verified_seller;
   const [uploadingPfp, setUploadingPfp] = useState(false);
   const [quickPostType, setQuickPostType] = useState(null);
+  const [showTravelPost, setShowTravelPost] = useState(false);
 
   useEffect(() => {
     window._openAddListingModal = (type) => setQuickPostType(type);
@@ -353,9 +355,10 @@ export default function Navbar() {
                                 { label: '🛍️ Post an Item for Sale', type: 'product', color: '#8b5cf6' },
                                 { label: '🍜 Post a Food Listing', type: 'food', color: '#f97316' },
                                 { label: '🔧 Post a Service', type: 'services', color: '#3b82f6' },
+                                { label: '✈️ Post Travel / Hotel', type: 'travel', color: '#0ea5e9' },
                               ].map(item => (
                                 <button key={item.type}
-                                  onClick={() => { setProfileOpen(false); window._openAddListingModal?.(item.type); }}
+                                  onClick={() => { setProfileOpen(false); if (item.type === 'travel') { setShowTravelPost(true); } else { window._openAddListingModal?.(item.type); } }}
                                   className="w-full flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-white/8 transition-colors font-body text-xs text-left"
                                   style={{ color: item.color }}>
                                   {item.label}
@@ -517,9 +520,10 @@ export default function Navbar() {
                             { label: '🛍️ Post an Item for Sale', type: 'product' },
                             { label: '🍜 Post a Food Listing', type: 'food' },
                             { label: '🔧 Post a Service', type: 'services' },
+                            { label: '✈️ Post Travel / Hotel', type: 'travel' },
                           ].map(item => (
                             <button key={item.type}
-                              onClick={() => { setMenuOpen(false); setQuickPostType(item.type); }}
+                              onClick={() => { setMenuOpen(false); if (item.type === 'travel') { setShowTravelPost(true); } else { setQuickPostType(item.type); } }}
                               className="block w-full text-left text-white/70 hover:text-white font-body text-sm font-medium py-1.5 transition-colors">
                               {item.label}
                             </button>
@@ -613,6 +617,9 @@ export default function Navbar() {
             defaultType={quickPostType}
             onClose={() => setQuickPostType(null)}
           />
+        )}
+        {showTravelPost && (
+          <TravelPostModal user={user} onClose={() => setShowTravelPost(false)} />
         )}
       </AnimatePresence>
 

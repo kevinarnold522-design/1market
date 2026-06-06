@@ -1,92 +1,138 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, MapPin, Star, Heart, Share2, Plus, Filter } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowLeft, Search, Star, Heart, Share2, ChevronRight, MapPin } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import ParticleBackground from '../components/ParticleBackground';
 import PostListingMenu from '../components/PostListingMenu';
+import { AnimatePresence } from 'framer-motion';
 
 const TRAVEL_CATEGORIES = [
-  { key: 'all',         label: 'All',           icon: '🌏', color: '#0ea5e9' },
-  { key: 'hotel',       label: 'Hotels',        icon: '🏨', color: '#6366f1' },
-  { key: 'resort',      label: 'Resorts',       icon: '🌴', color: '#10b981' },
-  { key: 'flights',     label: 'Flights',       icon: '✈️', color: '#3b82f6' },
-  { key: 'ferry',       label: 'Ferry & Bus',   icon: '⛴️', color: '#0891b2' },
-  { key: 'car_rental',  label: 'Car Rentals',   icon: '🚗', color: '#f59e0b' },
-  { key: 'van_rental',  label: 'Van Rentals',   icon: '🚐', color: '#f97316' },
-  { key: 'tours',       label: 'Tours',         icon: '🗺️', color: '#8b5cf6' },
-  { key: 'island',      label: 'Island Hopping',icon: '🏝️', color: '#06b6d4' },
-  { key: 'camping',     label: 'Camping',       icon: '⛺', color: '#84cc16' },
-  { key: 'hiking',      label: 'Hiking',        icon: '🥾', color: '#78716c' },
-  { key: 'diving',      label: 'Diving',        icon: '🤿', color: '#0284c7' },
-  { key: 'surfing',     label: 'Surfing',       icon: '🏄', color: '#0d9488' },
+  { key: 'hotel',       label: 'Hotels',         icon: '🏨', color: '#6366f1' },
+  { key: 'resort',      label: 'Resorts',         icon: '🌴', color: '#10b981' },
+  { key: 'flights',     label: 'Flights & Tours', icon: '✈️', color: '#3b82f6' },
+  { key: 'ferry',       label: 'Ferry & Bus',      icon: '⛴️', color: '#0891b2' },
+  { key: 'car_rental',  label: 'Car Rentals',      icon: '🚗', color: '#f59e0b' },
+  { key: 'van_rental',  label: 'Van Rentals',      icon: '🚐', color: '#f97316' },
+  { key: 'island',      label: 'Island Hopping',   icon: '🏝️', color: '#06b6d4' },
+  { key: 'camping',     label: 'Camping',          icon: '⛺', color: '#84cc16' },
+  { key: 'hiking',      label: 'Hiking',           icon: '🥾', color: '#78716c' },
+  { key: 'diving',      label: 'Diving',           icon: '🤿', color: '#0284c7' },
+  { key: 'surfing',     label: 'Surfing',          icon: '🏄', color: '#0d9488' },
 ];
 
 const STATIC_LISTINGS = [
-  { id: 's1', type: 'hotel', title: 'The Pen Manila — Deluxe Room', location: 'Makati', area: 'Manila', price: 8500, price_label: '₱8,500/night', image_url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80', rating: 4.9, subcategory: 'Luxury Hotel', description: 'Premier luxury hotel in the heart of Makati CBD. World-class amenities.' },
-  { id: 's2', type: 'resort', title: 'Crimson Resort & Spa Boracay', location: 'Boracay', area: 'Aklan', price: 12000, price_label: '₱12,000/night', image_url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=80', rating: 4.8, subcategory: 'Beach Resort', description: 'Luxury beachfront resort on Boracay\'s white sand beach.' },
-  { id: 's3', type: 'island', title: 'El Nido Island Hopping Tour A', location: 'El Nido', area: 'Palawan', price: 1200, price_label: '₱1,200/person', image_url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80', rating: 4.9, subcategory: 'Island Hopping', description: 'Visit the Big Lagoon, Small Lagoon, Secret Lagoon & Shimizu Island.' },
-  { id: 's4', type: 'diving', title: 'Tubbataha Reef Dive Expedition', location: 'Sulu Sea', area: 'Palawan', price: 45000, price_label: '₱45,000/package', image_url: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80', rating: 5.0, subcategory: 'Scuba Diving', description: 'UNESCO World Heritage dive site. 5-day liveaboard expedition.' },
-  { id: 's5', type: 'surfing', title: 'Siargao Surfing Lessons', location: 'Siargao', area: 'Surigao del Norte', price: 800, price_label: '₱800/session', image_url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80', rating: 4.7, subcategory: 'Surf Lesson', description: 'Professional surf instructors at Cloud 9. All levels welcome.' },
-  { id: 's6', type: 'tours', title: 'Batanes Heritage & Culture Tour', location: 'Batanes', area: 'Batan Island', price: 3500, price_label: '₱3,500/person', image_url: 'https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80', rating: 4.8, subcategory: 'Cultural Tour', description: 'Explore the stone houses, rolling hills and lighthouse of Batanes.' },
-  { id: 's7', type: 'car_rental', title: 'Toyota Innova — Cavite / Manila', location: 'Bacoor', area: 'Cavite', price: 2500, price_label: '₱2,500/day', image_url: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&q=80', rating: 4.6, subcategory: 'Car Rental', description: 'Well-maintained Innova with driver. Airport transfers available.' },
-  { id: 's8', type: 'hiking', title: 'Mt. Pulag Summit Trek', location: 'Kabayan', area: 'Benguet', price: 2800, price_label: '₱2,800/person', image_url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80', rating: 4.9, subcategory: 'Mountain Trek', description: 'Highest peak in Luzon. Sea of clouds experience. 2-day trek.' },
-  { id: 's9', type: 'camping', title: 'Masungi Georeserve Camping', location: 'Rizal', area: 'Baras', price: 1800, price_label: '₱1,800/night', image_url: 'https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?w=600&q=80', rating: 4.8, subcategory: 'Glamping', description: 'Eco-camping in a protected forest. Guided trek included.' },
-  { id: 's10', type: 'hotel', title: 'Seda BGC — Superior Room', location: 'BGC', area: 'Taguig', price: 5500, price_label: '₱5,500/night', image_url: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80', rating: 4.7, subcategory: 'Business Hotel', description: 'Modern business hotel in the heart of BGC. Infinity pool.' },
-  { id: 's11', type: 'ferry', title: 'Manila–Coron Fast Ferry', location: 'Manila', area: 'Batangas Port', price: 1800, price_label: '₱1,800/person', image_url: 'https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c?w=600&q=80', rating: 4.5, subcategory: 'Ferry Package', description: 'Comfortable fast craft from Batangas to Coron, Palawan.' },
-  { id: 's12', type: 'van_rental', title: '10-Seater Van — Tagaytay Day Tour', location: 'Tagaytay', area: 'Cavite', price: 3800, price_label: '₱3,800/day', image_url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80', rating: 4.6, subcategory: 'Van Rental', description: 'Air-conditioned van with driver. Perfect for family/group trips.' },
+  { id: 's1',  type: 'hotel',      title: 'The Peninsula Manila — Deluxe Suite',   location: 'Makati',   area: 'Ayala Ave',      price: 8500,  price_label: '₱8,500/night',   image_url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80',  rating: 4.9, subcategory: 'Luxury Hotel',    description: 'Premier luxury hotel in the heart of Makati CBD.' },
+  { id: 's10', type: 'hotel',      title: 'Seda BGC — Superior Room',              location: 'Taguig',   area: 'BGC',            price: 5500,  price_label: '₱5,500/night',   image_url: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80',  rating: 4.7, subcategory: 'Business Hotel',  description: 'Modern business hotel in the heart of BGC. Infinity pool.' },
+  { id: 's13', type: 'hotel',      title: 'Microtel by Wyndham Cavite',            location: 'Cavite',   area: 'Gen. Trias',     price: 2800,  price_label: '₱2,800/night',   image_url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=80',  rating: 4.4, subcategory: 'Budget Hotel',    description: 'Comfortable stay near Imus and Bacoor.' },
+  { id: 's14', type: 'hotel',      title: 'Acacia Hotel Manila — Deluxe Room',    location: 'Alabang',  area: 'Muntinlupa',     price: 4200,  price_label: '₱4,200/night',   image_url: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&q=80',  rating: 4.6, subcategory: 'Boutique Hotel',  description: 'Tropical-themed hotel in Alabang. Great for families.' },
+
+  { id: 's2',  type: 'resort',     title: 'Crimson Resort & Spa Boracay',         location: 'Boracay',  area: 'White Beach',    price: 12000, price_label: '₱12,000/night',  image_url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',  rating: 4.8, subcategory: 'Beach Resort',    description: 'Luxury beachfront resort on Boracay\'s white sand beach.' },
+  { id: 's15', type: 'resort',     title: 'Club Paradise Palawan',                location: 'Palawan',  area: 'Coron',          price: 9500,  price_label: '₱9,500/night',   image_url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80',  rating: 4.9, subcategory: 'Island Resort',   description: 'Eco-island resort with pristine coral reefs.' },
+  { id: 's16', type: 'resort',     title: 'Plantation Bay Resort Mactan',         location: 'Cebu',     area: 'Mactan',         price: 7800,  price_label: '₱7,800/night',   image_url: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80',  rating: 4.7, subcategory: 'Lagoon Resort',   description: 'Largest saltwater lagoon resort in Southeast Asia.' },
+
+  { id: 's3',  type: 'island',     title: 'El Nido Island Hopping Tour A',        location: 'Palawan',  area: 'El Nido',        price: 1200,  price_label: '₱1,200/person',  image_url: 'https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80',  rating: 4.9, subcategory: 'Island Hopping', description: 'Big Lagoon, Small Lagoon, Secret Lagoon & Shimizu Island.' },
+  { id: 's17', type: 'island',     title: 'Coron Ultimate Island Hopping',        location: 'Palawan',  area: 'Coron',          price: 1500,  price_label: '₱1,500/person',  image_url: 'https://images.unsplash.com/photo-1516815231560-8f41ec531527?w=600&q=80',  rating: 4.8, subcategory: 'Island Hopping', description: 'Kayangan Lake, Twin Lagoon, Barracuda Lake.' },
+
+  { id: 's4',  type: 'diving',     title: 'Tubbataha Reef Dive Expedition',       location: 'Palawan',  area: 'Sulu Sea',       price: 45000, price_label: '₱45,000/pkg',    image_url: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80',  rating: 5.0, subcategory: 'Scuba Diving',   description: 'UNESCO World Heritage dive site. 5-day liveaboard.' },
+  { id: 's18', type: 'diving',     title: 'Anilao Diving Package — Batangas',     location: 'Batangas', area: 'Anilao',         price: 3500,  price_label: '₱3,500/person',  image_url: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80',  rating: 4.7, subcategory: 'Scuba Diving',   description: 'Macro diving capital of the world. Day trip from Manila.' },
+
+  { id: 's5',  type: 'surfing',    title: 'Siargao Surfing Lessons',              location: 'Siargao',  area: 'Cloud 9',        price: 800,   price_label: '₱800/session',   image_url: 'https://images.unsplash.com/photo-1453728013993-6d66e9c9123a?w=600&q=80',  rating: 4.7, subcategory: 'Surf Lesson',    description: 'Professional instructors at Cloud 9. All levels welcome.' },
+  { id: 's19', type: 'surfing',    title: 'La Union Surf Camp',                   location: 'La Union', area: 'San Juan',       price: 600,   price_label: '₱600/session',   image_url: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=600&q=80',  rating: 4.5, subcategory: 'Surf Lesson',    description: 'Weekend surf getaway 5 hours from Manila.' },
+
+  { id: 's6',  type: 'flights',    title: 'Batanes Heritage & Culture Tour',      location: 'Batanes',  area: 'Batan Island',   price: 3500,  price_label: '₱3,500/person',  image_url: 'https://images.unsplash.com/photo-1543731068-7e0f5beff43a?w=600&q=80',  rating: 4.8, subcategory: 'Cultural Tour',  description: 'Stone houses, rolling hills and lighthouse of Batanes.' },
+  { id: 's20', type: 'flights',    title: 'Cebu–Palawan Package Tour 5D4N',       location: 'Cebu',     area: 'Cebu & Palawan', price: 18000, price_label: '₱18,000/person', image_url: 'https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?w=600&q=80',  rating: 4.6, subcategory: 'Tour Package',   description: 'Island-hopping, canyoneering, freediving. Flights incl.' },
+
+  { id: 's7',  type: 'car_rental', title: 'Toyota Innova — Cavite / Manila',      location: 'Cavite',   area: 'Bacoor',         price: 2500,  price_label: '₱2,500/day',     image_url: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&q=80',  rating: 4.6, subcategory: 'Car Rental',    description: 'Well-maintained Innova with driver. Airport transfers.' },
+  { id: 's21', type: 'car_rental', title: 'Toyota Fortuner 4x4 — Baguio',        location: 'Baguio',   area: 'Session Road',   price: 3200,  price_label: '₱3,200/day',     image_url: 'https://images.unsplash.com/photo-1597007066704-67bf2068d5b2?w=600&q=80',  rating: 4.5, subcategory: 'Car Rental',    description: '4x4 SUV perfect for Cordillera mountain routes.' },
+
+  { id: 's12', type: 'van_rental', title: '10-Seater Van — Tagaytay Day Tour',    location: 'Tagaytay', area: 'Cavite',         price: 3800,  price_label: '₱3,800/day',     image_url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',  rating: 4.6, subcategory: 'Van Rental',    description: 'Air-conditioned van with driver for group trips.' },
+  { id: 's22', type: 'van_rental', title: '15-Seater L300 — Batangas Day Trip',   location: 'Batangas', area: 'Batangas Port',  price: 4500,  price_label: '₱4,500/day',     image_url: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=600&q=80',  rating: 4.4, subcategory: 'Van Rental',    description: 'Large L300 van. Perfect for beach and island trips.' },
+
+  { id: 's11', type: 'ferry',      title: 'Manila–Coron Fast Ferry',              location: 'Manila',   area: 'Batangas Port',  price: 1800,  price_label: '₱1,800/person',  image_url: 'https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c?w=600&q=80',  rating: 4.5, subcategory: 'Ferry Package', description: 'Fast craft from Batangas to Coron, Palawan.' },
+  { id: 's23', type: 'ferry',      title: 'Cebu–Bohol Super Cat Ferry',           location: 'Cebu',     area: 'Pier 1',         price: 750,   price_label: '₱750/person',    image_url: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80',  rating: 4.3, subcategory: 'Ferry',         description: 'Fast ferry to Bohol. 2-hour scenic trip.' },
+
+  { id: 's8',  type: 'hiking',     title: 'Mt. Pulag Summit Trek',                location: 'Benguet',  area: 'Kabayan',        price: 2800,  price_label: '₱2,800/person',  image_url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80',  rating: 4.9, subcategory: 'Mountain Trek', description: 'Highest peak in Luzon. Sea of clouds experience.' },
+  { id: 's24', type: 'hiking',     title: 'Mt. Apo Expedition — 3D2N',           location: 'Davao',    area: 'Kapatagan',      price: 5500,  price_label: '₱5,500/person',  image_url: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=600&q=80',  rating: 4.8, subcategory: 'Mountain Trek', description: 'Highest peak in the Philippines. Guided expedition.' },
+
+  { id: 's9',  type: 'camping',    title: 'Masungi Georeserve Camping',           location: 'Rizal',    area: 'Baras',          price: 1800,  price_label: '₱1,800/night',   image_url: 'https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?w=600&q=80',  rating: 4.8, subcategory: 'Glamping',      description: 'Eco-camping in a protected forest. Guided trek included.' },
+  { id: 's25', type: 'camping',    title: 'Cagbalete Island Camping — Quezon',    location: 'Quezon',   area: 'Cagbalete',      price: 900,   price_label: '₱900/person',    image_url: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&q=80',  rating: 4.6, subcategory: 'Beach Camping', description: 'Camp under the stars on a pristine white sand island.' },
 ];
 
 function TravelCard({ listing, onShare }) {
   const [hearted, setHearted] = useState(false);
+  const cat = TRAVEL_CATEGORIES.find(c => c.key === listing.type);
+  const color = cat?.color || '#0ea5e9';
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4 }}
-      className="rounded-2xl overflow-hidden cursor-pointer group"
-      style={{ background: 'linear-gradient(160deg,#0f172a,#1e293b)', border: '1px solid rgba(255,255,255,0.08)' }}
-    >
-      <div className="relative h-44 overflow-hidden">
-        <img
-          src={listing.image_url}
-          alt={listing.title}
+    <div className="flex-shrink-0 w-56 rounded-2xl overflow-hidden group cursor-pointer transition-all duration-300 hover:-translate-y-1"
+      style={{ background: 'linear-gradient(160deg,#0f172a,#1e293b)', border: `1px solid ${color}22` }}>
+      <div className="relative h-36 overflow-hidden">
+        <img src={listing.image_url} alt={listing.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          onError={e => { e.target.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80'; }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent" />
-        <button
-          onClick={e => { e.stopPropagation(); setHearted(h => !h); }}
-          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center"
-        >
-          <Heart className={`w-4 h-4 ${hearted ? 'fill-red-400 text-red-400' : 'text-white'}`} />
+          onError={e => { e.target.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80'; }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] to-transparent" />
+        <button onClick={e => { e.stopPropagation(); setHearted(h => !h); }}
+          className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center">
+          <Heart className={`w-3.5 h-3.5 ${hearted ? 'fill-red-400 text-red-400' : 'text-white'}`} />
         </button>
-        <button
-          onClick={e => { e.stopPropagation(); onShare(listing); }}
-          className="absolute top-2 left-2 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center"
-        >
-          <Share2 className="w-4 h-4 text-white" />
+        <button onClick={e => { e.stopPropagation(); onShare(listing); }}
+          className="absolute top-2 left-2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center">
+          <Share2 className="w-3.5 h-3.5 text-white" />
         </button>
-        <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-bold text-white bg-black/50 backdrop-blur-sm flex items-center gap-1">
-          <MapPin className="w-2.5 h-2.5" />{listing.area || listing.location}
+        <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full text-[9px] font-bold text-white bg-black/50 flex items-center gap-1">
+          <MapPin className="w-2 h-2" />{listing.area}
         </span>
       </div>
-      <div className="p-4">
-        <p className="font-body text-[10px] text-sky-400 font-semibold mb-1 uppercase tracking-wider">{listing.subcategory}</p>
-        <h3 className="font-heading font-bold text-sm text-white leading-tight mb-1 line-clamp-2">{listing.title}</h3>
-        <p className="font-body text-xs text-white/40 mb-3 line-clamp-2">{listing.description}</p>
+      <div className="p-3">
+        <p className="font-body text-[9px] font-bold uppercase tracking-wider mb-0.5" style={{ color }}>{listing.subcategory}</p>
+        <h3 className="font-heading font-bold text-xs text-white leading-snug mb-1 line-clamp-2">{listing.title}</h3>
         <div className="flex items-center justify-between">
-          <div>
-            <p className="font-heading font-bold text-base text-amber-400">{listing.price_label}</p>
-          </div>
-          <div className="flex items-center gap-1">
+          <p className="font-heading font-bold text-sm text-amber-400">{listing.price_label}</p>
+          <div className="flex items-center gap-0.5">
             <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-            <span className="font-body text-xs text-white/60">{listing.rating?.toFixed(1) || '—'}</span>
+            <span className="font-body text-[10px] text-white/60">{listing.rating?.toFixed(1)}</span>
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
+  );
+}
+
+function HorizontalRow({ category, listings, onShare }) {
+  const rowRef = useRef(null);
+  const scroll = (dir) => { rowRef.current?.scrollBy({ left: dir * 240, behavior: 'smooth' }); };
+
+  if (listings.length === 0) return null;
+
+  return (
+    <div className="mb-10">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">{category.icon}</span>
+          <h2 className="font-heading font-bold text-lg text-white">{category.label}</h2>
+          <span className="px-2 py-0.5 rounded-full font-body text-[10px] font-bold text-white/60"
+            style={{ background: `${category.color}22`, border: `1px solid ${category.color}33` }}>
+            {listings.length}
+          </span>
+        </div>
+        <div className="flex items-center gap-1">
+          <button onClick={() => scroll(-1)}
+            className="w-7 h-7 rounded-full flex items-center justify-center transition-colors hover:bg-white/10"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <ChevronRight className="w-3.5 h-3.5 text-white/50 rotate-180" />
+          </button>
+          <button onClick={() => scroll(1)}
+            className="w-7 h-7 rounded-full flex items-center justify-center transition-colors hover:bg-white/10"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <ChevronRight className="w-3.5 h-3.5 text-white/50" />
+          </button>
+        </div>
+      </div>
+      <div ref={rowRef} className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
+        {listings.map(l => <TravelCard key={l.id} listing={l} onShare={onShare} />)}
+      </div>
+    </div>
   );
 }
 
@@ -95,12 +141,6 @@ function ShareModal({ listing, onClose }) {
   const text = encodeURIComponent(`Check out: ${listing.title}`);
   const encodedUrl = encodeURIComponent(url);
   const [copied, setCopied] = useState(false);
-
-  const copy = () => {
-    navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -127,7 +167,7 @@ function ShareModal({ listing, onClose }) {
             <span className="font-body text-[10px] text-white/70">Telegram</span>
           </a>
         </div>
-        <button onClick={copy}
+        <button onClick={() => { navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
           className="w-full py-2 rounded-xl font-body text-sm text-white transition-all"
           style={{ background: copied ? 'rgba(34,197,94,0.2)' : 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
           {copied ? '✓ Copied!' : '🔗 Copy Link'}
@@ -138,7 +178,6 @@ function ShareModal({ listing, onClose }) {
 }
 
 export default function Travel() {
-  const [activeCategory, setActiveCategory] = useState('all');
   const [search, setSearch] = useState('');
   const [dbListings, setDbListings] = useState([]);
   const [shareTarget, setShareTarget] = useState(null);
@@ -148,68 +187,65 @@ export default function Travel() {
     base44.auth.isAuthenticated().then(ok => {
       if (ok) base44.auth.me().then(u => setCurrentUser(u)).catch(() => {});
     }).catch(() => {});
-
     base44.entities.Listing.filter({ main_category: 'travel', is_active: true }, '-created_date', 100)
-      .then(res => setDbListings(res))
-      .catch(() => {});
+      .then(res => setDbListings(res)).catch(() => {});
   }, []);
 
-  const SUBTYPE_MAP = {
-    hotel:       ['hotel'],
-    resort:      ['resort'],
-    flights:     ['flights'],
-    ferry:       ['ferry'],
-    car_rental:  ['vehicle_rental', 'car_rental'],
-    van_rental:  ['vehicle_rental', 'van_rental'],
-    tours:       ['tours', 'other'],
-    island:      ['island'],
-    camping:     ['camping'],
-    hiking:      ['hiking'],
-    diving:      ['diving'],
-    surfing:     ['surfing'],
+  const normalizeType = (l) => {
+    const sub = (l.subcategory || '').toLowerCase();
+    const t = (l.type || '').toLowerCase();
+    if (sub.includes('hotel') || t === 'hotel') return 'hotel';
+    if (sub.includes('resort') || t === 'resort') return 'resort';
+    if (sub.includes('flight') || sub.includes('tour') || t === 'flights') return 'flights';
+    if (sub.includes('ferry') || sub.includes('bus') || t === 'ferry') return 'ferry';
+    if (sub.includes('car') && sub.includes('rent')) return 'car_rental';
+    if (sub.includes('van') && sub.includes('rent')) return 'van_rental';
+    if (sub.includes('island')) return 'island';
+    if (sub.includes('camp')) return 'camping';
+    if (sub.includes('hik') || sub.includes('trek')) return 'hiking';
+    if (sub.includes('div') || sub.includes('snorkel')) return 'diving';
+    if (sub.includes('surf')) return 'surfing';
+    return t;
   };
 
   const allListings = [
     ...STATIC_LISTINGS,
     ...dbListings.map(l => ({
       id: l.id,
-      type: l.subcategory?.toLowerCase().replace(/\s+/g, '_') || l.type,
+      type: normalizeType(l),
       title: l.title,
       location: l.location,
       area: l.area || l.location,
       price: l.price,
       price_label: l.price_label || `₱${Number(l.price || 0).toLocaleString()}`,
       image_url: l.image_url,
-      rating: l.rating || 0,
+      rating: l.rating || 4.5,
       subcategory: l.subcategory || '',
       description: l.description || '',
     }))
   ];
 
-  const filtered = allListings.filter(l => {
-    const typeMatch = activeCategory === 'all' ||
-      l.type === activeCategory ||
-      (SUBTYPE_MAP[activeCategory] || []).some(t => l.type?.includes(t));
+  const searchLower = search.toLowerCase();
+  const filtered = search
+    ? allListings.filter(l =>
+        l.title.toLowerCase().includes(searchLower) ||
+        l.location.toLowerCase().includes(searchLower) ||
+        (l.area || '').toLowerCase().includes(searchLower) ||
+        (l.subcategory || '').toLowerCase().includes(searchLower)
+      )
+    : allListings;
 
-    const searchLower = search.toLowerCase();
-    const searchMatch = !search ||
-      l.title.toLowerCase().includes(searchLower) ||
-      l.location.toLowerCase().includes(searchLower) ||
-      (l.area || '').toLowerCase().includes(searchLower) ||
-      (l.subcategory || '').toLowerCase().includes(searchLower);
-
-    return typeMatch && searchMatch;
-  });
+  const byCategory = (key) => filtered.filter(l => l.type === key);
 
   return (
     <div className="min-h-screen" style={{ background: '#070F1A' }}>
       <ParticleBackground />
 
       {/* Hero */}
-      <div className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg,#0c4a6e 0%,#0369a1 50%,#0284c7 100%)' }}>
+      <div className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg,#0c4a6e 0%,#0369a1 60%,#0284c7 100%)' }}>
         <div className="absolute inset-0 opacity-20"
           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
-        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-16">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-14">
           <Link to="/" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors mb-6 font-body text-sm">
             <ArrowLeft className="w-4 h-4" /> Back to 1Market.ph
           </Link>
@@ -222,60 +258,61 @@ export default function Travel() {
               <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Explore the Philippines</h1>
               <PostListingMenu user={currentUser} compact={false} />
             </div>
-            <p className="font-body text-sm text-white/60 max-w-xl">Hotels, resorts, tours, island hopping, diving, surfing and more — all in one place.</p>
+            <p className="font-body text-sm text-white/60 max-w-xl">Hotels, resorts, tours, island hopping, diving, surfing and more.</p>
           </motion.div>
-
-          {/* Search */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-6 relative max-w-xl">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-            <input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Search destinations, activities, hotels..."
+            <input value={search} onChange={e => setSearch(e.target.value)}
+              placeholder="Search destinations, hotels, activities..."
               className="w-full pl-11 pr-4 py-3 rounded-xl text-white placeholder-white/30 font-body text-sm focus:outline-none"
-              style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)' }}
-            />
+              style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)' }} />
           </motion.div>
         </div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-8">
-        {/* Category Bar */}
-        <div className="flex gap-2 mb-8 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
-          {TRAVEL_CATEGORIES.map(cat => (
-            <button
-              key={cat.key}
-              onClick={() => setActiveCategory(cat.key)}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-full font-body text-xs font-semibold whitespace-nowrap transition-all border flex-shrink-0"
-              style={activeCategory === cat.key
-                ? { background: cat.color, color: '#fff', borderColor: cat.color, boxShadow: `0 0 14px ${cat.color}66` }
-                : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.1)' }}
-            >
-              <span>{cat.icon}</span> {cat.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Count */}
-        <p className="font-body text-sm text-white/40 mb-5">{filtered.length} listings found</p>
-
-        {/* Grid */}
-        {filtered.length > 0 ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {filtered.map(listing => (
-              <TravelCard key={listing.id} listing={listing} onShare={setShareTarget} />
+      {/* Category pill scroll */}
+      <div className="sticky top-[88px] z-30 bg-[#070F1A]/95 backdrop-blur-md border-b border-white/8">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="flex gap-2 py-3 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+            {TRAVEL_CATEGORIES.map(cat => (
+              <a key={cat.key} href={`#${cat.key}`}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-body text-xs font-semibold whitespace-nowrap transition-all border flex-shrink-0 hover:scale-105"
+                style={{ background: `${cat.color}18`, color: cat.color, borderColor: `${cat.color}44` }}>
+                <span>{cat.icon}</span> {cat.label}
+              </a>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* Feeds */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-10">
+        {search ? (
+          <>
+            <p className="font-body text-sm text-white/40 mb-6">{filtered.length} results for "{search}"</p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {filtered.map(l => (
+                <div key={l.id} className="w-full"><TravelCard listing={l} onShare={setShareTarget} /></div>
+              ))}
+            </div>
+            {filtered.length === 0 && (
+              <div className="text-center py-20">
+                <p className="text-4xl mb-3">🌏</p>
+                <p className="font-body text-white/30">No listings found for "{search}"</p>
+              </div>
+            )}
+          </>
         ) : (
-          <div className="text-center py-20">
-            <p className="text-4xl mb-3">🌏</p>
-            <p className="font-body text-white/30">No listings found. Try a different category or search.</p>
-          </div>
+          TRAVEL_CATEGORIES.map(cat => (
+            <div key={cat.key} id={cat.key}>
+              <HorizontalRow category={cat} listings={byCategory(cat.key)} onShare={setShareTarget} />
+            </div>
+          ))
         )}
 
         {/* CTA */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="mt-14 rounded-2xl p-8 text-center"
+          className="mt-8 rounded-2xl p-8 text-center"
           style={{ background: 'linear-gradient(135deg,#0c4a6e,#0284c7)', border: '1px solid rgba(14,165,233,0.3)' }}>
           <h2 className="font-heading font-bold text-2xl text-white mb-2">List Your Travel Business</h2>
           <p className="font-body text-sm text-white/60 mb-5 max-w-md mx-auto">Hotels, tours, rentals, activities — reach thousands of Filipino travelers.</p>
