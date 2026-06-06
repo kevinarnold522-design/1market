@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { redirectToLogin } from '@/lib/loginRedirect';
 import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Building2 } from 'lucide-react';
 import PostListingMenu from '../PostListingMenu';
 import RewardDashboard from '../RewardDashboard';
@@ -424,7 +425,7 @@ export default function Navbar() {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <button onClick={() => base44.auth.redirectToLogin(window.location.href)}
+                  <button onClick={redirectToLogin}
                     className="px-4 py-2 border border-white/20 text-white/80 rounded-lg font-body font-bold text-xs hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
                     Login
                   </button>
@@ -536,7 +537,7 @@ export default function Navbar() {
                       Explore Listings
                     </Link>
                     <div className="flex gap-2 mt-2">
-                      <button onClick={() => { setMenuOpen(false); base44.auth.redirectToLogin(window.location.href); }}
+                      <button onClick={() => { setMenuOpen(false); redirectToLogin(); }}
                         className="flex-1 py-2.5 border border-white/20 text-white rounded-xl font-body font-bold text-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
                         Login
                       </button>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingBag, Store, Users, Check, ArrowRight, Shield, Star, Package, Briefcase } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { redirectToLogin } from '@/lib/loginRedirect';
 
 const ACCOUNT_TYPES = [
   {
@@ -97,7 +98,7 @@ export default function AccountTypeModal({ onClose }) {
     sessionStorage.setItem('signup_account_type', selectedType);
     sessionStorage.setItem('signup_preferences', JSON.stringify(answers));
     // Call the SDK method and wait for it to complete
-    await base44.auth.redirectToLogin(window.location.href);
+    redirectToLogin();
   };
 
   const totalSteps = QUESTIONS.length + 2; // type + questions + confirm

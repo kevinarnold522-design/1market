@@ -4,6 +4,7 @@ import { ArrowDown } from 'lucide-react';
 import HeroAnimation3D from './HeroAnimation3D';
 import AccountTypeModal from '../AccountTypeModal';
 import { base44 } from '@/api/base44Client';
+import { redirectToLogin } from '@/lib/loginRedirect';
 
 export default function HeroSection({ heroImage }) {
   const [isAuth, setIsAuth] = useState(false);
@@ -72,7 +73,7 @@ export default function HeroSection({ heroImage }) {
                 {!isAuth ? (
                   <>
                     <motion.button
-                      onClick={() => base44.auth.redirectToLogin(window.location.href)}
+                      onClick={redirectToLogin}
                       className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl font-body font-bold text-sm text-white border border-white/25 hover:border-[#00D4FF] hover:text-[#00D4FF] transition-all"
                       whileHover={{ scale: 1.04 }}>
                       Login
