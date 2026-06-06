@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, Phone, MessageSquare, Star, AlertCircle, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
-import AddListingModal from '../components/AddListingModal';
+import AddListingModal from '../components/AddListingModal.jsx';
 import { base44 } from '@/api/base44Client';
 
 const SUBCATEGORIES = [
@@ -105,7 +105,7 @@ function ServiceCard({ svc, onContact }) {
         <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/40 to-transparent" />
         <div className="absolute top-3 left-3">
           <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${svc.location === 'Manila' ? 'bg-blue-100 text-blue-700' : svc.location === 'Cavite' ? 'bg-emerald-100 text-emerald-700' : 'bg-purple-100 text-purple-700'}`}>
-            📍 {svc.area}
+            {svc.area}
           </span>
         </div>
         <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/90 rounded-full px-2 py-0.5">
@@ -237,7 +237,8 @@ export default function Services() {
         <div className="flex gap-2 flex-wrap mb-8">
           {SUBCATEGORIES.map(sc => (
             <button key={sc.key} onClick={() => setActiveCategory(sc.key)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-body font-semibold text-sm transition-all border ${activeCategory === sc.key ? 'bg-[#0033CC] text-white border-[#0033CC]' : 'bg-white border-[#0A192F]/5 hover:border-[#0A192F]/20 text-[#0A192F]/70'}`}>
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-body font-semibold text-sm transition-all border ${activeCategory === sc.key ? 'border-[#3E97F1] text-white' : 'border-white/10 text-white/60 hover:border-white/25'}`}
+              style={activeCategory === sc.key ? { background: 'rgba(62,151,241,0.2)' } : { background: 'rgba(255,255,255,0.04)' }}>
               {sc.label}
             </button>
           ))}
@@ -247,7 +248,10 @@ export default function Services() {
         <div className="flex gap-2 mb-6">
           {['All', 'Manila', 'Cavite'].map(loc => (
             <button key={loc} onClick={() => setLocationFilter(loc)}
-              className={`px-4 py-2 rounded-xl font-body font-semibold text-sm transition-all ${locationFilter === loc ? 'bg-[#0A192F] text-white' : 'bg-white border border-[#0A192F]/10 text-[#0A192F]/60 hover:border-[#0A192F]/20'}`}>
+              className="px-4 py-2 rounded-xl font-body font-semibold text-sm transition-all border"
+              style={locationFilter === loc
+                ? { background: 'rgba(62,151,241,0.2)', borderColor: '#3E97F1', color: '#fff' }
+                : { background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}>
               {loc}
             </button>
           ))}

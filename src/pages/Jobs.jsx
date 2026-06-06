@@ -16,23 +16,23 @@ const THEME = {
 };
 
 const JOB_SUBCATEGORIES = [
-  { key: 'all',        label: 'All Jobs',       icon: '💼', color: '#3E97F1' },
-  { key: 'tech',       label: 'Tech & IT',      icon: '💻', color: '#6366f1' },
-  { key: 'bpo',        label: 'BPO / Call Center', icon: '🎧', color: '#0ea5e9' },
-  { key: 'healthcare', label: 'Healthcare',     icon: '🏥', color: '#10b981' },
-  { key: 'operations', label: 'Operations & HR',icon: '🏢', color: '#f59e0b' },
-  { key: 'finance',    label: 'Finance & Banking', icon: '💰', color: '#22c55e' },
-  { key: 'engineering',label: 'Engineering',    icon: '⚙️', color: '#64748b' },
-  { key: 'sales',      label: 'Sales & Marketing', icon: '📣', color: '#f97316' },
-  { key: 'creative',   label: 'Creative & Design', icon: '🎨', color: '#ec4899' },
-  { key: 'education',  label: 'Education',      icon: '📚', color: '#8b5cf6' },
-  { key: 'food',       label: 'Food & Resto',   icon: '🍳', color: '#ef4444' },
-  { key: 'drivers',    label: 'Drivers & Delivery', icon: '🚗', color: '#14b8a6' },
-  { key: 'domestic',   label: 'Household',      icon: '🏡', color: '#84cc16' },
-  { key: 'remote',     label: 'Remote / Online',icon: '🌐', color: '#06b6d4' },
-  { key: 'skilled',    label: 'Skilled Trades', icon: '🔧', color: '#a78bfa' },
-  { key: 'events',     label: 'Events & Promo', icon: '🎉', color: '#fb923c' },
-  { key: 'general',    label: 'General / Blue Collar', icon: '👷', color: '#94a3b8' },
+  { key: 'all',        label: 'All Jobs',            color: '#3E97F1' },
+  { key: 'tech',       label: 'Tech & IT',           color: '#6366f1' },
+  { key: 'bpo',        label: 'BPO / Call Center',   color: '#0ea5e9' },
+  { key: 'healthcare', label: 'Healthcare',          color: '#10b981' },
+  { key: 'operations', label: 'Operations & HR',     color: '#f59e0b' },
+  { key: 'finance',    label: 'Finance & Banking',   color: '#22c55e' },
+  { key: 'engineering',label: 'Engineering',         color: '#64748b' },
+  { key: 'sales',      label: 'Sales & Marketing',   color: '#f97316' },
+  { key: 'creative',   label: 'Creative & Design',   color: '#ec4899' },
+  { key: 'education',  label: 'Education',           color: '#8b5cf6' },
+  { key: 'food',       label: 'Food & Resto',        color: '#ef4444' },
+  { key: 'drivers',    label: 'Drivers & Delivery',  color: '#14b8a6' },
+  { key: 'domestic',   label: 'Household',           color: '#84cc16' },
+  { key: 'remote',     label: 'Remote / Online',     color: '#06b6d4' },
+  { key: 'skilled',    label: 'Skilled Trades',      color: '#a78bfa' },
+  { key: 'events',     label: 'Events & Promo',      color: '#fb923c' },
+  { key: 'general',    label: 'General / Blue Collar',color: '#94a3b8' },
 ];
 
 const STATIC_JOBS = [
@@ -54,7 +54,7 @@ function getCatColor(type) {
   return JOB_SUBCATEGORIES.find(s => s.key === type)?.color || '#3E97F1';
 }
 function getCatIcon(type) {
-  return JOB_SUBCATEGORIES.find(s => s.key === type)?.icon || '💼';
+  return JOB_SUBCATEGORIES.find(s => s.key === type)?.label?.slice(0,2) || '';
 }
 
 function JobCard({ job, onApply }) {
@@ -79,9 +79,9 @@ function JobCard({ job, onApply }) {
         />
         <div className="absolute inset-0" style={{ background: `linear-gradient(to top, #011640 0%, transparent 60%)` }} />
         {/* Category badge */}
-        <span className="absolute top-2 left-2 px-2.5 py-1 rounded-full text-[10px] font-bold backdrop-blur-sm text-white flex items-center gap-1"
+        <span className="absolute top-2 left-2 px-2.5 py-1 rounded-full text-[10px] font-bold backdrop-blur-sm text-white"
           style={{ background: `${catColor}CC` }}>
-          {catIcon} {job.type_label || job.type}
+          {job.type_label || job.type}
         </span>
         {job.urgent && (
           <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[9px] font-bold bg-red-500 text-white">
@@ -142,7 +142,7 @@ function ApplyModal({ job, onClose }) {
             <p className="font-body text-xs text-white/50">{job.desc}</p>
           </div>
           <div className="p-3 rounded-xl" style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)' }}>
-            <p className="font-body text-[10px] text-amber-400">💰 Pay: <strong>{job.pay}</strong></p>
+            <p className="font-body text-[10px] text-amber-400">Pay: <strong>{job.pay}</strong></p>
           </div>
           <div className="space-y-2">
             <p className="font-body text-[10px] text-white/40 uppercase tracking-wider">Contact / Apply via:</p>
@@ -156,7 +156,7 @@ function ApplyModal({ job, onClose }) {
               <a href={`mailto:${job.contact}`}
                 className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body text-xs font-bold text-white transition-all"
                 style={{ background: `linear-gradient(135deg,${THEME.primary},${THEME.accent})` }}>
-                📧 {job.contact}
+                {job.contact}
               </a>
             )}
           </div>
@@ -284,7 +284,7 @@ export default function Jobs() {
               style={activeType === sc.key
                 ? { background: sc.color, color: '#fff', borderColor: sc.color, boxShadow: `0 0 12px ${sc.color}66` }
                 : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', borderColor: 'rgba(255,255,255,0.12)' }}>
-              {sc.icon} {sc.label}
+              {sc.label}
             </button>
           ))}
         </div>

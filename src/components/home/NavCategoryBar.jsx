@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 import { SUBCATEGORIES } from '../../lib/listingCategories';
 
 const NAV_CATEGORIES = [
-  { label: '🛍️ Buy & Sell', href: '/buysell', types: ['product', 'electronics', 'clothing', 'shoes', 'cars', 'furniture', 'houses', 'mods', 'other'], color: '#00D4FF' },
-  { label: '🍜 Food',        href: '/food',    types: ['food'],                                color: '#f97316' },
-  { label: '✈️ Travel',      href: '/travel',  types: ['hotel', 'flights', 'vehicle_rental'], color: '#22d3ee' },
-  { label: '🏠 For Rent',    href: '/rent',    types: ['rent_lease'],                          color: '#a78bfa' },
-  { label: '🔧 Services',    href: '/services',types: ['services'],                            color: '#34d399' },
-  { label: '💼 Jobs',        href: '/jobs',    types: ['jobs'],                               color: '#fbbf24' },
+  { label: 'Buy & Sell', href: '/buysell', types: ['product', 'electronics', 'clothing', 'shoes', 'cars', 'furniture', 'houses', 'mods', 'other'], color: '#3E97F1' },
+  { label: 'Food',        href: '/food',    types: ['food'],                                color: '#f97316' },
+  { label: 'Travel',      href: '/travel',  types: ['hotel', 'flights', 'vehicle_rental'], color: '#22d3ee' },
+  { label: 'For Rent',    href: '/rent',    types: ['rent_lease'],                          color: '#a78bfa' },
+  { label: 'Services',    href: '/services',types: ['services'],                            color: '#34d399' },
+  { label: 'Jobs',        href: '/jobs',    types: ['jobs'],                               color: '#fbbf24' },
 ];
 
 const TYPE_LABELS = {

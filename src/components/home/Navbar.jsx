@@ -507,11 +507,11 @@ export default function Navbar() {
                       <>
                         <Link to="/profile?tab=profile" onClick={() => setMenuOpen(false)}
                           className="block text-[#3E97F1] font-body text-sm font-semibold py-2 transition-colors">
-                          🏪 Become a Seller
+                          Become a Seller
                         </Link>
                         <Link to="/profile?tab=profile" onClick={() => setMenuOpen(false)}
                           className="block text-[#3E97F1] font-body text-sm font-semibold py-2 transition-colors">
-                          🏢 Register a Business
+                          Register a Business
                         </Link>
                       </>
                     )}

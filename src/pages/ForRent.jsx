@@ -2,19 +2,20 @@ import React, { useState, useEffect } from 'react';
 import ParticleBackground from '../components/ParticleBackground';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, ExternalLink, Phone, MessageSquare, AlertCircle, Plus } from 'lucide-react';
+import { ArrowLeft, Search, ExternalLink, Phone, MessageSquare, AlertCircle, Plus, Home, Building2, Car, Wrench, CalendarDays, Grid3X3 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
+import AddListingModal from '../components/AddListingModal.jsx';
 import { base44 } from '@/api/base44Client';
 import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
 
 const SUBCATEGORIES = [
-  { key: 'all', label: 'All Rentals', icon: '🏘️', desc: 'Browse everything' },
-  { key: 'residential', label: 'Residential', icon: '🏠', desc: 'Houses, condos, apartments' },
-  { key: 'commercial', label: 'Commercial', icon: '🏢', desc: 'Offices, retail, warehouses' },
-  { key: 'vehicles', label: 'Vehicles', icon: '🚗', desc: 'Cars, vans, motorcycles' },
-  { key: 'equipment', label: 'Equipment', icon: '🔧', desc: 'Tools, sound, cameras' },
-  { key: 'events', label: 'Event Venues', icon: '🎉', desc: 'Halls, function rooms' },
+  { key: 'all', label: 'All Rentals', Icon: Grid3X3, color: '#3E97F1', desc: 'Browse everything' },
+  { key: 'residential', label: 'Residential', Icon: Home, color: '#10b981', desc: 'Houses, condos, apartments' },
+  { key: 'commercial', label: 'Commercial', Icon: Building2, color: '#3E97F1', desc: 'Offices, retail, warehouses' },
+  { key: 'vehicles', label: 'Vehicles', Icon: Car, color: '#f59e0b', desc: 'Cars, vans, motorcycles' },
+  { key: 'equipment', label: 'Equipment', Icon: Wrench, color: '#8b5cf6', desc: 'Tools, sound, cameras' },
+  { key: 'events', label: 'Event Venues', Icon: CalendarDays, color: '#ec4899', desc: 'Halls, function rooms' },
 ];
 
 const SPACE_TYPES = ['All Types', 'Room', 'House', 'Bungalow', 'Dorm', 'Condo', '2 Stories', '3 Stories', 'Land'];
@@ -130,6 +131,7 @@ export default function ForRent() {
   const [search, setSearch] = useState('');
   const [contactItem, setContactItem] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
+  const [showAddListing, setShowAddListing] = useState(false);
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSeller, setIsSeller] = useState(false);
@@ -185,13 +187,20 @@ export default function ForRent() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-8">
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-8">
-          {SUBCATEGORIES.map(sc => (
-            <button key={sc.key} onClick={() => setActiveCategory(sc.key)}
-              className={`p-3 rounded-2xl text-left transition-all border ${activeCategory === sc.key ? 'bg-[#00D4FF]/20 border-[#00D4FF] text-white' : 'bg-white/5 border-white/10 hover:border-white/25 text-white'}`}>
-              <div className="text-xl mb-1">{sc.icon}</div>
-              <p className="font-heading font-bold text-xs">{sc.label}</p>
-            </button>
-          ))}
+          {SUBCATEGORIES.map(sc => {
+            const Icon = sc.Icon;
+            const isActive = activeCategory === sc.key;
+            return (
+              <button key={sc.key} onClick={() => setActiveCategory(sc.key)}
+                className="p-3 rounded-2xl text-left transition-all border"
+                style={isActive
+                  ? { background: `${sc.color}22`, borderColor: sc.color, boxShadow: `0 0 10px ${sc.color}33` }
+                  : { background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)' }}>
+                <Icon className="w-5 h-5 mb-1.5" style={{ color: isActive ? sc.color : 'rgba(255,255,255,0.4)' }} />
+                <p className="font-heading font-bold text-xs text-white">{sc.label}</p>
+              </button>
+            );
+          })}
         </div>
 
         <div className="flex gap-2 mb-4 flex-wrap">
@@ -217,9 +226,8 @@ export default function ForRent() {
         {/* Add Listing button for admins/sellers */}
         {(isAdmin || isSeller) && (
           <div className="mb-6">
-            <button onClick={() => {}} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
-              style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}
-              title="Use the + button to add a listing">
+            <button onClick={() => setShowAddListing(true)} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
+              style={{ background: 'linear-gradient(135deg,#0033CC,#3E97F1)', boxShadow: '0 0 16px rgba(62,151,241,0.3)' }}>
               <Plus className="w-4 h-4" /> Add Rental Listing
             </button>
           </div>
@@ -246,6 +254,7 @@ export default function ForRent() {
       <AnimatePresence>
         {contactItem && <ContactModal item={contactItem} onClose={() => setContactItem(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
+        {showAddListing && <AddListingModal onClose={() => setShowAddListing(false)} defaultType="rent_lease" user={user} />}
       </AnimatePresence>
 
       <AdminQuickAddFAB defaultMode="listing" forceSubcategory="residential" />
