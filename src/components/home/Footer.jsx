@@ -151,6 +151,23 @@ export default function Footer() {
           ))}
         </div>
 
+        {/* Trust badges */}
+        <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
+          {[
+            { icon: '🔒', label: 'SSL Secured' },
+            { icon: '🇵🇭', label: 'Made in PH' },
+            { icon: '✅', label: 'DPA 2012 Compliant' },
+            { icon: '⚡', label: 'Fast & Reliable' },
+            { icon: '💬', label: '24/7 Support' },
+          ].map((b, i) => (
+            <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <span className="text-sm">{b.icon}</span>
+              <span className="font-body text-[10px] text-white/40">{b.label}</span>
+            </div>
+          ))}
+        </div>
+
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/8">
           <p className="font-body text-xs text-white/25 text-center sm:text-left">

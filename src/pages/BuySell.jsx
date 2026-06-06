@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import StarField from '../components/StarField';
 import AdminEditOverlay from '../components/AdminEditOverlay';
 import SubcategorySplash from '../components/SubcategorySplash';
+import ScrollToTop from '../components/ScrollToTop';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, X, ChevronDown, Phone, MessageSquare, AlertCircle, ZoomIn, Heart, ShoppingCart, Pencil, Store, Flag } from 'lucide-react';
 import ReportModal from '../components/ReportModal';
@@ -504,6 +505,7 @@ export default function BuySell() {
         const items = await base44.entities.Listing.list('-created_date', 100);
         setDbListings(items.filter(l => l.is_active));
       }} />
+      <ScrollToTop />
 
       <AnimatePresence>
         {toast && (

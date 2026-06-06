@@ -40,6 +40,7 @@ export default function Navbar() {
   const isAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
   const isSeller = user?.is_seller || user?.account_type === 'business_owner';
   const isVerified = user?.is_verified_seller;
+  const adminLabel = isAdmin ? 'CEO & Founder' : user?.account_type === 'business_owner' ? 'Business Owner' : isSeller ? 'Seller' : 'Customer';
   const [uploadingPfp, setUploadingPfp] = useState(false);
 
 
@@ -112,11 +113,12 @@ export default function Navbar() {
 
   const initials = user ? (user.full_name || user.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
   const memberSince = user?.created_date ? new Date(user.created_date).toLocaleDateString('en-PH', { year: 'numeric', month: 'short' }) : '';
-  const accountTypeLabel = isAdmin ? 'CEO & Founder' : user?.account_type === 'business_owner' ? 'Business Owner' : isSeller ? 'Seller' : 'Customer';
   const accountTypeBadge = user?.account_type === 'business_owner'
     ? 'bg-[#00D4FF]/15 text-[#00D4FF] border-[#00D4FF]/25'
     : isSeller
     ? 'bg-purple-500/15 text-purple-400 border-purple-500/25'
+    : isAdmin
+    ? 'bg-amber-500/20 text-amber-400 border-amber-500/25'
     : 'bg-[#2563EB]/15 text-[#60a5fa] border-[#2563EB]/20';
 
   return (
@@ -129,7 +131,7 @@ export default function Navbar() {
             <span className="font-body text-xs sm:text-sm font-semibold">
               Welcome back, <strong>{user.full_name?.split(' ')[0] || 'Member'}</strong>!
             </span>
-            <span className="px-3 py-1 bg-white/15 rounded-full text-xs font-bold border border-white/20">{accountTypeLabel}</span>
+            <span className="px-3 py-1 bg-white/15 rounded-full text-xs font-bold border border-white/20">{adminLabel}</span>
             {(isAdmin || isVerified) && <MetaVerifiedBadge size="sm" label={isAdmin ? 'CEO & Founder' : 'Verified Partner'} />}
           </div>
         ) : (
@@ -223,7 +225,7 @@ export default function Navbar() {
                         <p className="font-body text-xs text-white font-semibold leading-tight max-w-[80px] truncate">{user.full_name?.split(' ')[0] || 'Account'}</p>
                         {(isAdmin || isVerified) && <MetaVerifiedBadge size="xs" label="" />}
                       </div>
-                      <p className="font-body text-[9px] text-[#00D4FF] leading-tight">{isAdmin ? 'CEO & Founder' : user.account_type === 'business_owner' ? 'Business Owner' : isSeller ? 'Seller' : 'Customer'}</p>
+                      <p className="font-body text-[9px] text-[#00D4FF] leading-tight">{adminLabel}</p>
                     </div>
                     <ChevronDown className="w-3 h-3 text-white/40" />
                   </button>
@@ -256,7 +258,7 @@ export default function Navbar() {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1 mb-1 flex-wrap">
                                 <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>
-                                  {accountTypeLabel}
+                                  {adminLabel}
                                 </span>
                                 {(isVerified || isAdmin) && (
                                   <MetaVerifiedBadge size="sm" label="Verified Partner" />
@@ -406,7 +408,7 @@ export default function Navbar() {
                               <p className="px-3 py-1 font-body text-[9px] text-amber-400/60 uppercase tracking-wider font-bold">Admin Panel</p>
                               <Link to="/admin" onClick={() => setProfileOpen(false)}
                                 className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-amber-500/10 transition-colors text-amber-400 font-body text-xs">
-                                <Settings className="w-3.5 h-3.5" /> Admin Dashboard
+                                <Settings className="w-3.5 h-3.5" /> CEO Dashboard
                                 <MetaVerifiedBadge size="xs" label="" />
                               </Link>
                               <button
@@ -470,7 +472,7 @@ export default function Navbar() {
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-1 mb-0.5">
-                          <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>{accountTypeLabel}</span>
+                          <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>{adminLabel}</span>
                           {(isAdmin || isVerified) && <MetaVerifiedBadge size="xs" label="" />}
                         </div>
                         <p className="font-body text-xs font-bold text-white truncate">{user.full_name || 'Account'}</p>
