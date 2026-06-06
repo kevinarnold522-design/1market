@@ -10,6 +10,7 @@ const NAV_CATEGORIES = [
   { label: 'For Rent',    href: '/rent',    types: ['rent_lease'],                          color: '#a78bfa' },
   { label: 'Services',    href: '/services',types: ['services'],                            color: '#34d399' },
   { label: 'Jobs',        href: '/jobs',    types: ['jobs'],                               color: '#fbbf24' },
+  { label: 'Explore',    href: '/explore', types: [],                                      color: '#00D4FF' },
 ];
 
 const TYPE_LABELS = {
@@ -81,16 +82,26 @@ export default function NavCategoryBar() {
     <div ref={ref} className="flex items-center gap-0.5 flex-wrap">
       {NAV_CATEGORIES.map(cat => (
         <div key={cat.label} className="relative">
-          <button
-            onMouseEnter={() => setOpen(cat.label)}
-            onClick={() => setOpen(open === cat.label ? null : cat.label)}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-xl font-body text-xs font-semibold text-white/70 hover:text-white hover:bg-white/8 transition-all whitespace-nowrap"
-          >
-            {cat.label}
-            <ChevronDown className={`w-3 h-3 transition-transform ${open === cat.label ? 'rotate-180' : ''}`} />
-          </button>
-          {open === cat.label && (
-            <CategoryDropdown cat={cat} onClose={() => setOpen(null)} />
+          {cat.types.length === 0 ? (
+            <Link to={cat.href}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-xl font-body text-xs font-semibold transition-all whitespace-nowrap"
+              style={{ color: cat.color }}>
+              {cat.label}
+            </Link>
+          ) : (
+            <>
+              <button
+                onMouseEnter={() => setOpen(cat.label)}
+                onClick={() => setOpen(open === cat.label ? null : cat.label)}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-xl font-body text-xs font-semibold text-white/70 hover:text-white hover:bg-white/8 transition-all whitespace-nowrap"
+              >
+                {cat.label}
+                <ChevronDown className={`w-3 h-3 transition-transform ${open === cat.label ? 'rotate-180' : ''}`} />
+              </button>
+              {open === cat.label && (
+                <CategoryDropdown cat={cat} onClose={() => setOpen(null)} />
+              )}
+            </>
           )}
         </div>
       ))}

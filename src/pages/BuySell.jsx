@@ -487,6 +487,17 @@ export default function BuySell() {
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
         {editItem && isAdmin && <AdminEditModal item={editItem} onClose={() => setEditItem(null)} onSave={handleAdminEditSave} />}
         {reportItem && user && <ReportModal listing={reportItem} user={user} onClose={() => { setReportItem(null); }} />}
+        {showAddListing && (
+          <AddListingModal
+            user={user}
+            defaultType="product"
+            onClose={async () => {
+              setShowAddListing(false);
+              const items = await base44.entities.Listing.list('-created_date', 100);
+              setDbListings(items.filter(l => l.is_active));
+            }}
+          />
+        )}
       </AnimatePresence>
 
       <AdminQuickAddFAB defaultMode="listing" onAdded={async () => {

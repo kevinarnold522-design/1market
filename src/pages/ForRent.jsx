@@ -212,8 +212,10 @@ export default function ForRent() {
       setIsAdmin(u?.role === 'admin' || u?.role === 'moderator');
       setIsSeller(u?.is_seller || u?.account_type === 'business_owner');
     }).catch(() => {});
-    base44.entities.Listing.filter({ type: 'rent_lease', is_active: true }, '-created_date', 50)
-      .then(items => setDbListings(items)).catch(() => {});
+    Promise.all([
+      base44.entities.Listing.filter({ type: 'rent_lease', is_active: true }, '-created_date', 50),
+      base44.entities.Listing.filter({ type: 'vehicle_rental', is_active: true }, '-created_date', 30),
+    ]).then(([rentals, vehicles]) => setDbListings([...rentals, ...vehicles])).catch(() => {});
   }, []);
 
   const allRentals = [
@@ -332,7 +334,7 @@ export default function ForRent() {
       <AnimatePresence>
         {contactItem && <ContactModal item={contactItem} onClose={() => setContactItem(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
-        {showAddListing && <AddListingModal onClose={() => { setShowAddListing(false); base44.entities.Listing.filter({ type: 'rent_lease', is_active: true }, '-created_date', 50).then(items => setDbListings(items)).catch(() => {}); }} defaultType="rent_lease" defaultSubcategory={addDefaultSub} user={user} />}
+        {showAddListing && <AddListingModal onClose={async () => { setShowAddListing(false); const [r, v] = await Promise.all([base44.entities.Listing.filter({ type: 'rent_lease', is_active: true }, '-created_date', 50), base44.entities.Listing.filter({ type: 'vehicle_rental', is_active: true }, '-created_date', 30)]); setDbListings([...r, ...v]); }} defaultType="rent_lease" defaultSubcategory={addDefaultSub} user={user} />}
         {editItem && editItem.id && (
           <AdminListingEditModal item={editItem} isAdmin={isAdmin} onClose={() => setEditItem(null)}
             onSave={async () => { setEditItem(null); showToast('Updated!'); const items = await base44.entities.Listing.filter({ type: 'rent_lease', is_active: true }, '-created_date', 50); setDbListings(items); }}

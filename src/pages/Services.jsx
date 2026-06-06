@@ -92,6 +92,55 @@ const services = [
   { id: 55, type: 'transport', title: 'Van for Hire – Day Tour', provider: 'VanKo Tours', rate: '₱2,500–₱5,000/day', location: 'Both', area: 'Manila & Cavite', stars: 4.6, reviews: 61, image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=500&q=80', desc: 'Air-conditioned van with driver. Tagaytay, Batangas, Manila tour packages.', contact: '09151234321' },
 ];
 
+function ServiceEditModal({ item, onClose, onSave, onDelete }) {
+  const [title, setTitle] = useState(item.title || '');
+  const [rate, setRate] = useState(item.rate || item.price_label || '');
+  const [saving, setSaving] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    await base44.entities.Listing.update(item.id, { title, price_label: rate });
+    setSaving(false);
+    onSave();
+  };
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0A192F]/85 backdrop-blur-sm" onClick={onClose}>
+      <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} onClick={e => e.stopPropagation()}
+        className="w-full max-w-sm rounded-2xl p-5 shadow-2xl space-y-3"
+        style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)' }}>
+        <div className="flex items-center justify-between">
+          <h3 className="font-heading font-bold text-white text-sm">Edit Service Listing</h3>
+          <button onClick={onClose}><X className="w-4 h-4 text-white/40" /></button>
+        </div>
+        <div>
+          <label className="font-body text-[10px] text-white/40 uppercase tracking-wider mb-1 block">Title</label>
+          <input value={title} onChange={e => setTitle(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 font-body text-sm text-white focus:outline-none focus:border-[#00D4FF]" />
+        </div>
+        <div>
+          <label className="font-body text-[10px] text-white/40 uppercase tracking-wider mb-1 block">Rate / Price Label</label>
+          <input value={rate} onChange={e => setRate(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 font-body text-sm text-white focus:outline-none focus:border-[#00D4FF]" />
+        </div>
+        <button onClick={handleSave} disabled={saving} className="w-full py-2.5 bg-[#2563EB] text-white rounded-xl font-body font-bold text-sm hover:bg-[#00D4FF] hover:text-[#0A192F] transition-colors disabled:opacity-50">
+          {saving ? 'Saving...' : 'Save Changes'}
+        </button>
+        {confirming ? (
+          <div className="flex gap-2">
+            <button onClick={onDelete} className="flex-1 py-2 bg-red-500 text-white rounded-xl font-body font-bold text-xs">Confirm Delete</button>
+            <button onClick={() => setConfirming(false)} className="flex-1 py-2 bg-white/10 text-white/60 rounded-xl font-body text-xs">Cancel</button>
+          </div>
+        ) : (
+          <button onClick={() => setConfirming(true)} className="w-full flex items-center justify-center gap-2 py-2 border border-red-500/30 text-red-400 rounded-xl font-body text-xs font-bold hover:bg-red-500/10 transition-colors">
+            <Trash2 className="w-3.5 h-3.5" /> Delete Listing
+          </button>
+        )}
+      </motion.div>
+    </motion.div>
+  );
+}
+
 function ServiceCard({ svc, onContact, user, isAdmin, onEdit }) {
   const [touched, setTouched] = React.useState(false);
   const isOwner = user && svc.id && (svc.email_contact === user.email);
@@ -184,6 +233,7 @@ export default function Services() {
   const [currentUser, setCurrentUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [editItem, setEditItem] = useState(null);
+  const [dbListings, setDbListings] = useState([]);
   const [toast, setToast] = useState('');
 
   useEffect(() => {
@@ -196,11 +246,27 @@ export default function Services() {
         setCanAddListing(allowed);
       }).catch(() => {});
     }).catch(() => {});
+    base44.entities.Listing.filter({ type: 'services', is_active: true }, '-created_date', 50)
+      .then(items => setDbListings(items)).catch(() => {});
   }, []);
 
   const typeMap = { legal: 'professional', finance: 'professional', education: 'professional', media: 'tech' };
 
-  const filtered = services.filter(s => {
+  const allServices = [
+    ...services,
+    ...dbListings.map(l => ({
+      id: l.id, type: l.subcategory?.toLowerCase().replace(/\s+/g, '') || 'home',
+      title: l.title, provider: l.seller_name || '1Market Listing',
+      rate: l.price_label || (l.price ? `₱${Number(l.price).toLocaleString()}` : 'Contact for rate'),
+      location: l.location === 'Cavite' ? 'Cavite' : 'Manila', area: l.area || l.location,
+      stars: l.rating || 5.0, reviews: l.rating_count || 0,
+      image: l.image_url || 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=500&q=80',
+      desc: l.description || '', contact: l.phone || l.email_contact || '',
+      isDb: true,
+    }))
+  ];
+
+  const filtered = allServices.filter(s => {
     const resolvedCat = typeMap[activeCategory] || activeCategory;
     const matchCat = !activeCategory || activeCategory === 'all' || s.type === resolvedCat;
     const matchLoc = locationFilter === 'All' || s.location === locationFilter || s.location === 'Both';
@@ -276,7 +342,7 @@ export default function Services() {
 
         {filtered.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {filtered.map(svc => <ServiceCard key={svc.id} svc={svc} onContact={setContactItem} user={currentUser} isAdmin={isAdmin} onEdit={setEditItem} />)}
+            {filtered.map(svc => <ServiceCard key={svc.id} svc={svc} onContact={setContactItem} user={currentUser} isAdmin={isAdmin} onEdit={(s) => s.isDb ? setEditItem(s) : null} />)}
           </div>
         ) : (
           <div className="text-center py-24"><p className="font-body text-[#0A192F]/40">No services found. Try a different filter.</p></div>
@@ -295,23 +361,11 @@ export default function Services() {
       <AnimatePresence>
         {contactItem && <ContactModal item={contactItem} onClose={() => setContactItem(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
-        {showAddListing && <AddListingModal onClose={() => setShowAddListing(false)} defaultType="services" defaultSubcategory={addDefaultSub} user={currentUser} />}
+        {showAddListing && <AddListingModal onClose={async () => { setShowAddListing(false); const items = await base44.entities.Listing.filter({ type: 'services', is_active: true }, '-created_date', 50); setDbListings(items); }} defaultType="services" defaultSubcategory={addDefaultSub} user={currentUser} />}
         {editItem && editItem.id && isAdmin && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0A192F]/80 backdrop-blur-sm" onClick={() => setEditItem(null)}>
-            <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} onClick={e => e.stopPropagation()}
-              className="w-full max-w-sm bg-white rounded-2xl p-5 shadow-2xl space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-heading font-bold text-[#0A192F] text-sm">Admin: Edit Listing</h3>
-                <button onClick={() => setEditItem(null)}><X className="w-4 h-4 text-[#0A192F]/40" /></button>
-              </div>
-              <p className="font-body text-xs text-[#0A192F]/50 truncate">{editItem.title}</p>
-              <button onClick={async () => { if (!window.confirm('Delete this listing?')) return; await base44.entities.Listing.delete(editItem.id); setEditItem(null); setToast('Deleted.'); setTimeout(() => setToast(''), 2500); }}
-                className="w-full flex items-center justify-center gap-2 py-2.5 bg-red-50 border border-red-200 text-red-600 rounded-xl font-body text-sm font-bold hover:bg-red-100 transition-colors">
-                <Trash2 className="w-4 h-4" /> Delete Listing
-              </button>
-            </motion.div>
-          </motion.div>
+          <ServiceEditModal item={editItem} onClose={() => setEditItem(null)}
+            onSave={async () => { setEditItem(null); const items = await base44.entities.Listing.filter({ type: 'services', is_active: true }, '-created_date', 50); setDbListings(items); setToast('Updated!'); setTimeout(() => setToast(''), 2500); }}
+            onDelete={async () => { await base44.entities.Listing.delete(editItem.id); setEditItem(null); setDbListings(prev => prev.filter(l => l.id !== editItem.id)); setToast('Deleted.'); setTimeout(() => setToast(''), 2500); }} />
         )}
       </AnimatePresence>
       <AnimatePresence>
