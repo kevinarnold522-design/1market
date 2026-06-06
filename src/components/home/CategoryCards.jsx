@@ -3,14 +3,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useFireTransition, FireOverlay } from './FireTransition';
 import CategoryTransitionOverlay, { getTransitionTypeForHref } from '../transitions/CategoryTransitionOverlay';
 import { useNavigate } from 'react-router-dom';
+import { Plane, UtensilsCrossed, ShoppingBag, Home, Wrench, Briefcase } from 'lucide-react';
 
 const CATEGORIES = [
-  { label: 'Travel', href: '/travel', icon: '✈️', desc: 'Hotels, Tours & Transport', accent: '#60a5fa', suit: '♠', gradient: 'linear-gradient(135deg,#0f2050,#1d4ed8)' },
-  { label: 'Food', href: '/food', icon: '🍽️', desc: 'Restaurants, Cafes & Home Cooks', accent: '#f87171', suit: '♥', gradient: 'linear-gradient(135deg,#3b0000,#b91c1c)' },
-  { label: 'Buy & Sell', href: '/buysell', icon: '🛍️', desc: 'Shoes, Cars, Gadgets & More', accent: '#c084fc', suit: '♦', gradient: 'linear-gradient(135deg,#1e0050,#7e22ce)' },
-  { label: 'For Rent', href: '/rent', icon: '🏠', desc: 'Homes, Vehicles & Equipment', accent: '#4ade80', suit: '♣', gradient: 'linear-gradient(135deg,#002a00,#15803d)' },
-  { label: 'Services', href: '/services', icon: '🛠️', desc: 'Plumbers, Tutors & Freelancers', accent: '#fb923c', suit: '♠', gradient: 'linear-gradient(135deg,#2a1000,#c2410c)' },
-  { label: 'Jobs', href: '/jobs', icon: '💼', desc: 'Hiring, Freelance & Remote Work', accent: '#fbbf24', suit: '♦', gradient: 'linear-gradient(135deg,#1a1000,#b45309)' },
+  { label: 'Travel', href: '/travel', Icon: Plane, desc: 'Hotels, Tours & Transport', accent: '#60a5fa', suit: '♠', gradient: 'linear-gradient(135deg,#0f2050,#1d4ed8)' },
+  { label: 'Food', href: '/food', Icon: UtensilsCrossed, desc: 'Restaurants, Cafes & Home Cooks', accent: '#f87171', suit: '♥', gradient: 'linear-gradient(135deg,#3b0000,#b91c1c)' },
+  { label: 'Buy & Sell', href: '/buysell', Icon: ShoppingBag, desc: 'Shoes, Cars, Gadgets & More', accent: '#c084fc', suit: '♦', gradient: 'linear-gradient(135deg,#1e0050,#7e22ce)' },
+  { label: 'Rent & Lease', href: '/rent', Icon: Home, desc: 'Homes, Vehicles & Equipment', accent: '#4ade80', suit: '♣', gradient: 'linear-gradient(135deg,#002a00,#15803d)' },
+  { label: 'Services', href: '/services', Icon: Wrench, desc: 'Plumbers, Tutors & Freelancers', accent: '#fb923c', suit: '♠', gradient: 'linear-gradient(135deg,#2a1000,#c2410c)' },
+  { label: 'Jobs', href: '/jobs', Icon: Briefcase, desc: 'Hiring, Freelance & Remote Work', accent: '#fbbf24', suit: '♦', gradient: 'linear-gradient(135deg,#1a1000,#b45309)' },
 ];
 
 const CARD_VALUES = ['A', 'K', 'Q', 'J', '10', '9'];
@@ -37,6 +38,7 @@ function CasinoCategoryCard({ cat, index, onFire }) {
   };
 
   const reset = () => setTilt({ x: 0, y: 0 });
+  const { Icon } = cat;
 
   return (
     <motion.div
@@ -71,7 +73,6 @@ function CasinoCategoryCard({ cat, index, onFire }) {
             }}
           >
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
-            {/* Corner pip */}
             <div className="absolute top-2 left-2.5 text-[9px] font-black leading-none" style={{ color: cat.accent }}>
               <div>{CARD_VALUES[cardIdx]}</div>
               <div>{cat.suit}</div>
@@ -81,7 +82,9 @@ function CasinoCategoryCard({ cat, index, onFire }) {
               <div>{cat.suit}</div>
             </div>
             <div className="relative z-10 flex flex-col items-center justify-center h-full p-5">
-              <div className="text-5xl mb-3 drop-shadow-lg">{cat.icon}</div>
+              <div className="mb-3 p-3 rounded-2xl" style={{ background: `${cat.accent}22` }}>
+                <Icon className="w-9 h-9 drop-shadow-lg" style={{ color: cat.accent }} />
+              </div>
               <p className="font-heading font-bold text-lg text-white leading-tight">{cat.label}</p>
               <p className="font-body text-xs mt-1.5 text-white/70 leading-snug">{cat.desc}</p>
             </div>

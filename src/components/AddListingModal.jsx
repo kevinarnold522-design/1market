@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, Trash2, ChevronLeft } from 'lucide-react';
+import { X, Upload, Trash2, ChevronLeft, Plane, UtensilsCrossed, ShoppingBag, Home, Wrench, Briefcase } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 // ─── Main Categories ───────────────────────────────────────────────
 const MAIN_CATEGORIES = [
-  { value: 'travel',   label: 'Travel',       icon: '✈️',  color: '#0ea5e9' },
-  { value: 'food',     label: 'Food',         icon: '🍜',  color: '#f97316' },
-  { value: 'buysell',  label: 'Buy & Sell',   icon: '🛍️',  color: '#8b5cf6' },
-  { value: 'rent',     label: 'Rent / Lease', icon: '🏠',  color: '#10b981' },
-  { value: 'services', label: 'Services',     icon: '🔧',  color: '#3b82f6' },
-  { value: 'jobs',     label: 'Jobs',         icon: '💼',  color: '#f59e0b' },
+  { value: 'travel',   label: 'Travel',       Icon: Plane,          color: '#0ea5e9' },
+  { value: 'food',     label: 'Food',         Icon: UtensilsCrossed, color: '#f97316' },
+  { value: 'buysell',  label: 'Buy & Sell',   Icon: ShoppingBag,    color: '#8b5cf6' },
+  { value: 'rent',     label: 'Rent & Lease', Icon: Home,           color: '#10b981' },
+  { value: 'services', label: 'Services',     Icon: Wrench,         color: '#3b82f6' },
+  { value: 'jobs',     label: 'Jobs',         Icon: Briefcase,      color: '#f59e0b' },
 ];
 
 // ─── Type options per main category ────────────────────────────────
@@ -363,7 +363,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                           borderColor: form.main_category === mc.value ? mc.color : 'rgba(255,255,255,0.1)',
                           boxShadow: form.main_category === mc.value ? `0 0 16px ${mc.color}44` : 'none',
                         }}>
-                        <span className="text-3xl">{mc.icon}</span>
+                        <mc.Icon className="w-7 h-7" style={{ color: mc.color }} />
                         <span className="font-body font-semibold text-xs text-white">{mc.label}</span>
                       </button>
                     ))}

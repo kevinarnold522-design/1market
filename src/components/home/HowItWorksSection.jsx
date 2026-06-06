@@ -1,24 +1,24 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { ClipboardList, Megaphone, Phone, DollarSign, Search, Star, MessageCircle, PartyPopper, ShoppingCart, Store } from 'lucide-react';
 
 const BUSINESS_STEPS = [
-  { icon: '📋', step: 'Step 1', title: 'Create Your Listing', desc: 'Sign up free and post your business, products, or services in minutes. Add photos, pricing, and contact info.' },
-  { icon: '📣', step: 'Step 2', title: 'Get Discovered', desc: '1Market promotes your listing to buyers across Manila & Cavite. Your business appears in search and category feeds.' },
-  { icon: '📞', step: 'Step 3', title: 'Connect with Buyers', desc: 'Buyers contact you directly via call, SMS, or 1Market chat. No middleman. No commission fees.' },
-  { icon: '💵', step: 'Step 4', title: 'Close the Deal', desc: 'Confirm the sale or service, collect payment your way, and earn your first 1Market review from a happy customer.' },
+  { Icon: ClipboardList, step: 'Step 1', title: 'Create Your Listing', desc: 'Sign up free and post your business, products, or services in minutes. Add photos, pricing, and contact info.' },
+  { Icon: Megaphone, step: 'Step 2', title: 'Get Discovered', desc: '1Market promotes your listing to buyers across Manila & Cavite. Your business appears in search and category feeds.' },
+  { Icon: Phone, step: 'Step 3', title: 'Connect with Buyers', desc: 'Buyers contact you directly via call, SMS, or 1Market chat. No middleman. No commission fees.' },
+  { Icon: DollarSign, step: 'Step 4', title: 'Close the Deal', desc: 'Confirm the sale or service, collect payment your way, and earn your first 1Market review from a happy customer.' },
 ];
 
 const CUSTOMER_STEPS = [
-  { icon: '🔍', step: 'Step 1', title: 'Search & Discover', desc: 'Browse food, travel, products, rentals, and services near you. Filter by Manila or Cavite location.' },
-  { icon: '⭐', step: 'Step 2', title: 'Compare & Rate', desc: 'Read community ratings and reviews. Compare options from local businesses and home-based sellers.' },
-  { icon: '📲', step: 'Step 3', title: 'Contact the Seller', desc: 'Reach out directly via call or message. View the business bio and get all the details you need.' },
-  { icon: '🎉', step: 'Step 4', title: 'Enjoy & Review', desc: 'Receive your order or service, enjoy the experience, and leave a review to help the community.' },
+  { Icon: Search, step: 'Step 1', title: 'Search & Discover', desc: 'Browse food, travel, products, rentals, and services near you. Filter by Manila or Cavite location.' },
+  { Icon: Star, step: 'Step 2', title: 'Compare & Rate', desc: 'Read community ratings and reviews. Compare options from local businesses and home-based sellers.' },
+  { Icon: MessageCircle, step: 'Step 3', title: 'Contact the Seller', desc: 'Reach out directly via call or message. View the business bio and get all the details you need.' },
+  { Icon: PartyPopper, step: 'Step 4', title: 'Enjoy & Review', desc: 'Receive your order or service, enjoy the experience, and leave a review to help the community.' },
 ];
 
 function StepsFlow({ steps, color }) {
   return (
     <div className="relative">
-      {/* Connecting line */}
       <div className="absolute top-10 left-0 right-0 hidden sm:block" style={{ height: '2px', background: `linear-gradient(to right, ${color}33, ${color}99, ${color}33)` }} />
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 relative z-10">
         {steps.map((s, i) => (
@@ -32,10 +32,10 @@ function StepsFlow({ steps, color }) {
           >
             <motion.div
               whileHover={{ scale: 1.08 }}
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 flex items-center justify-center text-3xl shadow-md mb-3"
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 flex items-center justify-center shadow-md mb-3"
               style={{ borderColor: color, background: 'rgba(255,255,255,0.06)' }}
             >
-              {s.icon}
+              <s.Icon className="w-7 h-7 sm:w-9 sm:h-9" style={{ color }} />
             </motion.div>
             <span className="font-body text-[9px] font-bold uppercase tracking-wider mb-0.5" style={{ color }}>{s.step}</span>
             <p className="font-heading font-bold text-xs text-white mb-1 leading-tight">{s.title}</p>
@@ -56,10 +56,12 @@ export default function HowItWorksSection() {
           <h2 className="font-heading font-bold text-2xl sm:text-3xl text-white mt-1">Two Journeys. One Market.</h2>
         </motion.div>
 
-        {/* Customer journey FIRST (on top) */}
+        {/* Customer journey */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl" style={{ background: 'rgba(0,212,255,0.12)', border: '1px solid rgba(0,212,255,0.25)' }}>🛒</div>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(0,212,255,0.12)', border: '1px solid rgba(0,212,255,0.25)' }}>
+              <ShoppingCart className="w-5 h-5 text-[#00D4FF]" />
+            </div>
             <div>
               <p className="font-heading font-bold text-base text-white">For Customers</p>
               <p className="font-body text-xs text-white/40">Your journey from discovery to done</p>
@@ -73,7 +75,9 @@ export default function HowItWorksSection() {
         {/* Business journey */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl" style={{ background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(37,99,235,0.25)' }}>🏪</div>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(37,99,235,0.25)' }}>
+              <Store className="w-5 h-5 text-[#2563EB]" />
+            </div>
             <div>
               <p className="font-heading font-bold text-base text-white">For Business Owners</p>
               <p className="font-body text-xs text-white/40">From listing to your first sale</p>

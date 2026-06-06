@@ -1,93 +1,91 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import Navbar from '../components/home/Navbar';
-import HeroSection from '../components/home/HeroSection';
-import CategoryCards from '../components/home/CategoryCards';
 import Footer from '../components/home/Footer';
-import BrandingBanner from '../components/home/BrandingBanner';
 import WelcomeSplash from '../components/home/WelcomeSplash';
-import BuySellElectronicsDeals from '../components/home/BuySellElectronicsDeals';
-import MovingWelcomeBanner from '../components/home/MovingWelcomeBanner';
-import CommunityAnimation from '../components/home/CommunityAnimation';
-import SuggestionsBar from '../components/home/SuggestionsBar';
-import { RentDashboard, ShoesClothingDashboard, ServicesDashboard } from '../components/home/MovingListingsDashboards';
-import HowItWorksSection from '../components/home/HowItWorksSection';
-import FilipinoPrideBanner from '../components/home/FilipinoPrideBanner';
-import WhatMakesUsSpecial from '../components/home/WhatMakesUsSpecial';
-import SuggestionBox from '../components/home/SuggestionBox';
-import PhFlightDeals from '../components/home/PhFlightDeals';
-import PhHotelDeals from '../components/home/PhHotelDeals';
-import StarField from '../components/StarField';
-import PhilippinesTravelBanner from '../components/home/PhilippinesTravelBanner';
-import ParticleBackground from '../components/ParticleBackground';
-import CustomerSupportButton from '../components/CustomerSupportButton';
-import ReviewHighlights from '../components/home/ReviewHighlights';
-import FeaturedListings from '../components/home/FeaturedListings';
-import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
-import HeroSlider from '../components/home/HeroSlider';
-import AdManager from '../components/AdManager';
-import GetStartedButton from '../components/GetStartedButton';
-import LiveStatsBar from '../components/home/LiveStatsBar';
 import TrendingSearches from '../components/home/TrendingSearches';
-import FlashDealsSection from '../components/home/FlashDealsSection';
-import TopSellersSection from '../components/home/TopSellersSection';
-import RecentlyViewed from '../components/home/RecentlyViewed';
+import MovingWelcomeBanner from '../components/home/MovingWelcomeBanner';
+import HeroSlider from '../components/home/HeroSlider';
+import CategoryCards from '../components/home/CategoryCards';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
 
+// Lazy-load heavy/below-fold sections
+const StarField = lazy(() => import('../components/StarField'));
+const ParticleBackground = lazy(() => import('../components/ParticleBackground'));
+const HeroSection = lazy(() => import('../components/home/HeroSection'));
+const CategoryCards2 = CategoryCards; // already imported above
+const WhatMakesUsSpecial = lazy(() => import('../components/home/WhatMakesUsSpecial'));
+const FlashDealsSection = lazy(() => import('../components/home/FlashDealsSection'));
+const TopSellersSection = lazy(() => import('../components/home/TopSellersSection'));
+const PhFlightDeals = lazy(() => import('../components/home/PhFlightDeals'));
+const PhHotelDeals = lazy(() => import('../components/home/PhHotelDeals'));
+const FeaturedListings = lazy(() => import('../components/home/FeaturedListings'));
+const BuySellElectronicsDeals = lazy(() => import('../components/home/BuySellElectronicsDeals'));
+const RentDashboardLazy = lazy(() => import('../components/home/MovingListingsDashboards').then(m => ({ default: m.RentDashboard })));
+const ShoesClothingLazy = lazy(() => import('../components/home/MovingListingsDashboards').then(m => ({ default: m.ShoesClothingDashboard })));
+const ServicesLazy = lazy(() => import('../components/home/MovingListingsDashboards').then(m => ({ default: m.ServicesDashboard })));
+const HowItWorksSection = lazy(() => import('../components/home/HowItWorksSection'));
+const ReviewHighlights = lazy(() => import('../components/home/ReviewHighlights'));
+const CommunityAnimation = lazy(() => import('../components/home/CommunityAnimation'));
+const RecentlyViewed = lazy(() => import('../components/home/RecentlyViewed'));
+const SuggestionBox = lazy(() => import('../components/home/SuggestionBox'));
+const BrandingBanner = lazy(() => import('../components/home/BrandingBanner'));
+const FilipinoPrideBanner = lazy(() => import('../components/home/FilipinoPrideBanner'));
+const SuggestionsBar = lazy(() => import('../components/home/SuggestionsBar'));
+const CustomerSupportButton = lazy(() => import('../components/CustomerSupportButton'));
+const AdminQuickAddFAB = lazy(() => import('../components/admin/AdminQuickAddFAB'));
+const AdManager = lazy(() => import('../components/AdManager'));
+const GetStartedButton = lazy(() => import('../components/GetStartedButton'));
+const PhilippinesTravelBanner = lazy(() => import('../components/home/PhilippinesTravelBanner'));
+const LiveStatsBar = lazy(() => import('../components/home/LiveStatsBar'));
+
+const Spinner = () => null; // silent fallback — no layout shift
+
 const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/be5b76b23_generated_1fcae122.png';
-
-const CATEGORY_IMAGES = [
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/01de476de_generated_bb6a91ec.png',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/721da2411_generated_1e2809d2.png',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/9cae4b295_generated_247ddfde.png',
-];
-
-const FEATURED_IMAGES = [
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/6098af1fb_generated_7d2dead2.png',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/d8b9d87ce_generated_b111955d.png',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/03139a3d5_generated_8626cd84.png',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/09b1e18d7_generated_0ca11390.png',
-];
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#070F1A] pt-8 overflow-x-hidden relative">
-      <StarField />
-      <ParticleBackground />
+      <Suspense fallback={<Spinner />}>
+        <StarField />
+        <ParticleBackground />
+      </Suspense>
+
       <div className="relative z-10">
-      <WelcomeSplash />
-      <Navbar />
-      <LiveStatsBar />
-      <TrendingSearches />
-      <FilipinoPrideBanner />
-      <SuggestionsBar />
-      <MovingWelcomeBanner />
-      <BrandingBanner />
-      <HeroSlider />
-      <HeroSection heroImage={HERO_IMAGE} />
-      <WhatMakesUsSpecial />
-      <FlashDealsSection />
-      <CategoryCards />
-      <TopSellersSection />
-      <PhFlightDeals />
-      <PhHotelDeals />
-      <FeaturedListings />
-      <BuySellElectronicsDeals />
-      <RentDashboard />
-      <ShoesClothingDashboard />
-      <ServicesDashboard />
-      <HowItWorksSection />
-      <ReviewHighlights />
-      <CommunityAnimation />
-      <RecentlyViewed />
-      <Footer />
-      <SuggestionBox />
+        <WelcomeSplash />
+        <Navbar />
+        <Suspense fallback={<Spinner />}><LiveStatsBar /></Suspense>
+        <TrendingSearches />
+        <Suspense fallback={<Spinner />}><FilipinoPrideBanner /></Suspense>
+        <Suspense fallback={<Spinner />}><SuggestionsBar /></Suspense>
+        <MovingWelcomeBanner />
+        <Suspense fallback={<Spinner />}><BrandingBanner /></Suspense>
+        <HeroSlider />
+        <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>
+        <Suspense fallback={<Spinner />}><WhatMakesUsSpecial /></Suspense>
+        <Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense>
+        <CategoryCards />
+        <Suspense fallback={<Spinner />}><TopSellersSection /></Suspense>
+        <Suspense fallback={<Spinner />}><PhFlightDeals /></Suspense>
+        <Suspense fallback={<Spinner />}><PhHotelDeals /></Suspense>
+        <Suspense fallback={<Spinner />}><FeaturedListings /></Suspense>
+        <Suspense fallback={<Spinner />}><BuySellElectronicsDeals /></Suspense>
+        <Suspense fallback={<Spinner />}><RentDashboardLazy /></Suspense>
+        <Suspense fallback={<Spinner />}><ShoesClothingLazy /></Suspense>
+        <Suspense fallback={<Spinner />}><ServicesLazy /></Suspense>
+        <Suspense fallback={<Spinner />}><HowItWorksSection /></Suspense>
+        <Suspense fallback={<Spinner />}><ReviewHighlights /></Suspense>
+        <Suspense fallback={<Spinner />}><CommunityAnimation /></Suspense>
+        <Suspense fallback={<Spinner />}><RecentlyViewed /></Suspense>
+        <Footer />
+        <Suspense fallback={<Spinner />}><SuggestionBox /></Suspense>
       </div>
-      <PhilippinesTravelBanner />
-      <CustomerSupportButton />
-      <AdminQuickAddFAB defaultMode="listing" />
-      <AdManager />
-      <GetStartedButton />
+
+      <Suspense fallback={<Spinner />}><PhilippinesTravelBanner /></Suspense>
+      <Suspense fallback={<Spinner />}><CustomerSupportButton /></Suspense>
+      <Suspense fallback={<Spinner />}><AdminQuickAddFAB defaultMode="listing" /></Suspense>
+      <Suspense fallback={<Spinner />}><AdManager /></Suspense>
+      <Suspense fallback={<Spinner />}><GetStartedButton /></Suspense>
       <ScrollToTop />
       <CookieBanner />
     </div>
