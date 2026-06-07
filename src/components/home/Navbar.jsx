@@ -376,7 +376,8 @@ export default function Navbar() {
                             </>
                           )}
 
-                          {isCustomer && (
+                          {/* Only show upgrade options to pure customers (not sellers/business owners) */}
+                          {isCustomer && !isSeller && !isBusiness && (
                             <>
                               <div className="border-t border-white/8 my-1" />
                               <p className="px-3 py-1 font-body text-[9px] text-[#3E97F1]/60 uppercase tracking-wider font-bold">Grow with 1Market</p>
@@ -504,7 +505,7 @@ export default function Navbar() {
                         Become a Verified Partner
                       </Link>
                     )}
-                    {isCustomer && (
+                    {isCustomer && !isSeller && !isBusiness && (
                       <>
                         <Link to="/profile?tab=profile" onClick={() => setMenuOpen(false)}
                           className="block text-emerald-400 font-body text-sm font-semibold py-2 transition-colors">

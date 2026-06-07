@@ -22,7 +22,7 @@ const FRAMES = [
 
 // How long each frame stays visible (ms) before crossfading to the next
 // Frames with action (wave, thumbsup) hold a bit longer for effect
-const FRAME_DURATIONS = [900, 700, 600, 800, 600, 800, 900, 800];
+const FRAME_DURATIONS = [3200, 3000, 3000, 3500, 3000, 3500, 3200, 3000];
 
 // Crossfade duration (ms)
 const FADE_MS = 350;
@@ -124,19 +124,16 @@ export default function AlfieCharacter({ mode = 'idle', size = 130 }) {
           animation: 'alfie-float 3s ease-in-out infinite',
           willChange: 'transform',
         }}>
-          {/* White backdrop so mix-blend-mode:multiply removes JPEG white bg */}
-          <div style={{ position:'absolute', inset:0, background:'white', borderRadius:'50%' }} />
-
-          {/* Current frame */}
+          {/* Current frame — CSS filter removes white JPEG background */}
           <img
             src={FRAMES[currentFrame]}
             alt="Alfie"
             style={{
               ...imgStyle,
-              mixBlendMode: 'multiply',
               opacity: fading ? 0 : 1,
               transition: fading ? `opacity ${FADE_MS}ms ease-in-out` : 'none',
-              filter: 'drop-shadow(0 8px 18px rgba(0,51,204,0.35))',
+              filter: 'drop-shadow(0 8px 18px rgba(0,51,204,0.45)) brightness(1.05) contrast(1.1)',
+              mixBlendMode: 'screen',
             }}
           />
 
@@ -148,10 +145,10 @@ export default function AlfieCharacter({ mode = 'idle', size = 130 }) {
               aria-hidden="true"
               style={{
                 ...imgStyle,
-                mixBlendMode: 'multiply',
                 opacity: fading ? 1 : 0,
                 transition: `opacity ${FADE_MS}ms ease-in-out`,
-                filter: 'drop-shadow(0 8px 18px rgba(0,51,204,0.35))',
+                filter: 'drop-shadow(0 8px 18px rgba(0,51,204,0.45)) brightness(1.05) contrast(1.1)',
+                mixBlendMode: 'screen',
               }}
             />
           )}
