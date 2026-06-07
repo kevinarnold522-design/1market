@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import MascotDog from '../components/MascotDog';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock } from 'lucide-react';
@@ -553,6 +554,7 @@ export default function ListingDetail() {
         </div>
       </div>
 
+      <MascotDog page="listing" />
       <ScrollToTop />
       {/* 1MarketPH Socials Footer */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-10">

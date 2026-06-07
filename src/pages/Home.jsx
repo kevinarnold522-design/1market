@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import Navbar from '../components/home/Navbar';
+import MascotDog from '../components/MascotDog';
 import Footer from '../components/home/Footer';
 import WelcomeSplash from '../components/home/WelcomeSplash';
 import TrendingSearches from '../components/home/TrendingSearches';
@@ -86,6 +87,7 @@ export default function Home() {
       <Suspense fallback={<Spinner />}><AdminQuickAddFAB defaultMode="listing" /></Suspense>
       <Suspense fallback={<Spinner />}><AdManager /></Suspense>
       <Suspense fallback={<Spinner />}><GetStartedButton /></Suspense>
+      <MascotDog page="home" />
       <ScrollToTop />
       <CookieBanner />
     </div>
