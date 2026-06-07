@@ -346,7 +346,7 @@ export default function Travel() {
         {showTravelPost && <TravelPostModal user={currentUser} onClose={() => setShowTravelPost(false)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
       </AnimatePresence>
-      <MascotDog page="listing" />
+      <MascotDog page="travel" />
       <ScrollToTop />
     </div>
   );

@@ -517,7 +517,7 @@ export default function BuySell() {
         const items = await base44.entities.Listing.list('-created_date', 100);
         setDbListings(items.filter(l => l.is_active));
       }} />
-      <MascotDog page="listing" />
+      <MascotDog page="buysell" />
       <ScrollToTop />
 
       <AnimatePresence>

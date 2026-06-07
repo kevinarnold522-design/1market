@@ -459,7 +459,7 @@ export default function Food() {
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
       </AnimatePresence>
       {infoBiz && <BusinessBioModal business={infoBiz} onClose={() => setInfoBiz(null)} onUpdated={(updated) => setDbBusinesses(prev => prev.map(b => b.id === updated.id ? updated : b))} />}
-      <MascotDog page="listing" />
+      <MascotDog page="food" />
       <AdminQuickAddFAB
         defaultMode="business"
         forceSection="food"

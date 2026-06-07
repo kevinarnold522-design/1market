@@ -8,6 +8,7 @@ import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
 import { base44 } from '@/api/base44Client';
 import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
+import MascotDog from '../components/MascotDog';
 import PostListingMenu from '../components/PostListingMenu';
 
 const SUBCATEGORIES = [
@@ -348,6 +349,7 @@ export default function ForRent() {
       </AnimatePresence>
 
       <AdminQuickAddFAB defaultMode="listing" forceSubcategory="residential" />
+      <MascotDog page="rent" />
     </div>
   );
 }

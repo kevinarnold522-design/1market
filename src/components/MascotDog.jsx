@@ -3,25 +3,98 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import AlfieCharacter from './AlfieCharacter';
 
-const MESSAGES_HOME = [
-  "Hi! I'm Alfie, your 1Market PH buddy! 🐾",
-  "Looking for great deals? I got you! 🛍️",
-  "Mabuhay! Welcome to 1Market PH! 🇵🇭",
-  "Tap my paw to say hi! 👋",
-  "Double-tap me to see my dance moves! 💃",
-  "Find the best local deals here! ✨",
-  "Happy shopping, arf arf! 🎉",
-];
-
-const MESSAGES_LISTING = [
-  "Ooh, nice listing! Check it out! 🏷️",
-  "Great find! Want to know more? 🔍",
-  "Woof! This looks like a deal! 💰",
-];
+// ─── Page-context config ─────────────────────────────────────────────────────
+const PAGE_CONFIG = {
+  home: {
+    messages: [
+      { text: "Welcome to 1MarketPH! 🐾", mode: 'wave' },
+      { text: "Looking for great deals? I got you! 🛍️", mode: 'point' },
+      { text: "What are you looking for today? 🤔", mode: 'think' },
+      { text: "Find the best local deals here! ✨", mode: 'search' },
+      { text: "Happy shopping, arf arf! 🎉", mode: 'jump' },
+      { text: "Double-tap me to see my dance moves! 💃", mode: 'idle' },
+    ],
+    entryMode: 'wave',
+    entryMsg: "Welcome to 1MarketPH! 🐾👋",
+    returningMsg: "Hey, you're back! Great to see you! 👋🐾",
+  },
+  travel: {
+    messages: [
+      { text: "Book Your Next Adventure! ✈️", mode: 'travel' },
+      { text: "Let's find it! 🔍", mode: 'search' },
+      { text: "New Opportunities Available! 📣", mode: 'announce' },
+    ],
+    entryMode: 'travel',
+    entryMsg: "Book Your Next Adventure! ✈️🌍",
+  },
+  food: {
+    messages: [
+      { text: "Hungry? Let me help! 🍜", mode: 'search' },
+      { text: "What are you looking for today? 🤔", mode: 'think' },
+      { text: "Great Choice! 👍", mode: 'thumbsup' },
+    ],
+    entryMode: 'wave',
+    entryMsg: "Hungry? Find the best food deals! 🍜",
+  },
+  buysell: {
+    messages: [
+      { text: "Great Choice! 👍", mode: 'thumbsup' },
+      { text: "List Now! 👉", mode: 'point' },
+      { text: "Let's find it! 🔍", mode: 'search' },
+      { text: "Cars for Rent & Sale! 🚗", mode: 'idle' },
+    ],
+    entryMode: 'point',
+    entryMsg: "List Now & Reach Thousands! 👉",
+  },
+  jobs: {
+    messages: [
+      { text: "Find Your Next Opportunity! 💼", mode: 'thumbsup' },
+      { text: "What are you looking for today? 🤔", mode: 'think' },
+      { text: "Let's find it! 🔍", mode: 'search' },
+    ],
+    entryMode: 'thumbsup',
+    entryMsg: "Find Your Next Opportunity! 💼",
+  },
+  rent: {
+    messages: [
+      { text: "Find Your Perfect Property! 🏠", mode: 'realestate' },
+      { text: "Let's find it! 🔍", mode: 'search' },
+      { text: "Great Choice! 👍", mode: 'thumbsup' },
+    ],
+    entryMode: 'realestate',
+    entryMsg: "Find Your Perfect Property! 🏠",
+  },
+  success: {
+    messages: [
+      { text: "Your Listing is Live! 🎉", mode: 'jump' },
+      { text: "Great Choice! 👍", mode: 'thumbsup' },
+    ],
+    entryMode: 'jump',
+    entryMsg: "Your Listing is Live! 🎉🐾",
+  },
+  listing: {
+    messages: [
+      { text: "Great find! Want to know more? 🔍", mode: 'search' },
+      { text: "Great Choice! 👍", mode: 'thumbsup' },
+      { text: "Woof! This looks like a deal! 💰", mode: 'idle' },
+    ],
+    entryMode: 'wave',
+    entryMsg: "Woof! Let me know if you need help! 🏷️",
+  },
+};
 
 const FIRST_VISIT_KEY = 'alfie_visited';
 
+// Duration per mode
+const MODE_DURATION = {
+  wave: 3000, thumbsup: 2500, point: 3000, jump: 3200,
+  think: 4000, search: 4000, announce: 5000, travel: 4000,
+  realestate: 4000, dance: 3600, talk: 2200,
+};
+
 export default function MascotDog({ page = 'home' }) {
+  const cfg = PAGE_CONFIG[page] || PAGE_CONFIG.home;
+
   const [mode, setMode] = useState('idle');
   const [message, setMessage] = useState('');
   const [showBubble, setShowBubble] = useState(false);
@@ -31,57 +104,43 @@ export default function MascotDog({ page = 'home' }) {
   const tapCountRef = useRef(0);
   const tapTimerRef = useRef(null);
 
-  const messages = page === 'listing' ? MESSAGES_LISTING : MESSAGES_HOME;
-
-  const setModeFor = (m, duration, msg) => {
+  const setModeFor = (m, msg, duration) => {
     clearTimeout(modeTimerRef.current);
     setMode(m);
     if (msg) { setMessage(msg); setShowBubble(true); }
-    modeTimerRef.current = setTimeout(() => {
-      setMode('idle');
-    }, duration);
+    const dur = duration || MODE_DURATION[m] || 3000;
+    modeTimerRef.current = setTimeout(() => setMode('idle'), dur);
   };
 
-  // Entry wave for first-time and returning users
+  // Entry animation
   useEffect(() => {
     const isFirstVisit = !sessionStorage.getItem(FIRST_VISIT_KEY);
-    sessionStorage.setItem(FIRST_VISIT_KEY, '1');
+    if (page === 'home') sessionStorage.setItem(FIRST_VISIT_KEY, '1');
 
-    const delay = isFirstVisit ? 800 : 400;
-    const waveMsg = isFirstVisit
-      ? "Hi! I'm Alfie! Welcome to 1Market PH! 🐾👋"
-      : "Hey, you're back! Great to see you! 👋🐾";
+    const delay = isFirstVisit ? 800 : 500;
+    const msg = (isFirstVisit || page !== 'home')
+      ? cfg.entryMsg
+      : cfg.returningMsg || cfg.entryMsg;
 
     const t = setTimeout(() => {
-      setModeFor('wave', 2500, waveMsg);
+      setModeFor(cfg.entryMode || 'wave', msg);
     }, delay);
     return () => clearTimeout(t);
-  }, []);
-
-  // Listing page entry — wave with deal message
-  useEffect(() => {
-    if (page === 'listing') {
-      const t = setTimeout(() => {
-        setModeFor('wave', 2500, "Woof! Let me know if you need help! 🏷️");
-      }, 600);
-      return () => clearTimeout(t);
-    }
   }, [page]);
 
-  // Rotate talk messages every 6s
+  // Rotate messages
   useEffect(() => {
     if (dismissed) return;
     const iv = setInterval(() => {
-      if (mode !== 'dance' && mode !== 'wave') {
-        msgIndexRef.current = (msgIndexRef.current + 1) % messages.length;
-        const msg = messages[msgIndexRef.current];
-        setMessage(msg);
-        setShowBubble(true);
-        setModeFor('talk', 2200);
+      if (mode === 'idle') {
+        const next = (msgIndexRef.current + 1) % cfg.messages.length;
+        msgIndexRef.current = next;
+        const item = cfg.messages[next];
+        setModeFor(item.mode, item.text);
       }
-    }, 6000);
+    }, 7000);
     return () => clearInterval(iv);
-  }, [dismissed, mode, messages]);
+  }, [dismissed, mode, cfg.messages]);
 
   const handleTap = () => {
     tapCountRef.current += 1;
@@ -90,9 +149,9 @@ export default function MascotDog({ page = 'home' }) {
       const count = tapCountRef.current;
       tapCountRef.current = 0;
       if (count >= 2) {
-        setModeFor('dance', 3600, "Watch me bust a move! 🕺🐾");
+        setModeFor('dance', "Watch me bust a move! 🕺🐾", 3600);
       } else {
-        setModeFor('wave', 2200, "Arf arf! Hi there! 🐾👋");
+        setModeFor('wave', "Arf arf! Hi there! 🐾👋", 2500);
       }
     }, 300);
   };
@@ -111,7 +170,7 @@ export default function MascotDog({ page = 'home' }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.7, y: 8 }}
             transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-            className="relative max-w-[170px]"
+            className="relative max-w-[175px]"
           >
             <div
               className="px-3 py-2 rounded-2xl rounded-br-sm text-[11px] font-bold text-[#0A192F] leading-snug shadow-xl"
@@ -130,22 +189,18 @@ export default function MascotDog({ page = 'home' }) {
         )}
       </AnimatePresence>
 
-      {/* Alfie character — tappable */}
+      {/* Alfie */}
       <motion.div
         initial={{ x: 80, opacity: 0, scale: 0.6 }}
         animate={{ x: 0, opacity: 1, scale: 1 }}
         transition={{ type: 'spring', stiffness: 200, damping: 18, delay: 0.3 }}
         onClick={handleTap}
         className="cursor-pointer"
-        style={{ filter: 'drop-shadow(0 8px 24px rgba(0,51,204,0.5))' }}
       >
         <AlfieCharacter mode={mode} />
       </motion.div>
 
-      {/* Hint */}
       <div className="text-[8px] font-bold text-white/25 -mt-1">tap · double-tap</div>
-
-      {/* Dismiss */}
       <button
         onClick={() => setDismissed(true)}
         className="text-[9px] text-white/20 hover:text-white/50 transition-colors mt-0.5">

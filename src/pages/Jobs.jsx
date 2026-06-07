@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ParticleBackground from '../components/ParticleBackground';
+import MascotDog from '../components/MascotDog';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, MapPin, Briefcase, ExternalLink, X, Building2, DollarSign, Plus, Clock, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -348,6 +349,7 @@ export default function Jobs() {
           />
         )}
       </AnimatePresence>
+      <MascotDog page="jobs" />
     </div>
   );
 }
