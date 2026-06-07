@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, Share2, Bookmark, MessageCircle } from 'lucide-react';
+import { Heart, Share2, Bookmark, MessageCircle, Star } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const STYLE = `
@@ -10,31 +10,47 @@ const STYLE = `
     80%  { transform: scale(1.15); }
     100% { transform: scale(1); }
   }
-  @keyframes heart-float {
-    0%   { opacity: 1; transform: translateY(0) scale(1); }
-    100% { opacity: 0; transform: translateY(-40px) scale(0.6); }
+  @keyframes big-heart-rise {
+    0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+    40%  { opacity: 1; transform: translate(-50%, -80%) scale(1.4); }
+    80%  { opacity: 0.6; transform: translate(-50%, -120%) scale(1.1); }
+    100% { opacity: 0; transform: translate(-50%, -150%) scale(0.8); }
+  }
+  @keyframes big-star-pop {
+    0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.3) rotate(0deg); }
+    40%  { opacity: 1; transform: translate(-50%, -80%) scale(1.6) rotate(20deg); }
+    80%  { opacity: 0.6; transform: translate(-50%, -120%) scale(1.2) rotate(-10deg); }
+    100% { opacity: 0; transform: translate(-50%, -160%) scale(0.6) rotate(0deg); }
   }
   .heart-pop { animation: heart-pop 0.45s cubic-bezier(0.36,0.07,0.19,0.97) forwards; }
-  .heart-float { animation: heart-float 0.7s ease-out forwards; }
+  .big-heart-rise { animation: big-heart-rise 1.1s ease-out forwards; pointer-events: none; }
+  .big-star-pop { animation: big-star-pop 1.1s ease-out forwards; pointer-events: none; }
 `;
 
-export default function ListingCardActions({ item, user, isFav, onFavourite, onShare, onComment, onBookmark, isSaved }) {
+export default function ListingCardActions({ item, user, isFav, onFavourite, onShare, onComment, onBookmark, isSaved, heartCount = 0, commentCount = 0, onRate }) {
   const [heartAnim, setHeartAnim] = useState(false);
-  const [floatingHearts, setFloatingHearts] = useState([]);
+  const [showBigHeart, setShowBigHeart] = useState(false);
   const [copied, setCopied] = useState(false);
   const [bookmarked, setBookmarked] = useState(isSaved || false);
+  const [hoveredStar, setHoveredStar] = useState(0);
+  const [showStars, setShowStars] = useState(false);
+  const [showBigStar, setShowBigStar] = useState(false);
+  const [bigStarVal, setBigStarVal] = useState(5);
 
   const handleHeart = async () => {
-    // Animate regardless of auth
     setHeartAnim(true);
+    setShowBigHeart(true);
     setTimeout(() => setHeartAnim(false), 450);
-
-    // Float a blue heart
-    const id = Date.now();
-    setFloatingHearts(h => [...h, id]);
-    setTimeout(() => setFloatingHearts(h => h.filter(x => x !== id)), 700);
-
+    setTimeout(() => setShowBigHeart(false), 1100);
     if (onFavourite) onFavourite(item);
+  };
+
+  const handleRate = (val) => {
+    setBigStarVal(val);
+    setShowBigStar(true);
+    setTimeout(() => setShowBigStar(false), 1100);
+    setShowStars(false);
+    if (onRate) onRate(item, val);
   };
 
   const handleShare = () => {
@@ -61,23 +77,31 @@ export default function ListingCardActions({ item, user, isFav, onFavourite, onS
     <>
       <style>{STYLE}</style>
       <div className="flex items-center gap-1 relative">
-        {/* Floating hearts */}
-        {floatingHearts.map(id => (
-          <div key={id} className="heart-float absolute bottom-full left-2 pointer-events-none text-blue-400 text-lg z-20">
-            💙
+        {/* Big heart burst */}
+        {showBigHeart && (
+          <div className="big-heart-rise absolute left-4 top-0 z-30 text-5xl" style={{ position: 'absolute' }}>
+            ❤️
           </div>
-        ))}
+        )}
+
+        {/* Big star burst */}
+        {showBigStar && (
+          <div className="big-star-pop absolute left-1/2 top-0 z-30 text-5xl" style={{ position: 'absolute' }}>
+            ⭐
+          </div>
+        )}
 
         {/* Heart */}
         <button
           onClick={handleHeart}
-          className={`relative p-1.5 rounded-full transition-colors ${isFav ? 'text-red-500' : 'text-gray-400 hover:text-red-400'}`}
+          className={`relative flex items-center gap-0.5 p-1.5 rounded-full transition-colors ${isFav ? 'text-red-500' : 'text-gray-400 hover:text-red-400'}`}
           title="Like"
         >
           <Heart
             className={`w-4 h-4 ${heartAnim ? 'heart-pop' : ''} ${isFav ? 'fill-red-500' : ''}`}
-            style={{ color: isFav ? '#ef4444' : heartAnim ? '#3b82f6' : undefined }}
+            style={{ color: isFav ? '#ef4444' : heartAnim ? '#ef4444' : undefined }}
           />
+          {heartCount > 0 && <span className="font-body text-[10px] font-semibold">{heartCount}</span>}
         </button>
 
         {/* Comment */}
@@ -88,11 +112,49 @@ export default function ListingCardActions({ item, user, isFav, onFavourite, onS
             }
             if (onComment) onComment(item);
           }}
-          className="p-1.5 rounded-full text-gray-400 hover:text-blue-500 transition-colors"
+          className="flex items-center gap-0.5 p-1.5 rounded-full text-gray-400 hover:text-blue-500 transition-colors"
           title="Comment"
         >
           <MessageCircle className="w-4 h-4" />
+          {commentCount > 0 && <span className="font-body text-[10px] font-semibold">{commentCount}</span>}
         </button>
+
+        {/* Star Rating */}
+        <div className="relative">
+          <button
+            onClick={() => setShowStars(s => !s)}
+            className="flex items-center gap-0.5 p-1.5 rounded-full text-gray-400 hover:text-yellow-400 transition-colors"
+            title="Rate"
+          >
+            <Star className="w-4 h-4" />
+          </button>
+          <AnimatePresence>
+            {showStars && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, y: 4 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 flex items-center gap-0.5 px-2 py-1.5 rounded-xl z-40"
+                style={{ background: '#0D1F3C', border: '1px solid rgba(255,255,255,0.15)', boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }}
+              >
+                {[1, 2, 3, 4, 5].map(val => (
+                  <button
+                    key={val}
+                    onMouseEnter={() => setHoveredStar(val)}
+                    onMouseLeave={() => setHoveredStar(0)}
+                    onClick={() => handleRate(val)}
+                    className="transition-transform hover:scale-125"
+                  >
+                    <Star
+                      className="w-5 h-5"
+                      style={{ color: val <= (hoveredStar || 0) ? '#FFD700' : 'rgba(255,255,255,0.2)', fill: val <= (hoveredStar || 0) ? '#FFD700' : 'transparent' }}
+                    />
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* Share */}
         <button
@@ -115,7 +177,7 @@ export default function ListingCardActions({ item, user, isFav, onFavourite, onS
           </AnimatePresence>
         </button>
 
-        {/* Bookmark / Save */}
+        {/* Bookmark */}
         <button
           onClick={handleBookmark}
           className={`p-1.5 rounded-full transition-colors ${bookmarked ? 'text-yellow-500' : 'text-gray-400 hover:text-yellow-400'}`}

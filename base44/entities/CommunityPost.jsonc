@@ -1,0 +1,48 @@
+{
+  "name": "CommunityPost",
+  "type": "object",
+  "properties": {
+    "business_id": {
+      "type": "string",
+      "description": "Business entity ID this post belongs to"
+    },
+    "business_name": {
+      "type": "string"
+    },
+    "author_name": {
+      "type": "string"
+    },
+    "author_email": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "likes": {
+      "type": "integer",
+      "default": 0
+    },
+    "comment_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "post_type": {
+      "type": "string",
+      "enum": [
+        "update",
+        "promo",
+        "announcement",
+        "question"
+      ],
+      "default": "update"
+    }
+  },
+  "required": [
+    "business_id",
+    "content",
+    "author_email"
+  ]
+}

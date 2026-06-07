@@ -38,7 +38,7 @@ const AdminQuickAddFAB = lazy(() => import('../components/admin/AdminQuickAddFAB
 const AdManager = lazy(() => import('../components/AdManager'));
 const GetStartedButton = lazy(() => import('../components/GetStartedButton'));
 const PhilippinesTravelBanner = lazy(() => import('../components/home/PhilippinesTravelBanner'));
-const LiveStatsBar = lazy(() => import('../components/home/LiveStatsBar'));
+// LiveStatsBar removed
 
 const Spinner = () => null; // silent fallback — no layout shift
 
@@ -55,7 +55,6 @@ export default function Home() {
       <div className="relative z-10">
         <WelcomeSplash />
         <Navbar />
-        <Suspense fallback={<Spinner />}><LiveStatsBar /></Suspense>
         <TrendingSearches />
         <Suspense fallback={<Spinner />}><FilipinoPrideBanner /></Suspense>
         <Suspense fallback={<Spinner />}><SuggestionsBar /></Suspense>

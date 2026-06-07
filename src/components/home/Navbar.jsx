@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { redirectToLogin } from '@/lib/loginRedirect';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Building2 } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Building2, Users } from 'lucide-react';
+import NotificationsBell from '../NotificationsBell';
 import PostListingMenu from '../PostListingMenu';
 import RewardDashboard from '../RewardDashboard';
 import MetaVerifiedBadge from '../MetaVerifiedBadge';
@@ -147,15 +148,16 @@ export default function Navbar() {
       </div>
 
       <nav className={`fixed top-12 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#001a80]/90 backdrop-blur-xl shadow-lg shadow-[#0033CC]/20' : 'bg-transparent'}`}>
-        {/* Category Bar */}
+        {/* Category Bar — LEFT aligned */}
         <div className="hidden md:block border-b border-white/8 bg-[#000d40]/80 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="flex items-center gap-2 h-9">
               <NavCategoryBar />
+              <Link to="/community" className="flex items-center gap-1 px-2.5 py-1 rounded-xl font-body text-xs font-semibold text-purple-400 hover:bg-white/8 transition-all whitespace-nowrap ml-1">
+                <Users className="w-3 h-3" /> Community
+              </Link>
               {isAuthenticated && user && (
-                <div className="ml-auto">
-                  <PostListingMenu user={user} compact />
-                </div>
+                <PostListingMenu user={user} compact />
               )}
             </div>
           </div>
@@ -194,6 +196,19 @@ export default function Navbar() {
                 <Heart className="w-4 h-4" />
                 <span className="font-body text-xs font-semibold">Saved</span>
               </Link>
+            )}
+
+            {/* Community */}
+            <Link to="/community" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 border border-white/10 hover:border-purple-400/40 hover:bg-purple-500/10 transition-all text-white/70 hover:text-purple-400">
+              <Users className="w-4 h-4" />
+              <span className="font-body text-xs font-semibold">Community</span>
+            </Link>
+
+            {/* Notifications bell — signed-in only */}
+            {isAuthenticated && user && (
+              <div className="hidden md:block">
+                <NotificationsBell user={user} />
+              </div>
             )}
 
             {/* Desktop Right */}

@@ -1,0 +1,41 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Recipient user email"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "like",
+        "comment",
+        "reply",
+        "rating"
+      ],
+      "description": "Notification type"
+    },
+    "message": {
+      "type": "string"
+    },
+    "listing_id": {
+      "type": "string"
+    },
+    "listing_title": {
+      "type": "string"
+    },
+    "from_user_name": {
+      "type": "string"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "user_email",
+    "type",
+    "message"
+  ]
+}

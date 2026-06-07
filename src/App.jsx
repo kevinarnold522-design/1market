@@ -23,6 +23,7 @@ import About from './pages/About';
 import ExplorePage from './pages/ExplorePage';
 import Messages from './pages/Messages';
 import Favourites from './pages/Favourites';
+import BusinessCommunity from './pages/BusinessCommunity';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -68,6 +69,7 @@ const AuthenticatedApp = () => {
       <Route path="/explore" element={<ExplorePage />} />
       <Route path="/messages" element={<Messages />} />
       <Route path="/favourites" element={<Favourites />} />
+      <Route path="/community" element={<BusinessCommunity />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

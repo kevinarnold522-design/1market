@@ -10,14 +10,14 @@ import React, { useState, useEffect, useRef } from 'react';
 // 7. Thumbs up, sparkle (thumbsup)
 // 8. Waving paw, eyes closed, big smile (celebrate)
 const FRAMES = [
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/db47fb0b8_5C2B4377-0629-406D-97F0-9485947B48FD.png',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/59913a8f1_B0D72D03-6E30-48C7-BC36-E922BC2424DB.jpeg',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/598a64603_B0D72D03-6E30-48C7-BC36-E922BC2424DB.jpeg',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/79b6c8a01_4848A205-DA22-4ADC-B0C7-BB747B610F6F.jpeg',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/5d8272dac_4848A205-DA22-4ADC-B0C7-BB747B610F6F.jpeg',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/d27b788a4_4848A205-DA22-4ADC-B0C7-BB747B610F6F.jpeg',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/2a71be013_4848A205-DA22-4ADC-B0C7-BB747B610F6F.jpeg',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/3b40eefd4_4848A205-DA22-4ADC-B0C7-BB747B610F6F.jpeg',
+  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/3381e60c0_5C2B4377-0629-406D-97F0-9485947B48FD.png',
+  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/db25c1e66_F967D53C-C973-4B61-B904-E86EF40A0253.png',
+  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/2554e74df_2C920F49-47BC-4226-9978-C7C1F8684E43.png',
+  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/2ec4ebb46_E91BD35A-AC32-4503-8AE3-1E347A75BF16.png',
+  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/f49ae5716_75ABF842-AD98-4B8E-A707-DC07A571C93F.png',
+  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/7bad8acc8_FD0BE7EF-FB56-4DF2-8309-30E2E1FDB839.png',
+  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/75a7a2f9f_169BE7A2-8E8B-4469-9B17-BA57B7B48892.png',
+  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/07ee1738b_C61443FC-7AC9-4973-9A7F-765A8CA1917B.png',
 ];
 
 // How long each frame stays visible (ms) before crossfading to the next
@@ -132,8 +132,7 @@ export default function AlfieCharacter({ mode = 'idle', size = 130 }) {
               ...imgStyle,
               opacity: fading ? 0 : 1,
               transition: fading ? `opacity ${FADE_MS}ms ease-in-out` : 'none',
-              filter: 'drop-shadow(0 8px 18px rgba(0,51,204,0.45)) brightness(1.05) contrast(1.1)',
-              mixBlendMode: 'screen',
+              filter: 'drop-shadow(0 8px 22px rgba(0,51,204,0.5))',
             }}
           />
 
@@ -147,8 +146,7 @@ export default function AlfieCharacter({ mode = 'idle', size = 130 }) {
                 ...imgStyle,
                 opacity: fading ? 1 : 0,
                 transition: `opacity ${FADE_MS}ms ease-in-out`,
-                filter: 'drop-shadow(0 8px 18px rgba(0,51,204,0.45)) brightness(1.05) contrast(1.1)',
-                mixBlendMode: 'screen',
+                filter: 'drop-shadow(0 8px 22px rgba(0,51,204,0.5))',
               }}
             />
           )}

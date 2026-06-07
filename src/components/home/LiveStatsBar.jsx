@@ -22,8 +22,6 @@ export default function LiveStatsBar() {
 
   const STATS = [
     { icon: ShoppingBag, label: 'Active Listings', value: stats.listings + '+', color: '#00D4FF' },
-    { icon: Users, label: 'Registered Members', value: '1,200+', color: '#FFD700' },
-    { icon: MapPin, label: 'Cities Covered', value: '50+', color: '#10b981' },
     { icon: TrendingUp, label: 'Daily Transactions', value: '300+', color: '#f59e0b' },
   ];
 
