@@ -1,252 +1,155 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
+import AlfieCharacter from './AlfieCharacter';
 
-const MESSAGES = [
-  "Hi! I'm Markee, your 1Market PH buddy! 🐾",
+const MESSAGES_HOME = [
+  "Hi! I'm Alfie, your 1Market PH buddy! 🐾",
   "Looking for great deals? I got you! 🛍️",
-  "Welcome to 1Market Philippines! 🇵🇭",
+  "Mabuhay! Welcome to 1Market PH! 🇵🇭",
   "Tap my paw to say hi! 👋",
-  "Double tap me to see my moves! 💃",
+  "Double-tap me to see my dance moves! 💃",
   "Find the best local deals here! ✨",
-  "Mabuhay! Happy shopping! 🎉",
+  "Happy shopping, arf arf! 🎉",
 ];
 
-const DOG_FRONT = "https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/9b708eac3_IMG_1945.jpg";
+const MESSAGES_LISTING = [
+  "Ooh, nice listing! Check it out! 🏷️",
+  "Great find! Want to know more? 🔍",
+  "Woof! This looks like a deal! 💰",
+];
 
-// CSS keyframes injected once
-const STYLE = `
-@keyframes mascot-float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
-}
-@keyframes mascot-wave {
-  0%, 100% { transform: rotate(0deg); }
-  20% { transform: rotate(-20deg); }
-  40% { transform: rotate(20deg); }
-  60% { transform: rotate(-15deg); }
-  80% { transform: rotate(10deg); }
-}
-@keyframes mascot-dance {
-  0%   { transform: rotate(0deg) scale(1) translateX(0); }
-  10%  { transform: rotate(-12deg) scale(1.05) translateX(-6px); }
-  20%  { transform: rotate(12deg) scale(1.05) translateX(6px); }
-  30%  { transform: rotate(-10deg) scale(1.08) translateX(-4px); }
-  40%  { transform: rotate(10deg) scale(1.08) translateX(4px); }
-  50%  { transform: rotate(-8deg) scale(1.1) translateX(-3px); }
-  60%  { transform: rotate(8deg) scale(1.1) translateX(3px); }
-  70%  { transform: rotate(-6deg) scale(1.05) translateX(-2px); }
-  80%  { transform: rotate(6deg) scale(1.05) translateX(2px); }
-  90%  { transform: rotate(-3deg) scale(1) translateX(-1px); }
-  100% { transform: rotate(0deg) scale(1) translateX(0); }
-}
-@keyframes mascot-talk {
-  0%, 100% { transform: scaleY(1); }
-  25% { transform: scaleY(0.92); }
-  75% { transform: scaleY(1.05); }
-}
-@keyframes paw-wave {
-  0%, 100% { transform: rotate(0deg) translateY(0); }
-  25% { transform: rotate(-30deg) translateY(-8px); }
-  75% { transform: rotate(20deg) translateY(-4px); }
-}
-@keyframes tail-wag {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(20deg); }
-}
-@keyframes mascot-enter {
-  0% { transform: translateX(120px) scale(0.5); opacity: 0; }
-  60% { transform: translateX(-10px) scale(1.05); opacity: 1; }
-  100% { transform: translateX(0) scale(1); opacity: 1; }
-}
-@keyframes bounce-in {
-  0% { transform: scale(0) rotate(-10deg); opacity: 0; }
-  60% { transform: scale(1.15) rotate(3deg); opacity: 1; }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; }
-}
-`;
+const FIRST_VISIT_KEY = 'alfie_visited';
 
 export default function MascotDog({ page = 'home' }) {
-  const [animation, setAnimation] = useState('float'); // float | wave | dance | talk
-  const [message, setMessage] = useState(MESSAGES[0]);
-  const [showBubble, setShowBubble] = useState(true);
+  const [mode, setMode] = useState('idle');
+  const [message, setMessage] = useState('');
+  const [showBubble, setShowBubble] = useState(false);
   const [dismissed, setDismissed] = useState(false);
-  const [entered, setEntered] = useState(false);
-  const [pawWaving, setPawWaving] = useState(false);
   const msgIndexRef = useRef(0);
-  const tapTimerRef = useRef(null);
+  const modeTimerRef = useRef(null);
   const tapCountRef = useRef(0);
-  const animTimerRef = useRef(null);
+  const tapTimerRef = useRef(null);
 
-  // Inject styles once
-  useEffect(() => {
-    if (!document.getElementById('mascot-styles')) {
-      const el = document.createElement('style');
-      el.id = 'mascot-styles';
-      el.textContent = STYLE;
-      document.head.appendChild(el);
-    }
-  }, []);
+  const messages = page === 'listing' ? MESSAGES_LISTING : MESSAGES_HOME;
 
-  // Entry animation
+  const setModeFor = (m, duration, msg) => {
+    clearTimeout(modeTimerRef.current);
+    setMode(m);
+    if (msg) { setMessage(msg); setShowBubble(true); }
+    modeTimerRef.current = setTimeout(() => {
+      setMode('idle');
+    }, duration);
+  };
+
+  // Entry wave for first-time and returning users
   useEffect(() => {
-    const t = setTimeout(() => setEntered(true), 600);
+    const isFirstVisit = !sessionStorage.getItem(FIRST_VISIT_KEY);
+    sessionStorage.setItem(FIRST_VISIT_KEY, '1');
+
+    const delay = isFirstVisit ? 800 : 400;
+    const waveMsg = isFirstVisit
+      ? "Hi! I'm Alfie! Welcome to 1Market PH! 🐾👋"
+      : "Hey, you're back! Great to see you! 👋🐾";
+
+    const t = setTimeout(() => {
+      setModeFor('wave', 2500, waveMsg);
+    }, delay);
     return () => clearTimeout(t);
   }, []);
 
-  // Rotate messages while talking
-  useEffect(() => {
-    if (dismissed) return;
-    const interval = setInterval(() => {
-      msgIndexRef.current = (msgIndexRef.current + 1) % MESSAGES.length;
-      setMessage(MESSAGES[msgIndexRef.current]);
-      setAnimation('talk');
-      setShowBubble(true);
-      const reset = setTimeout(() => setAnimation('float'), 2000);
-      return () => clearTimeout(reset);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [dismissed]);
-
-  // On page = listing, trigger wave entry
+  // Listing page entry — wave with deal message
   useEffect(() => {
     if (page === 'listing') {
-      setAnimation('wave');
-      setMessage("Check out this listing! 🏷️");
-      setShowBubble(true);
-      const t = setTimeout(() => setAnimation('float'), 2500);
+      const t = setTimeout(() => {
+        setModeFor('wave', 2500, "Woof! Let me know if you need help! 🏷️");
+      }, 600);
       return () => clearTimeout(t);
     }
   }, [page]);
 
-  const triggerAnimation = (anim, duration = 2000) => {
-    clearTimeout(animTimerRef.current);
-    setAnimation(anim);
-    animTimerRef.current = setTimeout(() => setAnimation('float'), duration);
-  };
+  // Rotate talk messages every 6s
+  useEffect(() => {
+    if (dismissed) return;
+    const iv = setInterval(() => {
+      if (mode !== 'dance' && mode !== 'wave') {
+        msgIndexRef.current = (msgIndexRef.current + 1) % messages.length;
+        const msg = messages[msgIndexRef.current];
+        setMessage(msg);
+        setShowBubble(true);
+        setModeFor('talk', 2200);
+      }
+    }, 6000);
+    return () => clearInterval(iv);
+  }, [dismissed, mode, messages]);
 
   const handleTap = () => {
     tapCountRef.current += 1;
     clearTimeout(tapTimerRef.current);
     tapTimerRef.current = setTimeout(() => {
-      if (tapCountRef.current >= 2) {
-        // Double tap = dance
-        triggerAnimation('dance', 3500);
-        setMessage("Watch me dance! 🕺🐾");
-        setShowBubble(true);
-      } else {
-        // Single tap = wave
-        triggerAnimation('wave', 2000);
-        setPawWaving(true);
-        setMessage("Woof woof! Hi there! 🐾👋");
-        setShowBubble(true);
-        setTimeout(() => setPawWaving(false), 2000);
-      }
+      const count = tapCountRef.current;
       tapCountRef.current = 0;
-    }, 280);
-  };
-
-  const handlePawClick = (e) => {
-    e.stopPropagation();
-    triggerAnimation('wave', 2000);
-    setPawWaving(true);
-    setMessage("Hey! You found my paw! 🐾👋");
-    setShowBubble(true);
-    setTimeout(() => setPawWaving(false), 2000);
+      if (count >= 2) {
+        setModeFor('dance', 3600, "Watch me bust a move! 🕺🐾");
+      } else {
+        setModeFor('wave', 2200, "Arf arf! Hi there! 🐾👋");
+      }
+    }, 300);
   };
 
   if (dismissed) return null;
 
-  const dogStyle = {
-    animation: animation === 'float'
-      ? 'mascot-float 3s ease-in-out infinite'
-      : animation === 'wave'
-      ? 'mascot-wave 0.4s ease-in-out 5'
-      : animation === 'dance'
-      ? 'mascot-dance 0.5s ease-in-out 7'
-      : animation === 'talk'
-      ? 'mascot-talk 0.3s ease-in-out 6'
-      : 'mascot-float 3s ease-in-out infinite',
-  };
-
-  const containerAnim = entered
-    ? { animation: 'none' }
-    : { animation: 'mascot-enter 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards' };
-
   return (
-    <div
-      className="fixed bottom-20 right-4 z-[999] flex flex-col items-end gap-2 select-none"
-      style={containerAnim}>
+    <div className="fixed bottom-24 right-4 z-[990] flex flex-col items-center gap-2 select-none">
 
-      {/* Speech Bubble */}
+      {/* Speech bubble */}
       <AnimatePresence>
-        {showBubble && (
+        {showBubble && message && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.7, y: 10 }}
+            key={message}
+            initial={{ opacity: 0, scale: 0.7, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.7, y: 10 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-            className="relative max-w-[180px] sm:max-w-[220px]">
+            exit={{ opacity: 0, scale: 0.7, y: 8 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+            className="relative max-w-[170px]"
+          >
             <div
-              className="px-3 py-2 rounded-2xl rounded-br-sm text-xs font-body font-semibold text-[#0A192F] leading-tight shadow-xl"
-              style={{ background: 'linear-gradient(135deg,#FFD700,#FFA500)', border: '2px solid rgba(255,215,0,0.5)' }}>
+              className="px-3 py-2 rounded-2xl rounded-br-sm text-[11px] font-bold text-[#0A192F] leading-snug shadow-xl"
+              style={{ background: 'linear-gradient(135deg,#FFD700,#FFA500)', border: '2px solid rgba(255,215,0,0.4)' }}>
               {message}
             </div>
             {/* Bubble tail */}
-            <div className="absolute bottom-0 right-3 w-0 h-0"
-              style={{ borderLeft: '6px solid transparent', borderRight: '0px solid transparent', borderTop: '8px solid #FFA500' }} />
+            <div className="absolute -bottom-1.5 right-4 w-0 h-0"
+              style={{ borderLeft: '6px solid transparent', borderRight: '6px solid transparent', borderTop: '8px solid #FFA500' }} />
             <button
               onClick={() => setShowBubble(false)}
-              className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-white/80 flex items-center justify-center hover:bg-white transition-colors">
-              <X className="w-2.5 h-2.5 text-gray-600" />
+              className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-white/90 flex items-center justify-center hover:bg-white transition-colors shadow">
+              <X className="w-2.5 h-2.5 text-gray-500" />
             </button>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Dog Container */}
-      <div className="relative" onClick={handleTap}>
+      {/* Alfie character — tappable */}
+      <motion.div
+        initial={{ x: 80, opacity: 0, scale: 0.6 }}
+        animate={{ x: 0, opacity: 1, scale: 1 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 18, delay: 0.3 }}
+        onClick={handleTap}
+        className="cursor-pointer"
+        style={{ filter: 'drop-shadow(0 8px 24px rgba(0,51,204,0.5))' }}
+      >
+        <AlfieCharacter mode={mode} />
+      </motion.div>
 
-        {/* Paw wave button (top-left of dog) */}
-        <button
-          onClick={handlePawClick}
-          className="absolute -top-1 -left-2 z-10 w-8 h-8 rounded-full flex items-center justify-center text-base hover:scale-125 transition-transform"
-          title="Tap my paw!"
-          style={{
-            animation: pawWaving ? 'paw-wave 0.4s ease-in-out 4' : 'paw-wave 2s ease-in-out infinite',
-          }}>
-          🐾
-        </button>
+      {/* Hint */}
+      <div className="text-[8px] font-bold text-white/25 -mt-1">tap · double-tap</div>
 
-        {/* Dog image */}
-        <div
-          className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden cursor-pointer shadow-2xl border-2 border-[#FFD700]"
-          style={{
-            ...dogStyle,
-            boxShadow: '0 8px 32px rgba(0,64,208,0.4), 0 0 0 3px rgba(255,215,0,0.3)',
-            background: '#0033CC',
-          }}>
-          <img
-            src={DOG_FRONT}
-            alt="Markee - 1Market PH Mascot"
-            className="w-full h-full object-cover object-top"
-            draggable={false}
-          />
-        </div>
-
-        {/* Tap hint badge */}
-        <div
-          className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[8px] font-body font-bold text-white whitespace-nowrap"
-          style={{ background: 'linear-gradient(90deg,#0033CC,#2563EB)', border: '1px solid rgba(255,255,255,0.2)' }}>
-          Tap me! 🐶
-        </div>
-      </div>
-
-      {/* Dismiss button */}
+      {/* Dismiss */}
       <button
         onClick={() => setDismissed(true)}
-        className="text-[9px] font-body text-white/30 hover:text-white/60 transition-colors mt-1">
-        hide mascot
+        className="text-[9px] text-white/20 hover:text-white/50 transition-colors mt-0.5">
+        hide Alfie
       </button>
     </div>
   );
