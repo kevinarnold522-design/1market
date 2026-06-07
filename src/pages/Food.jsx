@@ -11,6 +11,7 @@ import MemberSignupModal from '../components/MemberSignupModal';
 import BusinessBioModal from '../components/home/BusinessBioModal';
 import { getAdminEditMode } from '../components/home/Navbar';
 import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
+import MascotDog from '../components/MascotDog';
 
 const KNOWN_LOGOS = {
   'Jollibee': 'https://upload.wikimedia.org/wikipedia/en/thumb/8/84/Jollibee_logo.svg/220px-Jollibee_logo.svg.png',
@@ -303,7 +304,7 @@ export default function Food() {
   const caviteCount = filtered.filter(b => b.location === 'Cavite').length;
 
   return (
-    <div className="min-h-screen bg-[#070F1A]">
+    <div className="min-h-screen bg-[#001060]">
       <StarField />
       <SubcategorySplash
         subcategories={FOOD_SUBCATEGORIES}
@@ -458,6 +459,7 @@ export default function Food() {
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
       </AnimatePresence>
       {infoBiz && <BusinessBioModal business={infoBiz} onClose={() => setInfoBiz(null)} onUpdated={(updated) => setDbBusinesses(prev => prev.map(b => b.id === updated.id ? updated : b))} />}
+      <MascotDog page="listing" />
       <AdminQuickAddFAB
         defaultMode="business"
         forceSection="food"

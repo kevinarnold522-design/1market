@@ -8,6 +8,7 @@ import { AnimatePresence } from 'framer-motion';
 import TravelPostModal from '../components/travel/TravelPostModal';
 import MemberSignupModal from '../components/MemberSignupModal';
 import ScrollToTop from '../components/ScrollToTop';
+import MascotDog from '../components/MascotDog';
 import { Plus } from 'lucide-react';
 
 const TRAVEL_CATEGORIES = [
@@ -248,7 +249,7 @@ export default function Travel() {
   const byCategory = (key) => filtered.filter(l => l.type === key);
 
   return (
-    <div className="min-h-screen" style={{ background: '#070F1A' }}>
+    <div className="min-h-screen" style={{ background: '#001060' }}>
       <ParticleBackground />
 
       {/* Hero */}
@@ -345,6 +346,7 @@ export default function Travel() {
         {showTravelPost && <TravelPostModal user={currentUser} onClose={() => setShowTravelPost(false)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
       </AnimatePresence>
+      <MascotDog page="listing" />
       <ScrollToTop />
     </div>
   );

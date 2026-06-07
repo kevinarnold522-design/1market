@@ -46,7 +46,7 @@ const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#070F1A] pt-8 overflow-x-hidden relative">
+    <div className="min-h-screen bg-[#001060] pt-8 overflow-x-hidden relative">
       <Suspense fallback={<Spinner />}>
         <StarField />
         <ParticleBackground />

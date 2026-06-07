@@ -12,7 +12,7 @@ const TRUST_BADGES = [
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #070F1A 0%, #0A192F 60%, #061020 100%)' }}>
+    <footer className="relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #001060 0%, #0033CC 40%, #001a80 100%)' }}>
       {/* Top border glow */}
       <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, #00D4FF40, #2563EB60, #00D4FF40, transparent)' }} />
 
@@ -57,7 +57,7 @@ export default function Footer() {
           </div>
           {/* Socials */}
           <div className="flex items-center gap-3 flex-wrap justify-center">
-            <a href="https://facebook.com/1marketph" target="_blank" rel="noopener noreferrer"
+            <a href="https://www.facebook.com/share/18Neew76Yo/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-body text-xs font-bold text-blue-400 transition-all hover:scale-105"
               style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.25)' }}>
               <Facebook className="w-4 h-4" /> Facebook

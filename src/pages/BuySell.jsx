@@ -11,6 +11,7 @@ import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
 import { base44 } from '@/api/base44Client';
 import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
+import MascotDog from '../components/MascotDog';
 
 const SUBCATEGORIES = [
   { key: 'shoes', label: 'Shoes', icon: '👟', desc: 'Sneakers, footwear & more' },
@@ -353,7 +354,7 @@ export default function BuySell() {
   const BUY_SUBCATEGORIES = [{ key: 'all', label: 'All Listings', icon: '🛒', desc: 'Browse everything' }, ...SUBCATEGORIES];
 
   return (
-    <div className="min-h-screen bg-[#070F1A]">
+    <div className="min-h-screen bg-[#001060]">
       <StarField />
       <SubcategorySplash
         subcategories={BUY_SUBCATEGORIES}
@@ -516,6 +517,7 @@ export default function BuySell() {
         const items = await base44.entities.Listing.list('-created_date', 100);
         setDbListings(items.filter(l => l.is_active));
       }} />
+      <MascotDog page="listing" />
       <ScrollToTop />
 
       <AnimatePresence>
