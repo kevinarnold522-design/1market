@@ -3,9 +3,7 @@ import Navbar from '../components/home/Navbar';
 import MascotDog from '../components/MascotDog';
 import Footer from '../components/home/Footer';
 import WelcomeSplash from '../components/home/WelcomeSplash';
-import TrendingSearches from '../components/home/TrendingSearches';
 import MovingWelcomeBanner from '../components/home/MovingWelcomeBanner';
-import HeroSlider from '../components/home/HeroSlider';
 import CategoryCards from '../components/home/CategoryCards';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
@@ -31,8 +29,7 @@ const CommunityAnimation = lazy(() => import('../components/home/CommunityAnimat
 const RecentlyViewed = lazy(() => import('../components/home/RecentlyViewed'));
 const SuggestionBox = lazy(() => import('../components/home/SuggestionBox'));
 const BrandingBanner = lazy(() => import('../components/home/BrandingBanner'));
-const FilipinoPrideBanner = lazy(() => import('../components/home/FilipinoPrideBanner'));
-const SuggestionsBar = lazy(() => import('../components/home/SuggestionsBar'));
+
 const CustomerSupportButton = lazy(() => import('../components/CustomerSupportButton'));
 const AdminQuickAddFAB = lazy(() => import('../components/admin/AdminQuickAddFAB'));
 const AdManager = lazy(() => import('../components/AdManager'));
@@ -55,12 +52,8 @@ export default function Home() {
       <div className="relative z-10">
         <WelcomeSplash />
         <Navbar />
-        <TrendingSearches />
-        <Suspense fallback={<Spinner />}><FilipinoPrideBanner /></Suspense>
-        <Suspense fallback={<Spinner />}><SuggestionsBar /></Suspense>
         <MovingWelcomeBanner />
         <Suspense fallback={<Spinner />}><BrandingBanner /></Suspense>
-        <HeroSlider />
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>
         <Suspense fallback={<Spinner />}><WhatMakesUsSpecial /></Suspense>
         <Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense>

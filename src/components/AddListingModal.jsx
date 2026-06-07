@@ -192,6 +192,41 @@ const ALL_CITIES = [
 
 const CONDITIONS = ['Brand New', 'Like New', 'Good as New', 'Lightly Used', 'Used', 'Heavily Used', 'N/A'];
 
+const SLIDESHOW_ANIMATIONS = [
+  { value: 'fade',   label: '✨ Fade',   desc: 'Smooth crossfade' },
+  { value: 'slide',  label: '➡️ Slide',  desc: 'Slide left/right' },
+  { value: 'zoom',   label: '🔍 Zoom',   desc: 'Zoom in & out' },
+  { value: 'flip',   label: '🔄 Flip',   desc: '3D card flip' },
+  { value: 'bounce', label: '⚡ Bounce', desc: 'Bouncy spring' },
+];
+
+// Category-specific extra fields config
+const CATEGORY_FIELDS = {
+  food: [
+    { key: 'food_serving',    label: 'Serving Size',   placeholder: 'e.g. Good for 2, Family size' },
+    { key: 'food_dietary',    label: 'Dietary Info',   placeholder: 'e.g. Halal, Vegan, Gluten-free' },
+    { key: 'food_allergens',  label: 'Allergens',      placeholder: 'e.g. Nuts, Dairy, Shellfish' },
+  ],
+  jobs: [
+    { key: 'job_benefits',    label: 'Benefits',       placeholder: 'e.g. SSS, PhilHealth, HMO, 13th month' },
+  ],
+  services: [
+    { key: 'service_duration',     label: 'Duration',       placeholder: 'e.g. 1 hour, Half day, Per project' },
+    { key: 'service_availability', label: 'Availability',   placeholder: 'e.g. Mon-Fri 8am-5pm' },
+  ],
+  rent_lease: [
+    { key: 'rent_deposit',    label: 'Deposit Terms',  placeholder: 'e.g. 2 months deposit + 1 advance' },
+    { key: 'rent_utilities',  label: 'Utilities',      placeholder: 'e.g. Meralco included' },
+  ],
+};
+
+const FOOD_SPICE = ['Mild', 'Medium', 'Spicy', 'Extra Spicy', 'N/A'];
+const JOB_EMPLOYMENT = ['Full-time', 'Part-time', 'Freelance', 'Contract', 'Internship', 'WFH / Remote', 'Hybrid'];
+const JOB_EXPERIENCE = ['No Experience', 'Entry Level', '1-2 Years', '3-5 Years', '5+ Years', 'Senior / Managerial'];
+const SERVICE_RATE_TYPE = ['Per Hour', 'Per Day', 'Per Project', 'Monthly', 'Fixed Rate'];
+const RENT_FURNISHED = ['Fully Furnished', 'Semi-Furnished', 'Unfurnished'];
+const RENT_PET = ['Pets Allowed', 'No Pets', 'Case to Case'];
+
 const EMPTY_FORM = {
   main_category: '',
   type: '',
@@ -216,6 +251,12 @@ const EMPTY_FORM = {
   condition: 'Brand New',
   image_url: '',
   is_active: true,
+  slideshow_animation: 'fade',
+  // category-specific
+  food_serving: '', food_dietary: '', food_spice_level: 'N/A', food_allergens: '',
+  job_employment_type: 'Full-time', job_experience: 'Entry Level', job_salary_min: '', job_salary_max: '', job_benefits: '',
+  service_duration: '', service_availability: '', service_rate_type: 'Per Hour',
+  rent_deposit: '', rent_utilities: '', rent_furnished: 'Semi-Furnished', rent_pet_policy: 'No Pets',
 };
 
 // Map type → main_category for entity field
@@ -293,6 +334,15 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       condition: form.condition,
       is_active: form.is_active,
       approval_status: isJob ? 'pending' : 'approved',
+      slideshow_animation: form.slideshow_animation || 'fade',
+      // Food extras
+      ...(form.type === 'food' ? { food_serving: form.food_serving, food_dietary: form.food_dietary, food_spice_level: form.food_spice_level, food_allergens: form.food_allergens } : {}),
+      // Job extras
+      ...(form.type === 'jobs' ? { job_employment_type: form.job_employment_type, job_experience: form.job_experience, job_salary_min: Number(form.job_salary_min)||0, job_salary_max: Number(form.job_salary_max)||0, job_benefits: form.job_benefits } : {}),
+      // Service extras
+      ...(form.type === 'services' ? { service_duration: form.service_duration, service_rate_type: form.service_rate_type, service_availability: form.service_availability } : {}),
+      // Rent extras
+      ...(form.type === 'rent_lease' ? { rent_deposit: form.rent_deposit, rent_utilities: form.rent_utilities, rent_furnished: form.rent_furnished, rent_pet_policy: form.rent_pet_policy } : {}),
     });
     setSubmitting(false);
     setDone(true);
@@ -547,6 +597,104 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       I agree to the <span className="text-[#00D4FF]">Data Privacy Act of 2012 (Republic Act 10173)</span>. I consent to the collection and processing of my personal information for this listing and acknowledge that 1MarketPH may store and display this information publicly.
                     </label>
                   </div>
+
+                  {/* Slideshow Animation Picker — only if multiple images */}
+                  <div>
+                    <label className={labelCls}>📸 Image Gallery Animation</label>
+                    <div className="grid grid-cols-5 gap-1.5">
+                      {SLIDESHOW_ANIMATIONS.map(a => (
+                        <button key={a.value} type="button"
+                          onClick={() => set('slideshow_animation', a.value)}
+                          className="flex flex-col items-center gap-0.5 p-2 rounded-xl border transition-all text-center"
+                          style={{
+                            borderColor: form.slideshow_animation === a.value ? '#00D4FF' : 'rgba(255,255,255,0.1)',
+                            background: form.slideshow_animation === a.value ? 'rgba(0,212,255,0.12)' : 'rgba(255,255,255,0.04)',
+                          }}>
+                          <span className="text-base">{a.label.split(' ')[0]}</span>
+                          <span className="font-body text-[9px] text-white/50 leading-tight">{a.desc}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Category-specific fields */}
+                  {form.type === 'food' && (
+                    <div className="rounded-xl p-3 space-y-3" style={{ background: 'rgba(249,115,22,0.07)', border: '1px solid rgba(249,115,22,0.2)' }}>
+                      <p className="font-body text-[10px] font-bold text-orange-400 uppercase tracking-wider">🍜 Food Details</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div><label className={labelCls}>Serving Size</label><input value={form.food_serving} onChange={e=>set('food_serving',e.target.value)} placeholder="e.g. Good for 2" className={inputCls}/></div>
+                        <div><label className={labelCls}>Dietary Info</label><input value={form.food_dietary} onChange={e=>set('food_dietary',e.target.value)} placeholder="e.g. Halal, Vegan" className={inputCls}/></div>
+                        <div><label className={labelCls}>Allergens</label><input value={form.food_allergens} onChange={e=>set('food_allergens',e.target.value)} placeholder="e.g. Nuts, Dairy" className={inputCls}/></div>
+                        <div>
+                          <label className={labelCls}>Spice Level</label>
+                          <select value={form.food_spice_level} onChange={e=>set('food_spice_level',e.target.value)} className={inputCls}>
+                            {FOOD_SPICE.map(s=><option key={s} value={s} className="bg-[#0D1F3C]">{s}</option>)}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {form.type === 'jobs' && (
+                    <div className="rounded-xl p-3 space-y-3" style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.2)' }}>
+                      <p className="font-body text-[10px] font-bold text-amber-400 uppercase tracking-wider">💼 Job Details</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className={labelCls}>Employment Type</label>
+                          <select value={form.job_employment_type} onChange={e=>set('job_employment_type',e.target.value)} className={inputCls}>
+                            {JOB_EMPLOYMENT.map(t=><option key={t} value={t} className="bg-[#0D1F3C]">{t}</option>)}
+                          </select>
+                        </div>
+                        <div>
+                          <label className={labelCls}>Experience Required</label>
+                          <select value={form.job_experience} onChange={e=>set('job_experience',e.target.value)} className={inputCls}>
+                            {JOB_EXPERIENCE.map(t=><option key={t} value={t} className="bg-[#0D1F3C]">{t}</option>)}
+                          </select>
+                        </div>
+                        <div><label className={labelCls}>Salary Min (₱)</label><input type="number" value={form.job_salary_min} onChange={e=>set('job_salary_min',e.target.value)} placeholder="e.g. 18000" className={inputCls}/></div>
+                        <div><label className={labelCls}>Salary Max (₱)</label><input type="number" value={form.job_salary_max} onChange={e=>set('job_salary_max',e.target.value)} placeholder="e.g. 30000" className={inputCls}/></div>
+                      </div>
+                      <div><label className={labelCls}>Benefits</label><input value={form.job_benefits} onChange={e=>set('job_benefits',e.target.value)} placeholder="e.g. SSS, PhilHealth, HMO, 13th month" className={inputCls}/></div>
+                    </div>
+                  )}
+
+                  {form.type === 'services' && (
+                    <div className="rounded-xl p-3 space-y-3" style={{ background: 'rgba(59,130,246,0.07)', border: '1px solid rgba(59,130,246,0.2)' }}>
+                      <p className="font-body text-[10px] font-bold text-blue-400 uppercase tracking-wider">🔧 Service Details</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div><label className={labelCls}>Duration</label><input value={form.service_duration} onChange={e=>set('service_duration',e.target.value)} placeholder="e.g. 1 hour, Per project" className={inputCls}/></div>
+                        <div>
+                          <label className={labelCls}>Rate Type</label>
+                          <select value={form.service_rate_type} onChange={e=>set('service_rate_type',e.target.value)} className={inputCls}>
+                            {SERVICE_RATE_TYPE.map(t=><option key={t} value={t} className="bg-[#0D1F3C]">{t}</option>)}
+                          </select>
+                        </div>
+                        <div className="col-span-2"><label className={labelCls}>Availability</label><input value={form.service_availability} onChange={e=>set('service_availability',e.target.value)} placeholder="e.g. Mon-Fri 8am-5pm, Weekends only" className={inputCls}/></div>
+                      </div>
+                    </div>
+                  )}
+
+                  {form.type === 'rent_lease' && (
+                    <div className="rounded-xl p-3 space-y-3" style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                      <p className="font-body text-[10px] font-bold text-emerald-400 uppercase tracking-wider">🏠 Rental Details</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className={labelCls}>Furnished?</label>
+                          <select value={form.rent_furnished} onChange={e=>set('rent_furnished',e.target.value)} className={inputCls}>
+                            {RENT_FURNISHED.map(t=><option key={t} value={t} className="bg-[#0D1F3C]">{t}</option>)}
+                          </select>
+                        </div>
+                        <div>
+                          <label className={labelCls}>Pet Policy</label>
+                          <select value={form.rent_pet_policy} onChange={e=>set('rent_pet_policy',e.target.value)} className={inputCls}>
+                            {RENT_PET.map(t=><option key={t} value={t} className="bg-[#0D1F3C]">{t}</option>)}
+                          </select>
+                        </div>
+                        <div><label className={labelCls}>Deposit Terms</label><input value={form.rent_deposit} onChange={e=>set('rent_deposit',e.target.value)} placeholder="e.g. 2 months deposit + 1 advance" className={inputCls}/></div>
+                        <div><label className={labelCls}>Utilities</label><input value={form.rent_utilities} onChange={e=>set('rent_utilities',e.target.value)} placeholder="e.g. Meralco included" className={inputCls}/></div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Publish */}
                   <button onClick={handleSubmit} disabled={!form.title || submitting || !dpaAccepted}

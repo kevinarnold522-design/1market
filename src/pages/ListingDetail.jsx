@@ -305,20 +305,42 @@ export default function ListingDetail() {
         <div className="grid lg:grid-cols-5 gap-8">
           {/* Left: Images */}
           <div className="lg:col-span-3 space-y-3">
-            <div className="rounded-2xl overflow-hidden aspect-[4/3] relative"
-              style={{ boxShadow: '0 0 40px rgba(0,212,255,0.08)' }}>
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={activeImage}
-                  src={images[activeImage] || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800'}
-                  alt={listing.title}
-                  initial={{ opacity: 0, scale: 1.04 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.97 }}
-                  transition={{ duration: 0.35, ease: 'easeInOut' }}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              </AnimatePresence>
+          <div className="rounded-2xl overflow-hidden aspect-[4/3] relative"
+            style={{ boxShadow: '0 0 40px rgba(0,212,255,0.08)' }}>
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={activeImage}
+                src={images[activeImage] || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800'}
+                alt={listing.title}
+                initial={
+                  listing.slideshow_animation === 'slide' ? { opacity: 0, x: 60 } :
+                  listing.slideshow_animation === 'zoom' ? { opacity: 0, scale: 1.18 } :
+                  listing.slideshow_animation === 'flip' ? { opacity: 0, rotateY: 90 } :
+                  listing.slideshow_animation === 'bounce' ? { opacity: 0, y: 40, scale: 0.9 } :
+                  { opacity: 0, scale: 1.04 }
+                }
+                animate={
+                  listing.slideshow_animation === 'slide' ? { opacity: 1, x: 0 } :
+                  listing.slideshow_animation === 'zoom' ? { opacity: 1, scale: 1 } :
+                  listing.slideshow_animation === 'flip' ? { opacity: 1, rotateY: 0 } :
+                  listing.slideshow_animation === 'bounce' ? { opacity: 1, y: 0, scale: 1 } :
+                  { opacity: 1, scale: 1 }
+                }
+                exit={
+                  listing.slideshow_animation === 'slide' ? { opacity: 0, x: -60 } :
+                  listing.slideshow_animation === 'zoom' ? { opacity: 0, scale: 0.85 } :
+                  listing.slideshow_animation === 'flip' ? { opacity: 0, rotateY: -90 } :
+                  listing.slideshow_animation === 'bounce' ? { opacity: 0, y: -20, scale: 0.95 } :
+                  { opacity: 0, scale: 0.97 }
+                }
+                transition={
+                  listing.slideshow_animation === 'bounce'
+                    ? { type: 'spring', stiffness: 300, damping: 20 }
+                    : { duration: 0.38, ease: 'easeInOut' }
+                }
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            </AnimatePresence>
               <div className="absolute inset-0 bg-gradient-to-t from-[#070F1A]/40 to-transparent pointer-events-none" />
               {images.length > 1 && (
                 <>
@@ -464,6 +486,64 @@ export default function ListingDetail() {
                   {listing.model && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Model</p><p className="font-body text-xs text-white font-bold">{listing.model}</p></div>}
                   {listing.size && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Size</p><p className="font-body text-xs text-white font-bold">{listing.size}</p></div>}
                   {listing.condition && listing.condition !== 'N/A' && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Condition</p><p className="font-body text-xs text-white font-bold">{listing.condition}</p></div>}
+                </div>
+              )}
+
+              {/* Food details */}
+              {listing.type === 'food' && (listing.food_serving || listing.food_dietary || listing.food_spice_level || listing.food_allergens) && (
+                <div className="mb-4 p-3 rounded-xl space-y-1.5" style={{ background: 'rgba(249,115,22,0.06)', border: '1px solid rgba(249,115,22,0.2)' }}>
+                  <p className="font-body text-[10px] text-orange-400 uppercase tracking-wider font-bold mb-2">🍜 Food Info</p>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {listing.food_serving && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Serving</p><p className="font-body text-xs text-white">{listing.food_serving}</p></div>}
+                    {listing.food_dietary && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Dietary</p><p className="font-body text-xs text-white">{listing.food_dietary}</p></div>}
+                    {listing.food_spice_level && listing.food_spice_level !== 'N/A' && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Spice</p><p className="font-body text-xs text-white">{listing.food_spice_level}</p></div>}
+                    {listing.food_allergens && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Allergens</p><p className="font-body text-xs text-white">{listing.food_allergens}</p></div>}
+                  </div>
+                </div>
+              )}
+
+              {/* Job details */}
+              {listing.type === 'jobs' && (listing.job_employment_type || listing.job_experience || listing.job_salary_min || listing.job_benefits) && (
+                <div className="mb-4 p-3 rounded-xl space-y-1.5" style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}>
+                  <p className="font-body text-[10px] text-amber-400 uppercase tracking-wider font-bold mb-2">💼 Job Details</p>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {listing.job_employment_type && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Type</p><p className="font-body text-xs text-white">{listing.job_employment_type}</p></div>}
+                    {listing.job_experience && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Experience</p><p className="font-body text-xs text-white">{listing.job_experience}</p></div>}
+                    {(listing.job_salary_min || listing.job_salary_max) && (
+                      <div className="col-span-2 bg-white/5 rounded-lg p-2">
+                        <p className="font-body text-[9px] text-white/30">Salary Range</p>
+                        <p className="font-body text-xs text-white font-bold">
+                          {listing.job_salary_min ? `₱${Number(listing.job_salary_min).toLocaleString()}` : '?'} – {listing.job_salary_max ? `₱${Number(listing.job_salary_max).toLocaleString()}` : '?'}/mo
+                        </p>
+                      </div>
+                    )}
+                    {listing.job_benefits && <div className="col-span-2 bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Benefits</p><p className="font-body text-xs text-white">{listing.job_benefits}</p></div>}
+                  </div>
+                </div>
+              )}
+
+              {/* Service details */}
+              {listing.type === 'services' && (listing.service_duration || listing.service_rate_type || listing.service_availability) && (
+                <div className="mb-4 p-3 rounded-xl space-y-1.5" style={{ background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.2)' }}>
+                  <p className="font-body text-[10px] text-blue-400 uppercase tracking-wider font-bold mb-2">🔧 Service Details</p>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {listing.service_duration && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Duration</p><p className="font-body text-xs text-white">{listing.service_duration}</p></div>}
+                    {listing.service_rate_type && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Rate</p><p className="font-body text-xs text-white">{listing.service_rate_type}</p></div>}
+                    {listing.service_availability && <div className="col-span-2 bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Availability</p><p className="font-body text-xs text-white">{listing.service_availability}</p></div>}
+                  </div>
+                </div>
+              )}
+
+              {/* Rental details */}
+              {listing.type === 'rent_lease' && (listing.rent_furnished || listing.rent_pet_policy || listing.rent_deposit || listing.rent_utilities) && (
+                <div className="mb-4 p-3 rounded-xl space-y-1.5" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                  <p className="font-body text-[10px] text-emerald-400 uppercase tracking-wider font-bold mb-2">🏠 Rental Details</p>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {listing.rent_furnished && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Furnished</p><p className="font-body text-xs text-white">{listing.rent_furnished}</p></div>}
+                    {listing.rent_pet_policy && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Pets</p><p className="font-body text-xs text-white">{listing.rent_pet_policy}</p></div>}
+                    {listing.rent_deposit && <div className="col-span-2 bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Deposit</p><p className="font-body text-xs text-white">{listing.rent_deposit}</p></div>}
+                    {listing.rent_utilities && <div className="col-span-2 bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Utilities</p><p className="font-body text-xs text-white">{listing.rent_utilities}</p></div>}
+                  </div>
                 </div>
               )}
 

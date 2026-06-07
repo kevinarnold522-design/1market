@@ -93,8 +93,7 @@
     },
     "flash_deal_active": {
       "type": "boolean",
-      "default": false,
-      "description": "Whether this listing is currently a flash deal"
+      "default": false
     },
     "flash_deal_end": {
       "type": "string",
@@ -132,6 +131,18 @@
       "items": {
         "type": "string"
       }
+    },
+    "slideshow_animation": {
+      "type": "string",
+      "enum": [
+        "fade",
+        "slide",
+        "zoom",
+        "flip",
+        "bounce"
+      ],
+      "default": "fade",
+      "description": "Animation style for image gallery in listing detail"
     },
     "video_url": {
       "type": "string"
@@ -333,6 +344,101 @@
     },
     "social_telegram": {
       "type": "string"
+    },
+    "food_serving": {
+      "type": "string",
+      "description": "e.g. Good for 1-2, Family size"
+    },
+    "food_dietary": {
+      "type": "string",
+      "description": "e.g. Halal, Vegan, Gluten-free"
+    },
+    "food_spice_level": {
+      "type": "string",
+      "enum": [
+        "Mild",
+        "Medium",
+        "Spicy",
+        "Extra Spicy",
+        "N/A"
+      ]
+    },
+    "food_allergens": {
+      "type": "string"
+    },
+    "job_employment_type": {
+      "type": "string",
+      "enum": [
+        "Full-time",
+        "Part-time",
+        "Freelance",
+        "Contract",
+        "Internship",
+        "WFH / Remote",
+        "Hybrid"
+      ]
+    },
+    "job_experience": {
+      "type": "string",
+      "enum": [
+        "No Experience",
+        "Entry Level",
+        "1-2 Years",
+        "3-5 Years",
+        "5+ Years",
+        "Senior / Managerial"
+      ]
+    },
+    "job_salary_min": {
+      "type": "number"
+    },
+    "job_salary_max": {
+      "type": "number"
+    },
+    "job_benefits": {
+      "type": "string"
+    },
+    "service_duration": {
+      "type": "string",
+      "description": "e.g. 1 hour, Half day, Per project"
+    },
+    "service_availability": {
+      "type": "string",
+      "description": "e.g. Mon-Fri 8am-5pm, Weekends only"
+    },
+    "service_rate_type": {
+      "type": "string",
+      "enum": [
+        "Per Hour",
+        "Per Day",
+        "Per Project",
+        "Monthly",
+        "Fixed Rate"
+      ]
+    },
+    "rent_deposit": {
+      "type": "string",
+      "description": "e.g. 2 months deposit"
+    },
+    "rent_utilities": {
+      "type": "string",
+      "description": "e.g. Meralco included, water not included"
+    },
+    "rent_furnished": {
+      "type": "string",
+      "enum": [
+        "Fully Furnished",
+        "Semi-Furnished",
+        "Unfurnished"
+      ]
+    },
+    "rent_pet_policy": {
+      "type": "string",
+      "enum": [
+        "Pets Allowed",
+        "No Pets",
+        "Case to Case"
+      ]
     }
   },
   "required": [

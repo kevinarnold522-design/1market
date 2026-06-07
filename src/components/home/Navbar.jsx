@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { redirectToLogin } from '@/lib/loginRedirect';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Building2, Users } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Building2, Users, Bell } from 'lucide-react';
 import NotificationsBell from '../NotificationsBell';
 import PostListingMenu from '../PostListingMenu';
 import RewardDashboard from '../RewardDashboard';
@@ -204,11 +204,18 @@ export default function Navbar() {
               <span className="font-body text-xs font-semibold">Community</span>
             </Link>
 
-            {/* Notifications bell — signed-in only */}
-            {isAuthenticated && user && (
-              <div className="hidden md:block">
+            {/* Notifications — bell for signed-in, link for all */}
+            {isAuthenticated && user ? (
+              <div className="hidden md:flex items-center gap-1">
                 <NotificationsBell user={user} />
+                <Link to="/notifications" className="hidden md:flex items-center gap-1 px-2 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-[#00D4FF]/40 transition-all text-white/50 hover:text-[#00D4FF] font-body text-[10px] font-semibold">
+                  All
+                </Link>
               </div>
+            ) : (
+              <Link to="/notifications" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 border border-white/10 hover:border-[#00D4FF]/40 transition-all text-white/50 hover:text-[#00D4FF]">
+                <Bell className="w-4 h-4" />
+              </Link>
             )}
 
             {/* Desktop Right */}

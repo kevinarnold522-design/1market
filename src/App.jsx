@@ -24,6 +24,7 @@ import ExplorePage from './pages/ExplorePage';
 import Messages from './pages/Messages';
 import Favourites from './pages/Favourites';
 import BusinessCommunity from './pages/BusinessCommunity';
+import Notifications from './pages/Notifications';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -70,6 +71,7 @@ const AuthenticatedApp = () => {
       <Route path="/messages" element={<Messages />} />
       <Route path="/favourites" element={<Favourites />} />
       <Route path="/community" element={<BusinessCommunity />} />
+      <Route path="/notifications" element={<Notifications />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
