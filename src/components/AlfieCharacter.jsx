@@ -84,6 +84,7 @@ export default function AlfieCharacter({ mode = 'idle', size = 130 }) {
     height: '100%',
     objectFit: 'contain',
     display: 'block',
+    // Use mix-blend-mode on a white backdrop to knock out white bg
   };
 
   return (
@@ -123,15 +124,19 @@ export default function AlfieCharacter({ mode = 'idle', size = 130 }) {
           animation: 'alfie-float 3s ease-in-out infinite',
           willChange: 'transform',
         }}>
+          {/* White backdrop so mix-blend-mode:multiply removes JPEG white bg */}
+          <div style={{ position:'absolute', inset:0, background:'white', borderRadius:'50%' }} />
+
           {/* Current frame */}
           <img
             src={FRAMES[currentFrame]}
             alt="Alfie"
             style={{
               ...imgStyle,
+              mixBlendMode: 'multiply',
               opacity: fading ? 0 : 1,
               transition: fading ? `opacity ${FADE_MS}ms ease-in-out` : 'none',
-              filter: 'drop-shadow(0 10px 22px rgba(0,51,204,0.4)) drop-shadow(0 3px 6px rgba(0,0,0,0.28))',
+              filter: 'drop-shadow(0 8px 18px rgba(0,51,204,0.35))',
             }}
           />
 
@@ -143,9 +148,10 @@ export default function AlfieCharacter({ mode = 'idle', size = 130 }) {
               aria-hidden="true"
               style={{
                 ...imgStyle,
+                mixBlendMode: 'multiply',
                 opacity: fading ? 1 : 0,
                 transition: `opacity ${FADE_MS}ms ease-in-out`,
-                filter: 'drop-shadow(0 10px 22px rgba(0,51,204,0.4)) drop-shadow(0 3px 6px rgba(0,0,0,0.28))',
+                filter: 'drop-shadow(0 8px 18px rgba(0,51,204,0.35))',
               }}
             />
           )}

@@ -91,6 +91,15 @@
       "type": "string",
       "description": "Display price string e.g. \u20b1500\u2013\u20b11,200/unit"
     },
+    "flash_deal_active": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this listing is currently a flash deal"
+    },
+    "flash_deal_end": {
+      "type": "string",
+      "description": "ISO datetime when the flash deal expires"
+    },
     "location": {
       "type": "string"
     },

@@ -5,6 +5,7 @@ import SubcategorySplash from '../components/SubcategorySplash';
 import ScrollToTop from '../components/ScrollToTop';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, X, ChevronDown, Phone, MessageSquare, AlertCircle, ZoomIn, Heart, ShoppingCart, Pencil, Store, Flag } from 'lucide-react';
+import ListingCardActions from '../components/ListingCardActions';
 import ReportModal from '../components/ReportModal';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
@@ -22,16 +23,7 @@ const SUBCATEGORIES = [
   { key: 'services', label: 'Services', icon: '🔧', desc: 'Freelancers, repairs & more' },
 ];
 
-const staticListings = [
-  { id: 's1', type: 'shoes', title: 'Nike Air Force 1 Low', brand: 'Nike', model: 'Air Force 1 Low', size: 'US 10', condition: 'Like New', price: 2800, location: 'Manila', area: 'Makati', seller: 'Direct Owner', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80', description: 'Worn twice only. No creases. Original box included.' },
-  { id: 's2', type: 'shoes', title: 'Adidas Ultraboost 22', brand: 'Adidas', model: 'Ultraboost 22', size: 'US 9', condition: 'Brand New', price: 5500, location: 'Cavite', area: 'Bacoor', seller: 'Direct Owner', image: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=500&q=80', description: 'Sealed box, no tag removed. Limited stock.' },
-  { id: 's3', type: 'cars', title: '2019 Toyota Vios 1.3E AT', brand: 'Toyota', model: 'Vios 1.3E', year: 2019, mileage: '48,000 KM', transmission: 'Automatic', price: 620000, location: 'Manila', area: 'Parañaque', seller: 'Direct Owner', image: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=500&q=80', description: 'First owner. Complete documents. No major accidents.' },
-  { id: 's4', type: 'cars', title: '2017 Honda Civic RS Turbo', brand: 'Honda', model: 'Civic RS Turbo', year: 2017, mileage: '65,000 KM', transmission: 'Automatic', price: 760000, location: 'Cavite', area: 'Dasmariñas', seller: 'Direct Owner', image: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=500&q=80', description: 'All stock. Regularly maintained at Honda dealer.' },
-  { id: 's5', type: 'houses', title: 'Townhouse for Sale – Molino, Bacoor', propertyType: 'Townhouse', lot: '48 sqm', bedrooms: 3, bathrooms: 2, status: 'Ready For Occupancy', price: 2850000, location: 'Cavite', area: 'Bacoor', seller: 'Direct Owner', image: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=500&q=80', description: 'Corner lot. 2-storey. Near SM Bacoor. Titled. Clean documents.' },
-  { id: 's6', type: 'houses', title: '3BR Condo – Taft Ave., Manila', propertyType: 'Condominium', lot: '65 sqm', bedrooms: 3, bathrooms: 2, status: 'Ready For Occupancy', price: 4200000, location: 'Manila', area: 'Malate', seller: 'Direct Owner', image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500&q=80', description: 'Mid-floor unit. Furnished. Near LRT. Pets allowed.' },
-  { id: 's7', type: 'services', title: 'Aircon Cleaning & Repair', provider: 'Mang Ernie AC Services', serviceArea: 'Both', rate: '₱500–₱1,200/unit', location: 'Cavite', area: 'Imus', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80', description: 'Licensed technician. Cleaning, regas, repair. Free checkup.' },
-  { id: 's8', type: 'services', title: 'Freelance Graphic Designer', provider: 'John Paulo D.', serviceArea: 'Both', rate: '₱1,500/project', location: 'Manila', area: 'Quezon City', image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=500&q=80', description: 'Social media posts, logos, tarpaulin. Fast turnaround.' },
-];
+// No static/fake listings — all listings come from the database only
 
 const SORT_OPTIONS = ['Latest Listings', 'Price: Low to High', 'Price: High to Low'];
 
@@ -55,7 +47,7 @@ const LISTING_ADMIN_FIELDS = [
 function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites, onEdit, isAdmin, onAdminSaved, onReport }) {
   const formatPrice = (p) => p ? `₱${Number(p).toLocaleString()}` : '—';
   const isFav = favourites.includes(String(item.id));
-  const isOwner = user && item.created_by === user.email;
+  const isOwner = user && (item.created_by === user.email || item.email_contact === user.email);
 
   const card = (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
@@ -77,13 +69,11 @@ function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites,
           {item.status && <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${item.status === 'Ready For Occupancy' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>{item.status}</span>}
           {item.condition && item.condition !== 'N/A' && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/90 text-[#0A192F]">{item.condition}</span>}
         </div>
-        {/* Favourite button */}
-        {user && (
-          <button onClick={() => onFavourite(item)}
-            className={`absolute bottom-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all ${isFav ? 'bg-red-500 text-white' : 'bg-white/80 text-[#0A192F]/50 hover:bg-red-50 hover:text-red-500'}`}>
-            <Heart className={`w-4 h-4 ${isFav ? 'fill-white' : ''}`} />
-          </button>
-        )}
+        {/* Quick heart on image */}
+        <button onClick={() => onFavourite(item)}
+          className={`absolute bottom-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-md ${isFav ? 'bg-red-500 text-white' : 'bg-white/80 text-[#0A192F]/50 hover:bg-red-50 hover:text-red-500'}`}>
+          <Heart className={`w-4 h-4 ${isFav ? 'fill-white' : ''}`} />
+        </button>
         {/* Edit button for admin or item owner */}
         {(isAdmin || isOwner) && (
           <button onClick={() => onEdit(item)}
@@ -126,7 +116,7 @@ function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites,
           </div>
         )}
         <p className="font-body text-xs text-[#0A192F]/50 mb-3 line-clamp-2">{item.description}</p>
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center justify-between gap-2 mb-2">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-heading font-bold text-base text-[#0A192F]">
               {item.type === 'services' ? (item.rate || item.price_label) : (item.price_label || formatPrice(item.price))}
@@ -142,7 +132,7 @@ function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites,
             )}
           </div>
           <div className="flex gap-1.5">
-            {!item._static && item.id && (
+            {item.id && (
               <a href={`/listing/${item.id}`}
                 className="px-2.5 py-1.5 bg-[#EFF6FF] border border-[#2563EB]/15 text-[#2563EB] rounded-lg font-body text-xs font-semibold hover:bg-[#DBEAFE] transition-colors">
                 View
@@ -152,13 +142,22 @@ function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites,
               className="px-3 py-1.5 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-lg font-body text-xs font-semibold transition-colors">
               Contact
             </button>
-            {user && !item._static && (
+            {user && item.id && (
               <button onClick={() => onReport(item)}
                 className="p-1.5 rounded-lg bg-red-50 border border-red-100 text-red-400 hover:bg-red-100 transition-colors" title="Report listing">
                 <Flag className="w-3 h-3" />
               </button>
             )}
           </div>
+        </div>
+        {/* Heart / Comment / Share / Bookmark row — always visible */}
+        <div className="border-t border-[#0A192F]/5 pt-2 -mx-4 px-4">
+          <ListingCardActions
+            item={item}
+            user={user}
+            isFav={isFav}
+            onFavourite={onFavourite}
+          />
         </div>
       </div>
     </motion.div>
@@ -332,8 +331,8 @@ export default function BuySell() {
     showToast('Listing moved to new category!');
   };
 
-  // Merge static + DB listings
-  const allListings = [...staticListings, ...dbListings.map(l => ({ ...l, image: l.image_url }))];
+  // Only real DB listings
+  const allListings = dbListings.map(l => ({ ...l, image: l.image_url }));
 
   const isAdmin = user?.role === 'admin' || user?.role === 'moderator' || user?.email === 'Kevinarnold522@gmail.com';
   const isSeller = user?.is_seller || user?.account_type === 'business_owner';
