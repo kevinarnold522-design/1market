@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Alfie image extracted from the "How to Start Listing" guide — clean dog only
-const ALFIE_IMG = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e22f4e4dc_9155B165-D5F9-489D-A2B8-C887F8AD2ED7.png';
+const ALFIE_IMG = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/745fd96c6_5C2B4377-0629-406D-97F0-9485947B48FD.png';
 
 // ─── All Keyframe Definitions ──────────────────────────────────────────────
 const STYLE = `

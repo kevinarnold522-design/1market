@@ -547,13 +547,13 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                     </label>
                   </div>
 
-                  {/* Submit */}
+                  {/* Publish */}
                   <button onClick={handleSubmit} disabled={!form.title || submitting || !dpaAccepted}
-                    className="w-full py-3 rounded-xl font-body font-bold text-sm text-white transition-all disabled:opacity-40 hover:scale-[1.01]"
-                    style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 16px rgba(37,99,235,0.4)' }}>
+                    className="w-full py-3 rounded-xl font-body font-bold text-sm text-white transition-all disabled:opacity-40 hover:scale-[1.01] flex items-center justify-center gap-2"
+                    style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 20px rgba(37,99,235,0.5)' }}>
                     {submitting
-                      ? <span className="flex items-center justify-center gap-2"><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Submitting...</span>
-                      : 'Submit Listing'}
+                      ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Publishing...</>
+                      : <>🚀 Publish Listing</>}
                   </button>
 
                   {isJob && (

@@ -47,7 +47,7 @@ export default function PostListingMenu({ user, compact = false }) {
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105"
           style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }}>
           <Plus className="w-3.5 h-3.5" />
-          {compact ? 'Post' : 'Add a Listing'}
+          Post & Add
         </button>
 
         <AnimatePresence>
