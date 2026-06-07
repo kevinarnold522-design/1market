@@ -378,16 +378,25 @@ export default function Navbar() {
                             </>
                           )}
 
-                          {/* Become Verified Partner section — for non-verified sellers & business owners */}
-                          {isSeller && !isVerified && !isAdmin && (
+                          {/* Apply for Verified Partner — only for unverified sellers without pending application */}
+                          {isSeller && !isVerified && !isAdmin && !user?.verification_submitted && (
                             <>
                               <div className="border-t border-white/8 my-1" />
-                              <Link to="/profile?tab=verification" onClick={() => setProfileOpen(false)}
+                              <Link to="/profile?tab=sellerpage" onClick={() => setProfileOpen(false)}
                                 className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold"
                                 style={{ background: 'linear-gradient(90deg,rgba(168,85,247,0.12),rgba(56,189,248,0.08))', border: '1px solid rgba(168,85,247,0.2)' }}>
                                 <MetaVerifiedBadge size="xs" label="" />
-                                <span className="text-purple-300">Become a Verified Partner</span>
+                                <span className="text-purple-300">Apply for Verified ✓ Partner</span>
                               </Link>
+                            </>
+                          )}
+                          {isSeller && !isVerified && !isAdmin && user?.verification_submitted && (
+                            <>
+                              <div className="border-t border-white/8 my-1" />
+                              <div className="flex items-center gap-2 px-3 py-2 rounded-xl font-body text-xs"
+                                style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
+                                <span className="text-amber-400">⏳ Verification Pending Review</span>
+                              </div>
                             </>
                           )}
 
@@ -514,11 +523,14 @@ export default function Navbar() {
                         </Link>
                       </>
                     )}
-                    {isSeller && !isVerified && !isAdmin && (
-                      <Link to="/profile?tab=verification" onClick={() => setMenuOpen(false)}
+                    {isSeller && !isVerified && !isAdmin && !user?.verification_submitted && (
+                      <Link to="/profile?tab=sellerpage" onClick={() => setMenuOpen(false)}
                         className="block text-purple-300 font-body text-sm font-medium py-2 transition-colors">
-                        Become a Verified Partner
+                        ✓ Apply for Verified Partner
                       </Link>
+                    )}
+                    {isSeller && !isVerified && !isAdmin && user?.verification_submitted && (
+                      <span className="block text-amber-400 font-body text-sm py-2">⏳ Verification Pending</span>
                     )}
                     {isCustomer && !isSeller && !isBusiness && (
                       <>

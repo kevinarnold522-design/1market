@@ -22,7 +22,7 @@ const FRAMES = [
 
 // How long each frame stays visible (ms) before crossfading to the next
 // Frames with action (wave, thumbsup) hold a bit longer for effect
-const FRAME_DURATIONS = [3200, 3000, 3000, 3500, 3000, 3500, 3200, 3000];
+const FRAME_DURATIONS = [15000, 15000, 15000, 15000, 15000, 15000, 15000, 15000];
 
 // Crossfade duration (ms)
 const FADE_MS = 350;
