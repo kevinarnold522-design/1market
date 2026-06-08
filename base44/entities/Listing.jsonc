@@ -85,19 +85,17 @@
     },
     "original_price": {
       "type": "number",
-      "description": "Optional compare-at / strikethrough price. Must be greater than current price."
+      "description": "Optional compare-at / strikethrough price."
     },
     "price_label": {
-      "type": "string",
-      "description": "Display price string e.g. \u20b1500\u2013\u20b11,200/unit"
+      "type": "string"
     },
     "flash_deal_active": {
       "type": "boolean",
       "default": false
     },
     "flash_deal_end": {
-      "type": "string",
-      "description": "ISO datetime when the flash deal expires"
+      "type": "string"
     },
     "location": {
       "type": "string"
@@ -141,8 +139,7 @@
         "flip",
         "bounce"
       ],
-      "default": "fade",
-      "description": "Animation style for image gallery in listing detail"
+      "default": "fade"
     },
     "video_url": {
       "type": "string"
@@ -191,6 +188,20 @@
         "10th Owner"
       ]
     },
+    "car_sale_type": {
+      "type": "string",
+      "enum": [
+        "Cash",
+        "Installment",
+        "Pasalo / Name Transfer",
+        "Negotiable"
+      ],
+      "description": "Sale type for cars"
+    },
+    "car_owner_name": {
+      "type": "string",
+      "description": "Name of the car owner"
+    },
     "size": {
       "type": "string"
     },
@@ -227,6 +238,37 @@
     },
     "full_address": {
       "type": "string"
+    },
+    "property_listing_type": {
+      "type": "string",
+      "enum": [
+        "For Rent",
+        "For Sale",
+        "For Lease"
+      ],
+      "description": "Whether property is for rent, sale or lease"
+    },
+    "property_sale_type": {
+      "type": "string",
+      "enum": [
+        "Pre-Selling",
+        "Ready for Occupancy (RFO)",
+        "Pasalo / Name Transfer",
+        "Regular Sale - Cash Basis"
+      ],
+      "description": "Sale classification for properties for sale"
+    },
+    "property_turnover_months": {
+      "type": "string",
+      "description": "e.g. 24-36 months (for pre-selling)"
+    },
+    "property_lease_months": {
+      "type": "integer",
+      "description": "Lease duration in months"
+    },
+    "property_developer": {
+      "type": "string",
+      "description": "Name of property developer"
     },
     "hotel_room_type": {
       "type": "string"
@@ -346,12 +388,10 @@
       "type": "string"
     },
     "food_serving": {
-      "type": "string",
-      "description": "e.g. Good for 1-2, Family size"
+      "type": "string"
     },
     "food_dietary": {
-      "type": "string",
-      "description": "e.g. Halal, Vegan, Gluten-free"
+      "type": "string"
     },
     "food_spice_level": {
       "type": "string",
@@ -365,6 +405,26 @@
     },
     "food_allergens": {
       "type": "string"
+    },
+    "food_business_type": {
+      "type": "string",
+      "enum": [
+        "Home Kitchen",
+        "Karinderia / Carinderia",
+        "Bakery / Pastry Shop",
+        "Fast Food Chain",
+        "Restaurant / Resto Bar",
+        "Food Stall / Kiosk",
+        "Catering Service",
+        "Corporation / Franchise",
+        "Cloud Kitchen / Online Only",
+        "Other"
+      ],
+      "description": "Type of food business"
+    },
+    "food_type": {
+      "type": "string",
+      "description": "What type of food is being sold"
     },
     "job_employment_type": {
       "type": "string",
@@ -399,12 +459,10 @@
       "type": "string"
     },
     "service_duration": {
-      "type": "string",
-      "description": "e.g. 1 hour, Half day, Per project"
+      "type": "string"
     },
     "service_availability": {
-      "type": "string",
-      "description": "e.g. Mon-Fri 8am-5pm, Weekends only"
+      "type": "string"
     },
     "service_rate_type": {
       "type": "string",
@@ -417,12 +475,10 @@
       ]
     },
     "rent_deposit": {
-      "type": "string",
-      "description": "e.g. 2 months deposit"
+      "type": "string"
     },
     "rent_utilities": {
-      "type": "string",
-      "description": "e.g. Meralco included, water not included"
+      "type": "string"
     },
     "rent_furnished": {
       "type": "string",
