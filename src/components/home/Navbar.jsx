@@ -150,15 +150,15 @@ export default function Navbar() {
           {/* Right: 1MarketPH Social Links */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
             <span className="font-body text-[9px] text-white/40 hidden md:block mr-1">Follow us:</span>
-            <a href="https://www.facebook.com/share/18Neew76Yo/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
+            <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-blue-300 hover:text-blue-200 transition-colors"
               style={{ background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.2)' }}>
-              <Facebook className="w-3 h-3" /><span className="hidden sm:inline">FB</span>
+              <Facebook className="w-3 h-3" /><span className="hidden sm:inline">@1MarketPH</span>
             </a>
-            <a href="https://instagram.com/1marketph" target="_blank" rel="noopener noreferrer"
+            <a href="https://www.instagram.com/1marketph?igsh=Mnk4bHdtaXN2N2h1&utm_source=qr" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-pink-300 hover:text-pink-200 transition-colors"
               style={{ background: 'rgba(236,72,153,0.15)', border: '1px solid rgba(236,72,153,0.2)' }}>
-              <Instagram className="w-3 h-3" /><span className="hidden sm:inline">IG</span>
+              <Instagram className="w-3 h-3" /><span className="hidden sm:inline">@1MarketPH</span>
             </a>
             <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-white/60 hover:text-white/90 transition-colors"

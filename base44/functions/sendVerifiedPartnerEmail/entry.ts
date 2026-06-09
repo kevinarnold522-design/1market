@@ -89,7 +89,11 @@ Deno.serve(async (req) => {
     </div>
     <div class="footer">
       <p>✅ This verification was approved by the 1Marketph.com team</p>
-      <p>© 2025 1Marketph.com · The Philippines' Online Marketplace</p>
+      <div style="margin:8px 0;">
+        <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" style="color:#2563EB;text-decoration:none;margin:0 6px;">📘 Facebook @1MarketPH</a> ·
+        <a href="https://www.instagram.com/1marketph?igsh=Mnk4bHdtaXN2N2h1&utm_source=qr" style="color:#ec4899;text-decoration:none;margin:0 6px;">📸 Instagram @1MarketPH</a>
+      </div>
+      <p>© 2026 1Marketph.com · The Philippines' Online Marketplace</p>
       <p>Compliant with the Philippine Data Privacy Act of 2012</p>
     </div>
   </div>

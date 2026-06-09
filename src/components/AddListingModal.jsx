@@ -51,7 +51,56 @@ const SUBS_BY_TYPE = {
   cars:           ['Sedan', 'SUV', 'Van', 'Pickup', 'Hatchback', 'Motorcycle', 'Truck', 'AUV / MPV'],
   houses:         ['House & Lot', 'Condominium', 'Townhouse', 'Apartment', 'Vacant Lot', 'Commercial Property'],
   food:           ['Baked Goods', 'Ready-to-Eat Meals', 'Beverages', 'Snacks', 'Ingredients / Grocery', 'Desserts', 'Health Food', 'Restaurant / Carinderia', 'Home Kitchen', 'Food Stall'],
-  services:       ['Home Cleaning', 'Plumbing', 'Electrical', 'Aircon Services', 'Carpentry', 'Pest Control', 'Web Development', 'Graphic Design', 'IT Support', 'CCTV Installation', 'Social Media Management', 'Massage / Spa', 'Nails', 'Hair Services', 'Makeup Artist', 'Event Planning', 'Catering', 'DJ Services', 'Photography / Videography', 'Accounting / Bookkeeping', 'Tax Filing', 'Legal Services', 'Trucking', 'Courier / Delivery', 'Airport Transfer', 'Dental', 'Caregiver', 'Tutoring / Academic', 'Other / Type Manually'],
+  services: [
+    // 🏠 Home Services
+    'House Cleaning', 'Plumbing', 'Electrical Repair', 'Carpentry', 'Roofing', 'Flooring',
+    'Painting Services', 'Landscaping', 'Interior Design', 'Appliance Repair',
+    'Aircon Cleaning & Repair', 'CCTV Installation', 'Pest Control', 'Home Renovation',
+    // 🚗 Automotive
+    'Car Repair', 'Motorcycle Repair', 'Car Wash', 'Auto Detailing', 'Vehicle Rental',
+    'Towing Services', 'Driving Lessons', 'Tint Installation',
+    // 💻 Technology
+    'Website Development', 'Mobile App Development', 'Software Development', 'IT Support',
+    'Cybersecurity', 'Cloud Services', 'AI Development', 'Chatbot Creation', 'Data Analytics',
+    'Network Installation',
+    // 🎨 Creative
+    'Graphic Design', 'Logo Design', 'Branding', 'Animation', 'Video Editing',
+    'Photography', 'Videography', 'Voice Over', 'Content Writing', 'Copywriting', 'Printing Services',
+    // 📣 Marketing
+    'Social Media Management', 'Facebook Ads', 'Google Ads', 'SEO Services',
+    'Influencer Marketing', 'Email Marketing', 'Public Relations', 'Lead Generation',
+    // 📚 Education & Training
+    'Tutoring', 'Online Classes', 'Language Lessons', 'Coding Lessons',
+    'Music Lessons', 'Dance Lessons', 'Review Centers', 'Skills Training',
+    // 🎉 Events & Entertainment
+    'Wedding Coordination', 'Event Planning', 'DJ Services', 'Event Hosting / Emcee',
+    'Catering', 'Photography', 'Videography', 'Photobooth', 'Sound System Rental', 'Stage Rental',
+    // 🏥 Health & Wellness
+    'Fitness Coaching', 'Personal Training', 'Massage Services', 'Spa & Wellness',
+    'Nutrition Coaching', 'Mental Wellness Coaching', 'Home Caregiver Services', 'Home Nursing',
+    // 🐶 Pet Services
+    'Pet Grooming', 'Pet Sitting', 'Dog Walking', 'Pet Training', 'Veterinary Services', 'Pet Boarding',
+    // 🏢 Business & Professional
+    'Accounting', 'Bookkeeping', 'Tax Filing', 'Payroll Services', 'Business Registration',
+    'Legal Consultation', 'Trademark Registration', 'Business Consulting',
+    'HR Services', 'Recruitment', 'Virtual Assistant',
+    // 🏗️ Construction
+    'General Contractors', 'Architecture', 'Civil Engineering', 'Structural Engineering',
+    'Surveying Services', 'Construction Equipment Rental',
+    // 🚚 Logistics & Delivery
+    'Moving Services', 'Delivery Services', 'Courier Services', 'Freight Forwarding',
+    'Warehousing', 'Storage Solutions',
+    // 👤 Personal Services
+    'Babysitting', 'Elderly Care', 'Laundry Services', 'Makeup Artist',
+    'Hair Styling', 'Barbershop', 'Personal Assistant',
+    // 💼 Freelance & Remote
+    'Data Entry', 'Customer Support', 'Appointment Setting',
+    'Research Services', 'Translation', 'Transcription', 'Resume Writing',
+    // 💰 Finance & Insurance
+    'Financial Advisory', 'Insurance Services', 'Real Estate Agent', 'Property Management',
+    // 🌐 Other
+    'Travel & Tours', 'Gaming Services', 'AI Services', 'Other / Type Manually',
+  ],
   jobs:           ['Customer Service Rep', 'Technical Support', 'Software Engineer', 'Web Developer', 'IT Helpdesk', 'Staff Nurse (RN)', 'Caregiver', 'HR Generalist', 'Accountant / CPA', 'Civil Engineer', 'Electrician', 'Delivery Rider', 'Sales Executive', 'Graphic Designer', 'Cook / Chef', 'Teacher / Instructor', 'Household Helper', 'Virtual Assistant (VA)', 'Other / Not Listed'],
   rent_lease:     ['Room for Rent', 'Bedspace / Dormitory', 'Apartment / Condo', 'House', 'Townhouse', 'Commercial Space', 'Office Space', 'Bodega / Warehouse', 'Land', 'Venue / Events Space', 'Stall / Kiosk'],
   vehicle_rental: ['Car Rental', 'Van Rental', 'Motorcycle Rental', 'Truck Rental', 'Bus / Shuttle'],
@@ -93,7 +142,11 @@ const FOOD_BUSINESS_TYPES = ['Home Kitchen', 'Karinderia / Carinderia', 'Bakery 
 const FOOD_TYPES = ['Lutong Bahay / Home-cooked', 'Baked Goods & Pastries', 'Karinderia Meals', 'Grilled / BBQ', 'Seafood', 'Noodles & Pasta', 'Rice Meals', 'Snacks & Merienda', 'Beverages & Drinks', 'Desserts & Sweets', 'Vegan / Healthy Food', 'International Cuisine', 'Street Food', 'Sari-sari / Grocery Items', 'Other'];
 const JOB_EMPLOYMENT = ['Full-time', 'Part-time', 'Freelance', 'Contract', 'Internship', 'WFH / Remote', 'Hybrid'];
 const JOB_EXPERIENCE = ['No Experience', 'Entry Level', '1-2 Years', '3-5 Years', '5+ Years', 'Senior / Managerial'];
-const SERVICE_RATE_TYPE = ['Per Hour', 'Per Day', 'Per Project', 'Monthly', 'Fixed Rate'];
+const SERVICE_RATE_TYPE = ['Per Hour', 'Per Day', 'Per Project', 'Monthly', 'Fixed Rate', 'Custom Quote'];
+const SERVICE_AREA_TYPES = ['Nationwide', 'Regional', 'City / Municipality', 'Barangay', 'Remote / Online', 'On-site'];
+const SERVICE_EXPERIENCE = ['Less than 1 year', '1-2 Years', '3-5 Years', '5-10 Years', '10+ Years'];
+const AVAILABILITY_OPTIONS = ['Available Now', 'By Appointment', 'Weekdays Only', 'Weekends Only', 'Mon-Fri 8am-5pm', 'Mon-Sat 8am-6pm', '24/7 Emergency', 'Flexible / Custom'];
+const PACKAGE_TIERS = ['Basic', 'Standard', 'Premium'];
 const RENT_FURNISHED = ['Fully Furnished', 'Semi-Furnished', 'Unfurnished'];
 const RENT_PET = ['Pets Allowed', 'No Pets', 'Case to Case'];
 const CAR_OWNERSHIP = ['Brand New', '1st Owner', '2nd Owner', '3rd Owner', '4th Owner', '5th Owner'];
@@ -117,6 +170,12 @@ const EMPTY_FORM = {
   food_business_type: '', food_type: '',
   job_employment_type: 'Full-time', job_experience: 'Entry Level', job_salary_min: '', job_salary_max: '', job_benefits: '',
   service_duration: '', service_availability: '', service_rate_type: 'Per Hour',
+  service_area_type: 'City / Municipality', service_experience: '', service_team_size: '',
+  service_certifications: '', service_languages: '', service_warranty: '',
+  service_package_basic: '', service_package_standard: '', service_package_premium: '',
+  service_online_available: false, service_mobile_available: false,
+  service_emergency_available: false, service_same_day: false,
+  channel_name: '',
   rent_deposit: '', rent_utilities: '', rent_furnished: 'Semi-Furnished', rent_pet_policy: 'No Pets',
   property_listing_type: 'For Rent', property_sale_type: '', property_turnover_months: '', property_lease_months: 12, property_developer: '',
   car_ownership: '1st Owner', car_sale_type: 'Cash', car_owner_name: '',
@@ -162,8 +221,9 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
     main_category: resolvedMain,
     type: defaultType,
     subcategory: defaultSubcategory,
-    seller_name: user?.full_name || '',
-    email_contact: user?.email || '',
+    seller_name: user?.channel_name || user?.business_name || user?.full_name || '',
+    email_contact: user?.show_email_public ? (user?.email || '') : '',
+    channel_name: user?.channel_name || user?.business_name || '',
   });
   const [step, setStep] = useState(resolvedMain ? (defaultType ? 2 : 1) : 0);
   const [uploading, setUploading] = useState(false);
@@ -230,7 +290,26 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       slideshow_animation: form.slideshow_animation || 'fade',
       ...(form.type === 'food' ? { food_serving: form.food_serving, food_dietary: form.food_dietary, food_spice_level: form.food_spice_level, food_allergens: form.food_allergens, food_business_type: form.food_business_type, food_type: form.food_type } : {}),
       ...(form.type === 'jobs' ? { job_employment_type: form.job_employment_type, job_experience: form.job_experience, job_salary_min: Number(form.job_salary_min) || 0, job_salary_max: Number(form.job_salary_max) || 0, job_benefits: form.job_benefits } : {}),
-      ...(form.type === 'services' ? { service_duration: form.service_duration, service_rate_type: form.service_rate_type, service_availability: form.service_availability } : {}),
+      ...(form.type === 'services' ? {
+        service_duration: form.service_duration,
+        service_rate_type: form.service_rate_type,
+        service_availability: form.service_availability,
+        service_area: form.service_area_type,
+        specs: [
+          form.service_experience ? `Experience: ${form.service_experience}` : '',
+          form.service_team_size ? `Team: ${form.service_team_size}` : '',
+          form.service_languages ? `Languages: ${form.service_languages}` : '',
+          form.service_certifications ? `Certified: ${form.service_certifications}` : '',
+          form.service_warranty ? `Warranty: ${form.service_warranty}` : '',
+          form.service_online_available ? 'Online/Remote: Yes' : '',
+          form.service_mobile_available ? 'Mobile/On-site: Yes' : '',
+          form.service_same_day ? 'Same Day: Yes' : '',
+          form.service_emergency_available ? 'Emergency Service: Yes' : '',
+          form.service_package_basic ? `Basic: ${form.service_package_basic}` : '',
+          form.service_package_standard ? `Standard: ${form.service_package_standard}` : '',
+          form.service_package_premium ? `Premium: ${form.service_package_premium}` : '',
+        ].filter(Boolean).join(' | '),
+      } : {}),
       ...(isPropertyRent ? {
         rent_deposit: form.rent_deposit, rent_utilities: form.rent_utilities, rent_furnished: form.rent_furnished, rent_pet_policy: form.rent_pet_policy,
         property_listing_type: form.property_listing_type, property_developer: form.property_developer,
@@ -606,17 +685,107 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
 
                   {/* SERVICE DETAILS */}
                   {form.type === 'services' && (
-                    <div className="rounded-xl p-3 space-y-3" style={{ background: 'rgba(59,130,246,0.07)', border: '1px solid rgba(59,130,246,0.2)' }}>
+                    <div className="rounded-xl p-3 space-y-4" style={{ background: 'rgba(59,130,246,0.07)', border: '1px solid rgba(59,130,246,0.2)' }}>
                       <p className="font-body text-[10px] font-bold text-blue-400 uppercase tracking-wider">Service Details</p>
+
+                      {/* Channel / Business Name */}
+                      <div>
+                        <label className={labelCls}>Channel / Business Name (Public)</label>
+                        <input value={form.channel_name} onChange={e => set('channel_name', e.target.value)} placeholder="e.g. Kevin's Repair Shop, CleanPro Services..." className={inputCls} />
+                        <p className="font-body text-[9px] text-white/25 mt-1">This name will be shown publicly instead of your personal name.</p>
+                      </div>
+
+                      {/* Rate & Duration */}
                       <div className="grid grid-cols-2 gap-2">
-                        <div><label className={labelCls}>Duration</label><input value={form.service_duration} onChange={e => set('service_duration', e.target.value)} placeholder="e.g. 1 hour, Per project" className={inputCls} /></div>
                         <div>
                           <label className={labelCls}>Rate Type</label>
                           <select value={form.service_rate_type} onChange={e => set('service_rate_type', e.target.value)} className={inputCls}>
                             {SERVICE_RATE_TYPE.map(t => <option key={t} value={t} className="bg-[#0D1F3C]">{t}</option>)}
                           </select>
                         </div>
-                        <div className="col-span-2"><label className={labelCls}>Availability</label><input value={form.service_availability} onChange={e => set('service_availability', e.target.value)} placeholder="e.g. Mon-Fri 8am-5pm" className={inputCls} /></div>
+                        <div><label className={labelCls}>Duration / Est. Time</label><input value={form.service_duration} onChange={e => set('service_duration', e.target.value)} placeholder="e.g. 2 hours, 1 day" className={inputCls} /></div>
+                      </div>
+
+                      {/* Service Area */}
+                      <div>
+                        <label className={labelCls}>Service Area Type</label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {SERVICE_AREA_TYPES.map(a => (
+                            <button key={a} type="button" onClick={() => set('service_area_type', a)}
+                              className="px-2.5 py-1 rounded-full border font-body text-[11px] transition-all"
+                              style={{
+                                borderColor: form.service_area_type === a ? '#3b82f6' : 'rgba(255,255,255,0.12)',
+                                background: form.service_area_type === a ? 'rgba(59,130,246,0.18)' : 'rgba(255,255,255,0.04)',
+                                color: form.service_area_type === a ? '#60a5fa' : 'rgba(255,255,255,0.5)',
+                              }}>{a}</button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Quick toggles */}
+                      <div>
+                        <label className={labelCls}>Service Options</label>
+                        <div className="grid grid-cols-2 gap-2">
+                          {[
+                            { key: 'service_online_available', label: '💻 Online / Remote' },
+                            { key: 'service_mobile_available', label: '🚗 Mobile / On-site' },
+                            { key: 'service_same_day', label: '⚡ Same Day Available' },
+                            { key: 'service_emergency_available', label: '🚨 Emergency Service' },
+                          ].map(({ key, label }) => (
+                            <button key={key} type="button" onClick={() => set(key, !form[key])}
+                              className="flex items-center gap-2 px-3 py-2 rounded-xl border transition-all text-left"
+                              style={{
+                                borderColor: form[key] ? '#3b82f6' : 'rgba(255,255,255,0.1)',
+                                background: form[key] ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.04)',
+                              }}>
+                              <div className={`w-3 h-3 rounded-full flex-shrink-0 ${form[key] ? 'bg-blue-400' : 'bg-white/20'}`} />
+                              <span className="font-body text-[11px] text-white/70">{label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Availability & Experience */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className={labelCls}>Availability</label>
+                          <select value={form.service_availability} onChange={e => set('service_availability', e.target.value)} className={inputCls}>
+                            <option value="" className="bg-[#0D1F3C]">Select availability</option>
+                            {AVAILABILITY_OPTIONS.map(t => <option key={t} value={t} className="bg-[#0D1F3C]">{t}</option>)}
+                          </select>
+                        </div>
+                        <div>
+                          <label className={labelCls}>Years of Experience</label>
+                          <select value={form.service_experience} onChange={e => set('service_experience', e.target.value)} className={inputCls}>
+                            <option value="" className="bg-[#0D1F3C]">Select</option>
+                            {SERVICE_EXPERIENCE.map(t => <option key={t} value={t} className="bg-[#0D1F3C]">{t}</option>)}
+                          </select>
+                        </div>
+                        <div><label className={labelCls}>Team Size</label><input value={form.service_team_size} onChange={e => set('service_team_size', e.target.value)} placeholder="e.g. Solo, 2-5 people" className={inputCls} /></div>
+                        <div><label className={labelCls}>Languages Spoken</label><input value={form.service_languages} onChange={e => set('service_languages', e.target.value)} placeholder="e.g. Filipino, English" className={inputCls} /></div>
+                      </div>
+
+                      {/* Certifications & Warranty */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <div><label className={labelCls}>Licenses / Certifications</label><input value={form.service_certifications} onChange={e => set('service_certifications', e.target.value)} placeholder="e.g. PRC Licensed, DTI Registered" className={inputCls} /></div>
+                        <div><label className={labelCls}>Warranty / Guarantee</label><input value={form.service_warranty} onChange={e => set('service_warranty', e.target.value)} placeholder="e.g. 30-day workmanship warranty" className={inputCls} /></div>
+                      </div>
+
+                      {/* Packages */}
+                      <div>
+                        <label className={labelCls}>Service Packages (optional)</label>
+                        <div className="space-y-2">
+                          {[
+                            { key: 'service_package_basic', label: '🥉 Basic Package', placeholder: 'e.g. Basic cleaning ₱500 — 1 room, 1hr' },
+                            { key: 'service_package_standard', label: '🥈 Standard Package', placeholder: 'e.g. Standard ₱1,200 — 3 rooms, full clean' },
+                            { key: 'service_package_premium', label: '🥇 Premium Package', placeholder: 'e.g. Premium ₱2,500 — whole house + deep clean' },
+                          ].map(({ key, label, placeholder }) => (
+                            <div key={key}>
+                              <label className="block font-body text-[9px] text-white/30 mb-1">{label}</label>
+                              <input value={form[key]} onChange={e => set(key, e.target.value)} placeholder={placeholder} className={inputCls} />
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -646,14 +815,22 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                   </div>
 
                   {/* CONTACT */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
                     <div>
-                      <label className={labelCls}>Owner / Seller Name</label>
-                      <input value={form.seller_name} onChange={e => set('seller_name', e.target.value)} placeholder="Full name / Business name" className={inputCls} />
+                      <label className={labelCls}>Channel / Business Name (Public Display)</label>
+                      <input value={form.channel_name} onChange={e => { set('channel_name', e.target.value); set('seller_name', e.target.value); }} placeholder="e.g. Juan's Store, CleanPro PH — shown publicly" className={inputCls} />
+                      <p className="font-body text-[9px] text-white/25 mt-1">This replaces your personal name on the public listing.</p>
                     </div>
-                    <div>
-                      <label className={labelCls}>Contact Number</label>
-                      <input value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+63 9xx xxx xxxx" className={inputCls} />
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className={labelCls}>Contact Number (optional)</label>
+                        <input value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+63 9xx xxx xxxx" className={inputCls} />
+                        <p className="font-body text-[9px] text-white/25 mt-0.5">Hidden by default unless enabled in settings</p>
+                      </div>
+                      <div>
+                        <label className={labelCls}>Email Contact (optional)</label>
+                        <input value={form.email_contact} onChange={e => set('email_contact', e.target.value)} placeholder="youremail@mail.com" className={inputCls} />
+                      </div>
                     </div>
                   </div>
 

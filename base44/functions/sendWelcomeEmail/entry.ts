@@ -34,6 +34,9 @@ Visit your Seller Dashboard: https://1market.ph/seller
 
 Thank you for joining 1Market.ph — where local businesses thrive.
 
+Follow us: Facebook @1MarketPH → https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr
+Instagram @1MarketPH → https://www.instagram.com/1marketph?igsh=Mnk4bHdtaXN2N2h1&utm_source=qr
+
 — The 1Market.ph Team
 Founded by Kevin Roberto, 2026
       `.trim()
@@ -51,6 +54,10 @@ What you can do now:
 ✅ Find great deals near you
 
 Start exploring: https://1market.ph
+
+Follow us:
+📘 Facebook @1MarketPH → https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr
+📸 Instagram @1MarketPH → https://www.instagram.com/1marketph?igsh=Mnk4bHdtaXN2N2h1&utm_source=qr
 
 We're excited to have you with us!
 

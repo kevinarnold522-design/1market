@@ -102,7 +102,11 @@ Deno.serve(async (req) => {
     <!-- Footer -->
     <div style="padding:16px 24px;border-top:1px solid rgba(255,255,255,0.08);text-align:center;">
       <p style="color:rgba(255,255,255,0.25);font-size:11px;margin:0;">— The 1Market.ph Team · Founded by Kevin Roberto, 2026</p>
-      <p style="color:rgba(255,255,255,0.15);font-size:10px;margin:4px 0 0;">1MarketPH.com — Buy, Sell & Connect across the Philippines</p>
+      <p style="color:rgba(255,255,255,0.15);font-size:10px;margin:4px 0 0;">
+        Follow us:
+        <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" style="color:#60a5fa;text-decoration:none;margin:0 4px;">📘 @1MarketPH</a> ·
+        <a href="https://www.instagram.com/1marketph?igsh=Mnk4bHdtaXN2N2h1&utm_source=qr" style="color:#f9a8d4;text-decoration:none;margin:0 4px;">📸 @1MarketPH</a>
+      </p>
     </div>
   </div>
 </body>
@@ -152,6 +156,11 @@ Deno.serve(async (req) => {
     <!-- Footer -->
     <div style="padding:16px 24px;border-top:1px solid rgba(255,255,255,0.08);text-align:center;">
       <p style="color:rgba(255,255,255,0.25);font-size:11px;margin:0;">— The 1Market.ph Team · Founded by Kevin Roberto, 2026</p>
+      <p style="color:rgba(255,255,255,0.15);font-size:10px;margin:4px 0 0;">
+        Follow us:
+        <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" style="color:#60a5fa;text-decoration:none;margin:0 4px;">📘 @1MarketPH</a> ·
+        <a href="https://www.instagram.com/1marketph?igsh=Mnk4bHdtaXN2N2h1&utm_source=qr" style="color:#f9a8d4;text-decoration:none;margin:0 4px;">📸 @1MarketPH</a>
+      </p>
     </div>
   </div>
 </body>

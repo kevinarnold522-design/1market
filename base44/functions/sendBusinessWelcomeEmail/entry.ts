@@ -88,6 +88,10 @@ Deno.serve(async (req) => {
       </p>
     </div>
     <div class="footer">
+      <div style="margin-bottom:8px;">
+        <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" style="color:#2563EB;text-decoration:none;margin:0 6px;">📘 Facebook @1MarketPH</a> ·
+        <a href="https://www.instagram.com/1marketph?igsh=Mnk4bHdtaXN2N2h1&utm_source=qr" style="color:#ec4899;text-decoration:none;margin:0 6px;">📸 Instagram @1MarketPH</a>
+      </div>
       <p>© 2026 1Marketph.com · Proudly Filipino · Serving businesses nationwide 🇵🇭</p>
       <p>Compliant with the Philippine Data Privacy Act of 2012</p>
     </div>
