@@ -15,6 +15,7 @@ import ParticleBackground from '../components/ParticleBackground';
 import OrdersTab from '../components/seller/OrdersTab';
 import VerifiedPartnerBanner from '../components/VerifiedPartnerBanner';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
+import OneCheckmark from '../components/OneCheckmark';
 import PaymentSettings from '../components/settings/PaymentSettings';
 import BecomeSellerModal from '../components/BecomeSellerModal';
 import BecomeBusinessModal from '../components/BecomeBusinessModal';
@@ -836,7 +837,7 @@ export default function UserProfile() {
                         <Store className="w-5 h-5 text-emerald-400"/>
                         <div>
                           <p className="font-heading font-bold text-white text-sm flex items-center gap-1">
-                            ✅ Active Seller {isVerified && <BadgeCheck className="w-4 h-4 text-[#2563EB]"/>}
+                            ✅ Active Seller {isVerified && <OneCheckmark size="xs" label="" />}
                           </p>
                           <p className="font-body text-[10px] text-white/40">{user.seller_location || 'Location not set'} · {(user.seller_products || []).join(', ') || 'No categories set'}</p>
                         </div>
@@ -868,7 +869,7 @@ export default function UserProfile() {
                       <Building2 className="w-5 h-5 text-[#3E97F1]"/>
                       <div>
                         <p className="font-heading font-bold text-white text-sm flex items-center gap-1">
-                          🏢 {user.business_name || 'Business Account'} {isVerified && <BadgeCheck className="w-4 h-4 text-[#2563EB]"/>}
+                          🏢 {user.business_name || 'Business Account'} {isVerified && <OneCheckmark size="xs" label="" />}
                         </p>
                         <p className="font-body text-[10px] text-white/40">Verified Business · Listings show as {user.business_name}</p>
                       </div>
@@ -1112,7 +1113,7 @@ export default function UserProfile() {
                 <h3 className="font-heading font-bold text-white text-sm">Your Public Seller Page</h3>
                 <div className="rounded-2xl p-4 space-y-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
                   {isVerified
-                    ? <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#2563EB]/20 text-[#60a5fa] border border-[#2563EB]/20 font-body text-[10px] font-bold w-fit"><BadgeCheck className="w-3 h-3"/> Verified Seller</span>
+                    ? <span className="flex items-center gap-1 w-fit"><OneCheckmark size="sm" label="Verified Partner" /></span>
                     : <span className="px-2.5 py-1 rounded-full bg-white/5 text-white/30 font-body text-[10px] border border-white/10 w-fit block">Unverified · Independent Non-verified Partner</span>
                   }
                   <div>
@@ -1143,13 +1144,13 @@ export default function UserProfile() {
                   <button
                     onClick={() => setShowVerifiedBanner(true)}
                     className="w-full rounded-2xl p-4 text-left transition-all hover:scale-[1.01]"
-                    style={{ background: 'linear-gradient(135deg,rgba(37,99,235,0.15),rgba(0,212,255,0.07))', border: '1px solid rgba(0,212,255,0.25)' }}
+                    style={{ background: 'linear-gradient(135deg,rgba(255,45,85,0.12),rgba(0,122,255,0.07))', border: '1px solid rgba(255,45,85,0.3)' }}
                   >
                     <div className="flex items-center gap-3">
-                      <BadgeCheck className="w-8 h-8 text-[#2563EB] flex-shrink-0"/>
+                      <OneCheckmark size="lg" label="" />
                       <div>
-                        <p className="font-heading font-bold text-white text-sm">✨ Become a Verified Partner</p>
-                        <p className="font-body text-[10px] text-white/40">Get your blue ✅ badge, boosted listings & official partner status. Tap to learn more.</p>
+                        <p className="font-heading font-bold text-white text-sm flex items-center gap-1.5">✨ Get the <OneCheckmark size="sm" label="1Checkmark" /></p>
+                        <p className="font-body text-[10px] text-white/40">Get the color-changing 1checkmark badge, boosted listings & official Verified Partner status.</p>
                       </div>
                     </div>
                   </button>

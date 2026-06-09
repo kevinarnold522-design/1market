@@ -27,6 +27,7 @@ import Favourites from './pages/Favourites';
 import BusinessCommunity from './pages/BusinessCommunity';
 import Notifications from './pages/Notifications';
 import SellerOnboarding from './pages/SellerOnboarding';
+import GlowInteraction from './components/GlowInteraction';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -91,6 +92,7 @@ function App() {
         <Router>
           <AuthenticatedApp />
         </Router>
+        <GlowInteraction />
         <Toaster />
       </QueryClientProvider>
     </AuthProvider>

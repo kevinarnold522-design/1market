@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ParticleBackground from '../components/ParticleBackground';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, ExternalLink, Phone, MessageSquare, AlertCircle, Plus, Home, Building2, Car, Wrench, CalendarDays, Grid3X3, Pencil, Trash2, X, Laptop } from 'lucide-react';
+import { ArrowLeft, Search, ExternalLink, Phone, MessageSquare, AlertCircle, Plus, Home, Building2, Car, Wrench, CalendarDays, Grid3X3, Pencil, Trash2, X, Laptop, Bike } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
@@ -26,7 +26,7 @@ const SUBCATEGORIES = [
   { key: 'all', label: 'All Rentals', Icon: Grid3X3, color: '#3E97F1', desc: 'Browse everything' },
   { key: 'residential', label: 'Properties', Icon: Home, color: '#10b981', desc: 'Houses, condos, lots' },
   { key: 'commercial', label: 'Commercial', Icon: Building2, color: '#3E97F1', desc: 'Offices, retail, warehouses' },
-  { key: 'vehicles', label: 'Vehicles', Icon: Car, color: '#f59e0b', desc: 'Cars, vans, motorcycles' },
+  { key: 'vehicles', label: 'Vehicles', Icon: Car, color: '#f59e0b', desc: 'Cars, vans, motorcycles', ExtraIcon: Bike },
   { key: 'equipment', label: 'Gadgets & Equipment', Icon: Laptop, color: '#8b5cf6', desc: 'Gadgets, tools, cameras' },
   { key: 'events', label: 'Event Venues', Icon: CalendarDays, color: '#ec4899', desc: 'Halls, function rooms' },
 ];
@@ -272,6 +272,7 @@ export default function ForRent() {
             <div className="flex items-center gap-2 mb-3">
               <Home className="w-5 h-5 text-emerald-400" />
               <Car className="w-5 h-5 text-amber-400" />
+              <Bike className="w-4 h-4 text-amber-300" />
               <Laptop className="w-5 h-5 text-purple-400" />
               <span className="font-body text-sm text-white/50">Properties · Vehicles · Gadgets & Equipment</span>
             </div>
@@ -296,7 +297,10 @@ export default function ForRent() {
                 style={isActive
                   ? { background: `${sc.color}22`, borderColor: sc.color, boxShadow: `0 0 10px ${sc.color}33` }
                   : { background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)' }}>
-                <Icon className="w-5 h-5 mb-1.5" style={{ color: isActive ? sc.color : 'rgba(255,255,255,0.4)' }} />
+                <div className="flex items-center gap-0.5 mb-1.5">
+                  <Icon className="w-5 h-5" style={{ color: isActive ? sc.color : 'rgba(255,255,255,0.4)' }} />
+                  {sc.ExtraIcon && <sc.ExtraIcon className="w-3.5 h-3.5" style={{ color: isActive ? sc.color : 'rgba(255,255,255,0.3)' }} />}
+                </div>
                 <p className="font-heading font-bold text-xs text-white">{sc.label}</p>
               </button>
             );

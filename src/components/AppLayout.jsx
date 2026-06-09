@@ -2,13 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import LeftSidebar from './LeftSidebar';
 import WaveTransition from './WaveTransition';
+import UserTasks from './UserTasks';
 import { subscribeWave, isWaveActive, triggerWave } from '@/lib/waveTransition';
+import { base44 } from '@/api/base44Client';
 
 export default function AppLayout() {
   const [waveActive, setWaveActive] = useState(isWaveActive());
   useEffect(() => subscribeWave(setWaveActive), []);
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
   const navigate = useNavigate();
+  const [appUser, setAppUser] = useState(null);
+  useEffect(() => { base44.auth.me().then(setAppUser).catch(() => {}); }, []);
 
   // Global wave interceptor for listing navigation
   useEffect(() => {
@@ -46,6 +50,8 @@ export default function AppLayout() {
 
       {/* Wave overlay */}
       <WaveTransition active={waveActive} />
+      {/* User tasks widget */}
+      {appUser && <UserTasks user={appUser} />}
     </div>
   );
 }

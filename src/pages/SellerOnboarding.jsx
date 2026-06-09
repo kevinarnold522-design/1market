@@ -4,8 +4,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
   Store, Building2, CheckCircle, ChevronRight, ChevronLeft,
   MapPin, Phone, Image, FileText, Package, Star, ArrowLeft,
-  Camera, Upload, AlertCircle, Check
+  Camera, Upload, AlertCircle, Check, Users, Briefcase
 } from 'lucide-react';
+import OneCheckmark from '../components/OneCheckmark';
 import { base44 } from '@/api/base44Client';
 
 const LOCATIONS = ['Manila', 'Cavite', 'Nationwide'];
@@ -151,8 +152,8 @@ export default function SellerOnboarding() {
                       🏪
                     </div>
                     <div className="flex-1">
-                      <p className="font-heading font-bold text-white text-lg">Individual Seller</p>
-                      <p className="font-body text-sm text-white/50 mt-0.5">List products, services, food, jobs & more as an individual or freelancer.</p>
+                       <p className="font-heading font-bold text-white text-lg">Individual Seller</p>
+                       <p className="font-body text-sm text-white/50 mt-0.5">For individuals acting as sole proprietorships, referees, or third-party resellers. List products, services, food & jobs under your personal name.</p>
                       <div className="flex flex-wrap gap-1.5 mt-2">
                         {['Free to list', 'No fees', 'Instant setup'].map(t => (
                           <span key={t} className="px-2 py-0.5 rounded-full font-body text-[10px] font-bold text-emerald-400" style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}>{t}</span>
@@ -172,7 +173,7 @@ export default function SellerOnboarding() {
                     </div>
                     <div className="flex-1">
                       <p className="font-heading font-bold text-white text-lg">Business Account</p>
-                      <p className="font-body text-sm text-white/50 mt-0.5">Register a company or business. Apply for the Verified ✅ badge after setup.</p>
+                      <p className="font-body text-sm text-white/50 mt-0.5">For massive corporations or entities operating as more than one person. Business accounts can have multiple emails and list under a shared business name. Eligible for the <OneCheckmark size="xs" label="1Checkmark" /> badge.</p>
                       <div className="flex flex-wrap gap-1.5 mt-2">
                         {['Business profile', 'Verified badge', 'Priority listing'].map(t => (
                           <span key={t} className="px-2 py-0.5 rounded-full font-body text-[10px] font-bold text-[#60a5fa]" style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>{t}</span>

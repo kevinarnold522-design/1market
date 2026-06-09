@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Search, MapPin, Star, Heart } from 'lucide-react';
 
 const POINTS = [
-  { Icon: Search, color: '#00D4FF', text: 'Best deals across Agoda, Shopee, Lazada, Klook, GrabFood & more' },
+  { Icon: Search, color: '#00D4FF', text: 'Deals across Food, Travel, Services, Jobs & more — all in one place' },
   { Icon: MapPin, color: '#4ade80', text: 'Tailored to your location — Manila, Cebu, Davao, Boracay & nationwide' },
-  { Icon: Star, color: '#fbbf24', text: 'Omni-platform ratings from Google, TripAdvisor, Foodpanda & all major apps' },
+  { Icon: Star, color: '#fbbf24', text: 'Ratings & reviews from real buyers and sellers on 1MarketPH' },
   { Icon: Heart, color: '#f87171', text: 'Proudly Filipino — built for Filipinos, by a Filipino' },
 ];
 

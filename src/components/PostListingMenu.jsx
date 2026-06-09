@@ -123,20 +123,20 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.95 }}
               className="absolute left-0 top-full mt-2 rounded-2xl overflow-hidden shadow-2xl z-[200]"
-              style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)', width: 'min(340px, 90vw)' }}>
+              style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)', width: 'min(300px, 96vw)' }}>
               <div className="p-3">
                 <p className="font-body text-[9px] text-white/30 uppercase tracking-wider font-bold px-1 pb-2">Post an Ad — Choose Category</p>
                 {/* Categories in 2-col grid */}
                 <div className="grid grid-cols-2 gap-1.5 mb-2">
                   {CATEGORIES.map(cat => (
                     <button key={cat.key} onClick={() => handleSelectCat(cat)}
-                      className="flex items-center gap-2 px-2.5 py-2 rounded-xl hover:bg-white/10 transition-colors text-left"
+                      className="flex items-center gap-1.5 px-2 py-1.5 rounded-xl hover:bg-white/10 transition-colors text-left"
                       style={{ background: expandedCat === cat.key ? `${cat.color}18` : 'rgba(255,255,255,0.04)', border: `1px solid ${expandedCat === cat.key ? cat.color + '44' : 'rgba(255,255,255,0.06)'}` }}>
-                      <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                      <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0"
                         style={{ background: `${cat.color}22` }}>
-                        <CategoryIcon name={cat.iconKey} size={14} color={cat.color} />
+                        <CategoryIcon name={cat.iconKey} size={12} color={cat.color} />
                       </div>
-                      <span className="font-body font-semibold text-[11px] text-white leading-tight">{cat.label}</span>
+                      <span className="font-body font-semibold text-[10px] text-white leading-tight">{cat.label}</span>
                     </button>
                   ))}
                 </div>

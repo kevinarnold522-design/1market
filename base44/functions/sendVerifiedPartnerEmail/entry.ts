@@ -57,9 +57,9 @@ Deno.serve(async (req) => {
     <div class="header">
       <div class="logo">1<span>Marketph</span>.com</div>
       <div class="badge-container">
-        <div class="verified-badge">✅ Verified Partner — Official</div>
+      <div class="verified-badge">🏆 Verified Partner — Official 1Checkmark</div>
       </div>
-      <h1 class="hero-title">You're Verified! 🏅</h1>
+      <h1 class="hero-title">You're Verified! 🎉</h1>
       <p class="hero-sub">Your account has been reviewed and approved</p>
     </div>
     <div class="ribbon">🌟 Welcome to the Verified Partner Program 🌟</div>
@@ -68,11 +68,11 @@ Deno.serve(async (req) => {
       <p class="message">
         Great news! Your business <strong>${businessName}</strong> has successfully passed our verification review and has been officially granted the <strong>Verified Partner</strong> status on 1Marketph.com.
         <br><br>
-        Your profile now displays the prestigious <strong>blue ✅ Verified badge</strong>, which signals to buyers that your business is authentic, trustworthy, and has been reviewed by our team.
+        Your profile now displays the prestigious <strong>1Checkmark — Verified Partner badge</strong>, a color-cycling animated badge unique to 1MarketPH that signals to all buyers that your business is authentic, trustworthy, and officially reviewed by our team.
       </p>
       <div class="perks">
         <p style="font-size:13px;font-weight:800;color:#1d4ed8;margin:0 0 14px;">🏅 Your Verified Partner Benefits:</p>
-        <div class="perk"><div class="perk-icon">✅</div><div class="perk-text"><strong>Blue Verified Badge</strong> displayed on your profile, listings, and search results — builds immediate buyer trust.</div></div>
+        <div class="perk"><div class="perk-icon">🏆</div><div class="perk-text"><strong>1Checkmark Verified Badge</strong> — the exclusive color-changing animated badge displayed on your profile, listings, and search results. Builds immediate buyer trust.</div></div>
         <div class="perk"><div class="perk-icon">🔝</div><div class="perk-text"><strong>Priority Listing Placement</strong> — Verified partners appear higher in search results and category pages.</div></div>
         <div class="perk"><div class="perk-icon">📊</div><div class="perk-text"><strong>Advanced Seller Analytics</strong> — Access detailed insights on views, clicks, and sales performance.</div></div>
         <div class="perk"><div class="perk-icon">🛡️</div><div class="perk-text"><strong>Buyer Confidence Boost</strong> — Verified sellers receive 3x more inquiries and conversions.</div></div>

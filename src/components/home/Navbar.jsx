@@ -7,6 +7,7 @@ import NotificationsBell from '../NotificationsBell';
 import PostListingMenu from '../PostListingMenu';
 import RewardDashboard from '../RewardDashboard';
 import MetaVerifiedBadge from '../MetaVerifiedBadge';
+import OneCheckmark from '../OneCheckmark';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import AccountTypeModal from '../AccountTypeModal';
@@ -157,23 +158,21 @@ export default function Navbar() {
           <div className="flex items-center gap-1.5 flex-shrink-0">
             <span className="font-body text-[9px] text-white/40 hidden md:block mr-1">Follow us:</span>
             <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
-              onClick={e => { e.stopPropagation(); window.open('https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr', '_blank'); }}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-body text-xs font-bold text-blue-300 hover:text-blue-100 transition-all hover:scale-105"
               style={{ background: 'rgba(59,130,246,0.18)', border: '1px solid rgba(59,130,246,0.35)' }}>
               <Facebook className="w-4 h-4" /><span className="hidden sm:inline font-bold">@1MarketPH</span>
             </a>
             <a href="https://www.instagram.com/1marketph/" target="_blank" rel="noopener noreferrer"
-              onClick={e => { e.stopPropagation(); window.open('https://www.instagram.com/1marketph/', '_blank'); }}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-body text-xs font-bold text-pink-300 hover:text-pink-100 transition-all hover:scale-105"
               style={{ background: 'rgba(236,72,153,0.18)', border: '1px solid rgba(236,72,153,0.35)' }}>
               <Instagram className="w-4 h-4" /><span className="hidden sm:inline font-bold">@1MarketPH</span>
             </a>
-            <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
+            <a href="https://www.tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1 px-2 py-1 rounded-lg font-body text-[10px] font-bold text-white/70 hover:text-white transition-colors"
               style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)' }}>
               <span className="hidden sm:inline">TikTok</span><span className="sm:hidden">TT</span>
             </a>
-            <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
+            <a href="https://www.youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-2 py-1 rounded-lg font-body text-[10px] font-bold text-red-300 hover:text-red-200 transition-colors"
               style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.2)' }}>
               <Youtube className="w-4 h-4" /><span className="hidden sm:inline">YT</span>
@@ -261,6 +260,7 @@ export default function Navbar() {
                 <div className="relative" ref={dropdownRef}>
                   <button
                     onClick={() => setProfileOpen(p => !p)}
+                    title="View your profile or account menu"
                     className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 border border-white/10 hover:border-[#00D4FF]/40 transition-all">
                     <div className="w-7 h-7 rounded-lg overflow-hidden flex-shrink-0">
                       {user?.profile_picture ? (
@@ -374,6 +374,11 @@ export default function Navbar() {
 
                         {/* Actions */}
                         <div className="p-2">
+                          {/* View Public Profile */}
+                          <Link to={`/seller/${user.username || user.id}`} onClick={() => setProfileOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#00D4FF]/8 border border-[#00D4FF]/15 hover:bg-[#00D4FF]/15 transition-colors text-[#00D4FF] font-body text-xs font-bold mb-1">
+                            <Globe className="w-3.5 h-3.5" /> View My Public Profile
+                          </Link>
                           {/* Buyer links */}
                           <Link to="/profile?tab=orders" onClick={() => setProfileOpen(false)}
                             className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
@@ -424,15 +429,15 @@ export default function Navbar() {
                             </>
                           )}
 
-                          {/* Apply for Verified Partner — only for unverified sellers without pending application */}
+                          {/* Apply for 1Checkmark — only for unverified sellers without pending application */}
                           {isSeller && !isVerified && !isAdmin && !user?.verification_submitted && (
                             <>
                               <div className="border-t border-white/8 my-1" />
                               <Link to="/profile?tab=sellerpage" onClick={() => setProfileOpen(false)}
                                 className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold"
-                                style={{ background: 'linear-gradient(90deg,rgba(168,85,247,0.12),rgba(56,189,248,0.08))', border: '1px solid rgba(168,85,247,0.2)' }}>
-                                <MetaVerifiedBadge size="xs" label="" />
-                                <span className="text-purple-300">Apply for Verified ✓ Partner</span>
+                                style={{ background: 'linear-gradient(90deg,rgba(255,45,85,0.12),rgba(0,122,255,0.08))', border: '1px solid rgba(255,45,85,0.25)' }}>
+                                <OneCheckmark size="xs" label="" />
+                                <span className="text-rose-300">Apply for 1Checkmark Verified</span>
                               </Link>
                             </>
                           )}

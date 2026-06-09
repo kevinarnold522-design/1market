@@ -66,13 +66,13 @@ export default function MovingWelcomeBanner() {
         </div>
       </div>
 
-      {/* Live stats strip */}
+      {/* Stats strip — real/truthful only */}
       <div className="flex items-center justify-center gap-4 sm:gap-8 py-2 border-t border-white/8" style={{ background: 'rgba(0,0,0,0.15)' }}>
         {[
-          { icon: Users, label: '10,000+ Members', color: '#00D4FF' },
-          { icon: ShoppingBag, label: '5,000+ Listings', color: '#FFD700' },
-          { icon: Star, label: '4.9 Avg Rating', color: '#10b981' },
+          { icon: Users, label: 'Growing Community', color: '#00D4FF' },
+          { icon: ShoppingBag, label: 'New Listings Daily', color: '#FFD700' },
           { icon: TrendingUp, label: 'Free to List', color: '#f472b6' },
+          { icon: Star, label: 'Filipino-Made', color: '#10b981' },
         ].map(({ icon: Icon, label, color }, i) => (
           <div key={i} className="flex items-center gap-1.5">
             <Icon className="w-3 h-3 flex-shrink-0" style={{ color }} />

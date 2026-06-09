@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { BadgeCheck, Share2, X, Copy, Check, Upload, AlertCircle } from 'lucide-react';
+import { X, Check, Upload, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import OneCheckmark from './OneCheckmark';
 
 // Document requirements differ by account type
 const SELLER_DOCS = [
@@ -90,7 +91,8 @@ export default function VerifiedPartnerBanner({ user, onClose, onSubmit }) {
   const DOC_LIST = isBusiness ? BUSINESS_DOCS : SELLER_DOCS;
   const requiredCount = DOC_LIST.filter(d => d.required).length;
 
-  const [step, setStep] = useState(1);
+  // Skip straight to requirements (step 2)
+  const [step, setStep] = useState(2);
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [docs, setDocs] = useState(DOC_LIST.map(() => null));
@@ -130,12 +132,12 @@ export default function VerifiedPartnerBanner({ user, onClose, onSubmit }) {
         <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between"
           style={{ background: 'linear-gradient(90deg,rgba(37,99,235,0.2),rgba(0,212,255,0.1))' }}>
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#2563EB] flex items-center justify-center">
-              <BadgeCheck className="w-5 h-5 text-white" />
-            </div>
+            <OneCheckmark size="md" label="" />
             <div>
-              <h3 className="font-heading font-bold text-white text-sm">Apply for Verified Partner ✅</h3>
-              <p className="font-body text-[10px] text-[#00D4FF]">{isBusiness ? 'Business Account' : 'Seller Account'} — 3 Documents Required</p>
+              <h3 className="font-heading font-bold text-white text-sm flex items-center gap-1.5">
+                Apply for <OneCheckmark size="sm" label="1Checkmark" />
+              </h3>
+              <p className="font-body text-[10px] text-[#00D4FF]">{isBusiness ? 'Business Account' : 'Seller Account'} — Documents Required</p>
             </div>
           </div>
           <button onClick={onClose} className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center">
@@ -156,19 +158,19 @@ export default function VerifiedPartnerBanner({ user, onClose, onSubmit }) {
               {/* Benefits */}
               <div className="space-y-2.5">
                 {[
-                  { icon: '✅', label: 'Official Blue Badge', desc: 'Displayed on your profile & all listings' },
-                  { icon: '📈', label: 'Boosted Visibility', desc: 'Your listings appear higher in search results' },
-                  { icon: '🤝', label: 'Trusted Partner Status', desc: 'Listed in 1MarketPH Verified Partners directory' },
-                  { icon: '🔒', label: 'Buyer Confidence', desc: 'Buyers know your identity is confirmed' },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <span className="text-lg leading-none mt-0.5">{item.icon}</span>
-                    <div>
-                      <p className="font-body font-bold text-xs text-white">{item.label}</p>
-                      <p className="font-body text-[10px] text-white/40">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
+                   { label: 'Official 1Checkmark Badge', desc: 'Displayed on your profile & all listings' },
+                   { label: 'Boosted Visibility', desc: 'Your listings appear higher in search results' },
+                   { label: 'Trusted Partner Status', desc: 'Listed in 1MarketPH Verified Partners directory' },
+                   { label: 'Buyer Confidence', desc: 'Buyers know your identity is confirmed' },
+                 ].map((item, i) => (
+                   <div key={i} className="flex items-start gap-3">
+                     <OneCheckmark size="xs" label="" />
+                     <div>
+                       <p className="font-body font-bold text-xs text-white">{item.label}</p>
+                       <p className="font-body text-[10px] text-white/40">{item.desc}</p>
+                     </div>
+                   </div>
+                 ))}
               </div>
 
               {/* Documents needed */}
@@ -233,27 +235,29 @@ export default function VerifiedPartnerBanner({ user, onClose, onSubmit }) {
               <button onClick={handleApply} disabled={submitting || !canSubmit}
                 className="w-full py-3 rounded-xl font-body font-bold text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-40"
                 style={{ background: canSubmit ? 'linear-gradient(135deg,#2563EB,#00D4FF)' : 'rgba(255,255,255,0.1)', color: canSubmit ? '#fff' : 'rgba(255,255,255,0.3)' }}>
-                {submitting ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <BadgeCheck className="w-4 h-4" />}
+                {submitting ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <OneCheckmark size="xs" label="" />}
                 {canSubmit ? 'Submit Verification Request' : `Upload required docs (${uploadedRequired}/${requiredCount})`}
               </button>
-              <button onClick={() => setStep(1)} className="w-full text-center font-body text-xs text-white/30 hover:text-white transition-colors">← Back</button>
+              <button onClick={onClose} className="w-full text-center font-body text-xs text-white/30 hover:text-white transition-colors">← Cancel</button>
             </motion.div>
           )}
 
           {step === 3 && (
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-6 space-y-4">
-              <div className="text-5xl">🎉</div>
+              <div className="flex justify-center">
+                <OneCheckmark size="xl" label="" />
+              </div>
               <h4 className="font-heading font-bold text-white text-lg">Application Submitted!</h4>
               <p className="font-body text-sm text-white/50 leading-relaxed">
-                Your documents are now under review by the 1MarketPH team.
-                You'll receive an email and in-app notification once your Verified Partner badge is approved.
+                Your documents are under review. Once approved, you'll receive a congratulations email with your official <strong className="text-white">Verified Partner</strong> status and the <strong>1Checkmark</strong> badge.
               </p>
               <div className="rounded-xl p-3 text-left space-y-1" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}>
                 <p className="font-body text-[11px] font-bold text-green-400">⏳ Typical review time: 24-48 hours</p>
-                <p className="font-body text-[10px] text-white/40">You'll receive an approval or follow-up email from the admin team.</p>
+                <p className="font-body text-[10px] text-white/40">You'll receive an approval or follow-up email from the 1MarketPH admin team.</p>
               </div>
               <button onClick={onClose}
-                className="w-full py-3 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-sm hover:bg-white transition-colors">
+                className="w-full py-3 text-white rounded-xl font-body font-bold text-sm transition-colors"
+                style={{ background: 'linear-gradient(135deg,#ff2d55,#007aff)' }}>
                 Done!
               </button>
             </motion.div>
