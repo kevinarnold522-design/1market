@@ -122,44 +122,56 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
               initial={{ opacity: 0, y: 8, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.95 }}
-              className="absolute left-0 top-full mt-2 w-72 rounded-2xl overflow-hidden shadow-2xl z-[200]"
-              style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)' }}>
-              <div className="p-2">
-                <p className="font-body text-[9px] text-white/30 uppercase tracking-wider font-bold px-2 py-1.5">Post an Ad — Choose Category</p>
-                {CATEGORIES.map(cat => (
-                  <div key={cat.key}>
-                    <button onClick={() => handleSelectCat(cat)}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/8 transition-colors text-left group">
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                        style={{ background: `${cat.color}22`, border: `1px solid ${cat.color}44` }}>
-                        <CategoryIcon name={cat.iconKey} size={16} color={cat.color} />
+              className="absolute left-0 top-full mt-2 rounded-2xl overflow-hidden shadow-2xl z-[200]"
+              style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)', width: 'min(340px, 90vw)' }}>
+              <div className="p-3">
+                <p className="font-body text-[9px] text-white/30 uppercase tracking-wider font-bold px-1 pb-2">Post an Ad — Choose Category</p>
+                {/* Categories in 2-col grid */}
+                <div className="grid grid-cols-2 gap-1.5 mb-2">
+                  {CATEGORIES.map(cat => (
+                    <button key={cat.key} onClick={() => handleSelectCat(cat)}
+                      className="flex items-center gap-2 px-2.5 py-2 rounded-xl hover:bg-white/10 transition-colors text-left"
+                      style={{ background: expandedCat === cat.key ? `${cat.color}18` : 'rgba(255,255,255,0.04)', border: `1px solid ${expandedCat === cat.key ? cat.color + '44' : 'rgba(255,255,255,0.06)'}` }}>
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                        style={{ background: `${cat.color}22` }}>
+                        <CategoryIcon name={cat.iconKey} size={14} color={cat.color} />
                       </div>
-                      <span className="font-body font-semibold text-xs text-white flex-1">{cat.label}</span>
-                      {cat.subtypes.length > 1 && (
-                        expandedCat === cat.key
-                          ? <ChevronDown className="w-3 h-3 text-white/40" />
-                          : <ChevronRight className="w-3 h-3 text-white/40" />
-                      )}
+                      <span className="font-body font-semibold text-[11px] text-white leading-tight">{cat.label}</span>
                     </button>
-                    <AnimatePresence>
-                      {expandedCat === cat.key && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="overflow-hidden ml-4 pl-3 border-l border-white/10">
-                          {cat.subtypes.map(sub => (
-                            <button key={sub.type} onClick={() => handleSelectSubtype(cat, sub)}
-                              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/8 transition-colors text-left">
-                              <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: cat.color }} />
-                              <span className="font-body text-xs text-white/70 hover:text-white transition-colors">{sub.label}</span>
-                            </button>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                ))}
+                  ))}
+                </div>
+                {/* Subcategories — horizontal scrollable row */}
+                <AnimatePresence>
+                  {expandedCat && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden">
+                      {(() => {
+                        const cat = CATEGORIES.find(c => c.key === expandedCat);
+                        if (!cat) return null;
+                        return (
+                          <div className="pt-2 border-t border-white/10">
+                            <p className="font-body text-[9px] text-white/40 uppercase tracking-wider font-bold mb-2 px-1" style={{ color: cat.color }}>
+                              {cat.label} — Pick type:
+                            </p>
+                            <div className="flex flex-wrap gap-1.5 pb-1">
+                              {cat.subtypes.map(sub => (
+                                <button key={sub.type} onClick={() => handleSelectSubtype(cat, sub)}
+                                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl font-body text-[11px] font-semibold text-white/80 hover:text-white transition-all hover:scale-105"
+                                  style={{ background: `${cat.color}18`, border: `1px solid ${cat.color}33` }}>
+                                  <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: cat.color }} />
+                                  {sub.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </motion.div>
           )}

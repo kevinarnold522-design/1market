@@ -33,13 +33,13 @@ export default function AppLayout() {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left Sidebar — always rendered, hidden on mobile via CSS */}
-      <LeftSidebar isMobileHidden={isMobile} />
+      {/* Left Sidebar — desktop only, starts below dual navbar */}
+      {!isMobile && <LeftSidebar isMobileHidden={false} />}
 
-      {/* Main content — always offset by sidebar width on desktop */}
+      {/* Main content — offset by sidebar width on desktop */}
       <main
         className="flex-1 min-w-0 overflow-x-hidden"
-        style={{ marginLeft: isMobile ? 0 : 220 }}
+        style={{ marginLeft: isMobile ? 0 : (220) }}
       >
         <Outlet />
       </main>

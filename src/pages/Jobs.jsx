@@ -240,9 +240,9 @@ export default function Jobs() {
       <div className="relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${THEME.primaryDark} 0%, ${THEME.primary} 100%)` }}>
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1600&q=80)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-14">
-          <Link to="/" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors mb-6 font-body text-sm">
-            <ArrowLeft className="w-4 h-4" /> Back to 1Market.ph
-          </Link>
+          <button onClick={() => window.history.back()} className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors mb-6 font-body text-sm">
+            <ArrowLeft className="w-4 h-4" /> Back
+          </button>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
             <div className="flex items-center gap-2 mb-3">
               <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />

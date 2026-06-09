@@ -258,9 +258,9 @@ export default function ForRent() {
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0A192F]/60 to-[#0A192F]" />
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-8 pb-16">
-          <Link to="/" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors mb-8 font-body text-sm">
-            <ArrowLeft className="w-4 h-4" /> Back to 1Market.ph
-          </Link>
+          <button onClick={() => window.history.back()} className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors mb-6 font-body text-sm hover:text-[#00D4FF]">
+            <ArrowLeft className="w-4 h-4" /> Back
+          </button>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />

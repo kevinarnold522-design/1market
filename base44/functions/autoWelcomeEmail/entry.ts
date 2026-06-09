@@ -167,12 +167,38 @@ Deno.serve(async (req) => {
 </html>
 `.trim();
 
+    // Send to user
     await base44.asServiceRole.integrations.Core.SendEmail({
       to: email,
       from_name: '1Market.ph — Alfie 🐾',
       subject,
       body: isSeller ? sellerBody : buyerBody,
     });
+
+    // Notify admin
+    const adminEmail = 'kevinarnold522@gmail.com';
+    if (email !== adminEmail) {
+      const adminSubject = `[1MarketPH] New User Registered: ${name}`;
+      const adminBody = `
+<html><body style="font-family:Arial,sans-serif;background:#f0f4f8;padding:20px;">
+<div style="max-width:500px;margin:0 auto;background:white;border-radius:12px;padding:24px;border:1px solid #e2e8f0;">
+  <h2 style="color:#0A192F;margin:0 0 16px;">New User Registered</h2>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr><td style="padding:6px 0;color:#64748b;width:120px;">Name</td><td style="padding:6px 0;font-weight:600;color:#0A192F;">${name}</td></tr>
+    <tr><td style="padding:6px 0;color:#64748b;">Email</td><td style="padding:6px 0;color:#2563EB;">${email}</td></tr>
+    <tr><td style="padding:6px 0;color:#64748b;">Account Type</td><td style="padding:6px 0;font-weight:600;color:#0A192F;">${isSeller ? 'Seller/Business' : 'Customer'}</td></tr>
+    <tr><td style="padding:6px 0;color:#64748b;">Registered</td><td style="padding:6px 0;color:#64748b;">${new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'})}</td></tr>
+  </table>
+  <a href="https://1marketph.com/admin" style="display:inline-block;margin-top:16px;padding:10px 24px;background:#0A192F;color:white;border-radius:8px;text-decoration:none;font-size:12px;font-weight:700;">View in Admin Dashboard →</a>
+</div>
+</body></html>`;
+      await base44.asServiceRole.integrations.Core.SendEmail({
+        to: adminEmail,
+        from_name: '1MarketPH System',
+        subject: adminSubject,
+        body: adminBody,
+      });
+    }
 
     return Response.json({ success: true, sent_to: email });
   } catch (error) {

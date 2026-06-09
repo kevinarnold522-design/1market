@@ -157,24 +157,26 @@ export default function Navbar() {
           <div className="flex items-center gap-1.5 flex-shrink-0">
             <span className="font-body text-[9px] text-white/40 hidden md:block mr-1">Follow us:</span>
             <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-blue-300 hover:text-blue-200 transition-colors"
-              style={{ background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.2)' }}>
-              <Facebook className="w-3 h-3" /><span className="hidden sm:inline">@1MarketPH</span>
+              onClick={e => { e.stopPropagation(); window.open('https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr', '_blank'); }}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-body text-xs font-bold text-blue-300 hover:text-blue-100 transition-all hover:scale-105"
+              style={{ background: 'rgba(59,130,246,0.18)', border: '1px solid rgba(59,130,246,0.35)' }}>
+              <Facebook className="w-4 h-4" /><span className="hidden sm:inline font-bold">@1MarketPH</span>
             </a>
             <a href="https://www.instagram.com/1marketph/" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-pink-300 hover:text-pink-200 transition-colors"
-              style={{ background: 'rgba(236,72,153,0.15)', border: '1px solid rgba(236,72,153,0.2)' }}>
-              <Instagram className="w-3 h-3" /><span className="hidden sm:inline">@1MarketPH</span>
+              onClick={e => { e.stopPropagation(); window.open('https://www.instagram.com/1marketph/', '_blank'); }}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-body text-xs font-bold text-pink-300 hover:text-pink-100 transition-all hover:scale-105"
+              style={{ background: 'rgba(236,72,153,0.18)', border: '1px solid rgba(236,72,153,0.35)' }}>
+              <Instagram className="w-4 h-4" /><span className="hidden sm:inline font-bold">@1MarketPH</span>
             </a>
             <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-white/60 hover:text-white/90 transition-colors"
-              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
+              className="flex items-center gap-1 px-2 py-1 rounded-lg font-body text-[10px] font-bold text-white/70 hover:text-white transition-colors"
+              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)' }}>
               <span className="hidden sm:inline">TikTok</span><span className="sm:hidden">TT</span>
             </a>
             <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-red-300 hover:text-red-200 transition-colors"
+              className="flex items-center gap-1.5 px-2 py-1 rounded-lg font-body text-[10px] font-bold text-red-300 hover:text-red-200 transition-colors"
               style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.2)' }}>
-              <Youtube className="w-3 h-3" /><span className="hidden sm:inline">YT</span>
+              <Youtube className="w-4 h-4" /><span className="hidden sm:inline">YT</span>
             </a>
           </div>
         </div>
@@ -183,14 +185,16 @@ export default function Navbar() {
       <nav className={`fixed top-10 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'backdrop-blur-2xl shadow-lg shadow-[#0033CC]/30' : 'backdrop-blur-xl'}`} style={{ background: scrolled ? 'rgba(0,26,128,0.75)' : 'rgba(0,10,64,0.55)', borderBottom: '1px solid rgba(255,255,255,0.08)', WebkitBackdropFilter: 'blur(24px)' }}>
         {/* Category Bar — LEFT aligned */}
         <div className="hidden md:block border-b border-white/8 bg-[#000d40]/80 backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8" style={{ paddingLeft: 240 }}>
             <div className="flex items-center gap-2 h-9">
               <NavCategoryBar />
               <Link to="/community" className="flex items-center gap-1 px-2.5 py-1 rounded-xl font-body text-xs font-semibold text-purple-400 hover:bg-white/8 transition-all whitespace-nowrap ml-1">
                 <Users className="w-3 h-3" /> Community
               </Link>
               {isAuthenticated && user && (isSeller || isAdmin) && (
-                <PostListingMenu user={user} compact />
+                <div className="ml-auto flex-shrink-0">
+                  <PostListingMenu user={user} compact />
+                </div>
               )}
             </div>
           </div>

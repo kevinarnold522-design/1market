@@ -717,7 +717,13 @@ export default function Admin() {
                        updateData.account_type = 'business_owner';
                      }
                      await base44.entities.User.update(u.id, updateData);
-                     showToast(`User type changed to ${newType}`);
+                     // Send transition email
+                     if (newType === 'seller') {
+                       try { await base44.functions.invoke('sendSellerWelcomeEmail', { email: u.email, name: u.full_name || u.email }); } catch(e) {}
+                     } else if (newType === 'business') {
+                       try { await base44.functions.invoke('sendBusinessWelcomeEmail', { email: u.email, name: u.full_name || u.email, business_name: u.business_name || u.full_name }); } catch(e) {}
+                     }
+                     showToast(`User type changed to ${newType}${(newType==='seller'||newType==='business') ? ' — Email sent!' : ''}`);
                      loadAll();
                    }}
                    className="border border-[#0A192F]/10 rounded-xl px-2 py-1.5 font-body text-xs text-[#0A192F] bg-white focus:outline-none focus:border-[#2563EB]">

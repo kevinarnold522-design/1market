@@ -52,8 +52,8 @@ export default function Home() {
       <div className="relative z-10">
         <WelcomeSplash />
         <Navbar />
-        {/* Spacer for dual fixed navbar (top banner 40px + nav ~68px) */}
-        <div style={{ height: 108 }} />
+        {/* Spacer for dual fixed navbar (top banner 40px + nav 40px + category bar 36px) */}
+        <div style={{ height: 116 }} />
         <MovingWelcomeBanner />
         <Suspense fallback={<Spinner />}><BrandingBanner /></Suspense>
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>

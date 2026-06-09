@@ -4,7 +4,7 @@ import AdminEditOverlay from '../components/AdminEditOverlay';
 import SubcategorySplash from '../components/SubcategorySplash';
 import ScrollToTop from '../components/ScrollToTop';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, X, ChevronDown, Phone, MessageSquare, AlertCircle, ZoomIn, Heart, ShoppingCart, Pencil, Store, Flag } from 'lucide-react';
+import { ArrowLeft, Search, X, ChevronDown, Phone, MessageSquare, AlertCircle, ZoomIn, Heart, ShoppingCart, Pencil, Store, Flag, ShoppingBag, Car, Home, Laptop, Tv2, Wrench, Trees } from 'lucide-react';
 import ListingCardActions from '../components/ListingCardActions';
 import ReportModal from '../components/ReportModal';
 import { Link } from 'react-router-dom';
@@ -15,13 +15,13 @@ import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
 import MascotDog from '../components/MascotDog';
 
 const SUBCATEGORIES = [
-  { key: 'shoes', label: 'Shoes', icon: '👟', desc: 'Sneakers, footwear & more' },
-  { key: 'cars', label: 'Cars & Vehicles', icon: '🚗', desc: 'Sedans, SUVs, motorcycles' },
-  { key: 'houses', label: 'Houses & Real Estate', icon: '🏠', desc: 'Homes, lots, condos' },
-  { key: 'electronics', label: 'Electronics & Gadgets', icon: '📱', desc: 'Phones, laptops & gadgets' },
-  { key: 'homeappliances', label: 'Home Appliances', icon: '🏠', desc: 'Ref, washer, AC & more' },
-  { key: 'services', label: 'Services', icon: '🔧', desc: 'Freelancers, repairs & more' },
-  { key: 'lot', label: 'Lot / Land for Sale', icon: '🏕️', desc: 'Vacant lots, land, farm lots' },
+  { key: 'shoes', label: 'Shoes', Icon: ShoppingBag, iconColor: '#f97316', desc: 'Sneakers, footwear & more' },
+  { key: 'cars', label: 'Cars & Vehicles', Icon: Car, iconColor: '#3b82f6', desc: 'Sedans, SUVs, motorcycles' },
+  { key: 'houses', label: 'Houses & Real Estate', Icon: Home, iconColor: '#10b981', desc: 'Homes, lots, condos' },
+  { key: 'electronics', label: 'Electronics & Gadgets', Icon: Laptop, iconColor: '#8b5cf6', desc: 'Phones, laptops & gadgets' },
+  { key: 'homeappliances', label: 'Home Appliances', Icon: Tv2, iconColor: '#06b6d4', desc: 'Ref, washer, AC & more' },
+  { key: 'services', label: 'Services', Icon: Wrench, iconColor: '#f59e0b', desc: 'Freelancers, repairs & more' },
+  { key: 'lot', label: 'Lot / Land for Sale', Icon: Trees, iconColor: '#22c55e', desc: 'Vacant lots, land, farm lots' },
 ];
 
 // No static/fake listings — all listings come from the database only
@@ -359,7 +359,7 @@ export default function BuySell() {
       return 0;
     });
 
-  const BUY_SUBCATEGORIES = [{ key: 'all', label: 'All Listings', icon: '🛒', desc: 'Browse everything' }, ...SUBCATEGORIES];
+  const BUY_SUBCATEGORIES = [{ key: 'all', label: 'All Listings', Icon: ShoppingBag, iconColor: '#64748b', desc: 'Browse everything' }, ...SUBCATEGORIES];
 
   return (
     <div className="min-h-screen bg-[#001060]">
@@ -377,9 +377,9 @@ export default function BuySell() {
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0A192F]/60 to-[#0A192F]" />
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-8 pb-16">
-          <Link to="/" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors mb-8 font-body text-sm">
-            <ArrowLeft className="w-4 h-4" /> Back to 1Market.ph
-          </Link>
+          <button onClick={() => window.history.back()} className="inline-flex items-center gap-2 text-white/60 hover:text-white hover:text-[#00D4FF] transition-colors mb-6 font-body text-sm">
+            <ArrowLeft className="w-4 h-4" /> Back
+          </button>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
@@ -414,17 +414,18 @@ export default function BuySell() {
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
         {/* Category Filter Blocks */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 mb-8">
           <button onClick={() => setActiveCategory('all')}
             className={`p-3 rounded-2xl text-left transition-all border ${activeCategory === 'all' ? 'bg-[#0A192F] text-white border-[#0A192F]' : 'bg-white border-[#0A192F]/5 hover:border-[#0A192F]/20'}`}>
-            <div className="text-xl mb-1">🛒</div>
+            <ShoppingBag className="w-5 h-5 mb-1" style={{ color: activeCategory === 'all' ? 'white' : '#64748b' }} />
             <p className={`font-heading font-bold text-xs ${activeCategory === 'all' ? 'text-white' : 'text-[#0A192F]'}`}>All</p>
           </button>
           {SUBCATEGORIES.map(sc => (
             <button key={sc.key} onClick={() => setActiveCategory(sc.key)}
-              className={`p-3 rounded-2xl text-left transition-all border ${activeCategory === sc.key ? 'bg-[#0A192F] text-white border-[#0A192F]' : 'bg-white border-[#0A192F]/5 hover:border-[#0A192F]/20'}`}>
-              <div className="text-xl mb-1">{sc.icon}</div>
-              <p className={`font-heading font-bold text-xs ${activeCategory === sc.key ? 'text-white' : 'text-[#0A192F]'}`}>{sc.label}</p>
+              className={`p-3 rounded-2xl text-left transition-all border ${activeCategory === sc.key ? 'text-white border-transparent' : 'bg-white border-[#0A192F]/5 hover:border-[#0A192F]/20'}`}
+              style={activeCategory === sc.key ? { background: sc.iconColor, borderColor: sc.iconColor } : {}}>
+              <sc.Icon className="w-5 h-5 mb-1" style={{ color: activeCategory === sc.key ? 'white' : sc.iconColor }} />
+              <p className={`font-heading font-bold text-xs leading-tight ${activeCategory === sc.key ? 'text-white' : 'text-[#0A192F]'}`}>{sc.label}</p>
             </button>
           ))}
         </div>

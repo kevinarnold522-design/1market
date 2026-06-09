@@ -33,8 +33,9 @@ export default function LeftSidebar({ isMobileHidden = false }) {
     <motion.aside
       animate={{ width: collapsed ? 64 : 220 }}
       transition={{ duration: 0.25, ease: 'easeInOut' }}
-      className="fixed left-0 top-0 bottom-0 z-40 flex flex-col overflow-hidden"
+      className="fixed left-0 bottom-0 z-40 flex flex-col overflow-hidden"
       style={{
+        top: 108, /* 40px top banner + ~68px nav */
         background: 'linear-gradient(180deg,#000d40 0%,#0a1940 50%,#000d40 100%)',
         borderRight: '1px solid rgba(0,212,255,0.15)',
         backdropFilter: 'blur(24px)',
