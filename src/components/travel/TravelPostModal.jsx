@@ -141,6 +141,10 @@ export default function TravelPostModal({ user, onClose, onSuccess }) {
     difficulty: '', duration: '', equipment: '',
     capacity: '', vehicle_type: '',
     hotel_rooms: [],
+    hotel_check_in_time: '14:00',
+    hotel_check_out_time: '12:00',
+    hotel_min_nights: 1,
+    hotel_max_guests: 2,
   });
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -162,6 +166,12 @@ export default function TravelPostModal({ user, onClose, onSuccess }) {
   const handleSubmit = async () => {
     setSaving(true);
     try {
+      // Derive hotel-level check-in/out from first room if set
+      const firstRoom = form.hotel_rooms?.[0];
+      const checkInTime = firstRoom?.check_in_time || form.hotel_check_in_time || '14:00';
+      const checkOutTime = firstRoom?.check_out_time || form.hotel_check_out_time || '12:00';
+      const totalRooms = form.hotel_rooms?.length || 0;
+
       await base44.entities.Listing.create({
         title: form.title,
         type: 'hotel',
@@ -171,7 +181,7 @@ export default function TravelPostModal({ user, onClose, onSuccess }) {
         location: form.location,
         area: form.area,
         price: Number(form.price) || 0,
-        price_label: form.price_label || (form.price ? `₱${Number(form.price).toLocaleString()}` : ''),
+        price_label: form.price_label || (form.price ? `₱${Number(form.price).toLocaleString()}/night` : ''),
         image_url: form.image_url,
         seller_name: form.seller_name,
         phone: form.phone,
@@ -179,6 +189,14 @@ export default function TravelPostModal({ user, onClose, onSuccess }) {
         is_active: true,
         approval_status: 'approved',
         hotel_rooms: form.hotel_rooms,
+        hotel_check_in_time: checkInTime,
+        hotel_check_out_time: checkOutTime,
+        hotel_total_rooms: totalRooms,
+        hotel_available_rooms: totalRooms,
+        hotel_min_nights: form.hotel_min_nights || 1,
+        hotel_max_guests: form.hotel_max_guests || (firstRoom?.max_guests ? Number(firstRoom.max_guests) : 2),
+        // Collect all blocked dates across rooms
+        hotel_unavailable_dates: [...new Set((form.hotel_rooms || []).flatMap(r => r.blocked_dates || []))],
         specs: JSON.stringify({
           difficulty: form.difficulty,
           duration: form.duration,
@@ -382,6 +400,32 @@ export default function TravelPostModal({ user, onClose, onSuccess }) {
             <>
               {/* Room manager col */}
               <div className="space-y-4">
+                {/* Hotel-level check-in/out & policy */}
+                <div className="rounded-xl p-4 space-y-3" style={{ background: 'rgba(0,212,255,0.05)', border: '1px solid rgba(0,212,255,0.15)' }}>
+                  <p className="font-body text-[10px] text-[#00D4FF] uppercase tracking-wider font-bold">Hotel Policies</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className={lbl}>Default Check-in Time</label>
+                      <input type="time" value={form.hotel_check_in_time} onChange={e => update('hotel_check_in_time', e.target.value)}
+                        className={inp} />
+                    </div>
+                    <div>
+                      <label className={lbl}>Default Check-out Time</label>
+                      <input type="time" value={form.hotel_check_out_time} onChange={e => update('hotel_check_out_time', e.target.value)}
+                        className={inp} />
+                    </div>
+                    <div>
+                      <label className={lbl}>Min Nights Stay</label>
+                      <input type="number" min="1" value={form.hotel_min_nights} onChange={e => update('hotel_min_nights', Number(e.target.value))}
+                        className={inp} />
+                    </div>
+                    <div>
+                      <label className={lbl}>Max Guests (hotel-wide)</label>
+                      <input type="number" min="1" value={form.hotel_max_guests} onChange={e => update('hotel_max_guests', Number(e.target.value))}
+                        className={inp} />
+                    </div>
+                  </div>
+                </div>
                 <HotelRoomManager rooms={form.hotel_rooms} onChange={v => update('hotel_rooms', v)} />
                 <div className="flex gap-2 justify-between pt-2">
                   <button type="button" onClick={() => setStep(1)}

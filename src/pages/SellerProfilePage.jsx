@@ -266,10 +266,18 @@ export default function SellerProfilePage() {
         if (users && users.length > 0) {
           const s = users[0];
           setSeller(s);
-          const [items, communityPosts] = await Promise.all([
+          const [byEmail, byCreator, communityPosts] = await Promise.all([
             base44.entities.Listing.filter({ email_contact: s.email, approval_status: 'approved' }),
+            base44.entities.Listing.filter({ created_by_id: s.id, approval_status: 'approved' }),
             base44.entities.CommunityPost.filter({ author_email: s.email }),
           ]);
+          // Merge and deduplicate by id
+          const seen = new Set();
+          const items = [...byEmail, ...byCreator].filter(l => {
+            if (seen.has(l.id)) return false;
+            seen.add(l.id);
+            return true;
+          });
           setListings(items);
           setPosts(communityPosts);
         }

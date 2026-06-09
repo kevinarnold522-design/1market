@@ -7,7 +7,7 @@ import MovingWelcomeBanner from '../components/home/MovingWelcomeBanner';
 import CategoryCards from '../components/home/CategoryCards';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
-import PostListingButton from '../components/PostListingButton';
+
 
 // Lazy-load heavy/below-fold sections
 const StarField = lazy(() => import('../components/StarField'));
@@ -16,7 +16,6 @@ const HeroSection = lazy(() => import('../components/home/HeroSection'));
 const CategoryCards2 = CategoryCards; // already imported above
 const WhatMakesUsSpecial = lazy(() => import('../components/home/WhatMakesUsSpecial'));
 const FlashDealsSection = lazy(() => import('../components/home/FlashDealsSection'));
-const TopSellersSection = lazy(() => import('../components/home/TopSellersSection'));
 const PhFlightDeals = lazy(() => import('../components/home/PhFlightDeals'));
 const PhHotelDeals = lazy(() => import('../components/home/PhHotelDeals'));
 const FeaturedListings = lazy(() => import('../components/home/FeaturedListings'));
@@ -61,7 +60,6 @@ export default function Home() {
         <Suspense fallback={<Spinner />}><WhatMakesUsSpecial /></Suspense>
         <Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense>
         <CategoryCards />
-        <Suspense fallback={<Spinner />}><TopSellersSection /></Suspense>
         <Suspense fallback={<Spinner />}><PhFlightDeals /></Suspense>
         <Suspense fallback={<Spinner />}><PhHotelDeals /></Suspense>
         <Suspense fallback={<Spinner />}><FeaturedListings /></Suspense>
