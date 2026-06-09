@@ -8,7 +8,7 @@ import PostListingMenu from '../PostListingMenu';
 import RewardDashboard from '../RewardDashboard';
 import MetaVerifiedBadge from '../MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AccountTypeModal from '../AccountTypeModal';
 import NavUserBadge from './NavUserBadge';
 import NavCategoryBar from './NavCategoryBar';
@@ -40,6 +40,7 @@ export default function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [editMode, setEditModeLocal] = useState(false);
   const [showRewards, setShowRewards] = useState(false);
+  const navigate = useNavigate();
   const [showSellerModal, setShowSellerModal] = useState(false);
   const [showBusinessModal, setShowBusinessModal] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
@@ -155,26 +156,26 @@ export default function Navbar() {
           {/* Right: 1MarketPH Social Links */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
             <span className="font-body text-[9px] text-white/40 hidden md:block mr-1">Follow us:</span>
-            <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-blue-300 hover:text-blue-200 transition-colors"
+            <button onClick={() => window.open('https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr', '_blank', 'noopener,noreferrer')}
+              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-blue-300 hover:text-blue-200 transition-colors cursor-pointer"
               style={{ background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.2)' }}>
               <Facebook className="w-3 h-3" /><span className="hidden sm:inline">@1MarketPH</span>
-            </a>
-            <a href="https://www.instagram.com/1marketph?igsh=Mnk4bHdtaXN2N2h1&utm_source=qr" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-pink-300 hover:text-pink-200 transition-colors"
+            </button>
+            <button onClick={() => window.open('https://www.instagram.com/1marketph/', '_blank', 'noopener,noreferrer')}
+              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-pink-300 hover:text-pink-200 transition-colors cursor-pointer"
               style={{ background: 'rgba(236,72,153,0.15)', border: '1px solid rgba(236,72,153,0.2)' }}>
               <Instagram className="w-3 h-3" /><span className="hidden sm:inline">@1MarketPH</span>
-            </a>
-            <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-white/60 hover:text-white/90 transition-colors"
+            </button>
+            <button onClick={() => window.open('https://tiktok.com/@1marketph', '_blank', 'noopener,noreferrer')}
+              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-white/60 hover:text-white/90 transition-colors cursor-pointer"
               style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
               <span className="hidden sm:inline">TikTok</span><span className="sm:hidden">TT</span>
-            </a>
-            <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-red-300 hover:text-red-200 transition-colors"
+            </button>
+            <button onClick={() => window.open('https://youtube.com/@1marketph', '_blank', 'noopener,noreferrer')}
+              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-red-300 hover:text-red-200 transition-colors cursor-pointer"
               style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.2)' }}>
               <Youtube className="w-3 h-3" /><span className="hidden sm:inline">YT</span>
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -446,12 +447,12 @@ export default function Navbar() {
                             <>
                               <div className="border-t border-white/8 my-1" />
                               <p className="px-3 py-1 font-body text-[9px] text-[#3E97F1]/60 uppercase tracking-wider font-bold">Grow with 1Market</p>
-                              <button onClick={() => { setProfileOpen(false); setShowSellerModal(true); }}
+                              <button onClick={() => { setProfileOpen(false); navigate('/onboarding'); }}
                                 className="w-full flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold"
                                 style={{ background: 'linear-gradient(90deg,rgba(16,185,129,0.15),rgba(0,212,255,0.08))', border: '1px solid rgba(16,185,129,0.2)' }}>
                                 <Store className="w-3.5 h-3.5 text-emerald-400" /> <span className="text-emerald-400">Become a Seller</span>
                               </button>
-                              <button onClick={() => { setProfileOpen(false); setShowBusinessModal(true); }}
+                              <button onClick={() => { setProfileOpen(false); navigate('/onboarding'); }}
                                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold mt-1"
                                style={{ background: 'linear-gradient(90deg,rgba(0,64,208,0.2),rgba(62,151,241,0.1))', border: '1px solid rgba(62,151,241,0.2)' }}>
                                <Building2 className="w-3.5 h-3.5 text-[#3E97F1]" /> <span className="text-[#3E97F1]">Convert To Business Account</span>
@@ -575,11 +576,11 @@ export default function Navbar() {
                     )}
                     {isCustomer && !isSeller && !isBusiness && (
                       <>
-                        <button onClick={() => { setMenuOpen(false); setShowSellerModal(true); }}
+                        <button onClick={() => { setMenuOpen(false); navigate('/onboarding'); }}
                           className="block w-full text-left text-emerald-400 font-body text-sm font-semibold py-2 transition-colors">
                           Become a Seller
                         </button>
-                        <button onClick={() => { setMenuOpen(false); setShowBusinessModal(true); }}
+                        <button onClick={() => { setMenuOpen(false); navigate('/onboarding'); }}
                          className="block w-full text-left text-[#3E97F1] font-body text-sm font-semibold py-2 transition-colors">
                          Convert To Business Account
                         </button>
