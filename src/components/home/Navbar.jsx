@@ -156,26 +156,26 @@ export default function Navbar() {
           {/* Right: 1MarketPH Social Links */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
             <span className="font-body text-[9px] text-white/40 hidden md:block mr-1">Follow us:</span>
-            <button onClick={() => window.open('https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr', '_blank', 'noopener,noreferrer')}
-              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-blue-300 hover:text-blue-200 transition-colors cursor-pointer"
+            <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-blue-300 hover:text-blue-200 transition-colors"
               style={{ background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.2)' }}>
               <Facebook className="w-3 h-3" /><span className="hidden sm:inline">@1MarketPH</span>
-            </button>
-            <button onClick={() => window.open('https://www.instagram.com/1marketph/', '_blank', 'noopener,noreferrer')}
-              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-pink-300 hover:text-pink-200 transition-colors cursor-pointer"
+            </a>
+            <a href="https://www.instagram.com/1marketph/" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-pink-300 hover:text-pink-200 transition-colors"
               style={{ background: 'rgba(236,72,153,0.15)', border: '1px solid rgba(236,72,153,0.2)' }}>
               <Instagram className="w-3 h-3" /><span className="hidden sm:inline">@1MarketPH</span>
-            </button>
-            <button onClick={() => window.open('https://tiktok.com/@1marketph', '_blank', 'noopener,noreferrer')}
-              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-white/60 hover:text-white/90 transition-colors cursor-pointer"
+            </a>
+            <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-white/60 hover:text-white/90 transition-colors"
               style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
               <span className="hidden sm:inline">TikTok</span><span className="sm:hidden">TT</span>
-            </button>
-            <button onClick={() => window.open('https://youtube.com/@1marketph', '_blank', 'noopener,noreferrer')}
-              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-red-300 hover:text-red-200 transition-colors cursor-pointer"
+            </a>
+            <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-red-300 hover:text-red-200 transition-colors"
               style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.2)' }}>
               <Youtube className="w-3 h-3" /><span className="hidden sm:inline">YT</span>
-            </button>
+            </a>
           </div>
         </div>
       </div>
