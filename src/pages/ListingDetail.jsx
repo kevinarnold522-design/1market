@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MascotDog from '../components/MascotDog';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock } from 'lucide-react';
 import ReportModal from '../components/ReportModal';
@@ -371,7 +372,7 @@ export default function ListingDetail() {
             {/* Comments Section */}
             <div className="rounded-2xl p-5 mt-4" style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(0,212,255,0.1)' }}>
               <h3 className="font-heading font-bold text-white text-base mb-4 flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-[#00D4FF]" /> Reviews & Comments ({comments.length})
+                <MessageSquare className="w-4 h-4 text-[#00D4FF]" /> Reviews ({comments.length})
               </h3>
 
               {user ? (
@@ -613,20 +614,48 @@ export default function ListingDetail() {
             {listing.seller_name && (
               <div className="rounded-2xl p-4" style={{ background: 'rgba(13,31,60,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
                 <p className="font-body text-[10px] text-white/30 uppercase tracking-wider mb-2">Posted by</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center font-heading font-bold text-white text-sm">
-                    {(listing.seller_name || 'S').charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <p className="font-body font-bold text-sm text-white">{listing.seller_name}</p>
-                    <p className="font-body text-[10px] text-white/30">Seller on 1Marketph.com</p>
-                  </div>
-                </div>
-                {listing.created_by_id && (
-                  <Link to={`/seller/${listing.created_by_id}`}
-                    className="mt-3 block w-full text-center py-2 rounded-xl bg-white/5 border border-white/10 text-white/50 font-body text-xs hover:border-[#00D4FF]/40 hover:text-[#00D4FF] transition-all">
-                    View Seller Profile →
+                {listing.created_by_id ? (
+                  <Link to={`/seller/${listing.created_by_id}`} className="flex items-center gap-3 group">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center font-heading font-bold text-white text-sm flex-shrink-0 group-hover:scale-105 transition-transform">
+                      {(listing.seller_name || 'S').charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <p className="font-body font-bold text-sm text-white group-hover:text-[#00D4FF] transition-colors">{listing.seller_name}</p>
+                        {listing.seller_is_verified && <MetaVerifiedBadge size="xs" label="" />}
+                      </div>
+                      <p className="font-body text-[10px] text-white/30">View Profile and More Listings</p>
+                    </div>
                   </Link>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center font-heading font-bold text-white text-sm flex-shrink-0">
+                      {(listing.seller_name || 'S').charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-body font-bold text-sm text-white">{listing.seller_name}</p>
+                      <p className="font-body text-[10px] text-white/30">Seller on 1MarketPH.com</p>
+                    </div>
+                  </div>
+                )}
+                {user && listing.email_contact && user.email !== listing.email_contact && (
+                  <button
+                    onClick={async () => {
+                      await base44.entities.ChatMessage.create({
+                        listing_id: listing.id,
+                        listing_title: listing.title,
+                        seller_email: listing.email_contact,
+                        buyer_email: user.email,
+                        sender_email: user.email,
+                        sender_name: user.full_name || user.email,
+                        message: 'Hi! I am interested in your listing: ' + listing.title,
+                        chat_type: 'listing',
+                      });
+                      window.location.href = '/messages';
+                    }}
+                    className="mt-3 w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-[#00D4FF]/30 text-[#00D4FF] font-body text-xs font-bold hover:bg-[#00D4FF]/10 transition-all">
+                    <MessageSquare className="w-3.5 h-3.5" /> Message Seller
+                  </button>
                 )}
               </div>
             )}
@@ -647,7 +676,7 @@ export default function ListingDetail() {
               <p className="font-body text-[10px] text-white/40">Philippines' Premier Marketplace</p>
             </div>
           </div>
-          <p className="font-body text-xs text-white/50 mb-4">Follow us and stay connected with the latest deals & listings!</p>
+          <p className="font-body text-xs text-white/50 mb-4">Follow us and stay connected with the latest deals and listings!</p>
           <div className="flex items-center justify-center flex-wrap gap-3">
             <a href="https://facebook.com/1marketph" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600/20 text-blue-400 font-body text-xs font-bold hover:bg-blue-600/35 transition-colors border border-blue-600/25">
