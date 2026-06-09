@@ -620,7 +620,7 @@ export default function UserProfile() {
                   {uploadingPfp ? <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" /> : <Camera className="w-3 h-3 text-white" />}
                   <input type="file" accept="image/*" className="hidden" onChange={uploadPfp} disabled={uploadingPfp} />
                 </label>
-                {isVerified && (
+                {isVerified && isSeller && (
                   <div className="absolute -bottom-1 -right-1">
                     <MetaVerifiedBadge size="xs" label="" />
                   </div>
@@ -632,6 +632,7 @@ export default function UserProfile() {
                   <span className={`px-2 py-0.5 rounded-full font-body text-[9px] font-bold border ${isBusiness ? 'bg-purple-500/20 text-purple-300 border-purple-500/25' : isSeller ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25' : 'bg-[#2563EB]/20 text-[#60a5fa] border-[#2563EB]/20'}`}>
                     {isBusiness ? `🏢 ${user.business_name || 'Business'}` : isSeller ? '🏪 Seller' : '🛍️ Customer'}
                   </span>
+                  {isVerified && isSeller && <MetaVerifiedBadge size="xs" label="" />}
                   {isPendingBusiness && !isBusiness && (
                     <span className="px-2 py-0.5 rounded-full font-body text-[9px] font-bold border bg-amber-500/15 text-amber-400 border-amber-500/20">⏳ Pending Business</span>
                   )}
@@ -817,10 +818,10 @@ export default function UserProfile() {
                         <Building2 className="w-8 h-8 text-[#3E97F1] flex-shrink-0 mt-0.5"/>
                         <div className="flex-1">
                           <p className="font-heading font-bold text-white text-sm">Register a Business</p>
-                          <p className="font-body text-[10px] text-white/40 mb-2">List under your business name. Requires 3 documents + admin approval. Get the Verified Partner badge ✅.</p>
-                          <button onClick={() => setShowBusinessModal(true)}
+                          <p className="font-body text-[10px] text-white/40 mb-2">Convert to a Business Account to list under your business name. Submit 3 documents for admin approval + Verified Partner badge ✅.</p>
+                           <button onClick={() => setShowBusinessModal(true)}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB] text-white rounded-xl font-body font-bold text-xs hover:bg-[#3E97F1] transition-colors">
-                            <Building2 className="w-3 h-3"/> Register Business →
+                            <Building2 className="w-3 h-3"/> Convert To Business Account →
                           </button>
                         </div>
                       </div>
@@ -849,11 +850,11 @@ export default function UserProfile() {
                       <div className="flex items-start gap-3">
                         <Building2 className="w-7 h-7 text-[#3E97F1] flex-shrink-0 mt-0.5"/>
                         <div className="flex-1">
-                          <p className="font-heading font-bold text-white text-sm">Upgrade to Business Account</p>
-                          <p className="font-body text-[10px] text-white/40 mb-2">List under your business name & get the Verified Partner badge. Requires admin approval.</p>
+                          <p className="font-heading font-bold text-white text-sm">Convert To Business Account</p>
+                          <p className="font-body text-[10px] text-white/40 mb-2">List under your business name & get the Verified Partner badge after submitting 3 required documents.</p>
                           <button onClick={() => setShowBusinessModal(true)}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB] text-white rounded-xl font-body font-bold text-xs hover:bg-[#3E97F1] transition-colors">
-                            <Building2 className="w-3 h-3"/> Register Business →
+                            <Building2 className="w-3 h-3"/> Convert To Business Account →
                           </button>
                         </div>
                       </div>

@@ -5,6 +5,11 @@ import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 
 const AuthContext = createContext();
 
+// Session-level cache to avoid redundant fetches on hot reloads / tab switches
+let _cachedUser = null;
+let _cachedPublicSettings = null;
+let _authInitialized = false;
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -22,6 +27,19 @@ export const AuthProvider = ({ children }) => {
     try {
       setIsLoadingPublicSettings(true);
       setAuthError(null);
+
+      // Use cached values for fast subsequent loads
+      if (_authInitialized && _cachedPublicSettings) {
+        setAppPublicSettings(_cachedPublicSettings);
+        if (_cachedUser) {
+          setUser(_cachedUser);
+          setIsAuthenticated(true);
+        }
+        setIsLoadingPublicSettings(false);
+        setIsLoadingAuth(false);
+        setAuthChecked(true);
+        return;
+      }
 
       const appClient = createAxiosClient({
         baseURL: `/api/apps/public`,
@@ -50,12 +68,16 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
+      _cachedPublicSettings = publicSettings;
+      _authInitialized = true;
       setAppPublicSettings(publicSettings);
 
       if (currentUser) {
+        _cachedUser = currentUser;
         setUser(currentUser);
         setIsAuthenticated(true);
       } else {
+        _cachedUser = null;
         setIsAuthenticated(false);
       }
 
@@ -89,6 +111,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = (shouldRedirect = true) => {
+    _cachedUser = null;
+    _authInitialized = false;
     setUser(null);
     setIsAuthenticated(false);
     if (shouldRedirect) {

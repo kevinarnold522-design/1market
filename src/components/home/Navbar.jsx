@@ -139,7 +139,8 @@ export default function Navbar() {
                   Welcome, <strong>{user.full_name?.split(' ')[0] || 'Member'}</strong>!
                 </span>
                 <span className="px-2 py-0.5 bg-white/15 rounded-full text-[10px] font-bold border border-white/20 hidden sm:inline">{adminLabel}</span>
-                {(isAdmin || isVerified) && <MetaVerifiedBadge size="sm" label={isAdmin ? 'CEO' : 'Verified'} />}
+                {isAdmin && <MetaVerifiedBadge size="sm" label="CEO" />}
+                {isVerified && !isAdmin && <MetaVerifiedBadge size="sm" label="Verified" />}
               </div>
             ) : (
               <span className="font-body text-xs font-semibold text-white/90 hidden sm:block">
@@ -264,7 +265,7 @@ export default function Navbar() {
                     <div className="text-left hidden sm:block">
                       <div className="flex items-center gap-1">
                         <p className="font-body text-xs text-white font-semibold leading-tight max-w-[80px] truncate">{user.full_name?.split(' ')[0] || 'Account'}</p>
-                        {(isAdmin || isVerified) && <MetaVerifiedBadge size="xs" label="" />}
+                        {(isAdmin || isVerified) && isSeller && <MetaVerifiedBadge size="xs" label="" />}
                       </div>
                       <p className="font-body text-[9px] text-[#00D4FF] leading-tight">{adminLabel}</p>
                     </div>
@@ -301,7 +302,10 @@ export default function Navbar() {
                                 <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>
                                   {adminLabel}
                                 </span>
-                                {(isVerified || isAdmin) && (
+                                {isAdmin && (
+                                  <MetaVerifiedBadge size="sm" label="CEO" />
+                                )}
+                              {isVerified && !isAdmin && isSeller && (
                                   <MetaVerifiedBadge size="sm" label="Verified Partner" />
                                 )}
                               </div>
@@ -444,9 +448,9 @@ export default function Navbar() {
                                 <Store className="w-3.5 h-3.5 text-emerald-400" /> <span className="text-emerald-400">Become a Seller</span>
                               </Link>
                               <Link to="/profile?tab=profile" onClick={() => setProfileOpen(false)}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold mt-1"
-                                style={{ background: 'linear-gradient(90deg,rgba(0,64,208,0.2),rgba(62,151,241,0.1))', border: '1px solid rgba(62,151,241,0.2)' }}>
-                                <Building2 className="w-3.5 h-3.5 text-[#3E97F1]" /> <span className="text-[#3E97F1]">Register a Business</span>
+                               className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold mt-1"
+                               style={{ background: 'linear-gradient(90deg,rgba(0,64,208,0.2),rgba(62,151,241,0.1))', border: '1px solid rgba(62,151,241,0.2)' }}>
+                               <Building2 className="w-3.5 h-3.5 text-[#3E97F1]" /> <span className="text-[#3E97F1]">Convert To Business Account</span>
                               </Link>
                             </>
                           )}
@@ -489,7 +493,7 @@ export default function Navbar() {
                     className="px-4 py-2 border border-white/20 text-white/80 rounded-lg font-body font-bold text-xs hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
                     Login
                   </button>
-                  <button onClick={() => setShowSignup(true)}
+                  <button onClick={() => { setShowSignup(true); window.dispatchEvent(new CustomEvent('alfie-get-started')); }}
                     className="px-4 py-2 rounded-lg font-body font-bold text-xs text-[#0A192F] transition-all hover:scale-105"
                     style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 16px rgba(0,212,255,0.4)' }}>
                     Get Started
@@ -523,7 +527,7 @@ export default function Navbar() {
                       <div className="min-w-0">
                         <div className="flex items-center gap-1 mb-0.5">
                           <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>{adminLabel}</span>
-                          {(isAdmin || isVerified) && <MetaVerifiedBadge size="xs" label="" />}
+                          {(isAdmin || (isVerified && isSeller)) && <MetaVerifiedBadge size="xs" label="" />}
                         </div>
                         <p className="font-body text-xs font-bold text-white truncate">{user.full_name || 'Account'}</p>
                         <p className="font-body text-[10px] text-white/40 truncate">{user.email}</p>
@@ -572,8 +576,8 @@ export default function Navbar() {
                           Become a Seller
                         </Link>
                         <Link to="/profile?tab=profile" onClick={() => setMenuOpen(false)}
-                          className="block text-[#3E97F1] font-body text-sm font-semibold py-2 transition-colors">
-                          Register a Business
+                         className="block text-[#3E97F1] font-body text-sm font-semibold py-2 transition-colors">
+                         Convert To Business Account
                         </Link>
                       </>
                     )}
