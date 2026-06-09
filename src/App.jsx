@@ -6,6 +6,7 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 // Add page imports here
+import AppLayout from './components/AppLayout';
 import Home from './pages/Home';
 import Travel from './pages/Travel';
 import Food from './pages/Food';
@@ -52,27 +53,29 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/travel" element={<Travel />} />
-      <Route path="/food" element={<Food />} />
-      <Route path="/buysell" element={<BuySell />} />
-      <Route path="/admin" element={<Admin />} />
-      <Route path="/seller" element={<Navigate to="/profile?tab=listings" replace />} />
-      <Route path="/rent" element={<ForRent />} />
-      <Route path="/services" element={<Services />} />
-      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-      <Route path="/profile" element={<UserProfile />} />
-      <Route path="/jobs" element={<Jobs />} />
-      <Route path="/seller/:sellerId" element={<SellerProfilePage />} />
-      <Route path="/seller-profile/:sellerId" element={<SellerProfilePage />} />
-      <Route path="/listing/:id" element={<ListingDetail />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/explore" element={<ExplorePage />} />
-      <Route path="/messages" element={<Messages />} />
-      <Route path="/favourites" element={<Favourites />} />
-      <Route path="/community" element={<BusinessCommunity />} />
-      <Route path="/notifications" element={<Notifications />} />
-      <Route path="*" element={<PageNotFound />} />
+      <Route element={<AppLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/travel" element={<Travel />} />
+        <Route path="/food" element={<Food />} />
+        <Route path="/buysell" element={<BuySell />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/seller" element={<Navigate to="/profile?tab=listings" replace />} />
+        <Route path="/rent" element={<ForRent />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/profile" element={<UserProfile />} />
+        <Route path="/jobs" element={<Jobs />} />
+        <Route path="/seller/:sellerId" element={<SellerProfilePage />} />
+        <Route path="/seller-profile/:sellerId" element={<SellerProfilePage />} />
+        <Route path="/listing/:id" element={<ListingDetail />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/explore" element={<ExplorePage />} />
+        <Route path="/messages" element={<Messages />} />
+        <Route path="/favourites" element={<Favourites />} />
+        <Route path="/community" element={<BusinessCommunity />} />
+        <Route path="/notifications" element={<Notifications />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Route>
     </Routes>
   );
 };

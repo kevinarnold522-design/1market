@@ -25,6 +25,9 @@ export default function LiveStatsBar() {
     { icon: TrendingUp, label: 'Daily Transactions', value: '300+', color: '#f59e0b' },
   ];
 
+  // Stats bar hidden per user request
+  return null;
+  /*
   return (
     <div className="relative z-20 py-3 overflow-hidden"
       style={{ background: 'linear-gradient(90deg,#0a0f2e,#001a80,#0a0f2e)', borderBottom: '1px solid rgba(0,212,255,0.1)' }}>
@@ -50,4 +53,5 @@ export default function LiveStatsBar() {
       </div>
     </div>
   );
+  */
 }
