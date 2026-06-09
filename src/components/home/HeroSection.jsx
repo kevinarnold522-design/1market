@@ -4,6 +4,7 @@ import { ArrowDown } from 'lucide-react';
 import HeroAnimation3D from './HeroAnimation3D';
 import AccountTypeModal from '../AccountTypeModal';
 import LoginModal from '@/components/LoginModal';
+import PostListingButton from '../PostListingButton';
 import { base44 } from '@/api/base44Client';
 
 export default function HeroSection({ heroImage }) {
@@ -88,13 +89,16 @@ export default function HeroSection({ heroImage }) {
                     </motion.button>
                   </>
                 ) : (
-                  <motion.a
-                    href="/explore"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
-                    style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 24px rgba(0,212,255,0.35)' }}
-                    whileHover={{ scale: 1.05 }}>
-                    Explore Now →
-                  </motion.a>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <motion.a
+                      href="/explore"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
+                      style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 24px rgba(0,212,255,0.35)' }}
+                      whileHover={{ scale: 1.05 }}>
+                      Explore Now →
+                    </motion.a>
+                    <PostListingButton />
+                  </div>
                 )}
                 <motion.a
                   href="#categories"

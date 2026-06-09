@@ -7,6 +7,7 @@ import MovingWelcomeBanner from '../components/home/MovingWelcomeBanner';
 import CategoryCards from '../components/home/CategoryCards';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
+import PostListingButton from '../components/PostListingButton';
 
 // Lazy-load heavy/below-fold sections
 const StarField = lazy(() => import('../components/StarField'));
@@ -31,7 +32,7 @@ const SuggestionBox = lazy(() => import('../components/home/SuggestionBox'));
 const BrandingBanner = lazy(() => import('../components/home/BrandingBanner'));
 
 const CustomerSupportButton = lazy(() => import('../components/CustomerSupportButton'));
-const AdminQuickAddFAB = lazy(() => import('../components/admin/AdminQuickAddFAB'));
+// AdminQuickAddFAB replaced by PostListingMenu in navbar
 const AdManager = lazy(() => import('../components/AdManager'));
 const GetStartedButton = lazy(() => import('../components/GetStartedButton'));
 const PhilippinesTravelBanner = lazy(() => import('../components/home/PhilippinesTravelBanner'));
@@ -76,7 +77,7 @@ export default function Home() {
 
       <Suspense fallback={<Spinner />}><PhilippinesTravelBanner /></Suspense>
       <Suspense fallback={<Spinner />}><CustomerSupportButton /></Suspense>
-      <Suspense fallback={<Spinner />}><AdminQuickAddFAB defaultMode="listing" /></Suspense>
+      {/* AdminQuickAddFAB removed — use PostListingMenu in navbar */}
       <Suspense fallback={<Spinner />}><AdManager /></Suspense>
       <Suspense fallback={<Spinner />}><GetStartedButton /></Suspense>
       <MascotDog page="home" />

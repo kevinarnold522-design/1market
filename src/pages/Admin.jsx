@@ -265,12 +265,16 @@ function ListingForm({ initial, onSave, onCancel }) {
 }
 
 export default function Admin() {
-  const [tab, setTab] = useState('businesses');
+  const [tab, setTab] = useState('approvals');
   const [pendingJobs, setPendingJobs] = useState([]);
+  const [pendingListings, setPendingListings] = useState([]);
   const [authChecked, setAuthChecked] = useState(false);
   const [reports, setReports] = useState([]);
   const [verifications, setVerifications] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
+  const [adminMessages, setAdminMessages] = useState([]);
+  const [msgUserEmail, setMsgUserEmail] = useState('');
+  const [loadingMsgs, setLoadingMsgs] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(user => {
@@ -296,6 +300,29 @@ export default function Admin() {
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
 
+  const approveListing = async (listingId) => {
+    await base44.entities.Listing.update(listingId, { approval_status: 'approved', is_active: true });
+    try { await base44.functions.invoke('listingApprovalNotify', { listing_id: listingId, status: 'approved' }); } catch(e) {}
+    showToast('Listing approved! Seller notified by email.');
+    loadAll();
+  };
+
+  const rejectListing = async (listingId, note = '') => {
+    await base44.entities.Listing.update(listingId, { approval_status: 'rejected', is_active: false });
+    try { await base44.functions.invoke('listingApprovalNotify', { listing_id: listingId, status: 'rejected', admin_note: note }); } catch(e) {}
+    showToast('Listing rejected. Seller notified.');
+    loadAll();
+  };
+
+  const loadAdminMessages = async (email) => {
+    setLoadingMsgs(true);
+    try {
+      const res = await base44.functions.invoke('adminViewMessages', { user_email: email || undefined });
+      setAdminMessages(res.data?.messages || []);
+    } catch(e) { setAdminMessages([]); }
+    setLoadingMsgs(false);
+  };
+
   const loadAll = async () => {
     setLoading(true);
     const [bizs, lists, userList, rpts, verifs, jobs] = await Promise.all([
@@ -311,7 +338,9 @@ export default function Admin() {
     setUsers(userList);
     setReports(rpts);
     setVerifications(verifs);
-    setPendingJobs(jobs.filter(j => !j.approval_status || j.approval_status === 'pending').sort((a,b) => new Date(b.created_date) - new Date(a.created_date)));
+    const allPending = lists.filter(j => !j.approval_status || j.approval_status === 'pending').sort((a,b) => new Date(b.created_date) - new Date(a.created_date));
+    setPendingListings(allPending);
+    setPendingJobs(allPending.filter(j => j.type === 'jobs'));
     setLoading(false);
   };
 
@@ -460,12 +489,13 @@ export default function Admin() {
         {/* Tabs */}
         <div className="flex gap-2 mb-6 border-b border-[#0A192F]/10 pb-4 flex-wrap">
           {[
+            { key: 'approvals', label: `All Approvals (${pendingListings.length})`, icon: CheckCircle },
             { key: 'businesses', label: 'Businesses', icon: Building2 },
-            { key: 'listings', label: 'Buy & Sell Listings', icon: ShoppingBag },
+            { key: 'listings', label: 'All Listings', icon: ShoppingBag },
             { key: 'users', label: `Users (${users.length})`, icon: User },
             { key: 'reports', label: `Reports (${reports.filter(r=>r.status==='pending').length})`, icon: Flag },
             { key: 'verifications', label: `Verify (${verifications.filter(v=>v.status==='pending').length})`, icon: BadgeCheck },
-            { key: 'jobapprovals', label: `Job Approvals (${pendingJobs.length})`, icon: Briefcase },
+            { key: 'messages', label: 'Messages', icon: Shield },
           ].map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-semibold text-sm transition-all ${tab === t.key ? 'bg-[#0A192F] text-white' : 'bg-white border border-[#0A192F]/10 text-[#0A192F]/60 hover:border-[#0A192F]/20'}`}>
@@ -809,69 +839,98 @@ export default function Admin() {
               <div className="text-center py-16 text-[#0A192F]/40 font-body">No verification applications yet.</div>
             )}
           </div>
-        ) : tab === 'jobapprovals' ? (
-          /* JOB APPROVALS TAB */
+        ) : tab === 'approvals' ? (
+          /* ALL LISTINGS APPROVALS TAB */
           <div className="space-y-3">
-            {pendingJobs.length === 0 && (
+            {pendingListings.length === 0 && (
               <div className="text-center py-16 text-[#0A192F]/40 font-body">
-                <Briefcase className="w-10 h-10 mx-auto mb-3 opacity-20" />
-                No pending job approvals.
+                <CheckCircle className="w-10 h-10 mx-auto mb-3 opacity-20" />
+                No listings pending approval.
               </div>
             )}
-            {pendingJobs.filter(j =>
+            {pendingListings.filter(j =>
               j.title?.toLowerCase().includes(search.toLowerCase()) ||
               j.seller_name?.toLowerCase().includes(search.toLowerCase()) ||
-              j.location?.toLowerCase().includes(search.toLowerCase())
-            ).map(job => (
-              <motion.div key={job.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              j.email_contact?.toLowerCase().includes(search.toLowerCase())
+            ).map(listing => (
+              <motion.div key={listing.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                 className="bg-white rounded-2xl border border-[#0A192F]/5 p-4 flex items-start gap-4 flex-wrap">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                  {job.image_url ? (
-                    <img src={job.image_url} alt={job.title} className="w-14 h-14 rounded-xl object-cover flex-shrink-0" onError={e => e.target.style.display='none'} />
+                  {listing.image_url ? (
+                    <img src={listing.image_url} alt={listing.title} className="w-14 h-14 rounded-xl object-cover flex-shrink-0" onError={e => e.target.style.display='none'} />
                   ) : (
                     <div className="w-14 h-14 rounded-xl bg-[#F8FAFC] border border-[#0A192F]/10 flex items-center justify-center flex-shrink-0">
-                      <Briefcase className="w-6 h-6 text-[#0A192F]/20" />
+                      <ShoppingBag className="w-6 h-6 text-[#0A192F]/20" />
                     </div>
                   )}
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
-                      <h4 className="font-heading font-bold text-sm text-[#0A192F] truncate">{job.title}</h4>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700">Pending Approval</span>
+                      <h4 className="font-heading font-bold text-sm text-[#0A192F] truncate">{listing.title}</h4>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700">Pending</span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 capitalize">{listing.type?.replace('_',' ')}</span>
                     </div>
-                    <p className="font-body text-xs text-[#0A192F]/50">{job.seller_name || 'Unknown Poster'} · {job.location}{job.area ? ` · ${job.area}` : ''}</p>
-                    {job.subcategory && <p className="font-body text-[10px] text-[#2563EB] mt-0.5">{job.subcategory}</p>}
-                    {job.description && <p className="font-body text-xs text-[#0A192F]/40 mt-1 line-clamp-2">{job.description}</p>}
-                    <div className="flex flex-wrap gap-2 mt-1.5">
-                      {job.phone && <span className="font-body text-[10px] text-[#0A192F]/40">📞 {job.phone}</span>}
-                      {job.email_contact && <span className="font-body text-[10px] text-[#0A192F]/40">✉️ {job.email_contact}</span>}
-                      {job.apply_link && <a href={job.apply_link} target="_blank" rel="noopener noreferrer" className="font-body text-[10px] text-[#2563EB] hover:underline">Apply Link →</a>}
-                    </div>
+                    <p className="font-body text-xs text-[#0A192F]/50">{listing.seller_name} · {listing.location}{listing.area ? ` · ${listing.area}` : ''}</p>
+                    {listing.email_contact && <p className="font-body text-[10px] text-[#2563EB]">{listing.email_contact}</p>}
+                    {listing.description && <p className="font-body text-xs text-[#0A192F]/40 mt-1 line-clamp-2">{listing.description}</p>}
+                    <a href={`/listing/${listing.id}`} target="_blank" rel="noopener noreferrer" className="inline-block mt-1 font-body text-[10px] text-[#2563EB] hover:underline">Preview Listing</a>
                   </div>
                 </div>
                 <div className="flex gap-2 flex-shrink-0 flex-wrap">
-                  <button onClick={async () => {
-                      await base44.entities.Listing.update(job.id, { approval_status: 'approved', is_active: true });
-                      showToast('Job approved and now live!');
-                      loadAll();
-                    }}
+                  <button onClick={() => approveListing(listing.id)}
                     className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-green-50 border border-green-200 text-green-700 font-body text-xs font-bold hover:bg-green-100 transition-colors">
                     <CheckCircle className="w-3.5 h-3.5" /> Approve
                   </button>
-                  <button onClick={async () => {
-                      await base44.entities.Listing.update(job.id, { approval_status: 'rejected', is_active: false });
-                      showToast('Job rejected.');
-                      loadAll();
+                  <button onClick={() => {
+                      const note = window.prompt('Reason for rejection (optional):') || '';
+                      rejectListing(listing.id, note);
                     }}
                     className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-red-50 border border-red-200 text-red-600 font-body text-xs font-bold hover:bg-red-100 transition-colors">
                     <XCircle className="w-3.5 h-3.5" /> Reject
                   </button>
-                  <button onClick={() => deleteList(job.id)}
+                  <button onClick={() => deleteList(listing.id)}
                     className="p-1.5 rounded-xl bg-[#F8FAFC] hover:bg-red-50 border border-[#0A192F]/10 transition-colors">
                     <Trash2 className="w-3.5 h-3.5 text-red-400" />
                   </button>
                 </div>
               </motion.div>
             ))}
+          </div>
+        ) : tab === 'messages' ? (
+          /* ADMIN MESSAGES VIEWER */
+          <div>
+            <div className="mb-4 flex gap-2">
+              <input value={msgUserEmail} onChange={e => setMsgUserEmail(e.target.value)}
+                placeholder="Enter user email to view their messages..."
+                className="flex-1 border border-[#0A192F]/10 rounded-xl px-3 py-2.5 font-body text-sm text-[#0A192F] focus:outline-none focus:border-[#2563EB]" />
+              <button onClick={() => loadAdminMessages(msgUserEmail)}
+                className="px-4 py-2.5 bg-[#0A192F] text-white rounded-xl font-body text-xs font-bold hover:bg-[#2563EB] transition-colors">
+                {loadingMsgs ? 'Loading...' : 'View Messages'}
+              </button>
+              <button onClick={() => loadAdminMessages('')}
+                className="px-4 py-2.5 bg-white border border-[#0A192F]/10 text-[#0A192F]/60 rounded-xl font-body text-xs font-semibold hover:bg-[#F8FAFC] transition-colors">
+                All Recent
+              </button>
+            </div>
+            <p className="font-body text-[10px] text-[#0A192F]/30 mb-3">Admin view — message history is read silently. Users are not notified.</p>
+            <div className="space-y-2">
+              {adminMessages.length === 0 && !loadingMsgs && (
+                <div className="text-center py-12 text-[#0A192F]/30 font-body text-sm">Enter a user email and click View Messages, or click All Recent.</div>
+              )}
+              {adminMessages.map(m => (
+                <div key={m.id} className="bg-white rounded-xl border border-[#0A192F]/5 p-3">
+                  <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${m.chat_type === 'business' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>{m.chat_type || 'listing'}</span>
+                      <span className="font-body text-xs font-bold text-[#0A192F]">{m.sender_name || m.sender_email}</span>
+                      <span className="font-body text-[9px] text-[#0A192F]/40">to {m.buyer_email === m.sender_email ? m.seller_email : m.buyer_email}</span>
+                    </div>
+                    <span className="font-body text-[9px] text-[#0A192F]/30">{new Date(m.created_date).toLocaleString('en-PH')}</span>
+                  </div>
+                  <p className="font-body text-xs text-[#0A192F]/70">{m.message}</p>
+                  {m.listing_title && <p className="font-body text-[9px] text-[#2563EB] mt-0.5">Re: {m.listing_title}</p>}
+                </div>
+              ))}
+            </div>
           </div>
         ) : null}
       </div>

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, MapPin, Briefcase, ExternalLink, X, Building2, DollarSign, Plus, Clock, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
-import AddListingModal from '../components/AddListingModal.jsx';
+import PostListingMenu from '../components/PostListingMenu';
 import { base44 } from '@/api/base44Client';
 
 // Royal Blue theme colors
@@ -184,11 +184,8 @@ export default function Jobs() {
   const [search, setSearch] = useState('');
   const [applyJob, setApplyJob] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
-  const [showAddJob, setShowAddJob] = useState(false);
-  const [addDefaultSub, setAddDefaultSub] = useState(urlSub || '');
   const [currentUser, setCurrentUser] = useState(null);
   const [dbJobs, setDbJobs] = useState([]);
-  const [showPostedNotice, setShowPostedNotice] = useState(false);
 
   useEffect(() => {
     base44.auth.isAuthenticated().then(ok => {
@@ -253,12 +250,16 @@ export default function Jobs() {
             </div>
             <div className="flex items-center gap-4 flex-wrap mb-2">
               <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Jobs in the Philippines</h1>
-              <button
-                onClick={() => { if (!currentUser) { setShowSignup(true); } else { setShowAddJob(true); } }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105 whitespace-nowrap"
-                style={{ background: 'linear-gradient(135deg,#f59e0b,#d97706)', boxShadow: '0 0 12px rgba(245,158,11,0.4)' }}>
-                <Plus className="w-3.5 h-3.5" /> Post a Job Ad
-              </button>
+              {currentUser ? (
+                <PostListingMenu user={currentUser} compact={true} />
+              ) : (
+                <button
+                  onClick={() => setShowSignup(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105 whitespace-nowrap"
+                  style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }}>
+                  <Plus className="w-3.5 h-3.5" /> Post a Job Ad
+                </button>
+              )}
             </div>
             <p className="font-body text-sm text-white/60 max-w-xl">Full-time, part-time, freelance & remote — real jobs from real companies across the Philippines.</p>
           </motion.div>
@@ -272,21 +273,7 @@ export default function Jobs() {
         </div>
       </div>
 
-      {/* Posted notice */}
-      <AnimatePresence>
-        {showPostedNotice && (
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-            className="max-w-2xl mx-auto mt-3 mx-4 rounded-2xl p-4 flex items-center gap-3"
-            style={{ background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)' }}>
-            <span className="text-green-400 text-xl">✓</span>
-            <div>
-              <p className="font-body font-bold text-sm text-green-300">Job Posted! Pending Admin Approval</p>
-              <p className="font-body text-xs text-white/40">Your job listing will appear here once approved.</p>
-            </div>
-            <button onClick={() => setShowPostedNotice(false)} className="ml-auto text-white/30 hover:text-white"><X className="w-4 h-4" /></button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-8">
         {/* Category pills */}
@@ -340,12 +327,15 @@ export default function Jobs() {
           <h2 className="font-heading font-bold text-2xl text-white mb-2">Hiring? Post a Job for Free</h2>
           <p className="font-body text-sm text-white/60 mb-5 max-w-md mx-auto">Reach thousands of job seekers across the Philippines. Free job postings for all users.</p>
           <div className="flex justify-center">
-            <button
-              onClick={() => { if (!currentUser) { setShowSignup(true); } else { setShowAddJob(true); } }}
-              className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
-              style={{ background: 'linear-gradient(135deg,#f59e0b,#d97706)', boxShadow: '0 0 16px rgba(245,158,11,0.4)' }}>
-              <Plus className="w-4 h-4" /> Post a Job Ad for Free
-            </button>
+            {currentUser ? (
+              <PostListingMenu user={currentUser} compact={false} />
+            ) : (
+              <button onClick={() => setShowSignup(true)}
+                className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
+                style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 16px rgba(37,99,235,0.4)' }}>
+                <Plus className="w-4 h-4" /> Post a Job Ad for Free
+              </button>
+            )}
           </div>
         </motion.div>
       </div>
@@ -353,18 +343,6 @@ export default function Jobs() {
       <AnimatePresence>
         {applyJob && <ApplyModal job={applyJob} onClose={() => setApplyJob(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
-        {showAddJob && (
-          <AddListingModal
-            user={currentUser}
-            defaultType="jobs"
-            defaultSubcategory={addDefaultSub}
-            onClose={() => {
-              setShowAddJob(false);
-              setShowPostedNotice(true);
-              setTimeout(() => setShowPostedNotice(false), 6000);
-            }}
-          />
-        )}
       </AnimatePresence>
       <MascotDog page="jobs" />
     </div>

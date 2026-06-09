@@ -110,6 +110,9 @@ const EMPTY_FORM = {
   seller_name: '', phone: '', email_contact: '', apply_link: '',
   condition: 'Brand New', image_url: '', extra_images: [], is_active: true,
   slideshow_animation: 'fade',
+  tags: '',
+  custom_product_name: '',
+  custom_service_name: '',
   food_serving: '', food_dietary: '', food_spice_level: 'N/A', food_allergens: '',
   food_business_type: '', food_type: '',
   job_employment_type: 'Full-time', job_experience: 'Entry Level', job_salary_min: '', job_salary_max: '', job_benefits: '',
@@ -169,6 +172,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   const [done, setDone] = useState(false);
   const [dpaAccepted, setDpaAccepted] = useState(false);
   const [legalAccepted, setLegalAccepted] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -219,8 +223,10 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       price_label: hidePrice ? '' : form.price_label,
       description: form.description, image_url: form.image_url, extra_images: form.extra_images || [],
       phone: form.phone, seller_name: form.seller_name, email_contact: form.email_contact, apply_link: form.apply_link,
-      condition: form.condition, is_active: form.is_active,
-      approval_status: isJob ? 'pending' : 'approved',
+      condition: form.condition, is_active: false,
+      approval_status: 'pending',
+      tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean).join(',') : '',
+      specs: [form.custom_product_name, form.custom_service_name].filter(Boolean).join(' | ') || undefined,
       slideshow_animation: form.slideshow_animation || 'fade',
       ...(form.type === 'food' ? { food_serving: form.food_serving, food_dietary: form.food_dietary, food_spice_level: form.food_spice_level, food_allergens: form.food_allergens, food_business_type: form.food_business_type, food_type: form.food_type } : {}),
       ...(form.type === 'jobs' ? { job_employment_type: form.job_employment_type, job_experience: form.job_experience, job_salary_min: Number(form.job_salary_min) || 0, job_salary_max: Number(form.job_salary_max) || 0, job_benefits: form.job_benefits } : {}),
@@ -237,7 +243,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
     setTimeout(() => onClose(), 2000);
   };
 
-  const canSubmit = form.title && dpaAccepted && (isCar ? legalAccepted : true);
+  const canSubmit = form.title && dpaAccepted && termsAccepted && (isCar ? legalAccepted : true);
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -271,9 +277,11 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
         {done ? (
           <div className="flex-1 flex items-center justify-center p-10 text-center">
             <div>
-              <div className="w-14 h-14 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center mx-auto mb-3 text-2xl">✅</div>
-              <p className="font-heading font-bold text-white text-lg mb-1">Listing Submitted!</p>
-              <p className="font-body text-sm text-white/50">{isJob ? 'Pending admin approval before going live.' : 'Your listing is now live.'}</p>
+              <div className="w-14 h-14 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center mx-auto mb-3">
+                <svg className="w-7 h-7 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+              </div>
+              <p className="font-heading font-bold text-white text-lg mb-1">Listing Submitted for Review!</p>
+              <p className="font-body text-sm text-white/50">Your listing is pending admin approval. You will receive an email and notification once it is reviewed.</p>
             </div>
           </div>
         ) : (
@@ -524,6 +532,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                   {form.type === 'food' && (
                     <div className="rounded-xl p-3 space-y-3" style={{ background: 'rgba(249,115,22,0.07)', border: '1px solid rgba(249,115,22,0.2)' }}>
                       <p className="font-body text-[10px] font-bold text-orange-400 uppercase tracking-wider">Food Business Details</p>
+
                       <div>
                         <label className={labelCls}>Food Business Type *</label>
                         <div className="grid grid-cols-2 gap-1.5">
@@ -685,6 +694,32 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       placeholder="Describe your listing in detail..." className={`${inputCls} resize-none`} />
                   </div>
 
+                  {/* MANUAL NAME — Buy & Sell */}
+                  {(form.main_category === 'buysell') && (
+                    <div>
+                      <label className={labelCls}>Manually Specify Product (optional)</label>
+                      <input value={form.custom_product_name} onChange={e => set('custom_product_name', e.target.value)}
+                        placeholder="e.g. Handmade Carved Wooden Shelf, Custom Sneakers..." className={inputCls} />
+                    </div>
+                  )}
+
+                  {/* MANUAL NAME — Services */}
+                  {(form.type === 'services') && (
+                    <div>
+                      <label className={labelCls}>Manually Specify Service Offered (optional)</label>
+                      <input value={form.custom_service_name} onChange={e => set('custom_service_name', e.target.value)}
+                        placeholder="e.g. Custom Wedding Invitations, Mobile Car Detailing..." className={inputCls} />
+                    </div>
+                  )}
+
+                  {/* TAGS / SEARCH KEYWORDS */}
+                  <div>
+                    <label className={labelCls}>Search Tags (comma-separated)</label>
+                    <input value={form.tags} onChange={e => set('tags', e.target.value)}
+                      placeholder="e.g. laptop, second hand, gaming, Cavite, cheap" className={inputCls} />
+                    <p className="font-body text-[9px] text-white/25 mt-1">Add keywords to help buyers find your listing faster</p>
+                  </div>
+
                   {/* SLIDESHOW ANIMATION */}
                   <div>
                     <label className={labelCls}>Image Gallery Animation</label>
@@ -713,8 +748,28 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                   <div className={`flex items-start gap-2.5 p-3 rounded-xl border ${dpaAccepted ? 'border-green-500/30 bg-green-500/5' : 'border-amber-500/30 bg-amber-500/5'}`}>
                     <input type="checkbox" id="dpa-consent" checked={dpaAccepted} onChange={e => setDpaAccepted(e.target.checked)} className="w-4 h-4 mt-0.5 accent-[#00D4FF] flex-shrink-0" />
                     <label htmlFor="dpa-consent" className="font-body text-[11px] text-white/60 leading-relaxed cursor-pointer">
-                      I agree to the Data Privacy Act of 2012 (RA 10173). I consent to collection and processing of my personal information for this listing. 1MarketPH may store and display this publicly.
+                      I agree to the Data Privacy Act of 2012 (RA 10173). I consent to the collection and processing of my personal information for this listing. 1MarketPH may store and display this publicly.
                     </label>
+                  </div>
+
+                  {/* FULL LEGAL TERMS & CONDITIONS */}
+                  <div className={`p-3 rounded-xl border space-y-2 ${termsAccepted ? 'border-blue-500/30 bg-blue-500/5' : 'border-red-500/30 bg-red-500/5'}`}>
+                    <p className="font-body text-[10px] font-bold text-white/50 uppercase tracking-wider">Terms & Conditions — Required</p>
+                    <div className="max-h-28 overflow-y-auto pr-1">
+                      <p className="font-body text-[10px] text-white/50 leading-relaxed">
+                        By agreeing to these Terms and Conditions, you promise to have no false or inaccurate information on the listed item/service published. 1MarketPH does not promote or tolerate the promotion of illegal drugs, gambling, harmful products, or products that can cause physical or immediate danger to any buyers or users.
+                        <br /><br />
+                        By accepting these terms you legally agree that 1MarketPH is not liable for any illegal products promoted on its platform, but has full legal authority to ensure that forms of damages caused by any misrepresentation, false advertisement, or the promotion of dangerous products or illegal drugs constitutes an act of endangering 1MarketPH's reputation and is in violation of Philippine laws. Therefore any forms of damages can be recovered through legal means.
+                        <br /><br />
+                        By clicking Submit, this listing will be reviewed by our Approval Team. Once fully approved, you will receive an approval email and notification.
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-2.5 pt-1">
+                      <input type="checkbox" id="terms-consent" checked={termsAccepted} onChange={e => setTermsAccepted(e.target.checked)} className="w-4 h-4 mt-0.5 accent-[#00D4FF] flex-shrink-0" />
+                      <label htmlFor="terms-consent" className="font-body text-[11px] text-white/70 leading-relaxed cursor-pointer font-semibold">
+                        I have read and agree to the 1MarketPH Terms and Conditions above.
+                      </label>
+                    </div>
                   </div>
 
                   {/* SUBMIT */}
@@ -722,14 +777,14 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                     className="w-full py-3 rounded-xl font-body font-bold text-sm text-white transition-all disabled:opacity-40 hover:scale-[1.01] flex items-center justify-center gap-2"
                     style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 20px rgba(37,99,235,0.5)' }}>
                     {submitting
-                      ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Publishing...</>
-                      : 'Publish Listing'}
+                      ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Submitting for Review...</>
+                      : 'Submit for Admin Review'}
                   </button>
 
                   {isCar && !legalAccepted && (
                     <p className="font-body text-[10px] text-orange-400 text-center">Please acknowledge the legal liability checkbox above.</p>
                   )}
-                  {isJob && <p className="font-body text-[10px] text-white/25 text-center">Job listings require admin approval before going live.</p>}
+                  <p className="font-body text-[10px] text-white/25 text-center">All listings are reviewed by our team before going live. You will be notified by email once approved.</p>
 
                 </motion.div>
               )}
