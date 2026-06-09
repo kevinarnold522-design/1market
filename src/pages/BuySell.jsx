@@ -84,6 +84,11 @@ function ListingCard({ item, onExpand, onContact, user, onFavourite, favourites,
       </div>
       <div className="p-4">
         <h3 className="font-heading font-bold text-base text-[#0A192F] mb-1 leading-tight">{item.title}</h3>
+        {(item.area || item.location) && (
+          <p className="font-body text-[10px] text-[#0A192F]/40 mb-1.5 flex items-center gap-1">
+            📍 {item.area ? `${item.area}${item.location ? `, ${item.location}` : ''}` : item.location}
+          </p>
+        )}
         {item.type === 'cars' && (
           <div className="flex flex-wrap gap-1.5 mb-2">
             {item.year && <span className="text-[10px] bg-[#F8FAFC] px-2 py-0.5 rounded-full text-[#0A192F]/60 border border-[#0A192F]/5">{item.year}</span>}

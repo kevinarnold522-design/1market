@@ -144,7 +144,13 @@ export default function Notifications() {
                     {n.from_user_name && (
                       <p className="font-body text-[10px] text-white/40 mt-0.5">from {n.from_user_name}</p>
                     )}
-                    {n.listing_title && (
+                    {n.listing_title && n.listing_id && (
+                      <Link to={`/listing/${n.listing_id}`}
+                        className="inline-flex items-center gap-1 font-body text-[10px] text-[#00D4FF]/70 hover:text-[#00D4FF] mt-0.5 truncate transition-colors">
+                        📋 {n.listing_title}
+                      </Link>
+                    )}
+                    {n.listing_title && !n.listing_id && (
                       <p className="font-body text-[10px] text-white/30 mt-0.5 truncate">📋 {n.listing_title}</p>
                     )}
                     <p className="font-body text-[9px] text-white/20 mt-1.5">

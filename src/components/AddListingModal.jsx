@@ -271,7 +271,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
         {done ? (
           <div className="flex-1 flex items-center justify-center p-10 text-center">
             <div>
-              <div className="w-14 h-14 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center mx-auto mb-3 text-2xl">checkmark</div>
+              <div className="w-14 h-14 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center mx-auto mb-3 text-2xl">✅</div>
               <p className="font-heading font-bold text-white text-lg mb-1">Listing Submitted!</p>
               <p className="font-body text-sm text-white/50">{isJob ? 'Pending admin approval before going live.' : 'Your listing is now live.'}</p>
             </div>
@@ -374,14 +374,43 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                     <input value={form.title} onChange={e => set('title', e.target.value)} placeholder="Listing title..." className={inputCls} />
                   </div>
 
-                  {/* SUBCATEGORY */}
+                  {/* SUBCATEGORY — Jobs gets special manual-entry fallback */}
                   {currentSubs.length > 0 && (
                     <div>
-                      <label className={labelCls}>Subcategory</label>
-                      <select value={form.subcategory} onChange={e => set('subcategory', e.target.value)} className={inputCls}>
-                        <option value="" className="bg-[#0D1F3C]">Select subcategory</option>
-                        {currentSubs.map(s => <option key={s} value={s} className="bg-[#0D1F3C]">{s}</option>)}
-                      </select>
+                      <label className={labelCls}>{isJob ? 'Job Position / Role' : 'Subcategory'}</label>
+                      {isJob ? (
+                        <div className="space-y-2">
+                          <div className="flex flex-wrap gap-1.5">
+                            {currentSubs.filter(s => s !== 'Other / Not Listed').map(s => (
+                              <button key={s} type="button" onClick={() => set('subcategory', s)}
+                                className="px-2.5 py-1 rounded-full border font-body text-[11px] transition-all"
+                                style={{
+                                  borderColor: form.subcategory === s ? '#f59e0b' : 'rgba(255,255,255,0.12)',
+                                  background: form.subcategory === s ? 'rgba(245,158,11,0.18)' : 'rgba(255,255,255,0.04)',
+                                  color: form.subcategory === s ? '#fbbf24' : 'rgba(255,255,255,0.5)',
+                                }}>
+                                {s}
+                              </button>
+                            ))}
+                          </div>
+                          <div className="flex items-center gap-2 mt-2">
+                            <input
+                              value={!currentSubs.filter(s => s !== 'Other / Not Listed').includes(form.subcategory) ? form.subcategory : ''}
+                              onChange={e => set('subcategory', e.target.value)}
+                              placeholder="Or type your own job title / position..."
+                              className={inputCls}
+                            />
+                          </div>
+                          {form.subcategory && (
+                            <p className="font-body text-[10px] text-amber-400">Selected: {form.subcategory}</p>
+                          )}
+                        </div>
+                      ) : (
+                        <select value={form.subcategory} onChange={e => set('subcategory', e.target.value)} className={inputCls}>
+                          <option value="" className="bg-[#0D1F3C]">Select subcategory</option>
+                          {currentSubs.map(s => <option key={s} value={s} className="bg-[#0D1F3C]">{s}</option>)}
+                        </select>
+                      )}
                     </div>
                   )}
 

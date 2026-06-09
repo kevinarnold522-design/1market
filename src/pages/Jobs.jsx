@@ -6,7 +6,6 @@ import { ArrowLeft, Search, MapPin, Briefcase, ExternalLink, X, Building2, Dolla
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
-import PostListingMenu from '../components/PostListingMenu';
 import { base44 } from '@/api/base44Client';
 
 // Royal Blue theme colors
@@ -90,10 +89,18 @@ function JobCard({ job, onApply }) {
             🔥 Urgent
           </span>
         )}
-        <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full text-[9px] font-bold text-white flex items-center gap-1"
-          style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}>
-          <MapPin className="w-2.5 h-2.5" />{job.area}
-        </span>
+        <div className="absolute bottom-2 left-2 flex items-center gap-1 flex-wrap">
+          <span className="px-2 py-0.5 rounded-full text-[9px] font-bold text-white flex items-center gap-1"
+            style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}>
+            <MapPin className="w-2.5 h-2.5" />{job.area}
+          </span>
+          {job.location && job.location !== job.area && (
+            <span className="px-2 py-0.5 rounded-full text-[9px] font-bold text-white/80"
+              style={{ background: 'rgba(0,64,208,0.7)' }}>
+              {job.location}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Content */}
@@ -246,7 +253,12 @@ export default function Jobs() {
             </div>
             <div className="flex items-center gap-4 flex-wrap mb-2">
               <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Jobs in the Philippines</h1>
-              <PostListingMenu user={currentUser} compact={false} />
+              <button
+                onClick={() => { if (!currentUser) { setShowSignup(true); } else { setShowAddJob(true); } }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105 whitespace-nowrap"
+                style={{ background: 'linear-gradient(135deg,#f59e0b,#d97706)', boxShadow: '0 0 12px rgba(245,158,11,0.4)' }}>
+                <Plus className="w-3.5 h-3.5" /> Post a Job Ad
+              </button>
             </div>
             <p className="font-body text-sm text-white/60 max-w-xl">Full-time, part-time, freelance & remote — real jobs from real companies across the Philippines.</p>
           </motion.div>
@@ -328,7 +340,12 @@ export default function Jobs() {
           <h2 className="font-heading font-bold text-2xl text-white mb-2">Hiring? Post a Job for Free</h2>
           <p className="font-body text-sm text-white/60 mb-5 max-w-md mx-auto">Reach thousands of job seekers across the Philippines. Free job postings for all users.</p>
           <div className="flex justify-center">
-            <PostListingMenu user={currentUser} compact={false} />
+            <button
+              onClick={() => { if (!currentUser) { setShowSignup(true); } else { setShowAddJob(true); } }}
+              className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
+              style={{ background: 'linear-gradient(135deg,#f59e0b,#d97706)', boxShadow: '0 0 16px rgba(245,158,11,0.4)' }}>
+              <Plus className="w-4 h-4" /> Post a Job Ad for Free
+            </button>
           </div>
         </motion.div>
       </div>

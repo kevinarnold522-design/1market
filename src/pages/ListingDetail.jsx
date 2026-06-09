@@ -429,9 +429,14 @@ export default function ListingDetail() {
                 <span className="font-body text-xs text-white/40">{avgRating > 0 ? `${avgRating} (${comments.filter(c=>c.rating>0).length} ratings)` : 'No ratings yet'}</span>
               </div>
 
-              <div className="flex items-center gap-2 mb-4">
-                <MapPin className="w-3.5 h-3.5 text-[#00D4FF] flex-shrink-0" />
-                <span className="font-body text-sm text-white/60">{listing.area || listing.location}</span>
+              <div className="flex items-start gap-2 mb-4">
+                <MapPin className="w-3.5 h-3.5 text-[#00D4FF] flex-shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-body text-sm text-white/70">{listing.area ? `${listing.area}, ` : ''}{listing.location}</span>
+                  {listing.full_address && listing.full_address !== listing.location && (
+                    <p className="font-body text-[10px] text-white/35 mt-0.5">{listing.full_address}</p>
+                  )}
+                </div>
               </div>
 
               <div className="mb-4">
