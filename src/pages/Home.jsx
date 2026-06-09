@@ -44,7 +44,7 @@ const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#001060] pt-4 overflow-x-hidden relative">
+    <div className="min-h-screen overflow-x-hidden relative" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001060 8%,#000d40 100%)' }}>
       <Suspense fallback={<Spinner />}>
         <StarField />
         <ParticleBackground />
@@ -53,6 +53,8 @@ export default function Home() {
       <div className="relative z-10">
         <WelcomeSplash />
         <Navbar />
+        {/* Spacer for dual fixed navbar (top banner 40px + nav ~68px) */}
+        <div style={{ height: 108 }} />
         <MovingWelcomeBanner />
         <Suspense fallback={<Spinner />}><BrandingBanner /></Suspense>
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>

@@ -68,8 +68,23 @@ export default function HeroSection({ heroImage }) {
               <div className="h-[1px] w-16 bg-[#00D4FF]" />
 
               <p className="font-body text-xs sm:text-sm text-white/55 max-w-lg leading-relaxed">
-                Founded in 2026 by Kevin Roberto, 1Market was born from a simple vision: to bridge the gap between Filipino consumers and businesses that power our communities. Whether you're searching for your next home, a reliable service, or the best local deals, we provide a seamless, homegrown space where connections happen naturally. Proudly Filipino, built for Filipinos — because when we connect, we grow together.
+                Founded in 2026 by Kevin Roberto, 1Market was born from a simple vision: to bridge the gap between Filipino consumers and businesses that power our communities. Proudly Filipino, built for Filipinos — because when we connect, we grow together.
               </p>
+
+              {/* Trust badges */}
+              <div className="flex flex-wrap gap-2 mt-1">
+                {[
+                  { label: '10,000+ Members', color: 'rgba(0,212,255,0.15)', border: 'rgba(0,212,255,0.3)', text: '#00D4FF' },
+                  { label: 'Free to List', color: 'rgba(16,185,129,0.15)', border: 'rgba(16,185,129,0.3)', text: '#10b981' },
+                  { label: 'Verified Sellers', color: 'rgba(37,99,235,0.15)', border: 'rgba(37,99,235,0.3)', text: '#60a5fa' },
+                  { label: 'Proudly Filipino', color: 'rgba(255,215,0,0.1)', border: 'rgba(255,215,0,0.25)', text: '#FFD700' },
+                ].map(badge => (
+                  <span key={badge.label} className="px-3 py-1 rounded-full font-body text-[10px] font-bold"
+                    style={{ background: badge.color, border: `1px solid ${badge.border}`, color: badge.text }}>
+                    {badge.label}
+                  </span>
+                ))}
+              </div>
 
               <div className="flex items-center gap-3 mt-4 flex-wrap">
                 {!isAuth ? (

@@ -79,7 +79,10 @@ function FlightCard({ flight }) {
       <div className="relative aspect-[16/9] overflow-hidden">
         <img src={flight.image} alt={flight.route} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/80 via-[#0A192F]/30 to-transparent" />
-        <div className="absolute top-3 left-3 bg-white/15 backdrop-blur-sm text-white px-2.5 py-1 rounded-full font-body font-bold text-[10px]">{flight.tag}</div>
+        <div className="absolute top-3 left-3 text-white px-2.5 py-1 rounded-full font-body font-bold text-[10px]"
+          style={{ background: 'rgba(0,212,255,0.25)', backdropFilter: 'blur(8px)', border: '1px solid rgba(0,212,255,0.3)' }}>
+          {flight.tag}
+        </div>
         <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/15 backdrop-blur-sm text-white px-2.5 py-1 rounded-full font-body text-[10px]">
           <Plane className="w-3 h-3" /> {flight.duration}
         </div>
@@ -180,8 +183,12 @@ export default function PhFlightDeals() {
           {FLIGHTS.map(f => <FlightCard key={f.id} flight={f} />)}
         </div>
 
-        <div className="mt-6 text-center">
+        <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="font-body text-xs text-white/25">Prices are indicative. Click each airline to book directly on their official site.</p>
+          <a href="/travel" className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
+            style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 18px rgba(0,212,255,0.35)' }}>
+            Explore All Travel Options →
+          </a>
         </div>
       </div>
     </section>

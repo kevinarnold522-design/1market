@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, Pencil, Trash2, X, Save, ArrowLeft, Building2, ShoppingBag, Search, Upload, User, BadgeCheck, Shield, Flag, CheckCircle, XCircle, Ghost, Link2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const OWNER_EMAIL = 'Kevinarnold522@gmail.com';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Pencil, Trash2, X, Save, ArrowLeft, Building2, ShoppingBag, Search, Upload, User, BadgeCheck, Shield, Flag, CheckCircle, XCircle, Briefcase } from 'lucide-react';
-
 const ROLES = ['user', 'moderator', 'admin'];
-import { Link } from 'react-router-dom';
 
 const SECTIONS = ['food', 'travel', 'buysell'];
 const TYPES = ['chain', 'carinderia', 'home-kitchen', 'home-baker', 'coffee', 'hotel', 'vehicle-rental', 'shop', 'service'];
@@ -278,7 +277,6 @@ export default function Admin() {
   // Ghost accounts
   const [ghostForm, setGhostForm] = useState({ full_name: '', user_type: 'seller', business_name: '', location: 'Manila' });
   const [ghostSaving, setGhostSaving] = useState(false);
-  const [ghostToast, setGhostToast] = useState('');
   const [ghostLinkEmail, setGhostLinkEmail] = useState({});
   const [ghostUsers, setGhostUsers] = useState([]);
 
@@ -344,6 +342,7 @@ export default function Admin() {
     setUsers(userList);
     setReports(rpts);
     setVerifications(verifs);
+    setGhostUsers(userList.filter(u => u.is_ghost_account));
     const allPending = lists.filter(j => !j.approval_status || j.approval_status === 'pending').sort((a,b) => new Date(b.created_date) - new Date(a.created_date));
     setPendingListings(allPending);
     setPendingJobs(allPending.filter(j => j.type === 'jobs'));
@@ -417,6 +416,41 @@ export default function Admin() {
     loadAll();
   };
 
+  const createGhostAccount = async () => {
+    if (!ghostForm.full_name.trim()) { showToast('Name is required'); return; }
+    setGhostSaving(true);
+    const ghostId = `ghost_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    await base44.entities.User.create({
+      full_name: ghostForm.full_name.trim(),
+      email: `${ghostId}@ghost.1marketph.internal`,
+      user_type: ghostForm.user_type,
+      is_seller: ghostForm.user_type === 'seller' || ghostForm.user_type === 'business',
+      account_type: ghostForm.user_type === 'business' ? 'business_owner' : ghostForm.user_type,
+      business_name: ghostForm.business_name.trim() || ghostForm.full_name.trim(),
+      seller_location: ghostForm.location,
+      is_ghost_account: true,
+      ghost_id: ghostId,
+      role: 'user',
+    });
+    setGhostSaving(false);
+    setGhostForm({ full_name: '', user_type: 'seller', business_name: '', location: 'Manila' });
+    showToast('Ghost account created!');
+    loadAll();
+  };
+
+  const linkGhostToEmail = async (ghostUser) => {
+    const email = ghostLinkEmail[ghostUser.id];
+    if (!email || !email.includes('@')) { showToast('Enter a valid email'); return; }
+    await base44.entities.User.update(ghostUser.id, {
+      email: email.trim().toLowerCase(),
+      is_ghost_account: false,
+      ghost_linked: true,
+    });
+    setGhostLinkEmail(prev => ({ ...prev, [ghostUser.id]: '' }));
+    showToast('Ghost account linked to real email!');
+    loadAll();
+  };
+
   if (!authChecked) return (
     <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
       <div className="w-8 h-8 border-4 border-[#0A192F]/10 border-t-[#2563EB] rounded-full animate-spin" />
@@ -449,7 +483,7 @@ export default function Admin() {
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Header */}
-      <div className="bg-[#0A192F] px-4 sm:px-6 lg:px-8 py-6">
+      <div className="px-4 sm:px-6 lg:px-8 py-6" style={{ background: 'linear-gradient(135deg,#0A192F,#0D1F3C)', borderBottom: '1px solid rgba(0,212,255,0.15)' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-body">
@@ -457,10 +491,13 @@ export default function Admin() {
             </Link>
             <div className="h-5 w-px bg-white/20" />
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-[#00D4FF] flex items-center justify-center">
-                <span className="text-[#0A192F] font-bold text-xs">1</span>
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}>
+                <Shield className="w-4 h-4 text-white" />
               </div>
-              <span className="font-heading font-bold text-white">Admin Dashboard</span>
+              <div>
+                <span className="font-heading font-bold text-white block text-sm">CEO Admin Dashboard</span>
+                <span className="font-body text-[10px] text-[#00D4FF]/60">1MarketPH Control Panel</span>
+              </div>
             </div>
           </div>
           <div className="flex gap-2">
@@ -478,14 +515,16 @@ export default function Admin() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           {[
-            { label: 'Total Businesses', value: businesses.length, color: 'text-[#2563EB]' },
-            { label: 'Food Listings', value: businesses.filter(b => b.section === 'food').length, color: 'text-emerald-600' },
-            { label: 'Buy & Sell Items', value: listings.length, color: 'text-rose-600' },
-            { label: 'Pending Reports', value: reports.filter(r => r.status === 'pending').length, color: 'text-red-600' },
+            { label: 'Total Businesses', value: businesses.length, color: 'text-[#2563EB]', bg: 'bg-blue-50' },
+            { label: 'Total Users', value: users.length, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+            { label: 'All Listings', value: listings.length, color: 'text-rose-600', bg: 'bg-rose-50' },
+            { label: 'Pending Approvals', value: pendingListings.length, color: 'text-amber-600', bg: 'bg-amber-50' },
+            { label: 'Pending Reports', value: reports.filter(r => r.status === 'pending').length, color: 'text-red-600', bg: 'bg-red-50' },
+            { label: 'Pending Verifications', value: verifications.filter(v => v.status === 'pending').length, color: 'text-purple-600', bg: 'bg-purple-50' },
           ].map(s => (
-            <div key={s.label} className="bg-white rounded-2xl p-4 border border-[#0A192F]/5 shadow-sm">
+            <div key={s.label} className={`bg-white rounded-2xl p-4 border border-[#0A192F]/5 shadow-sm`}>
               <p className={`font-heading font-bold text-2xl ${s.color}`}>{s.value}</p>
               <p className="font-body text-xs text-[#0A192F]/50 mt-0.5">{s.label}</p>
             </div>
@@ -502,6 +541,7 @@ export default function Admin() {
             { key: 'reports', label: `Reports (${reports.filter(r=>r.status==='pending').length})`, icon: Flag },
             { key: 'verifications', label: `Verify (${verifications.filter(v=>v.status==='pending').length})`, icon: BadgeCheck },
             { key: 'messages', label: 'Messages', icon: Shield },
+            { key: 'ghost', label: `Ghost Accounts (${ghostUsers.length})`, icon: Ghost },
           ].map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-semibold text-sm transition-all ${tab === t.key ? 'bg-[#0A192F] text-white' : 'bg-white border border-[#0A192F]/10 text-[#0A192F]/60 hover:border-[#0A192F]/20'}`}>
@@ -936,6 +976,101 @@ export default function Admin() {
                   {m.listing_title && <p className="font-body text-[9px] text-[#2563EB] mt-0.5">Re: {m.listing_title}</p>}
                 </div>
               ))}
+            </div>
+          </div>
+        ) : tab === 'ghost' ? (
+          /* GHOST ACCOUNTS TAB */
+          <div className="space-y-6">
+            {/* Create ghost account form */}
+            <div className="bg-white rounded-2xl border border-[#0A192F]/5 p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Ghost className="w-4 h-4 text-purple-500" />
+                <h3 className="font-heading font-bold text-sm text-[#0A192F]">Create Ghost Account</h3>
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-purple-100 text-purple-700">Placeholder profiles without email</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label className="block font-body text-xs font-semibold text-[#0A192F]/60 mb-1">Display Name *</label>
+                  <input value={ghostForm.full_name} onChange={e => setGhostForm(f => ({...f, full_name: e.target.value}))}
+                    placeholder="e.g. Juan Dela Cruz" className="w-full border border-[#0A192F]/10 rounded-xl px-3 py-2 font-body text-sm text-[#0A192F] focus:outline-none focus:border-[#2563EB]" />
+                </div>
+                <div>
+                  <label className="block font-body text-xs font-semibold text-[#0A192F]/60 mb-1">Business / Channel Name</label>
+                  <input value={ghostForm.business_name} onChange={e => setGhostForm(f => ({...f, business_name: e.target.value}))}
+                    placeholder="Optional" className="w-full border border-[#0A192F]/10 rounded-xl px-3 py-2 font-body text-sm text-[#0A192F] focus:outline-none focus:border-[#2563EB]" />
+                </div>
+                <div>
+                  <label className="block font-body text-xs font-semibold text-[#0A192F]/60 mb-1">Account Type</label>
+                  <select value={ghostForm.user_type} onChange={e => setGhostForm(f => ({...f, user_type: e.target.value}))}
+                    className="w-full border border-[#0A192F]/10 rounded-xl px-3 py-2 font-body text-sm text-[#0A192F] bg-white focus:outline-none focus:border-[#2563EB]">
+                    <option value="customer">Customer</option>
+                    <option value="seller">Seller</option>
+                    <option value="business">Business</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-body text-xs font-semibold text-[#0A192F]/60 mb-1">Location</label>
+                  <select value={ghostForm.location} onChange={e => setGhostForm(f => ({...f, location: e.target.value}))}
+                    className="w-full border border-[#0A192F]/10 rounded-xl px-3 py-2 font-body text-sm text-[#0A192F] bg-white focus:outline-none focus:border-[#2563EB]">
+                    {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
+                  </select>
+                </div>
+              </div>
+              <button onClick={createGhostAccount} disabled={ghostSaving}
+                className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-body text-sm font-bold transition-colors disabled:opacity-50">
+                {ghostSaving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Ghost className="w-4 h-4" />}
+                Create Ghost Account
+              </button>
+            </div>
+
+            {/* List ghost accounts */}
+            <div>
+              <h4 className="font-heading font-bold text-sm text-[#0A192F] mb-3">Ghost Accounts ({ghostUsers.length})</h4>
+              {ghostUsers.length === 0 && (
+                <div className="text-center py-12 text-[#0A192F]/30 font-body text-sm">No ghost accounts yet.</div>
+              )}
+              <div className="space-y-3">
+                {ghostUsers.map(u => (
+                  <motion.div key={u.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                    className="bg-white rounded-2xl border border-[#0A192F]/5 p-4 flex items-center gap-4 flex-wrap">
+                    <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
+                      <Ghost className="w-5 h-5 text-purple-500" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <p className="font-heading font-bold text-sm text-[#0A192F]">{u.full_name}</p>
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-purple-100 text-purple-700 capitalize">{u.user_type || 'customer'}</span>
+                        {u.ghost_linked && <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-green-100 text-green-700">Linked</span>}
+                      </div>
+                      <p className="font-body text-xs text-[#0A192F]/40">{u.seller_location} · {u.business_name || '—'}</p>
+                    </div>
+                    {/* Link to real email */}
+                    {!u.ghost_linked && (
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <input
+                          value={ghostLinkEmail[u.id] || ''}
+                          onChange={e => setGhostLinkEmail(prev => ({...prev, [u.id]: e.target.value}))}
+                          placeholder="Link real email..."
+                          className="border border-[#0A192F]/10 rounded-xl px-3 py-1.5 font-body text-xs text-[#0A192F] focus:outline-none focus:border-[#2563EB] w-48"
+                        />
+                        <button onClick={() => linkGhostToEmail(u)}
+                          className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#2563EB] text-white font-body text-xs font-bold hover:bg-[#1d4ed8] transition-colors">
+                          <Link2 className="w-3 h-3" /> Link
+                        </button>
+                      </div>
+                    )}
+                    <button onClick={async () => {
+                        if (!window.confirm('Delete this ghost account?')) return;
+                        await base44.entities.User.delete(u.id);
+                        showToast('Ghost account deleted.');
+                        loadAll();
+                      }}
+                      className="p-2 rounded-xl bg-[#F8FAFC] hover:bg-red-50 border border-[#0A192F]/10 transition-colors flex-shrink-0">
+                      <Trash2 className="w-4 h-4 text-red-400" />
+                    </button>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         ) : null}

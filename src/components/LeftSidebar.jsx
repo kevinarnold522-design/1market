@@ -35,10 +35,11 @@ export default function LeftSidebar({ isMobileHidden = false }) {
       transition={{ duration: 0.25, ease: 'easeInOut' }}
       className="fixed left-0 top-0 bottom-0 z-40 flex flex-col overflow-hidden"
       style={{
-        background: 'linear-gradient(180deg,rgba(0,13,64,0.85),rgba(10,25,47,0.9),rgba(0,13,64,0.85))',
-        borderRight: '1px solid rgba(0,212,255,0.12)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
+        background: 'linear-gradient(180deg,#000d40 0%,#0a1940 50%,#000d40 100%)',
+        borderRight: '1px solid rgba(0,212,255,0.15)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        boxShadow: '2px 0 24px rgba(0,0,0,0.4)',
       }}
     >
       {/* Logo */}

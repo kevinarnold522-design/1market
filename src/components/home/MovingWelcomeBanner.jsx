@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { TrendingUp, Users, ShoppingBag, Star } from 'lucide-react';
 
 const MESSAGES = [
-  { title: '1Marketph.com', sub: 'Your One-Stop Philippine Marketplace' },
-  { title: 'Buy. Sell. Connect.', sub: 'Bringing local communities together' },
-  { title: 'Discover Local Food', sub: 'From carinderias to fine dining near you' },
-  { title: 'Plan Your Next Trip', sub: 'Hotels, flights & adventures await' },
-  { title: 'Find Your New Home', sub: 'Rentals & real estate across Manila & Cavite' },
-  { title: 'Best Tech Deals', sub: 'Phones, laptops & gadgets at lowest prices' },
+  { title: '1MarketPH.com', sub: 'Your #1 Filipino Marketplace — Trusted by thousands' },
+  { title: 'Buy. Sell. Connect.', sub: 'Bringing local communities together across the Philippines' },
+  { title: 'Discover Local Food', sub: 'From carinderias to cloud kitchens near you' },
+  { title: 'Plan Your Next Trip', sub: 'Hotels, flights & adventures at unbeatable prices' },
+  { title: 'Find Your New Home', sub: 'Rentals, condos & real estate across Manila & Cavite' },
+  { title: 'Best Tech Deals', sub: 'Phones, laptops & gadgets at the lowest prices' },
+  { title: 'Post for FREE Today', sub: 'List your products & services — zero fees, zero hassle' },
 ];
 
 const TICKER_ITEMS = [
-  'iPhone 16 Pro — ₱89,999', 'Manila Hotel — ₱8,500/night', 'Jollibee Chickenjoy', 'Manila to Cebu from ₱1,499',
-  'Bacoor Townhouse — ₱2.85M', 'Tagaytay Barako Coffee', 'Toyota Vios 2019 — ₱620K', 'Sony XM5 — ₱15,999',
-  'Boracay Package — ₱7,999', 'Aling Nena Carinderia', 'ASUS VivoBook — ₱34,999', 'Sign Up Free — Join the Community',
+  'iPhone 16 Pro — ₱89,999', 'Manila Hotel — ₱8,500/night', 'Homemade Halo-Halo', 'Manila to Cebu from ₱1,499',
+  'Bacoor Townhouse — ₱2.85M', 'Tagaytay Barako Coffee', 'Toyota Vios 2019 — ₱620K', 'Sony WH-1000XM5 — ₱15,999',
+  'Boracay Package — ₱7,999', 'Aling Nena Carinderia', 'ASUS VivoBook — ₱34,999', 'Post Your Listing FREE Today',
+  'Cavite Condo — ₱18,000/mo', 'Samsung Galaxy S25 — ₱49,999', 'Palawan Tour Package — ₱9,999', 'Part-time Jobs Near You',
 ];
 
 export default function MovingWelcomeBanner() {
@@ -27,9 +30,9 @@ export default function MovingWelcomeBanner() {
   const msg = MESSAGES[idx];
 
   return (
-    <div className="w-full overflow-hidden" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)', borderBottom: '1px solid rgba(0,212,255,0.15)' }}>
+    <div className="w-full overflow-hidden" style={{ background: 'linear-gradient(180deg, #0040D0 0%, #0033CC 60%, #001a80 100%)', borderBottom: '1px solid rgba(0,212,255,0.2)' }}>
       {/* Main animated hero message */}
-      <div className="relative h-28 flex items-center justify-center overflow-hidden">
+      <div className="relative h-32 flex items-center justify-center overflow-hidden">
         {/* Animated background rings */}
         {[1, 2, 3].map(i => (
           <motion.div key={i}
@@ -63,18 +66,34 @@ export default function MovingWelcomeBanner() {
         </div>
       </div>
 
+      {/* Live stats strip */}
+      <div className="flex items-center justify-center gap-4 sm:gap-8 py-2 border-t border-white/8" style={{ background: 'rgba(0,0,0,0.15)' }}>
+        {[
+          { icon: Users, label: '10,000+ Members', color: '#00D4FF' },
+          { icon: ShoppingBag, label: '5,000+ Listings', color: '#FFD700' },
+          { icon: Star, label: '4.9 Avg Rating', color: '#10b981' },
+          { icon: TrendingUp, label: 'Free to List', color: '#f472b6' },
+        ].map(({ icon: Icon, label, color }, i) => (
+          <div key={i} className="flex items-center gap-1.5">
+            <Icon className="w-3 h-3 flex-shrink-0" style={{ color }} />
+            <span className="font-body text-[10px] font-semibold text-white/60 hidden sm:inline">{label}</span>
+            <span className="font-body text-[10px] font-semibold text-white/60 sm:hidden">{label.split(' ').slice(-1)[0]}</span>
+          </div>
+        ))}
+      </div>
+
       {/* Marquee ticker */}
       <div className="relative overflow-hidden border-t border-white/10 py-2" style={{ background: 'linear-gradient(90deg,#0033CC,#1a3de8,#0033CC)' }}>
         <motion.div
-          animate={{ x: [0, -2400] }}
-          transition={{ duration: 32, repeat: Infinity, ease: 'linear' }}
+          animate={{ x: [0, -3200] }}
+          transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
           className="flex gap-8 whitespace-nowrap"
           style={{ width: 'max-content' }}
         >
           {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
             <span key={i} className="font-body text-xs text-white/60 flex items-center gap-2">
+              <span className="text-[#00D4FF] select-none">›</span>
               {item}
-              <span className="text-[#00D4FF]/30 select-none">•</span>
             </span>
           ))}
         </motion.div>
