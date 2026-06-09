@@ -137,6 +137,17 @@ const SLIDESHOW_ANIMATIONS = [
   { value: 'bounce', label: 'Bounce', emoji: 'bounce', desc: 'Bouncy' },
 ];
 
+const DELIVERY_OPTIONS_BUYSELL = [
+  'LBC', 'J&T Express', 'Shopee Express', 'Lazada Express', 'Lalamove',
+  'GrabExpress', 'Angkas Padala', 'Flash Express', 'GoGo Xpress', 'DHL',
+  'Meetup at Location', 'Pickup at My Address', 'Cash on Delivery (COD)',
+];
+const DELIVERY_OPTIONS_FOOD = [
+  'Lalamove', 'GrabFood Delivery', 'Foodpanda Delivery',
+  'Angkas Padala', 'GrabExpress', 'Pickup at Store / Kitchen',
+  'Meetup / Agreed Location', 'Free Delivery (within area)', 'Cash on Delivery (COD)',
+];
+
 const FOOD_SPICE = ['Mild', 'Medium', 'Spicy', 'Extra Spicy', 'N/A'];
 const FOOD_BUSINESS_TYPES = ['Home Kitchen', 'Karinderia / Carinderia', 'Bakery / Pastry Shop', 'Fast Food Chain', 'Restaurant / Resto Bar', 'Food Stall / Kiosk', 'Catering Service', 'Corporation / Franchise', 'Cloud Kitchen / Online Only', 'Other'];
 const FOOD_TYPES = ['Lutong Bahay / Home-cooked', 'Baked Goods & Pastries', 'Karinderia Meals', 'Grilled / BBQ', 'Seafood', 'Noodles & Pasta', 'Rice Meals', 'Snacks & Merienda', 'Beverages & Drinks', 'Desserts & Sweets', 'Vegan / Healthy Food', 'International Cuisine', 'Street Food', 'Sari-sari / Grocery Items', 'Other'];
@@ -168,6 +179,7 @@ const EMPTY_FORM = {
   custom_service_name: '',
   food_serving: '', food_dietary: '', food_spice_level: 'N/A', food_allergens: '',
   food_business_type: '', food_type: '',
+  delivery_options: [], meetup_details: '',
   job_employment_type: 'Full-time', job_experience: 'Entry Level', job_salary_min: '', job_salary_max: '', job_benefits: '',
   service_duration: '', service_availability: '', service_rate_type: 'Per Hour',
   service_area_type: 'City / Municipality', service_experience: '', service_team_size: '',
@@ -292,7 +304,8 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean).join(',') : '',
       specs: [form.custom_product_name, form.custom_service_name].filter(Boolean).join(' | ') || undefined,
       slideshow_animation: form.slideshow_animation || 'fade',
-      ...(form.type === 'food' ? { food_serving: form.food_serving, food_dietary: form.food_dietary, food_spice_level: form.food_spice_level, food_allergens: form.food_allergens, food_business_type: form.food_business_type, food_type: form.food_type } : {}),
+      ...(form.type === 'food' ? { food_serving: form.food_serving, food_dietary: form.food_dietary, food_spice_level: form.food_spice_level, food_allergens: form.food_allergens, food_business_type: form.food_business_type, food_type: form.food_type, delivery_options: form.delivery_options, meetup_details: form.meetup_details } : {}),
+      ...(form.main_category === 'buysell' ? { delivery_options: form.delivery_options, meetup_details: form.meetup_details } : {}),
       ...(form.type === 'jobs' ? { job_employment_type: form.job_employment_type, job_experience: form.job_experience, job_salary_min: Number(form.job_salary_min) || 0, job_salary_max: Number(form.job_salary_max) || 0, job_benefits: form.job_benefits } : {}),
       ...(form.type === 'services' ? {
         service_duration: form.service_duration,
@@ -892,6 +905,45 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       <select value={form.condition} onChange={e => set('condition', e.target.value)} className={inputCls}>
                         {CONDITIONS.map(c => <option key={c} value={c} className="bg-[#0D1F3C]">{c}</option>)}
                       </select>
+                    </div>
+                  )}
+
+                  {/* DELIVERY OPTIONS — buysell & food */}
+                  {(form.main_category === 'buysell' || form.type === 'food') && (
+                    <div className="rounded-xl p-3 space-y-3" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.25)' }}>
+                      <p className="font-body text-[10px] font-bold text-purple-400 uppercase tracking-wider">
+                        🚚 Delivery / Pickup Options
+                      </p>
+                      <p className="font-body text-[10px] text-white/35">Select all that apply — shown to buyers on your listing.</p>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {(form.type === 'food' ? DELIVERY_OPTIONS_FOOD : DELIVERY_OPTIONS_BUYSELL).map(opt => {
+                          const active = (form.delivery_options || []).includes(opt);
+                          return (
+                            <button key={opt} type="button"
+                              onClick={() => {
+                                const curr = form.delivery_options || [];
+                                set('delivery_options', active ? curr.filter(d => d !== opt) : [...curr, opt]);
+                              }}
+                              className="flex items-center gap-2 px-2.5 py-2 rounded-xl border font-body text-[11px] text-left transition-all"
+                              style={{
+                                borderColor: active ? '#8b5cf6' : 'rgba(255,255,255,0.1)',
+                                background: active ? 'rgba(139,92,246,0.18)' : 'rgba(255,255,255,0.03)',
+                                color: active ? '#c084fc' : 'rgba(255,255,255,0.45)',
+                              }}>
+                              <div className="w-3 h-3 rounded-full flex-shrink-0"
+                                style={{ background: active ? '#8b5cf6' : 'rgba(255,255,255,0.15)' }} />
+                              {opt}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {(form.delivery_options || []).some(d => d.toLowerCase().includes('meetup') || d.toLowerCase().includes('pickup')) && (
+                        <div>
+                          <label className={labelCls}>Meetup / Pickup Location Details</label>
+                          <input value={form.meetup_details} onChange={e => set('meetup_details', e.target.value)}
+                            placeholder="e.g. SM Bacoor, near 7-Eleven Molino, etc." className={inputCls} />
+                        </div>
+                      )}
                     </div>
                   )}
 

@@ -426,6 +426,17 @@
       "type": "string",
       "description": "What type of food is being sold"
     },
+    "delivery_options": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Available delivery/pickup options: LBC, Lalamove, J&T, GrabExpress, Shopee Express, Flash Express, Meetup, Pickup at Location, etc."
+    },
+    "meetup_details": {
+      "type": "string",
+      "description": "Meetup or pickup location details"
+    },
     "job_employment_type": {
       "type": "string",
       "enum": [

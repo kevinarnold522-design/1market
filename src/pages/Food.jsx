@@ -108,6 +108,30 @@ const categoryTypes = [
   { key: 'catering', label: 'Catering', icon: '🍽️' },
 ];
 
+function DeliveryBadges({ options = [] }) {
+  if (!options || options.length === 0) return null;
+  const getIcon = (opt) => {
+    if (opt.includes('GrabFood') || opt.includes('Grab')) return '🟢';
+    if (opt.includes('Lalamove')) return '⚡';
+    if (opt.includes('Foodpanda') || opt.includes('panda')) return '🐼';
+    if (opt.includes('Pickup') || opt.includes('Store')) return '📍';
+    if (opt.includes('Free')) return '🎁';
+    if (opt.includes('COD')) return '💵';
+    if (opt.includes('Meetup')) return '🤝';
+    return '🚚';
+  };
+  return (
+    <div className="flex flex-wrap gap-1 mt-1.5">
+      {options.slice(0, 3).map((opt, i) => (
+        <span key={i} className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full font-body text-[9px] font-semibold bg-orange-50 text-orange-700 border border-orange-100">
+          {getIcon(opt)} {opt.length > 15 ? opt.slice(0, 14) + '…' : opt}
+        </span>
+      ))}
+      {options.length > 3 && <span className="px-1.5 py-0.5 rounded-full font-body text-[9px] text-[#0A192F]/40 bg-[#F8FAFC] border border-[#0A192F]/5">+{options.length - 3} more</span>}
+    </div>
+  );
+}
+
 function BusinessCard({ biz, onRate, onInfo }) {
   const locationColor = biz.location === 'Manila' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700';
   const imgSrc = biz.image_url || biz.image;
@@ -148,12 +172,13 @@ function BusinessCard({ biz, onRate, onInfo }) {
         <p className="font-body text-xs text-[#0A192F]/40 mb-3 flex items-center gap-1">
           <Clock className="w-3 h-3" /> {biz.hours}
         </p>
-        <div className="flex flex-wrap gap-1 mb-3">
+        <div className="flex flex-wrap gap-1 mb-2">
           {menuItems.slice(0, 3).map((item, i) => (
             <span key={i} className="px-2 py-0.5 bg-[#F8FAFC] text-[#0A192F]/60 text-[10px] rounded-full border border-[#0A192F]/5">{item}</span>
           ))}
           {menuItems.length > 3 && <span className="px-2 py-0.5 bg-[#F8FAFC] text-[#0A192F]/40 text-[10px] rounded-full border border-[#0A192F]/5">+{menuItems.length - 3} more</span>}
         </div>
+        <DeliveryBadges options={biz.delivery_options} />
         <div className="mb-3">
           <MultiPlatformRating bizName={biz.name} baseRating={biz.rating || 4.2} compact />
         </div>
@@ -397,26 +422,36 @@ export default function Food() {
         {/* Grid */}
         {filtered.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {filtered.map((biz) => {
+            {filtered.map((biz, idx) => {
               const isDbRecord = dbBusinesses.some(db => db.id === biz.id);
-              const card = <BusinessCard key={biz.id} biz={biz} onRate={setRatingBiz} onInfo={setInfoBiz}/>;
+              const card = (
+                <motion.div key={biz.id} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: idx * 0.05, ease: [0.22, 1, 0.36, 1] }}>
+                  <BusinessCard biz={biz} onRate={setRatingBiz} onInfo={setInfoBiz}/>
+                </motion.div>
+              );
 
               // Admin mode: wrap DB records with inline edit overlay
               if (isAdminUser && adminMode && isDbRecord) {
                 return (
-                  <AdminEditOverlay key={biz.id} entity="Business" record={biz} fields={BUSINESS_ADMIN_FIELDS}
-                    onSaved={(updated) => setDbBusinesses(prev => prev.map(b => b.id === updated.id ? updated : b))}
-                    onDeleted={(id) => setDbBusinesses(prev => prev.filter(b => b.id !== id))}>
-                    {card}
-                  </AdminEditOverlay>
+                  <motion.div key={biz.id} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: idx * 0.05, ease: [0.22, 1, 0.36, 1] }}>
+                    <AdminEditOverlay entity="Business" record={biz} fields={BUSINESS_ADMIN_FIELDS}
+                      onSaved={(updated) => setDbBusinesses(prev => prev.map(b => b.id === updated.id ? updated : b))}
+                      onDeleted={(id) => setDbBusinesses(prev => prev.filter(b => b.id !== id))}>
+                      <BusinessCard biz={biz} onRate={setRatingBiz} onInfo={setInfoBiz}/>
+                    </AdminEditOverlay>
+                  </motion.div>
                 );
               }
 
               // Admin mode + static record: show "Add to DB & Edit" overlay
               if (isAdminUser && adminMode && !isDbRecord) {
                 return (
-                  <div key={biz.id} className="relative group">
-                    {card}
+                  <motion.div key={biz.id} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: idx * 0.05, ease: [0.22, 1, 0.36, 1] }}
+                    className="relative group">
+                    <BusinessCard biz={biz} onRate={setRatingBiz} onInfo={setInfoBiz}/>
                     <button
                       onClick={async () => {
                         const { id: _id, ...rest } = biz;
@@ -428,7 +463,7 @@ export default function Food() {
                     >
                       <Pencil className="w-3.5 h-3.5 text-white"/>
                     </button>
-                  </div>
+                  </motion.div>
                 );
               }
 

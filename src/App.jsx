@@ -10,7 +10,7 @@ import AppLayout from './components/AppLayout';
 import Home from './pages/Home';
 import Travel from './pages/Travel';
 import Food from './pages/Food';
-import BuySell from './pages/BuySell';
+import BuySell from './pages/BuySell.jsx';
 import Admin from './pages/Admin';
 import SellerDashboard from './pages/SellerDashboard';
 import ForRent from './pages/ForRent';
