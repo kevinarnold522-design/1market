@@ -14,11 +14,25 @@
     "bio": {
       "type": "string"
     },
+    "channel_name": {
+      "type": "string",
+      "description": "Public display name shown on seller/business profile instead of real name"
+    },
     "profile_picture": {
       "type": "string"
     },
     "cover_photo": {
       "type": "string"
+    },
+    "show_phone_public": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, phone is visible on public profile"
+    },
+    "show_email_public": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, email is visible on public profile"
     },
     "social_facebook": {
       "type": "string"
@@ -32,6 +46,12 @@
     "social_tiktok": {
       "type": "string"
     },
+    "social_viber": {
+      "type": "string"
+    },
+    "social_telegram": {
+      "type": "string"
+    },
     "user_type": {
       "type": "string",
       "enum": [
@@ -40,7 +60,7 @@
         "business"
       ],
       "default": "customer",
-      "description": "The user's marketplace type. customer=browse only, seller=can list, business=listed under business name"
+      "description": "customer=browse only, seller=can list, business=listed under business name"
     },
     "account_type": {
       "type": "string",
@@ -98,25 +118,21 @@
       "description": "Business name shown publicly instead of personal name"
     },
     "business_type": {
-      "type": "string",
-      "description": "Type of business e.g. food, retail, services"
+      "type": "string"
     },
     "business_categories": {
       "type": "array",
       "items": {
         "type": "string"
-      },
-      "description": "Business product/service categories"
+      }
     },
     "business_pending": {
       "type": "boolean",
-      "default": false,
-      "description": "True while business account is awaiting admin approval"
+      "default": false
     },
     "seller_pending": {
       "type": "boolean",
-      "default": false,
-      "description": "True while seller account is awaiting admin approval"
+      "default": false
     }
   }
 }

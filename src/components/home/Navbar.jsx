@@ -174,7 +174,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      <nav className={`fixed top-12 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#001a80]/90 backdrop-blur-xl shadow-lg shadow-[#0033CC]/20' : 'bg-transparent'}`}>
+      <nav className={`fixed top-10 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#001a80]/90 backdrop-blur-xl shadow-lg shadow-[#0033CC]/20' : 'bg-transparent'}`}>
         {/* Category Bar — LEFT aligned */}
         <div className="hidden md:block border-b border-white/8 bg-[#000d40]/80 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">

@@ -321,10 +321,13 @@ export default function UserProfile() {
   const [toast, setToast] = useState('');
   // Profile extras
   const [bio, setBio] = useState('');
+  const [channelName, setChannelName] = useState('');
   const [socialFb, setSocialFb] = useState('');
   const [socialIg, setSocialIg] = useState('');
   const [socialYt, setSocialYt] = useState('');
   const [socialTt, setSocialTt] = useState('');
+  const [showPhonePublic, setShowPhonePublic] = useState(false);
+  const [showEmailPublic, setShowEmailPublic] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
   const [uploadingPfp, setUploadingPfp] = useState(false);
 
@@ -353,10 +356,13 @@ export default function UserProfile() {
         setSellerBio(me.seller_bio || '');
         setSellerPageEnabled(me.seller_page_enabled || false);
         setBio(me.bio || '');
+        setChannelName(me.channel_name || '');
         setSocialFb(me.social_facebook || '');
         setSocialIg(me.social_instagram || '');
         setSocialYt(me.social_youtube || '');
         setSocialTt(me.social_tiktok || '');
+        setShowPhonePublic(me.show_phone_public || false);
+        setShowEmailPublic(me.show_email_public || false);
         await refresh(me);
       } catch (e) {}
       setLoading(false);
@@ -420,7 +426,16 @@ export default function UserProfile() {
 
   const saveProfileInfo = async () => {
     setSaving(true);
-    await base44.auth.updateMe({ bio, social_facebook: socialFb, social_instagram: socialIg, social_youtube: socialYt, social_tiktok: socialTt });
+    await base44.auth.updateMe({
+      bio,
+      channel_name: channelName,
+      social_facebook: socialFb,
+      social_instagram: socialIg,
+      social_youtube: socialYt,
+      social_tiktok: socialTt,
+      show_phone_public: showPhonePublic,
+      show_email_public: showEmailPublic,
+    });
     await reloadUser();
     setSaving(false);
     showSaved('Profile saved!');
@@ -698,13 +713,50 @@ export default function UserProfile() {
               <div className="space-y-3">
                 {/* Bio & Socials */}
                 <div className="rounded-2xl p-4 space-y-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                  <h2 className="font-heading font-bold text-white text-sm">Bio & Socials</h2>
+                  <h2 className="font-heading font-bold text-white text-sm">Public Profile</h2>
+
+                  {/* Channel Name */}
+                  <div>
+                    <label className="font-body text-[10px] text-white/40 uppercase tracking-wider mb-1 block">Channel / Display Name</label>
+                    <input value={channelName} onChange={e => setChannelName(e.target.value)}
+                      placeholder="e.g. Kevin's Tech Store, Lutong Bahay ni Ate..."
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 font-body text-xs text-white placeholder-white/20 focus:outline-none focus:border-[#00D4FF]" />
+                    <p className="font-body text-[9px] text-white/25 mt-1">This is what visitors see on your public profile instead of your real name.</p>
+                  </div>
+
                   <div>
                     <label className="font-body text-[10px] text-white/40 uppercase tracking-wider mb-1 block">Bio</label>
                     <textarea value={bio} onChange={e => setBio(e.target.value)} rows={3}
                       placeholder="Tell people about yourself..."
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 font-body text-xs text-white placeholder-white/20 focus:outline-none focus:border-[#00D4FF] resize-none" />
                   </div>
+
+                  {/* Privacy Toggles */}
+                  <div className="rounded-xl p-3 space-y-2" style={{ background: 'rgba(0,212,255,0.04)', border: '1px solid rgba(0,212,255,0.12)' }}>
+                    <p className="font-body text-[10px] font-bold text-[#00D4FF] uppercase tracking-wider">Privacy Settings</p>
+                    <p className="font-body text-[9px] text-white/35">By default, your email and phone are hidden from public visitors. Enable below to show them on your profile.</p>
+                    <div className="flex items-center justify-between py-2">
+                      <div>
+                        <p className="font-body text-xs text-white font-semibold">Show Phone Number Publicly</p>
+                        <p className="font-body text-[9px] text-white/35">Visitors can see and call your phone number</p>
+                      </div>
+                      <button onClick={() => setShowPhonePublic(v => !v)}
+                        className={`w-9 h-5 rounded-full relative transition-colors flex-shrink-0 ${showPhonePublic ? 'bg-[#2563EB]' : 'bg-white/15'}`}>
+                        <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${showPhonePublic ? 'translate-x-4' : 'translate-x-0.5'}`}/>
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-between py-2 border-t border-white/6">
+                      <div>
+                        <p className="font-body text-xs text-white font-semibold">Show Email Address Publicly</p>
+                        <p className="font-body text-[9px] text-white/35">Visitors can see your email on your profile</p>
+                      </div>
+                      <button onClick={() => setShowEmailPublic(v => !v)}
+                        className={`w-9 h-5 rounded-full relative transition-colors flex-shrink-0 ${showEmailPublic ? 'bg-[#2563EB]' : 'bg-white/15'}`}>
+                        <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${showEmailPublic ? 'translate-x-4' : 'translate-x-0.5'}`}/>
+                      </button>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {[
                       { label: 'Facebook URL', val: socialFb, setter: setSocialFb, icon: '📘' },
