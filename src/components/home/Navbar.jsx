@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { redirectToLogin } from '@/lib/loginRedirect';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Building2, Users, Bell } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Building2, Users, Bell, Facebook, Instagram, Youtube } from 'lucide-react';
 import NotificationsBell from '../NotificationsBell';
 import PostListingMenu from '../PostListingMenu';
 import RewardDashboard from '../RewardDashboard';
@@ -128,23 +128,50 @@ export default function Navbar() {
   return (
     <>
       {/* Top Banner */}
-      <div className="fixed top-0 left-0 right-0 z-50 text-white py-3 px-4"
+      <div className="fixed top-0 left-0 right-0 z-50 text-white py-2 px-4"
         style={{ background: 'linear-gradient(90deg,#0033CC,#1a3de8,#0033CC)', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
-        {isAuthenticated && user ? (
-          <div className="flex items-center justify-center gap-3 flex-wrap">
-            <span className="font-body text-xs sm:text-sm font-semibold">
-              Welcome back, <strong>{user.full_name?.split(' ')[0] || 'Member'}</strong>!
-            </span>
-            <span className="px-3 py-1 bg-white/15 rounded-full text-xs font-bold border border-white/20">{adminLabel}</span>
-            {(isAdmin || isVerified) && <MetaVerifiedBadge size="sm" label={isAdmin ? 'CEO & Founder' : 'Verified Partner'} />}
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+          {/* Left: welcome or tagline */}
+          <div className="flex-1 min-w-0">
+            {isAuthenticated && user ? (
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-body text-xs font-semibold truncate">
+                  Welcome, <strong>{user.full_name?.split(' ')[0] || 'Member'}</strong>!
+                </span>
+                <span className="px-2 py-0.5 bg-white/15 rounded-full text-[10px] font-bold border border-white/20 hidden sm:inline">{adminLabel}</span>
+                {(isAdmin || isVerified) && <MetaVerifiedBadge size="sm" label={isAdmin ? 'CEO' : 'Verified'} />}
+              </div>
+            ) : (
+              <span className="font-body text-xs font-semibold text-white/90 hidden sm:block">
+                Join <strong>1MarketPH</strong> — Buy, Sell &amp; Connect!
+              </span>
+            )}
           </div>
-        ) : (
-          <div className="flex items-center justify-center">
-            <span className="font-body text-xs sm:text-sm font-semibold text-white/90 text-center">
-              Join <strong>1Market Philippines</strong> — Buy, Sell &amp; Connect with thousands of Filipinos!
-            </span>
+          {/* Right: 1MarketPH Social Links */}
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <span className="font-body text-[9px] text-white/40 hidden md:block mr-1">Follow us:</span>
+            <a href="https://www.facebook.com/share/18Neew76Yo/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-blue-300 hover:text-blue-200 transition-colors"
+              style={{ background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.2)' }}>
+              <Facebook className="w-3 h-3" /><span className="hidden sm:inline">FB</span>
+            </a>
+            <a href="https://instagram.com/1marketph" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-pink-300 hover:text-pink-200 transition-colors"
+              style={{ background: 'rgba(236,72,153,0.15)', border: '1px solid rgba(236,72,153,0.2)' }}>
+              <Instagram className="w-3 h-3" /><span className="hidden sm:inline">IG</span>
+            </a>
+            <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-white/60 hover:text-white/90 transition-colors"
+              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
+              <span className="hidden sm:inline">TikTok</span><span className="sm:hidden">TT</span>
+            </a>
+            <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-lg font-body text-[10px] font-bold text-red-300 hover:text-red-200 transition-colors"
+              style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.2)' }}>
+              <Youtube className="w-3 h-3" /><span className="hidden sm:inline">YT</span>
+            </a>
           </div>
-        )}
+        </div>
       </div>
 
       <nav className={`fixed top-12 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#001a80]/90 backdrop-blur-xl shadow-lg shadow-[#0033CC]/20' : 'bg-transparent'}`}>

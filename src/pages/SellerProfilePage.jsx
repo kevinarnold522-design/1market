@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin, MessageSquare, Send, X, UserCheck, UserPlus,
-  Facebook, Instagram, Youtube, Globe, Phone, Mail,
-  Grid, FileText, Star, Package, ArrowLeft
+  Facebook, Instagram, Youtube, Globe, Phone,
+  Grid, FileText, Heart, Share2, Flag, RotateCcw,
+  MessageCircle, ArrowLeft, Package, Camera, Image
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
@@ -21,7 +22,6 @@ function UserTypeBadge({ seller }) {
   const isAdmin = seller?.role === 'admin';
   const isBusiness = seller?.account_type === 'business_owner' || seller?.user_type === 'business';
   const isSeller = seller?.user_type === 'seller' || seller?.is_seller;
-
   if (isAdmin) return (
     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-body font-bold text-[10px] border"
       style={{ background: 'rgba(245,158,11,0.15)', borderColor: 'rgba(245,158,11,0.35)', color: '#fbbf24' }}>
@@ -40,12 +40,7 @@ function UserTypeBadge({ seller }) {
       Seller
     </span>
   );
-  return (
-    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-body font-bold text-[10px] border"
-      style={{ background: 'rgba(37,99,235,0.12)', borderColor: 'rgba(37,99,235,0.3)', color: '#60a5fa' }}>
-      Member
-    </span>
-  );
+  return null;
 }
 
 function MessageModal({ seller, user, onClose }) {
@@ -59,7 +54,7 @@ function MessageModal({ seller, user, onClose }) {
     setSending(true);
     await base44.entities.ChatMessage.create({
       listing_id: 'profile_' + seller.id,
-      listing_title: 'Chat with ' + (seller.full_name || 'Seller'),
+      listing_title: 'Chat with ' + (seller.channel_name || seller.full_name || 'Seller'),
       seller_email: seller.email,
       buyer_email: user.email,
       sender_email: user.email,
@@ -86,15 +81,12 @@ function MessageModal({ seller, user, onClose }) {
             {seller.profile_picture
               ? <img src={seller.profile_picture} alt="" className="w-full h-full object-cover" />
               : <div className="w-full h-full bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-bold text-sm">
-                  {(seller.full_name || 'S')[0]}
+                  {(seller.channel_name || seller.full_name || 'S')[0]}
                 </div>}
           </div>
           <div className="flex-1">
-            <p className="font-heading font-bold text-sm text-white">{seller.full_name || 'Seller'}</p>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <UserTypeBadge seller={seller} />
-              {seller.is_verified_seller && <MetaVerifiedBadge size="xs" label="" />}
-            </div>
+            <p className="font-heading font-bold text-sm text-white">{seller.channel_name || seller.full_name || 'Seller'}</p>
+            <UserTypeBadge seller={seller} />
           </div>
           <button onClick={onClose} className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
             <X className="w-3.5 h-3.5 text-white" />
@@ -110,7 +102,7 @@ function MessageModal({ seller, user, onClose }) {
           ) : (
             <>
               <textarea value={message} onChange={e => setMessage(e.target.value)} rows={4}
-                placeholder="Write your message to the seller..."
+                placeholder="Write your message..."
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 font-body text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50 resize-none" />
               <button onClick={handleSend} disabled={!message.trim() || sending}
                 className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-[1.02] disabled:opacity-40"
@@ -127,6 +119,116 @@ function MessageModal({ seller, user, onClose }) {
   );
 }
 
+// Gallery image lightbox
+function Lightbox({ images, startIdx, onClose }) {
+  const [idx, setIdx] = useState(startIdx);
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/95"
+      onClick={onClose}>
+      <button className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/30 transition-colors z-10">
+        <X className="w-5 h-5 text-white" />
+      </button>
+      {idx > 0 && (
+        <button onClick={e => { e.stopPropagation(); setIdx(i => i - 1); }}
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/30 transition-colors z-10 text-white font-bold text-xl">‹</button>
+      )}
+      {idx < images.length - 1 && (
+        <button onClick={e => { e.stopPropagation(); setIdx(i => i + 1); }}
+          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/30 transition-colors z-10 text-white font-bold text-xl">›</button>
+      )}
+      <img src={images[idx]} alt="" className="max-w-[92vw] max-h-[85vh] object-contain rounded-2xl shadow-2xl" onClick={e => e.stopPropagation()} />
+      <p className="absolute bottom-6 left-1/2 -translate-x-1/2 font-body text-xs text-white/40">{idx + 1} / {images.length}</p>
+    </motion.div>
+  );
+}
+
+// Listing card with engagement buttons
+function ListingCard({ item, user }) {
+  const [hearted, setHearted] = useState(false);
+  const [heartCount, setHeartCount] = useState(0);
+
+  const handleHeart = async (e) => {
+    e.preventDefault();
+    if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
+    if (hearted) return;
+    setHearted(true);
+    setHeartCount(c => c + 1);
+    await base44.entities.ListingHeart.create({ listing_id: item.id, user_email: user.email });
+  };
+
+  const handleShare = (e) => {
+    e.preventDefault();
+    const url = `${window.location.origin}/listing/${item.id}`;
+    if (navigator.share) {
+      navigator.share({ title: item.title, url });
+    } else {
+      navigator.clipboard.writeText(url);
+    }
+  };
+
+  return (
+    <div className="rounded-2xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-xl"
+      style={{ background: 'rgba(13,31,60,0.9)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 20px rgba(0,0,0,0.35)' }}>
+      <Link to={`/listing/${item.id}`} className="block">
+        <div className="relative aspect-[4/3] overflow-hidden">
+          {item.image_url
+            ? <img src={item.image_url} alt={item.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+            : <div className="w-full h-full flex items-center justify-center" style={{ background: 'rgba(0,212,255,0.06)' }}>
+                <Package className="w-10 h-10 text-white/15" />
+              </div>}
+          {item.condition && item.condition !== 'N/A' && (
+            <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full font-body text-[9px] font-bold"
+              style={{ background: 'rgba(0,0,0,0.7)', color: '#00D4FF', backdropFilter: 'blur(4px)' }}>
+              {item.condition}
+            </span>
+          )}
+        </div>
+        <div className="p-3 pb-2">
+          <h3 className="font-heading font-semibold text-sm text-white mb-1 line-clamp-2 leading-snug">{item.title}</h3>
+          <p className="font-body text-sm font-bold text-[#00D4FF] mb-1">
+            {item.price_label || (item.price ? `₱${Number(item.price).toLocaleString()}` : 'Contact for price')}
+          </p>
+          {item.location && (
+            <p className="font-body text-[10px] text-white/35 flex items-center gap-1">
+              <MapPin className="w-2.5 h-2.5" /> {item.location}
+            </p>
+          )}
+        </div>
+      </Link>
+      {/* Engagement bar */}
+      <div className="flex items-center gap-1 px-3 pb-3 pt-1 border-t border-white/6">
+        <button onClick={handleHeart}
+          className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl font-body text-[11px] font-semibold transition-all ${hearted ? 'text-red-400' : 'text-white/40 hover:text-red-400'}`}
+          style={{ background: hearted ? 'rgba(239,68,68,0.12)' : 'rgba(255,255,255,0.04)' }}>
+          <Heart className={`w-3.5 h-3.5 ${hearted ? 'fill-red-400' : ''}`} />
+          {heartCount > 0 && <span>{heartCount}</span>}
+        </button>
+        <Link to={`/listing/${item.id}#comments`}
+          className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl font-body text-[11px] font-semibold text-white/40 hover:text-[#00D4FF] transition-all"
+          style={{ background: 'rgba(255,255,255,0.04)' }}>
+          <MessageCircle className="w-3.5 h-3.5" />
+        </Link>
+        <button onClick={handleShare}
+          className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl font-body text-[11px] font-semibold text-white/40 hover:text-green-400 transition-all"
+          style={{ background: 'rgba(255,255,255,0.04)' }}>
+          <Share2 className="w-3.5 h-3.5" />
+        </button>
+        <button onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/listing/${item.id}`); }}
+          className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl font-body text-[11px] font-semibold text-white/40 hover:text-purple-400 transition-all"
+          style={{ background: 'rgba(255,255,255,0.04)' }}>
+          <RotateCcw className="w-3.5 h-3.5" />
+        </button>
+        <div className="flex-1" />
+        <Link to={`/listing/${item.id}`}
+          className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl font-body text-[11px] font-semibold text-white/30 hover:text-red-400 transition-all">
+          <Flag className="w-3 h-3" />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 export default function SellerProfilePage() {
   const { sellerId } = useParams();
   const navigate = useNavigate();
@@ -138,8 +240,10 @@ export default function SellerProfilePage() {
   const [following, setFollowing] = useState(false);
   const [followerCount, setFollowerCount] = useState(0);
   const [followLoading, setFollowLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('listings');
+  const [activeTab, setActiveTab] = useState('gallery');
   const [showMessage, setShowMessage] = useState(false);
+  const [lightboxImages, setLightboxImages] = useState(null);
+  const [lightboxIdx, setLightboxIdx] = useState(0);
 
   useEffect(() => {
     if (!sellerId) return;
@@ -163,7 +267,7 @@ export default function SellerProfilePage() {
           const s = users[0];
           setSeller(s);
           const [items, communityPosts] = await Promise.all([
-            base44.entities.Listing.filter({ email_contact: s.email, is_active: true }),
+            base44.entities.Listing.filter({ email_contact: s.email, approval_status: 'approved' }),
             base44.entities.CommunityPost.filter({ author_email: s.email }),
           ]);
           setListings(items);
@@ -208,12 +312,13 @@ export default function SellerProfilePage() {
     </div>
   );
 
-  const initials = (seller.full_name || seller.email || 'S').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
   const isVerified = seller.is_verified_seller;
-  const memberSince = seller.created_date
-    ? new Date(seller.created_date).toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' })
-    : '';
   const isOwnProfile = user?.email === seller.email;
+  // Display name: prefer channel_name, then full_name, then username
+  const displayName = seller.channel_name || seller.full_name || seller.username || 'Seller';
+  // Show contact info only if seller has set it public
+  const showPhone = seller.show_phone_public && seller.phone;
+  const showEmail = seller.show_email_public && seller.email;
 
   const socials = [
     seller.social_facebook && { key: 'facebook', url: seller.social_facebook },
@@ -223,14 +328,32 @@ export default function SellerProfilePage() {
     seller.social_viber && { key: 'viber', url: seller.social_viber },
   ].filter(Boolean);
 
+  // Collect all gallery images from listings
+  const galleryImages = listings.flatMap(item => [
+    item.image_url,
+    ...(item.extra_images || []),
+  ]).filter(Boolean);
+
+  const openLightbox = (images, idx) => { setLightboxImages(images); setLightboxIdx(idx); };
+
+  const memberSince = seller.created_date
+    ? new Date(seller.created_date).toLocaleDateString('en-PH', { year: 'numeric', month: 'long' })
+    : '';
+
+  const TABS = [
+    { key: 'gallery', label: 'Gallery', icon: Camera, count: galleryImages.length },
+    { key: 'listings', label: 'Listings', icon: Grid, count: listings.length },
+    { key: 'posts', label: 'Posts', icon: FileText, count: posts.length },
+    { key: 'about', label: 'About', icon: Globe, count: null },
+  ];
+
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#070F1A 0%,#0A192F 100%)' }}>
       {/* Cover Photo */}
-      <div className="relative h-52 md:h-60 overflow-hidden">
+      <div className="relative h-52 md:h-64 overflow-hidden">
         {seller.cover_photo
           ? <img src={seller.cover_photo} alt="cover" className="w-full h-full object-cover" />
-          : <div className="w-full h-full" style={{ background: 'linear-gradient(135deg,#0033CC 0%,#001a80 50%,#0D1F3C 100%)' }} />
-        }
+          : <div className="w-full h-full" style={{ background: 'linear-gradient(135deg,#0033CC 0%,#001a80 50%,#0D1F3C 100%)' }} />}
         <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(7,15,26,0.97) 100%)' }} />
         <button onClick={() => navigate(-1)}
           className="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body text-xs font-semibold text-white/80 hover:text-white transition-colors"
@@ -241,7 +364,9 @@ export default function SellerProfilePage() {
 
       <div className="max-w-4xl mx-auto px-4 -mt-20 relative z-10 pb-16">
         {/* Profile Card */}
-        <div className="rounded-2xl p-5 mb-5" style={{ background: 'rgba(13,31,60,0.97)', border: '1px solid rgba(0,212,255,0.15)', backdropFilter: 'blur(12px)' }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+          className="rounded-2xl p-5 mb-5"
+          style={{ background: 'rgba(13,31,60,0.97)', border: '1px solid rgba(0,212,255,0.15)', backdropFilter: 'blur(12px)' }}>
           <div className="flex flex-col sm:flex-row items-start gap-5">
             {/* Avatar */}
             <div className="relative flex-shrink-0">
@@ -250,9 +375,10 @@ export default function SellerProfilePage() {
                   ? { boxShadow: '0 0 0 2px #a855f7, 0 0 0 4px #38bdf8, 0 0 20px rgba(168,85,247,0.4)' }
                   : { boxShadow: '0 0 0 2px rgba(37,99,235,0.5)' }}>
                 {seller.profile_picture
-                  ? <img src={seller.profile_picture} alt={seller.full_name} className="w-full h-full object-cover" />
-                  : <div className="w-full h-full bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center font-heading font-bold text-3xl text-white">{initials}</div>
-                }
+                  ? <img src={seller.profile_picture} alt={displayName} className="w-full h-full object-cover" />
+                  : <div className="w-full h-full bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center font-heading font-bold text-3xl text-white">
+                      {displayName[0].toUpperCase()}
+                    </div>}
               </div>
               {isVerified && (
                 <div className="absolute -bottom-2 -right-2">
@@ -266,11 +392,8 @@ export default function SellerProfilePage() {
               <div className="flex items-start justify-between gap-2 flex-wrap mb-2">
                 <div>
                   <div className="flex items-center gap-2 flex-wrap mb-1.5">
-                    <h1 className="font-heading font-bold text-2xl text-white leading-tight">
-                      {seller.full_name || seller.username || 'Seller'}
-                    </h1>
-                    {/* ONLY animated MetaVerifiedBadge for verified users — no plain checkmarks */}
-                    {isVerified && <MetaVerifiedBadge size="md" label="Fully Verified" />}
+                    <h1 className="font-heading font-bold text-2xl text-white leading-tight">{displayName}</h1>
+                    {isVerified && <MetaVerifiedBadge size="md" label="Verified" />}
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <UserTypeBadge seller={seller} />
@@ -291,8 +414,7 @@ export default function SellerProfilePage() {
                         className={`flex items-center gap-1.5 px-3 py-2 rounded-xl font-body font-bold text-xs transition-all ${
                           following
                             ? 'bg-white/10 border border-white/20 text-white/60 hover:bg-red-500/15 hover:text-red-400 hover:border-red-400/30'
-                            : 'text-[#0A192F]'
-                        }`}
+                            : 'text-[#0A192F]'}`}
                         style={!following ? { background: 'linear-gradient(135deg,#00D4FF,#2563EB)' } : {}}>
                         {following ? <><UserCheck className="w-3.5 h-3.5" /> Following</> : <><UserPlus className="w-3.5 h-3.5" /> Follow</>}
                       </button>
@@ -322,8 +444,8 @@ export default function SellerProfilePage() {
                 <p className="font-body text-sm text-white/60 mb-3 leading-relaxed">{seller.bio}</p>
               )}
 
-              {/* Social Links */}
-              {(socials.length > 0 || seller.phone) && (
+              {/* Social Links — always show */}
+              {socials.length > 0 && (
                 <div className="flex items-center gap-2 flex-wrap">
                   {socials.map(s => {
                     const cfg = SOCIAL_CONFIGS[s.key];
@@ -336,7 +458,8 @@ export default function SellerProfilePage() {
                       </a>
                     );
                   })}
-                  {seller.phone && (
+                  {/* Only show phone/email if seller made it public */}
+                  {showPhone && (
                     <a href={`tel:${seller.phone}`}
                       className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-[11px] font-semibold transition-all hover:scale-105"
                       style={{ background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.25)', color: '#34d399' }}>
@@ -348,8 +471,8 @@ export default function SellerProfilePage() {
             </div>
           </div>
 
-          {/* Stats Row */}
-          <div className="grid grid-cols-4 gap-2 mt-5 pt-4 border-t border-white/8">
+          {/* Stats Row — only public/safe stats */}
+          <div className="grid grid-cols-3 gap-2 mt-5 pt-4 border-t border-white/8">
             <div className="text-center py-2">
               <p className="font-heading font-bold text-xl text-white">{listings.length}</p>
               <p className="font-body text-[10px] text-white/35 uppercase tracking-wider">Listings</p>
@@ -362,49 +485,94 @@ export default function SellerProfilePage() {
               <p className="font-heading font-bold text-xl text-purple-400">{posts.length}</p>
               <p className="font-body text-[10px] text-white/35 uppercase tracking-wider">Posts</p>
             </div>
-            <div className="text-center py-2 flex flex-col items-center justify-center">
-              {isVerified
-                ? <MetaVerifiedBadge size="sm" label="" />
-                : <span className="font-heading font-bold text-xl text-white/25">—</span>}
-              <p className="font-body text-[10px] text-white/35 uppercase tracking-wider mt-1">Verified</p>
-            </div>
           </div>
-
-          {memberSince && (
-            <p className="font-body text-[11px] text-white/25 mt-3 text-right">Member since {memberSince}</p>
-          )}
-        </div>
+        </motion.div>
 
         {/* Tabs */}
-        <div className="flex gap-1 mb-5 p-1 rounded-2xl" style={{ background: 'rgba(13,31,60,0.6)', border: '1px solid rgba(255,255,255,0.06)' }}>
-          {[
-            { key: 'listings', label: 'Listings', icon: Grid, count: listings.length },
-            { key: 'posts', label: 'Posts', icon: FileText, count: posts.length },
-          ].map(tab => (
+        <div className="flex gap-1 mb-5 p-1 rounded-2xl overflow-x-auto" style={{ background: 'rgba(13,31,60,0.6)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          {TABS.map(tab => (
             <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-body font-bold text-xs transition-all"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl font-body font-bold text-xs transition-all whitespace-nowrap min-w-0"
               style={{
                 background: activeTab === tab.key ? 'linear-gradient(135deg,rgba(0,212,255,0.15),rgba(37,99,235,0.15))' : 'transparent',
                 color: activeTab === tab.key ? '#00D4FF' : 'rgba(255,255,255,0.4)',
                 border: activeTab === tab.key ? '1px solid rgba(0,212,255,0.2)' : '1px solid transparent',
               }}>
-              <tab.icon className="w-3.5 h-3.5" />
-              {tab.label}
-              <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold"
-                style={{
-                  background: activeTab === tab.key ? 'rgba(0,212,255,0.2)' : 'rgba(255,255,255,0.08)',
-                  color: activeTab === tab.key ? '#00D4FF' : 'rgba(255,255,255,0.4)'
-                }}>
-                {tab.count}
-              </span>
+              <tab.icon className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="hidden sm:inline">{tab.label}</span>
+              {tab.count !== null && (
+                <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold flex-shrink-0"
+                  style={{
+                    background: activeTab === tab.key ? 'rgba(0,212,255,0.2)' : 'rgba(255,255,255,0.08)',
+                    color: activeTab === tab.key ? '#00D4FF' : 'rgba(255,255,255,0.4)'
+                  }}>
+                  {tab.count}
+                </span>
+              )}
             </button>
           ))}
         </div>
 
+        {/* Gallery Tab */}
+        {activeTab === 'gallery' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            {galleryImages.length === 0 ? (
+              <div className="rounded-2xl p-16 text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <Image className="w-12 h-12 text-white/10 mx-auto mb-3" />
+                <p className="font-body text-sm text-white/30">No gallery photos yet</p>
+              </div>
+            ) : (
+              <>
+                {/* Hero image */}
+                {galleryImages[0] && (
+                  <div className="relative rounded-2xl overflow-hidden mb-3 cursor-pointer group"
+                    style={{ height: '300px' }}
+                    onClick={() => openLightbox(galleryImages, 0)}>
+                    <img src={galleryImages[0]} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                        <Camera className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {/* Masonry-style grid */}
+                {galleryImages.length > 1 && (
+                  <div className="grid grid-cols-3 gap-2">
+                    {galleryImages.slice(1).map((img, i) => (
+                      <div key={i} className="relative rounded-xl overflow-hidden cursor-pointer group aspect-square"
+                        onClick={() => openLightbox(galleryImages, i + 1)}>
+                        <img src={img} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors" />
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <p className="font-body text-[10px] text-white/25 text-center mt-3">{galleryImages.length} photo{galleryImages.length !== 1 ? 's' : ''} · Tap to view full size</p>
+              </>
+            )}
+
+            {/* Show latest listings below gallery */}
+            {listings.length > 0 && (
+              <div className="mt-8">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-heading font-bold text-base text-white">Latest Listings</h2>
+                  <button onClick={() => setActiveTab('listings')} className="font-body text-xs text-[#00D4FF] hover:underline">View all →</button>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {listings.slice(0, 4).map(item => (
+                    <ListingCard key={item.id} item={item} user={user} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </motion.div>
+        )}
+
         {/* Listings Tab */}
         {activeTab === 'listings' && (
-          listings.length === 0
-            ? (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            {listings.length === 0 ? (
               <div className="rounded-2xl p-16 text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <Package className="w-12 h-12 text-white/10 mx-auto mb-3" />
                 <p className="font-body text-sm text-white/30">No active listings yet</p>
@@ -412,37 +580,17 @@ export default function SellerProfilePage() {
             ) : (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {listings.map(item => (
-                  <Link key={item.id} to={`/listing/${item.id}`}
-                    className="group rounded-2xl overflow-hidden transition-all hover:scale-[1.02] hover:shadow-xl block"
-                    style={{ background: 'rgba(13,31,60,0.8)', border: '1px solid rgba(255,255,255,0.07)', boxShadow: '0 4px 16px rgba(0,0,0,0.3)' }}>
-                    <div className="relative aspect-video overflow-hidden">
-                      {item.image_url
-                        ? <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                        : <div className="w-full h-full flex items-center justify-center" style={{ background: 'rgba(0,212,255,0.06)' }}>
-                            <Package className="w-10 h-10 text-white/15" />
-                          </div>}
-                    </div>
-                    <div className="p-3">
-                      <h3 className="font-heading font-semibold text-sm text-white mb-1 truncate">{item.title}</h3>
-                      <p className="font-body text-xs text-[#00D4FF] font-semibold mb-1">
-                        {item.price_label || (item.price ? `\u20B1${Number(item.price).toLocaleString()}` : 'Contact for price')}
-                      </p>
-                      {item.location && (
-                        <p className="font-body text-[10px] text-white/35 flex items-center gap-1">
-                          <MapPin className="w-2.5 h-2.5" /> {item.location}
-                        </p>
-                      )}
-                    </div>
-                  </Link>
+                  <ListingCard key={item.id} item={item} user={user} />
                 ))}
               </div>
-            )
+            )}
+          </motion.div>
         )}
 
         {/* Posts Tab */}
         {activeTab === 'posts' && (
-          posts.length === 0
-            ? (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            {posts.length === 0 ? (
               <div className="rounded-2xl p-16 text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <FileText className="w-12 h-12 text-white/10 mx-auto mb-3" />
                 <p className="font-body text-sm text-white/30">No community posts yet</p>
@@ -455,11 +603,11 @@ export default function SellerProfilePage() {
                       <div className="w-8 h-8 rounded-xl overflow-hidden flex-shrink-0">
                         {seller.profile_picture
                           ? <img src={seller.profile_picture} alt="" className="w-full h-full object-cover" />
-                          : <div className="w-full h-full bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-bold text-xs">{initials}</div>}
+                          : <div className="w-full h-full bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-bold text-xs">{displayName[0]}</div>}
                       </div>
                       <div>
                         <div className="flex items-center gap-1.5">
-                          <p className="font-body font-bold text-xs text-white">{seller.full_name || 'Seller'}</p>
+                          <p className="font-body font-bold text-xs text-white">{displayName}</p>
                           {isVerified && <MetaVerifiedBadge size="xs" label="" />}
                         </div>
                         <p className="font-body text-[10px] text-white/35">
@@ -475,8 +623,9 @@ export default function SellerProfilePage() {
                     </div>
                     <p className="font-body text-sm text-white/70 leading-relaxed">{post.content}</p>
                     {post.image_url && (
-                      <div className="mt-3 rounded-xl overflow-hidden">
-                        <img src={post.image_url} alt="" className="w-full max-h-80 object-cover" />
+                      <div className="mt-3 rounded-xl overflow-hidden cursor-pointer"
+                        onClick={() => openLightbox([post.image_url], 0)}>
+                        <img src={post.image_url} alt="" className="w-full max-h-80 object-cover hover:scale-[1.02] transition-transform duration-300" />
                       </div>
                     )}
                     <div className="flex items-center gap-4 mt-3 pt-3 border-t border-white/6">
@@ -486,9 +635,80 @@ export default function SellerProfilePage() {
                   </div>
                 ))}
               </div>
-            )
+            )}
+          </motion.div>
+        )}
+
+        {/* About Tab */}
+        {activeTab === 'about' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            className="rounded-2xl p-6 space-y-5"
+            style={{ background: 'rgba(13,31,60,0.8)', border: '1px solid rgba(255,255,255,0.07)' }}>
+            <div>
+              <h3 className="font-heading font-bold text-sm text-white mb-2 uppercase tracking-wider">Channel / Profile</h3>
+              <p className="font-body text-base font-bold text-[#00D4FF]">{displayName}</p>
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
+                <UserTypeBadge seller={seller} />
+                {isVerified && <MetaVerifiedBadge size="sm" label="Verified Partner" />}
+              </div>
+            </div>
+            {seller.bio && (
+              <div>
+                <h3 className="font-heading font-bold text-sm text-white mb-2 uppercase tracking-wider">About</h3>
+                <p className="font-body text-sm text-white/60 leading-relaxed">{seller.bio}</p>
+              </div>
+            )}
+            {seller.seller_location && (
+              <div>
+                <h3 className="font-heading font-bold text-sm text-white mb-2 uppercase tracking-wider">Location</h3>
+                <p className="font-body text-sm text-white/60 flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-[#00D4FF]" />
+                  {seller.seller_location}{seller.seller_area ? ` · ${seller.seller_area}` : ''}
+                </p>
+              </div>
+            )}
+            {memberSince && (
+              <div>
+                <h3 className="font-heading font-bold text-sm text-white mb-1 uppercase tracking-wider">Member Since</h3>
+                <p className="font-body text-sm text-white/50">{memberSince}</p>
+              </div>
+            )}
+            {/* Only show contact info if seller made it public */}
+            {(showPhone || showEmail) && (
+              <div>
+                <h3 className="font-heading font-bold text-sm text-white mb-2 uppercase tracking-wider">Contact</h3>
+                {showPhone && <p className="font-body text-sm text-white/60">{seller.phone}</p>}
+                {showEmail && <p className="font-body text-sm text-white/60">{seller.email}</p>}
+              </div>
+            )}
+            {socials.length > 0 && (
+              <div>
+                <h3 className="font-heading font-bold text-sm text-white mb-3 uppercase tracking-wider">Social Media</h3>
+                <div className="flex flex-wrap gap-2">
+                  {socials.map(s => {
+                    const cfg = SOCIAL_CONFIGS[s.key];
+                    const Icon = cfg.icon;
+                    return (
+                      <a key={s.key} href={s.url} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl font-body text-xs font-semibold transition-all hover:scale-105"
+                        style={{ background: cfg.bg, border: `1px solid ${cfg.color}30`, color: cfg.color }}>
+                        <Icon className="w-4 h-4" /> {cfg.label}
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </motion.div>
         )}
       </div>
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightboxImages && (
+          <Lightbox images={lightboxImages} startIdx={lightboxIdx} onClose={() => setLightboxImages(null)} />
+        )}
+      </AnimatePresence>
 
       {/* Message Modal */}
       <AnimatePresence>

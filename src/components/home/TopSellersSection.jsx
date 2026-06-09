@@ -23,7 +23,7 @@ export default function TopSellersSection() {
       }).catch(() => {});
   }, []);
 
-  // Only admin can see Top Sellers section
+  // Hidden from all users — admin-only internal tool
   if (!isAdmin || sellers.length === 0) return null;
 
   return (
@@ -70,22 +70,14 @@ export default function TopSellersSection() {
                         <MetaVerifiedBadge size="xs" label="" />
                       </div>
                     )}
-                    {i < 3 && (
-                      <div className="absolute -top-1 -left-1 w-4 h-4 rounded-full flex items-center justify-center"
-                        style={{ background: i === 0 ? '#FFD700' : i === 1 ? '#C0C0C0' : '#CD7F32', fontSize: 8, fontWeight: 'bold', color: '#0A192F' }}>
-                        {i + 1}
-                      </div>
-                    )}
+
                   </div>
                   <div className="text-center">
                     <p className="font-body font-bold text-[11px] text-white truncate max-w-full">{seller.full_name?.split(' ')[0] || 'Seller'}</p>
                     <p className="font-body text-[9px] text-white/40">
                       {seller.account_type === 'business_owner' ? 'Business' : 'Seller'}
                     </p>
-                    <div className="flex items-center gap-0.5 justify-center mt-0.5">
-                      <Star className="w-2.5 h-2.5 text-amber-400 fill-amber-400" />
-                      <span className="font-body text-[9px] text-amber-400">4.{8 - (i % 3)}</span>
-                    </div>
+
                   </div>
                 </Link>
               </motion.div>
