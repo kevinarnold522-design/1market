@@ -75,8 +75,8 @@ Deno.serve(async (req) => {
     <div style="padding:16px 24px;border-top:1px solid rgba(255,255,255,0.08);text-align:center;">
       <p style="color:rgba(255,255,255,0.25);font-size:11px;margin:0;">1MarketPH.com — Buy, Sell &amp; Connect across the Philippines</p>
       <div style="margin-top:8px;display:flex;justify-content:center;gap:12px;">
-        <a href="https://facebook.com/1marketph" style="color:#60a5fa;font-size:11px;text-decoration:none;">Facebook</a>
-        <a href="https://instagram.com/1marketph" style="color:#f9a8d4;font-size:11px;text-decoration:none;">Instagram</a>
+        <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" style="color:#60a5fa;font-size:11px;text-decoration:none;">📘 @1MarketPH</a>
+        <a href="https://www.instagram.com/1marketph?igsh=Mnk4bHdtaXN2N2h1&utm_source=qr" style="color:#f9a8d4;font-size:11px;text-decoration:none;">📸 @1MarketPH</a>
         <a href="https://tiktok.com/@1marketph" style="color:#ffffff;font-size:11px;text-decoration:none;">TikTok</a>
       </div>
     </div>

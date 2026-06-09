@@ -340,8 +340,8 @@ export default function UserProfile() {
       base44.entities.Order.filter({ seller_email: me.email }),
       base44.entities.Cart.filter({ user_email: me.email }),
       base44.entities.Favourite.filter({ user_email: me.email }),
-      base44.entities.Listing.filter({ created_by: me.email }),
-      base44.entities.DraftListing.filter({ created_by: me.email }),
+      base44.entities.Listing.filter({ created_by_id: me.id }),
+      base44.entities.DraftListing.filter({ created_by_id: me.id }),
     ]);
     setOrders(o); setSellerOrders(so); setCart(c); setFavourites(f);
     setListings(items); setDrafts(draftItems);
@@ -476,7 +476,7 @@ export default function UserProfile() {
     if (editing) { await base44.entities.Listing.update(editing.id, data); showToast('Updated!'); }
     else { await base44.entities.Listing.create(data); showToast('Published!'); }
     setShowForm(false); setEditing(null);
-    const items = await base44.entities.Listing.filter({ created_by: user.email });
+    const items = await base44.entities.Listing.filter({ created_by_id: user.id });
     setListings(items);
   };
 
@@ -484,7 +484,7 @@ export default function UserProfile() {
     if (!form.title) return showToast('Add a title first');
     await base44.entities.DraftListing.create({ ...form, price: Number(form.price) || 0, seller_name: user?.full_name || form.seller_name });
     showToast('Saved as draft!'); setShowForm(false); setEditing(null);
-    const draftItems = await base44.entities.DraftListing.filter({ created_by: user.email });
+    const draftItems = await base44.entities.DraftListing.filter({ created_by_id: user.id });
     setDrafts(draftItems);
   };
 
@@ -505,8 +505,8 @@ export default function UserProfile() {
     await base44.entities.DraftListing.delete(id);
     showToast('Published!');
     const [items, draftItems] = await Promise.all([
-      base44.entities.Listing.filter({ created_by: user.email }),
-      base44.entities.DraftListing.filter({ created_by: user.email }),
+      base44.entities.Listing.filter({ created_by_id: user.id }),
+      base44.entities.DraftListing.filter({ created_by_id: user.id }),
     ]);
     setListings(items); setDrafts(draftItems);
   };
@@ -1031,7 +1031,10 @@ export default function UserProfile() {
                           <div className="flex items-center gap-1.5 flex-wrap">
                             <h4 className="font-heading font-bold text-xs text-white">{item.title}</h4>
                             <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-[#2563EB]/20 text-[#00D4FF] capitalize">{item.type}</span>
-                            {!item.is_active && <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-red-500/20 text-red-400">Hidden</span>}
+                            {item.approval_status === 'pending' && <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-400">⏳ Pending Review</span>}
+                            {item.approval_status === 'approved' && <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-green-500/20 text-green-400">✅ Approved</span>}
+                            {item.approval_status === 'rejected' && <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-red-500/20 text-red-400">❌ Rejected</span>}
+                            {!item.is_active && item.approval_status !== 'pending' && <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-white/10 text-white/30">Hidden</span>}
                           </div>
                           <p className="font-body text-[9px] text-white/35 mt-0.5">{item.location}{item.area ? ` · ${item.area}` : ''} · {item.price_label || `₱${Number(item.price).toLocaleString()}`}</p>
                         </div>
