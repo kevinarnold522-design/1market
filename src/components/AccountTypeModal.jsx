@@ -7,7 +7,6 @@ const ACCOUNT_TYPES = [
   {
     key: 'buyer',
     icon: ShoppingBag,
-    emoji: '🛍️',
     label: 'Buyer / Customer',
     tagline: 'Shop, save & discover deals',
     perks: ['Browse all listings for free', 'Save favorites & wishlist', 'Track your orders', 'Rate businesses & sellers'],
@@ -15,11 +14,11 @@ const ACCOUNT_TYPES = [
     border: 'border-blue-500/40',
     bg: 'bg-blue-500/10',
     textColor: 'text-blue-400',
+    iconColor: '#60a5fa',
   },
   {
     key: 'seller',
     icon: Store,
-    emoji: '🏪',
     label: 'Seller / Business Owner',
     tagline: 'List & sell to thousands of buyers',
     perks: ['List products in any category', 'Manage your own store page', 'Receive & track orders', 'Apply for Verified Partner badge'],
@@ -27,11 +26,11 @@ const ACCOUNT_TYPES = [
     border: 'border-emerald-500/40',
     bg: 'bg-emerald-500/10',
     textColor: 'text-emerald-400',
+    iconColor: '#34d399',
   },
   {
     key: 'both',
     icon: Users,
-    emoji: '⭐',
     label: 'Both — Buy & Sell',
     tagline: 'The full 1Market experience',
     perks: ['Everything in Buyer & Seller', 'Switch roles anytime', 'Priority support access', 'Exclusive member deals'],
@@ -39,6 +38,7 @@ const ACCOUNT_TYPES = [
     border: 'border-purple-500/40',
     bg: 'bg-purple-500/10',
     textColor: 'text-purple-400',
+    iconColor: '#c084fc',
   },
 ];
 
@@ -48,11 +48,11 @@ const QUESTIONS = [
     question: 'Where are you based?',
     subtitle: 'We\'ll show you the most relevant listings first.',
     options: [
-      { value: 'Manila', label: '🗺️ Manila / Metro Manila', desc: 'NCR and nearby cities' },
-      { value: 'Cavite', label: '🏝️ Cavite', desc: 'Bacoor, Imus, Dasmariñas, etc.' },
-      { value: 'Cebu', label: '🌊 Cebu', desc: 'Cebu City and province' },
-      { value: 'Davao', label: '🏔️ Davao', desc: 'Davao City and region' },
-      { value: 'Nationwide', label: '🇵🇭 Other / Nationwide', desc: 'Rest of the Philippines' },
+      { value: 'Manila', label: 'Manila / Metro Manila', desc: 'NCR and nearby cities' },
+      { value: 'Cavite', label: 'Cavite', desc: 'Bacoor, Imus, Dasmariñas, etc.' },
+      { value: 'Cebu', label: 'Cebu', desc: 'Cebu City and province' },
+      { value: 'Davao', label: 'Davao', desc: 'Davao City and region' },
+      { value: 'Nationwide', label: 'Other / Nationwide', desc: 'Rest of the Philippines' },
     ]
   },
   {
@@ -60,11 +60,11 @@ const QUESTIONS = [
     question: 'What are you most interested in?',
     subtitle: 'Help us personalize your experience.',
     options: [
-      { value: 'food', label: '🍔 Food & Dining', desc: 'Restaurants, carinderias, delivery' },
-      { value: 'electronics', label: '📱 Electronics & Gadgets', desc: 'Phones, laptops, accessories' },
-      { value: 'travel', label: '✈️ Travel & Hotels', desc: 'Bookings, rentals, tours' },
-      { value: 'services', label: '🔧 Services', desc: 'Home, tech, beauty, events' },
-      { value: 'general', label: '🛒 General Shopping', desc: 'All categories' },
+      { value: 'food', label: 'Food & Dining', desc: 'Restaurants, carinderias, delivery' },
+      { value: 'electronics', label: 'Electronics & Gadgets', desc: 'Phones, laptops, accessories' },
+      { value: 'travel', label: 'Travel & Hotels', desc: 'Bookings, rentals, tours' },
+      { value: 'services', label: 'Services', desc: 'Home, tech, beauty, events' },
+      { value: 'general', label: 'General Shopping', desc: 'All categories' },
     ]
   }
 ];
@@ -143,15 +143,15 @@ export default function AccountTypeModal({ onClose }) {
             {/* Step 0: Account Type */}
             {step === 0 && (
               <motion.div key="type" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="px-5 pb-6">
-                <h2 className="font-heading font-bold text-2xl text-white mb-1">Welcome to 1Market! 🎉</h2>
+                <h2 className="font-heading font-bold text-2xl text-white mb-1">Welcome to 1MarketPH</h2>
                 <p className="font-body text-sm text-white/40 mb-5">First, tell us what you're here for.</p>
                 <div className="space-y-3">
                   {ACCOUNT_TYPES.map(type => (
                     <motion.button key={type.key} whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
                       onClick={() => handleTypeSelect(type.key)}
                       className={`w-full flex items-start gap-3 p-4 rounded-2xl border-2 text-left transition-all ${selectedType === type.key ? `${type.border} ${type.bg}` : 'border-white/10 hover:border-white/20 bg-white/5'}`}>
-                      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${type.color} flex items-center justify-center flex-shrink-0 text-white text-2xl`}>
-                        {type.emoji}
+                      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${type.color} flex items-center justify-center flex-shrink-0`}>
+                        <type.icon className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
@@ -203,7 +203,9 @@ export default function AccountTypeModal({ onClose }) {
             {/* Final step */}
             {step === QUESTIONS.length + 1 && (
               <motion.div key="final" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="px-5 pb-6 text-center">
-                <div className="text-5xl mb-3">🎊</div>
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center mx-auto mb-3">
+                  <Check className="w-8 h-8 text-white" />
+                </div>
                 <h2 className="font-heading font-bold text-2xl text-white mb-1">You're all set!</h2>
                 <p className="font-body text-sm text-white/50 mb-2">
                   You're joining as a <strong className="text-[#00D4FF]">{ACCOUNT_TYPES.find(t => t.key === selectedType)?.label}</strong>

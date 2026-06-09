@@ -96,11 +96,13 @@ export const AuthProvider = ({ children }) => {
     try {
       setIsLoadingAuth(true);
       const currentUser = await base44.auth.me();
+      _cachedUser = currentUser;
       setUser(currentUser);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
       setAuthChecked(true);
     } catch (error) {
+      _cachedUser = null;
       setIsLoadingAuth(false);
       setIsAuthenticated(false);
       setAuthChecked(true);

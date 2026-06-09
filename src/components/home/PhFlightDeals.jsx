@@ -4,7 +4,7 @@ import { ExternalLink, Star, Plane, Users, MapPin } from 'lucide-react';
 
 const FLIGHTS = [
   {
-    id: 1, route: 'Manila → Cebu', code: 'MNL–CEB', duration: '1h 20m', tag: '🔥 Most Popular',
+    id: 1, route: 'Manila → Cebu', code: 'MNL–CEB', duration: '1h 20m', tag: 'Most Popular',
     airlines: [
       { name: 'Cebu Pacific', logo: 'https://www.google.com/s2/favicons?domain=cebupacificair.com&sz=128', avgPrice: 1500, bestPrice: 999, link: 'https://www.cebupacificair.com', color: '#FFFF00', bg: '#0033A0' },
       { name: 'Philippine Airlines', logo: 'https://www.google.com/s2/favicons?domain=philippineairlines.com&sz=128', avgPrice: 2200, bestPrice: 1800, link: 'https://www.philippineairlines.com', color: '#003087', bg: '#fff' },
@@ -13,7 +13,7 @@ const FLIGHTS = [
     image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&q=70',
   },
   {
-    id: 2, route: 'Manila → Davao', code: 'MNL–DVO', duration: '2h 05m', tag: '⚡ Budget Deal',
+    id: 2, route: 'Manila → Davao', code: 'MNL–DVO', duration: '2h 05m', tag: 'Budget Deal',
     airlines: [
       { name: 'AirAsia', logo: 'https://www.google.com/s2/favicons?domain=airasia.com&sz=128', avgPrice: 1600, bestPrice: 1099, link: 'https://www.airasia.com/ph/en', color: '#fff', bg: '#E21B22' },
       { name: 'Cebu Pacific', logo: 'https://www.google.com/s2/favicons?domain=cebupacificair.com&sz=128', avgPrice: 1900, bestPrice: 1299, link: 'https://www.cebupacificair.com', color: '#FFFF00', bg: '#0033A0' },
@@ -22,7 +22,7 @@ const FLIGHTS = [
     image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=70',
   },
   {
-    id: 3, route: 'Manila → Caticlan', code: 'MNL–MPH', duration: '1h 10m', tag: '🏖️ Boracay',
+    id: 3, route: 'Manila → Caticlan', code: 'MNL–MPH', duration: '1h 10m', tag: 'Boracay',
     airlines: [
       { name: 'Cebu Pacific', logo: 'https://www.google.com/s2/favicons?domain=cebupacificair.com&sz=128', avgPrice: 1800, bestPrice: 1399, link: 'https://www.cebupacificair.com', color: '#FFFF00', bg: '#0033A0' },
       { name: 'Philippine Airlines', logo: 'https://www.google.com/s2/favicons?domain=philippineairlines.com&sz=128', avgPrice: 2300, bestPrice: 1999, link: 'https://www.philippineairlines.com', color: '#003087', bg: '#fff' },
@@ -30,7 +30,7 @@ const FLIGHTS = [
     image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=70',
   },
   {
-    id: 4, route: 'Manila → Puerto Princesa', code: 'MNL–PPS', duration: '1h 30m', tag: '🌿 Palawan',
+    id: 4, route: 'Manila → Puerto Princesa', code: 'MNL–PPS', duration: '1h 30m', tag: 'Palawan',
     airlines: [
       { name: 'Philippine Airlines', logo: 'https://www.google.com/s2/favicons?domain=philippineairlines.com&sz=128', avgPrice: 2000, bestPrice: 1699, link: 'https://www.philippineairlines.com', color: '#003087', bg: '#fff' },
       { name: 'Cebu Pacific', logo: 'https://www.google.com/s2/favicons?domain=cebupacificair.com&sz=128', avgPrice: 1750, bestPrice: 1299, link: 'https://www.cebupacificair.com', color: '#FFFF00', bg: '#0033A0' },
@@ -39,14 +39,14 @@ const FLIGHTS = [
     image: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?w=600&q=70',
   },
   {
-    id: 5, route: 'Manila → El Nido', code: 'MNL–ENI', duration: '1h 45m', tag: '✈️ Scenic',
+    id: 5, route: 'Manila → El Nido', code: 'MNL–ENI', duration: '1h 45m', tag: 'Scenic',
     airlines: [
       { name: 'AirSWIFT', logo: 'https://www.google.com/s2/favicons?domain=airswift.com.ph&sz=128', avgPrice: 3500, bestPrice: 2400, link: 'https://www.airswift.com.ph', color: '#fff', bg: '#003366' },
     ],
     image: 'https://images.unsplash.com/photo-1474302770737-173ee21bab63?w=600&q=70',
   },
   {
-    id: 6, route: 'Manila → Iloilo', code: 'MNL–ILO', duration: '1h 20m', tag: '🌺 Visayas',
+    id: 6, route: 'Manila → Iloilo', code: 'MNL–ILO', duration: '1h 20m', tag: 'Visayas',
     airlines: [
       { name: 'Cebu Pacific', logo: 'https://www.google.com/s2/favicons?domain=cebupacificair.com&sz=128', avgPrice: 1600, bestPrice: 1099, link: 'https://www.cebupacificair.com', color: '#FFFF00', bg: '#0033A0' },
       { name: 'Philippine Airlines', logo: 'https://www.google.com/s2/favicons?domain=philippineairlines.com&sz=128', avgPrice: 2100, bestPrice: 1800, link: 'https://www.philippineairlines.com', color: '#003087', bg: '#fff' },
@@ -149,7 +149,7 @@ export default function PhFlightDeals() {
   }, [isPaused]);
 
   return (
-    <section className="py-12 sm:py-16 bg-[#070F1A] overflow-hidden">
+    <section className="py-12 sm:py-16 overflow-hidden" style={{ background: 'linear-gradient(180deg,#001a80 0%,#0033CC 50%,#001a80 100%)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>

@@ -18,7 +18,7 @@ const NAV_ITEMS = [
   { to: '/community',  icon: Users,          label: 'Community',    color: '#a855f7' },
 ];
 
-export default function LeftSidebar() {
+export default function LeftSidebar({ isMobileHidden = false }) {
   const [collapsed, setCollapsed] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const location = useLocation();
@@ -27,12 +27,19 @@ export default function LeftSidebar() {
   const isSeller = user?.user_type === 'seller' || user?.is_seller || user?.account_type === 'business_owner';
   const initials = user ? (user.full_name || user.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
 
+  if (isMobileHidden) return null;
+
   return (
     <motion.aside
       animate={{ width: collapsed ? 64 : 220 }}
       transition={{ duration: 0.25, ease: 'easeInOut' }}
       className="fixed left-0 top-0 bottom-0 z-40 flex flex-col overflow-hidden"
-      style={{ background: 'linear-gradient(180deg,#000d40,#0A192F,#000d40)', borderRight: '1px solid rgba(0,212,255,0.12)' }}
+      style={{
+        background: 'linear-gradient(180deg,rgba(0,13,64,0.85),rgba(10,25,47,0.9),rgba(0,13,64,0.85))',
+        borderRight: '1px solid rgba(0,212,255,0.12)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+      }}
     >
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-3 py-4 flex-shrink-0 border-b border-white/8">

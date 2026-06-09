@@ -64,7 +64,7 @@ export default function MovingWelcomeBanner() {
       </div>
 
       {/* Marquee ticker */}
-      <div className="relative overflow-hidden bg-[#001a80]/80 border-t border-white/10 py-2">
+      <div className="relative overflow-hidden border-t border-white/10 py-2" style={{ background: 'linear-gradient(90deg,#0033CC,#1a3de8,#0033CC)' }}>
         <motion.div
           animate={{ x: [0, -2400] }}
           transition={{ duration: 32, repeat: Infinity, ease: 'linear' }}

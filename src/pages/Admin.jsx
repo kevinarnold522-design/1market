@@ -275,6 +275,12 @@ export default function Admin() {
   const [adminMessages, setAdminMessages] = useState([]);
   const [msgUserEmail, setMsgUserEmail] = useState('');
   const [loadingMsgs, setLoadingMsgs] = useState(false);
+  // Ghost accounts
+  const [ghostForm, setGhostForm] = useState({ full_name: '', user_type: 'seller', business_name: '', location: 'Manila' });
+  const [ghostSaving, setGhostSaving] = useState(false);
+  const [ghostToast, setGhostToast] = useState('');
+  const [ghostLinkEmail, setGhostLinkEmail] = useState({});
+  const [ghostUsers, setGhostUsers] = useState([]);
 
   useEffect(() => {
     base44.auth.me().then(user => {

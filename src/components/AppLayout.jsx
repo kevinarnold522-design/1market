@@ -7,7 +7,7 @@ import { subscribeWave, isWaveActive, triggerWave } from '@/lib/waveTransition';
 export default function AppLayout() {
   const [waveActive, setWaveActive] = useState(isWaveActive());
   useEffect(() => subscribeWave(setWaveActive), []);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
   const navigate = useNavigate();
 
   // Global wave interceptor for listing navigation
@@ -33,10 +33,10 @@ export default function AppLayout() {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left Sidebar — hidden on mobile, shown on md+ */}
-      {!isMobile && <LeftSidebar />}
+      {/* Left Sidebar — always rendered, hidden on mobile via CSS */}
+      <LeftSidebar isMobileHidden={isMobile} />
 
-      {/* Main content — offset by fixed sidebar (220px expanded) */}
+      {/* Main content — always offset by sidebar width on desktop */}
       <main
         className="flex-1 min-w-0 overflow-x-hidden"
         style={{ marginLeft: isMobile ? 0 : 220 }}

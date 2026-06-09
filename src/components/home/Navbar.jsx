@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { redirectToLogin } from '@/lib/loginRedirect';
 import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Building2, Users, Bell, Facebook, Instagram, Youtube } from 'lucide-react';
+import BecomeSellerModal from '../BecomeSellerModal';
+import BecomeBusinessModal from '../BecomeBusinessModal';
 import NotificationsBell from '../NotificationsBell';
 import PostListingMenu from '../PostListingMenu';
 import RewardDashboard from '../RewardDashboard';
@@ -38,6 +40,8 @@ export default function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [editMode, setEditModeLocal] = useState(false);
   const [showRewards, setShowRewards] = useState(false);
+  const [showSellerModal, setShowSellerModal] = useState(false);
+  const [showBusinessModal, setShowBusinessModal] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const isAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
   const isSeller = user?.user_type === 'seller' || user?.user_type === 'business' || user?.is_seller || user?.account_type === 'business_owner';
@@ -175,7 +179,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      <nav className={`fixed top-10 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#001a80]/90 backdrop-blur-xl shadow-lg shadow-[#0033CC]/20' : 'bg-transparent'}`}>
+      <nav className={`fixed top-10 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'backdrop-blur-2xl shadow-lg shadow-[#0033CC]/30' : 'backdrop-blur-xl'}`} style={{ background: scrolled ? 'rgba(0,26,128,0.75)' : 'rgba(0,10,64,0.55)', borderBottom: '1px solid rgba(255,255,255,0.08)', WebkitBackdropFilter: 'blur(24px)' }}>
         {/* Category Bar — LEFT aligned */}
         <div className="hidden md:block border-b border-white/8 bg-[#000d40]/80 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -442,16 +446,16 @@ export default function Navbar() {
                             <>
                               <div className="border-t border-white/8 my-1" />
                               <p className="px-3 py-1 font-body text-[9px] text-[#3E97F1]/60 uppercase tracking-wider font-bold">Grow with 1Market</p>
-                              <Link to="/profile?tab=profile" onClick={() => setProfileOpen(false)}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold"
+                              <button onClick={() => { setProfileOpen(false); setShowSellerModal(true); }}
+                                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold"
                                 style={{ background: 'linear-gradient(90deg,rgba(16,185,129,0.15),rgba(0,212,255,0.08))', border: '1px solid rgba(16,185,129,0.2)' }}>
                                 <Store className="w-3.5 h-3.5 text-emerald-400" /> <span className="text-emerald-400">Become a Seller</span>
-                              </Link>
-                              <Link to="/profile?tab=profile" onClick={() => setProfileOpen(false)}
-                               className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold mt-1"
+                              </button>
+                              <button onClick={() => { setProfileOpen(false); setShowBusinessModal(true); }}
+                               className="w-full flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold mt-1"
                                style={{ background: 'linear-gradient(90deg,rgba(0,64,208,0.2),rgba(62,151,241,0.1))', border: '1px solid rgba(62,151,241,0.2)' }}>
                                <Building2 className="w-3.5 h-3.5 text-[#3E97F1]" /> <span className="text-[#3E97F1]">Convert To Business Account</span>
-                              </Link>
+                              </button>
                             </>
                           )}
 
@@ -571,14 +575,14 @@ export default function Navbar() {
                     )}
                     {isCustomer && !isSeller && !isBusiness && (
                       <>
-                        <Link to="/profile?tab=profile" onClick={() => setMenuOpen(false)}
-                          className="block text-emerald-400 font-body text-sm font-semibold py-2 transition-colors">
+                        <button onClick={() => { setMenuOpen(false); setShowSellerModal(true); }}
+                          className="block w-full text-left text-emerald-400 font-body text-sm font-semibold py-2 transition-colors">
                           Become a Seller
-                        </Link>
-                        <Link to="/profile?tab=profile" onClick={() => setMenuOpen(false)}
-                         className="block text-[#3E97F1] font-body text-sm font-semibold py-2 transition-colors">
+                        </button>
+                        <button onClick={() => { setMenuOpen(false); setShowBusinessModal(true); }}
+                         className="block w-full text-left text-[#3E97F1] font-body text-sm font-semibold py-2 transition-colors">
                          Convert To Business Account
-                        </Link>
+                        </button>
                       </>
                     )}
                     {user.role === 'admin' && (
@@ -625,7 +629,12 @@ export default function Navbar() {
       <AnimatePresence>
         {showSignup && <AccountTypeModal onClose={() => setShowSignup(false)} />}
         {showRewards && user && <RewardDashboard user={user} onClose={() => setShowRewards(false)} />}
-
+        {showSellerModal && user && (
+          <BecomeSellerModal user={user} onClose={() => setShowSellerModal(false)} onSuccess={() => window.location.reload()} />
+        )}
+        {showBusinessModal && user && (
+          <BecomeBusinessModal user={user} onClose={() => setShowBusinessModal(false)} onSuccess={() => window.location.reload()} />
+        )}
       </AnimatePresence>
 
       {/* Floating Admin Edit Mode Bar */}
