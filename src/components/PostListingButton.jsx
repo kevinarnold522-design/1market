@@ -36,7 +36,7 @@ export default function PostListingButton({ className = '', size = 'md' }) {
         style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 20px rgba(37,99,235,0.5)' }}
       >
         <Plus className="w-4 h-4" />
-        Post a Listing
+        Post an Ad
       </button>
       <AnimatePresence>
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}

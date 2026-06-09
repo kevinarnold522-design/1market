@@ -49,7 +49,7 @@ const SUBS_BY_TYPE = {
   furniture:      ['Living Room', 'Bedroom', 'Office', 'Outdoor', 'Kitchen', 'Storage', 'Kids Furniture'],
   homeappliances: ['Refrigerator / Freezer', 'Washing Machine', 'Air Conditioner', 'Microwave / Oven', 'Rice Cooker', 'TV / Smart TV', 'Other Appliance'],
   cars:           ['Sedan', 'SUV', 'Van', 'Pickup', 'Hatchback', 'Motorcycle', 'Truck', 'AUV / MPV'],
-  houses:         ['House & Lot', 'Condominium', 'Townhouse', 'Apartment', 'Vacant Lot', 'Commercial Property'],
+  houses:         ['House & Lot', 'Condominium', 'Townhouse', 'Apartment', 'Vacant Lot / Land', 'Commercial Lot', 'Commercial Property'],
   food:           ['Baked Goods', 'Ready-to-Eat Meals', 'Beverages', 'Snacks', 'Ingredients / Grocery', 'Desserts', 'Health Food', 'Restaurant / Carinderia', 'Home Kitchen', 'Food Stall'],
   services: [
     // 🏠 Home Services
@@ -102,7 +102,7 @@ const SUBS_BY_TYPE = {
     'Travel & Tours', 'Gaming Services', 'AI Services', 'Other / Type Manually',
   ],
   jobs:           ['Customer Service Rep', 'Technical Support', 'Software Engineer', 'Web Developer', 'IT Helpdesk', 'Staff Nurse (RN)', 'Caregiver', 'HR Generalist', 'Accountant / CPA', 'Civil Engineer', 'Electrician', 'Delivery Rider', 'Sales Executive', 'Graphic Designer', 'Cook / Chef', 'Teacher / Instructor', 'Household Helper', 'Virtual Assistant (VA)', 'Other / Not Listed'],
-  rent_lease:     ['Room for Rent', 'Bedspace / Dormitory', 'Apartment / Condo', 'House', 'Townhouse', 'Commercial Space', 'Office Space', 'Bodega / Warehouse', 'Land', 'Venue / Events Space', 'Stall / Kiosk'],
+  rent_lease:     ['Room for Rent', 'Bedspace / Dormitory', 'Apartment / Condo', 'House', 'Townhouse', 'Commercial Space', 'Office Space', 'Bodega / Warehouse', 'Land / Vacant Lot', 'Lot for Lease', 'Commercial Lot', 'Venue / Events Space', 'Stall / Kiosk'],
   vehicle_rental: ['Car Rental', 'Van Rental', 'Motorcycle Rental', 'Truck Rental', 'Bus / Shuttle'],
   hotel:          ['Budget Hotel', 'Boutique Hotel', 'Resort', 'Pension House', 'Airbnb / Homestay', 'Suite / Villa'],
   flights:        ['Domestic Flight', 'International Flight', 'Tour Package', 'Bus / Ferry Package'],
@@ -240,6 +240,10 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   const isRent = form.type === 'rent_lease' || form.type === 'vehicle_rental';
   const isPropertyRent = form.type === 'rent_lease';
   const isCar = form.type === 'cars';
+  const isLot = (form.type === 'houses' || form.type === 'rent_lease') && 
+    (form.subcategory?.toLowerCase().includes('lot') || form.subcategory?.toLowerCase().includes('land'));
+  const isVehicleListing = form.type === 'cars' || form.type === 'vehicle_rental';
+  const isGadget = form.type === 'electronics' || form.type === 'homeappliances';
   const hidePrice = isJob;
   const currentSubs = SUBS_BY_TYPE[form.type] || [];
   const isPropertyForSale = isPropertyRent && form.property_listing_type === 'For Sale';
@@ -498,6 +502,33 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                           {currentSubs.map(s => <option key={s} value={s} className="bg-[#0D1F3C]">{s}</option>)}
                         </select>
                       )}
+                    </div>
+                  )}
+
+                  {/* LOT / LAND AREA FIELDS */}
+                  {isLot && (
+                    <div className="rounded-xl p-3 space-y-3" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                      <p className="font-body text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Lot / Land Details</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className={labelCls}>Lot Area (sqm) Min</label>
+                          <input type="number" value={form.lot_area_min || ''} onChange={e => set('lot_area_min', e.target.value)} placeholder="e.g. 100" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls}>Lot Area (sqm) Max</label>
+                          <input type="number" value={form.lot_area_max || ''} onChange={e => set('lot_area_max', e.target.value)} placeholder="e.g. 500" className={inputCls} />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className={labelCls}>Floor Area (sqm) — optional</label>
+                          <input type="number" value={form.floor_area || ''} onChange={e => set('floor_area', e.target.value)} placeholder="e.g. 80" className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls}>Zoning</label>
+                          <input value={form.zoning || ''} onChange={e => set('zoning', e.target.value)} placeholder="e.g. Residential, Commercial" className={inputCls} />
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -867,8 +898,14 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                   {/* DESCRIPTION */}
                   <div>
                     <label className={labelCls}>Description</label>
-                    <textarea value={form.description} onChange={e => set('description', e.target.value)} rows={3}
-                      placeholder="Describe your listing in detail..." className={`${inputCls} resize-none`} />
+                    <textarea value={form.description} onChange={e => set('description', e.target.value)} rows={4}
+                      placeholder={
+                        isVehicleListing ? "Describe the vehicle: year, make, model, mileage, color, condition, features, accident history, reason for selling..." :
+                        isGadget ? "Describe the gadget: brand, model, specs, storage, color, condition, included accessories, warranty status..." :
+                        isPropertyRent || form.type === 'houses' ? "Describe the property: size (sqm), number of rooms, floors, amenities, nearby landmarks, parking, utilities..." :
+                        "Describe your listing in detail..."
+                      }
+                      className={`${inputCls} resize-none`} />
                   </div>
 
                   {/* MANUAL NAME — Buy & Sell */}

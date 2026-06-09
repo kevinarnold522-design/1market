@@ -101,7 +101,7 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
     }
   };
 
-  const btnLabel = iconOnly ? null : compact ? '+ Post a Listing' : 'Post a Listing';
+  const btnLabel = iconOnly ? null : compact ? '+ Post an Ad' : 'Post an Ad';
 
   return (
     <>

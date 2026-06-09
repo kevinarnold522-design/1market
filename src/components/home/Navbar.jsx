@@ -133,7 +133,7 @@ export default function Navbar() {
   return (
     <>
       {/* Top Banner */}
-      <div className="fixed top-0 left-0 right-0 z-50 text-white py-2 px-4"
+      <div className="fixed top-0 left-0 right-0 z-[60] text-white py-2 px-4"
         style={{ background: 'linear-gradient(90deg,#0033CC,#1a3de8,#0033CC)', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           {/* Left: welcome or tagline */}

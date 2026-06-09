@@ -18,9 +18,10 @@ const SUBCATEGORIES = [
   { key: 'shoes', label: 'Shoes', icon: '👟', desc: 'Sneakers, footwear & more' },
   { key: 'cars', label: 'Cars & Vehicles', icon: '🚗', desc: 'Sedans, SUVs, motorcycles' },
   { key: 'houses', label: 'Houses & Real Estate', icon: '🏠', desc: 'Homes, lots, condos' },
-  { key: 'electronics', label: 'Electronics', icon: '📱', desc: 'Phones, laptops & gadgets' },
+  { key: 'electronics', label: 'Electronics & Gadgets', icon: '📱', desc: 'Phones, laptops & gadgets' },
   { key: 'homeappliances', label: 'Home Appliances', icon: '🏠', desc: 'Ref, washer, AC & more' },
   { key: 'services', label: 'Services', icon: '🔧', desc: 'Freelancers, repairs & more' },
+  { key: 'lot', label: 'Lot / Land for Sale', icon: '🏕️', desc: 'Vacant lots, land, farm lots' },
 ];
 
 // No static/fake listings — all listings come from the database only
@@ -344,7 +345,10 @@ export default function BuySell() {
 
   const filtered = allListings
     .filter(l => {
-      const matchCat = !activeCategory || activeCategory === 'all' || l.type === activeCategory;
+      const matchCat = !activeCategory || activeCategory === 'all' ||
+        (activeCategory === 'lot'
+          ? (l.type === 'houses' && (l.subcategory?.toLowerCase().includes('lot') || l.subcategory?.toLowerCase().includes('land')))
+          : l.type === activeCategory);
       const matchLoc = locationFilter === 'All' || l.location === locationFilter;
       const matchSearch = l.title.toLowerCase().includes(search.toLowerCase()) || (l.area && l.area.toLowerCase().includes(search.toLowerCase()));
       return matchCat && matchLoc && matchSearch;

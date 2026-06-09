@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ParticleBackground from '../components/ParticleBackground';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, ExternalLink, Phone, MessageSquare, AlertCircle, Plus, Home, Building2, Car, Wrench, CalendarDays, Grid3X3, Pencil, Trash2, X } from 'lucide-react';
+import { ArrowLeft, Search, ExternalLink, Phone, MessageSquare, AlertCircle, Plus, Home, Building2, Car, Wrench, CalendarDays, Grid3X3, Pencil, Trash2, X, Laptop } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
@@ -11,16 +11,27 @@ import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
 import MascotDog from '../components/MascotDog';
 import PostListingMenu from '../components/PostListingMenu';
 
+// Multi-icon renderer for the section header
+function MultiIcon({ color }) {
+  return (
+    <div className="flex items-center gap-0.5">
+      <Home className="w-4 h-4" style={{ color }} />
+      <Car className="w-3.5 h-3.5" style={{ color }} />
+      <Laptop className="w-3 h-3" style={{ color }} />
+    </div>
+  );
+}
+
 const SUBCATEGORIES = [
   { key: 'all', label: 'All Rentals', Icon: Grid3X3, color: '#3E97F1', desc: 'Browse everything' },
-  { key: 'residential', label: 'Residential', Icon: Home, color: '#10b981', desc: 'Houses, condos, apartments' },
+  { key: 'residential', label: 'Properties', Icon: Home, color: '#10b981', desc: 'Houses, condos, lots' },
   { key: 'commercial', label: 'Commercial', Icon: Building2, color: '#3E97F1', desc: 'Offices, retail, warehouses' },
   { key: 'vehicles', label: 'Vehicles', Icon: Car, color: '#f59e0b', desc: 'Cars, vans, motorcycles' },
-  { key: 'equipment', label: 'Equipment', Icon: Wrench, color: '#8b5cf6', desc: 'Tools, sound, cameras' },
+  { key: 'equipment', label: 'Gadgets & Equipment', Icon: Laptop, color: '#8b5cf6', desc: 'Gadgets, tools, cameras' },
   { key: 'events', label: 'Event Venues', Icon: CalendarDays, color: '#ec4899', desc: 'Halls, function rooms' },
 ];
 
-const SPACE_TYPES = ['All Types', 'Room', 'House', 'Bungalow', 'Dorm', 'Condo', '2 Stories', '3 Stories', 'Land'];
+const SPACE_TYPES = ['All Types', 'Room', 'House', 'Bungalow', 'Dorm', 'Condo', '2 Stories', '3 Stories', 'Land', 'Lot for Lease', 'Commercial Lot'];
 
 const listings = [
   // RESIDENTIAL
@@ -255,8 +266,16 @@ export default function ForRent() {
               <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
               <span className="font-body text-xs tracking-[0.2em] uppercase text-[#00D4FF]">1Market Rentals</span>
             </div>
-            <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white mb-3">For Rent / Lease</h1>
-            <p className="font-body text-base text-white/50 max-w-xl">Residential, commercial, vehicles & equipment — find the perfect rental across Manila and Cavite.</p>
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">For Rent / For Sale / Lease</h1>
+            </div>
+            <div className="flex items-center gap-2 mb-3">
+              <Home className="w-5 h-5 text-emerald-400" />
+              <Car className="w-5 h-5 text-amber-400" />
+              <Laptop className="w-5 h-5 text-purple-400" />
+              <span className="font-body text-sm text-white/50">Properties · Vehicles · Gadgets & Equipment</span>
+            </div>
+            <p className="font-body text-base text-white/50 max-w-xl">Houses, lots, vehicles, gadgets & equipment — find the perfect rental, sale, or lease across the Philippines.</p>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-6 relative max-w-xl">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
