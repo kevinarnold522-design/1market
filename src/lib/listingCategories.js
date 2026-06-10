@@ -11,13 +11,13 @@ export const MAIN_CATEGORIES = [
 
 // Subcategories keyed by listing type
 export const SUBCATEGORIES = {
-  shoes: ['Sneakers', 'Formal', 'Sandals', 'Boots', 'Sports', 'Kids', 'Slip-ons', 'Heels'],
-  cars: ['Sedan', 'SUV', 'Van', 'Pickup', 'Hatchback', 'Motorcycle', 'Truck', 'AUV', 'MPV'],
-  electronics: ['Smartphones', 'Laptops', 'Tablets', 'Cameras', 'Audio', 'Gaming', 'TV & Displays', 'Smart Devices', 'Accessories', 'Printers', 'Components'],
-  clothing: ["Men's Tops", "Women's Tops", 'Bottoms', 'Outerwear', 'Formal Wear', 'Activewear', 'Kids Clothing', 'Underwear & Socks', 'Accessories'],
-  furniture: ['Living Room', 'Bedroom', 'Office', 'Outdoor', 'Kitchen', 'Storage', 'Kids Furniture'],
-  houses: ['House & Lot', 'Condominium', 'Townhouse', 'Apartment', 'Vacant Lot', 'Commercial Property', 'Foreclosed'],
-  food: ['Baked Goods', 'Ready-to-Eat Meals', 'Beverages', 'Snacks', 'Ingredients / Grocery', 'Desserts', 'Health Food'],
+  shoes: ['Sneakers', 'Formal', 'Sandals', 'Boots', 'Sports', 'Kids', 'Slip-ons', 'Heels', 'Other / Type Manually'],
+  cars: ['Sedan', 'SUV', 'Van', 'Pickup', 'Hatchback', 'Motorcycle', 'Truck', 'AUV', 'MPV', 'Other / Type Manually'],
+  electronics: ['Smartphones', 'Laptops', 'Tablets', 'Cameras', 'Audio', 'Gaming', 'TV & Displays', 'Smart Devices', 'Accessories', 'Printers', 'Components', 'Other / Type Manually'],
+  clothing: ["Men's Tops", "Women's Tops", 'Bottoms', 'Outerwear', 'Formal Wear', 'Activewear', 'Kids Clothing', 'Underwear & Socks', 'Accessories', 'Other / Type Manually'],
+  furniture: ['Living Room', 'Bedroom', 'Office', 'Outdoor', 'Kitchen', 'Storage', 'Kids Furniture', 'Other / Type Manually'],
+  houses: ['House & Lot', 'Condominium', 'Townhouse', 'Apartment', 'Vacant Lot', 'Commercial Property', 'Foreclosed', 'Other / Type Manually'],
+  food: ['Baked Goods', 'Ready-to-Eat Meals', 'Beverages', 'Snacks', 'Ingredients / Grocery', 'Desserts', 'Health Food', 'Lutong Bahay', 'Karinderya / Turo-turo', 'Other / Type Manually'],
   product: ['General', 'Health & Beauty', 'Sports & Outdoors', 'Toys & Hobbies', 'Books & Media', 'Tools & Hardware', 'Garden & Outdoor', 'Baby & Kids', 'Other / Type Manually'],
   homeappliances: [
     'Refrigerator / Freezer', 'Washing Machine', 'Dryer', 'Air Conditioner', 'Electric Fan',
@@ -25,10 +25,10 @@ export const SUBCATEGORIES = {
     'Blender / Juicer / Food Processor', 'Dishwasher', 'Vacuum Cleaner / Floor Polisher',
     'Water Dispenser', 'Water Heater / Shower Heater', 'Electric Iron', 'Sewing Machine',
     'TV / Smart TV', 'Home Theater / Sound System', 'Projector', 'Generator / Inverter',
-    'Other Appliance / Type Manually',
+    'Other / Type Manually',
   ],
-  mods: ['Car Modifications', 'Motorcycle Mods', 'PC Builds / Upgrades', 'Console Mods', 'Custom Accessories'],
-  other: ['Miscellaneous', 'Collectibles', 'Art & Crafts', 'Musical Instruments', 'Plants & Garden'],
+  mods: ['Car Modifications', 'Motorcycle Mods', 'PC Builds / Upgrades', 'Console Mods', 'Custom Accessories', 'Other / Type Manually'],
+  other: ['Miscellaneous', 'Collectibles', 'Art & Crafts', 'Musical Instruments', 'Plants & Garden', 'Other / Type Manually'],
   services: [
     'Home Cleaning', 'Plumbing', 'Electrical', 'Aircon Services', 'Carpentry', 'Painting',
     'Pest Control', 'Interior Design', 'Moving / Packing',
@@ -90,10 +90,21 @@ export const SUBCATEGORIES = {
   rent_lease: [
     'Room for Rent', 'Apartment / Condo', 'House for Rent', 'Bedspace / Dorm', 'Commercial Space',
     'Office for Rent', 'Venue / Events Space', 'Land for Lease', 'Warehouse / Storage',
+    'Other / Type Manually',
   ],
-  hotel: ['Budget Hotel', 'Boutique Hotel', 'Resort', 'Pension House', 'Airbnb / Homestay', 'Suite'],
-  flights: ['Domestic', 'International', 'Charter'],
-  vehicle_rental: ['Car', 'Van', 'Motorcycle', 'Truck', 'Bus / Shuttle'],
+  // Travel subcategories
+  hotel: ['Budget Hotel', 'Boutique Hotel', 'Resort', 'Pension House', 'Airbnb / Homestay', 'Suite', 'Transient House', 'Villa / Private Pool', 'Other / Type Manually'],
+  resort: ['Beach Resort', 'Mountain Resort', 'Island Resort', 'Eco Resort', 'Spa Resort', 'Family Resort', 'Other / Type Manually'],
+  flights: ['Domestic Flight Package', 'International Flight Package', 'Charter Flight', 'Tour Package (Air + Hotel)', 'Budget Promo Fare', 'Business Class Deal', 'Other / Type Manually'],
+  vehicle_rental: ['Car', 'Van', 'Motorcycle', 'Truck', 'Bus / Shuttle', 'UV Express', 'Other / Type Manually'],
+  ferry: ['Ferry Ticket', 'Fast Craft', 'RORO', 'Bus Package', 'Other / Type Manually'],
+  car_rental: ['Sedan', 'SUV', 'Pickup Truck', '4x4', 'Sports Car', 'Luxury Car', 'Other / Type Manually'],
+  van_rental: ['10-Seater Van', '12-Seater Van', '15-Seater Van', 'L300 / FB Type', 'Coaster', 'Other / Type Manually'],
+  island: ['Island Hopping Tour A', 'Island Hopping Tour B', 'Snorkeling Package', 'Full Day Island Tour', 'Other / Type Manually'],
+  camping: ['Beach Camping', 'Mountain Camping', 'Glamping', 'Forest Camping', 'Other / Type Manually'],
+  hiking: ['Day Hike', 'Overnight Trek', 'Multi-Day Expedition', 'Guided Trek', 'Other / Type Manually'],
+  diving: ['Scuba Diving', 'Freediving', 'Snorkeling', 'Liveaboard', 'Dive Resort Package', 'Other / Type Manually'],
+  surfing: ['Surf Lesson (Beginner)', 'Surf Lesson (Intermediate)', 'Surf Camp Package', 'Board Rental', 'Other / Type Manually'],
 };
 
 export const JOBS_SUBCATEGORIES = SUBCATEGORIES.jobs;

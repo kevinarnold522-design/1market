@@ -6,7 +6,7 @@ import { SUBCATEGORIES } from '../../lib/listingCategories';
 const NAV_CATEGORIES = [
   { label: 'Buy & Sell', href: '/buysell', types: ['product', 'electronics', 'clothing', 'shoes', 'cars', 'furniture', 'houses', 'mods', 'other'], color: '#3E97F1' },
   { label: 'Food',        href: '/food',    types: ['food'],                                color: '#f97316' },
-  { label: 'Travel',      href: '/travel',  types: ['hotel', 'flights', 'vehicle_rental'], color: '#22d3ee' },
+  { label: 'Travel',      href: '/travel',  types: ['hotel', 'resort', 'flights', 'ferry', 'car_rental', 'van_rental', 'island', 'camping', 'hiking', 'diving', 'surfing', 'vehicle_rental'], color: '#22d3ee' },
   { label: 'Rent & Lease', href: '/rent',    types: ['rent_lease'],                          color: '#a78bfa' },
   { label: 'Services',    href: '/services',types: ['services'],                            color: '#34d399' },
   { label: 'Jobs',        href: '/jobs',    types: ['jobs'],                               color: '#fbbf24' },
@@ -17,6 +17,8 @@ const TYPE_LABELS = {
   product: 'General Products', electronics: 'Electronics', clothing: 'Clothing', shoes: 'Shoes',
   cars: 'Cars & Vehicles', furniture: 'Furniture', houses: 'Real Estate', mods: 'Mods', other: 'Other',
   food: 'Food', hotel: 'Hotels', flights: 'Flights', vehicle_rental: 'Vehicle Rental',
+  resort: 'Resorts', ferry: 'Ferry & Bus', car_rental: 'Car Rentals', van_rental: 'Van Rentals',
+  island: 'Island Hopping', camping: 'Camping', hiking: 'Hiking', diving: 'Diving', surfing: 'Surfing',
   rent_lease: 'For Rent', services: 'Services', jobs: 'Jobs',
 };
 

@@ -5,6 +5,7 @@ import AddListingModal from './AddListingModal';
 import MemberSignupModal from './MemberSignupModal';
 import TravelPostModal from './travel/TravelPostModal';
 import CategoryIcon from './CategoryIcon';
+import { useNavigate } from 'react-router-dom';
 
 const CATEGORIES = [
   {
@@ -60,11 +61,9 @@ const CATEGORIES = [
 export default function PostListingMenu({ user, compact = false, iconOnly = false }) {
   const [open, setOpen] = useState(false);
   const [expandedCat, setExpandedCat] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [showTravelModal, setShowTravelModal] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
-  const [selectedType, setSelectedType] = useState('');
   const ref = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) { setOpen(false); setExpandedCat(null); } };
@@ -72,30 +71,30 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  const CATEGORY_ROUTES = {
+    buysell: '/buysell',
+    jobs: '/jobs',
+    food: '/food',
+    rent: '/rent',
+    services: '/services',
+    travel: '/travel',
+  };
+
   const handleSelectSubtype = (cat, subtype) => {
     setOpen(false);
     setExpandedCat(null);
     if (!user) { setShowSignup(true); return; }
-    if (cat.modal === 'travel') {
-      setShowTravelModal(true);
-    } else {
-      setSelectedType(subtype.type);
-      setShowModal(true);
-    }
+    const route = CATEGORY_ROUTES[cat.key] || '/explore';
+    navigate(`${route}?post=1&type=${subtype.type}`);
   };
 
   const handleSelectCat = (cat) => {
     if (!user) { setOpen(false); setShowSignup(true); return; }
-    // If only one subtype, open directly
     if (cat.subtypes.length === 1) {
       setOpen(false);
       setExpandedCat(null);
-      if (cat.modal === 'travel') {
-        setShowTravelModal(true);
-      } else {
-        setSelectedType(cat.subtypes[0].type);
-        setShowModal(true);
-      }
+      const route = CATEGORY_ROUTES[cat.key] || '/explore';
+      navigate(`${route}?post=1&type=${cat.subtypes[0].type}`);
     } else {
       setExpandedCat(expandedCat === cat.key ? null : cat.key);
     }
@@ -179,16 +178,6 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
       </div>
 
       <AnimatePresence>
-        {showModal && (
-          <AddListingModal
-            user={user}
-            defaultType={selectedType}
-            onClose={() => { setShowModal(false); setSelectedType(''); }}
-          />
-        )}
-        {showTravelModal && (
-          <TravelPostModal user={user} onClose={() => setShowTravelModal(false)} />
-        )}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
       </AnimatePresence>
     </>

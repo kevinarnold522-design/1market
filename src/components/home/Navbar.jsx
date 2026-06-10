@@ -258,28 +258,33 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-4">
               {isAuthenticated && user ? (
                 <div className="relative" ref={dropdownRef}>
-                  <button
-                    onClick={() => setProfileOpen(p => !p)}
-                    title="View your profile or account menu"
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 border border-white/10 hover:border-[#00D4FF]/40 transition-all">
-                    <div className="w-7 h-7 rounded-lg overflow-hidden flex-shrink-0">
-                      {user?.profile_picture ? (
-                        <img src={user.profile_picture} alt="pfp" className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-xs">
-                          {initials}
-                        </div>
-                      )}
-                    </div>
-                    <div className="text-left hidden sm:block">
-                      <div className="flex items-center gap-1">
-                        <p className="font-body text-xs text-white font-semibold leading-tight max-w-[80px] truncate">{user.full_name?.split(' ')[0] || 'Account'}</p>
-                        {(isAdmin || isVerified) && isSeller && <MetaVerifiedBadge size="xs" label="" />}
+                  <div className="flex items-center gap-1">
+                    <Link to="/profile" className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-white/10 transition-all"
+                      title="Go to my profile">
+                      <div className="w-7 h-7 rounded-lg overflow-hidden flex-shrink-0">
+                        {user?.profile_picture ? (
+                          <img src={user.profile_picture} alt="pfp" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-xs">
+                            {initials}
+                          </div>
+                        )}
                       </div>
-                      <p className="font-body text-[9px] text-[#00D4FF] leading-tight">{adminLabel}</p>
-                    </div>
-                    <ChevronDown className="w-3 h-3 text-white/40" />
-                  </button>
+                      <div className="text-left hidden sm:block">
+                        <div className="flex items-center gap-1">
+                          <p className="font-body text-xs text-white font-semibold leading-tight max-w-[80px] truncate">{user.full_name?.split(' ')[0] || 'Account'}</p>
+                          {(isAdmin || isVerified) && isSeller && <MetaVerifiedBadge size="xs" label="" />}
+                        </div>
+                        <p className="font-body text-[9px] text-[#00D4FF] leading-tight">{adminLabel}</p>
+                      </div>
+                    </Link>
+                    <button
+                      onClick={() => setProfileOpen(p => !p)}
+                      title="Open account menu"
+                      className="flex items-center px-1 py-1.5 rounded-xl bg-white/10 border border-white/10 hover:border-[#00D4FF]/40 transition-all">
+                      <ChevronDown className="w-3 h-3 text-white/40" />
+                    </button>
+                  </div>
 
                   <AnimatePresence>
                     {profileOpen && (

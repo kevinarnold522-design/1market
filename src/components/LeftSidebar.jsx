@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Plane, UtensilsCrossed, ShoppingBag, Building2, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, ChevronLeft, ChevronRight, ShoppingCart, Package, BarChart2, Settings, LogOut, Shield } from 'lucide-react';
+import { Home, Plane, UtensilsCrossed, ShoppingBag, Car, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, ChevronLeft, ChevronRight, ShoppingCart, Package, BarChart2, Settings, LogOut, Shield, KeyRound } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import PostListingMenu from './PostListingMenu';
 import NotificationsBell from './NotificationsBell';
@@ -12,7 +12,7 @@ const NAV_ITEMS = [
   { to: '/travel',     icon: Plane,          label: 'Travel',       color: '#0ea5e9' },
   { to: '/food',       icon: UtensilsCrossed, label: 'Food',        color: '#f97316' },
   { to: '/buysell',    icon: ShoppingBag,    label: 'Buy & Sell',   color: '#8b5cf6' },
-  { to: '/rent',       icon: Building2,      label: 'Rent / Sale',  color: '#10b981' },
+  { to: '/rent',       icon: KeyRound,       label: 'Rent / Sale',  color: '#10b981' },
   { to: '/services',   icon: Wrench,         label: 'Services',     color: '#3b82f6' },
   { to: '/jobs',       icon: Briefcase,      label: 'Jobs',         color: '#f59e0b' },
   { to: '/community',  icon: Users,          label: 'Community',    color: '#a855f7' },

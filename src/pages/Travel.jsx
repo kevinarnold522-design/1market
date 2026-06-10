@@ -182,6 +182,9 @@ function ShareModal({ listing, onClose }) {
 }
 
 export default function Travel() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const shouldPost = urlParams.get('post') === '1';
+
   const [search, setSearch] = useState('');
   const [dbListings, setDbListings] = useState([]);
   const [shareTarget, setShareTarget] = useState(null);
@@ -196,7 +199,10 @@ export default function Travel() {
 
   useEffect(() => {
     base44.auth.isAuthenticated().then(ok => {
-      if (ok) base44.auth.me().then(u => setCurrentUser(u)).catch(() => {});
+      if (ok) base44.auth.me().then(u => {
+        setCurrentUser(u);
+        if (shouldPost) setShowTravelPost(true);
+      }).catch(() => {});
     }).catch(() => {});
     base44.entities.Listing.filter({ main_category: 'travel', is_active: true }, '-created_date', 100)
       .then(res => setDbListings(res)).catch(() => {});

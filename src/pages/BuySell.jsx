@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Plus, Tag, MapPin, Star, Heart, MessageSquare, Truck, SlidersHorizontal, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import FilterSidebar from '@/components/FilterSidebar';
 import { useAuth } from '@/lib/AuthContext';
 import AddListingModal from '@/components/AddListingModal';
@@ -112,17 +112,23 @@ function ListingCard({ listing, idx }) {
 
 export default function BuySell() {
   const { user, isAuthenticated } = useAuth();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const urlType = params.get('type');
+  const shouldPost = params.get('post') === '1';
+
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState(urlType || 'all');
   const [activeLocation, setActiveLocation] = useState('All');
   const [priceMin, setPriceMin] = useState('');
   const [priceMax, setPriceMax] = useState('');
   const [activeConditions, setActiveConditions] = useState([]);
   const [activeDelivery, setActiveDelivery] = useState([]);
   const [sortBy, setSortBy] = useState('Newest First');
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(shouldPost && !!user);
+  const [defaultType, setDefaultType] = useState(urlType || 'product');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   const isSeller = user?.user_type === 'seller' || user?.user_type === 'business' || user?.is_seller || user?.role === 'admin';
@@ -326,7 +332,7 @@ export default function BuySell() {
         {showAddModal && user && (
           <AddListingModal
             onClose={() => setShowAddModal(false)}
-            defaultType="product"
+            defaultType={defaultType}
             user={user}
           />
         )}
