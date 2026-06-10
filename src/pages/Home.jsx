@@ -4,7 +4,7 @@ import MascotDog from '../components/MascotDog';
 import Footer from '../components/home/Footer';
 import WelcomeSplash from '../components/home/WelcomeSplash';
 import CategoryCards from '../components/home/CategoryCards';
-import OneStopShopDashboard from '../components/home/OneStopShopDashboard';
+import CompactOneStopDashboard from '../components/home/OneStopShopDashboard';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
 import AdOverlay from '../components/AdOverlay';
@@ -14,8 +14,7 @@ import WaveBackground from '../components/WaveBackground';
 // Lazy-load heavy/below-fold sections
 const HeroSection = lazy(() => import('../components/home/HeroSection'));
 const CategoryCards2 = CategoryCards; // already imported above
-const WhatMakesUsSpecial = lazy(() => import('../components/home/WhatMakesUsSpecial'));
-const OneStopShopDashboardLazy = lazy(() => import('../components/home/OneStopShopDashboard'));
+const CompactOneStopDashboardLazy = lazy(() => import('../components/home/OneStopShopDashboard'));
 const FlashDealsSection = lazy(() => import('../components/home/FlashDealsSection'));
 const PhFlightDeals = lazy(() => import('../components/home/PhFlightDeals'));
 const PhHotelDeals = lazy(() => import('../components/home/PhHotelDeals'));
@@ -49,11 +48,9 @@ export default function Home() {
         <WelcomeSplash />
         
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>
-        <Suspense fallback={<Spinner />}><WhatMakesUsSpecial /></Suspense>
-        <Suspense fallback={<Spinner />}><WhatMakesUsSpecial /></Suspense>
         <Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense>
         <CategoryCards />
-        <Suspense fallback={<Spinner />}><OneStopShopDashboardLazy /></Suspense>
+        <Suspense fallback={<Spinner />}><CompactOneStopDashboardLazy /></Suspense>
         <Suspense fallback={<Spinner />}><PhFlightDeals /></Suspense>
         <Suspense fallback={<Spinner />}><PhHotelDeals /></Suspense>
         <Suspense fallback={<Spinner />}><FeaturedListings /></Suspense>

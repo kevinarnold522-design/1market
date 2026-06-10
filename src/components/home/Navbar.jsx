@@ -154,7 +154,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Top Banner - Social Links - Always Visible */}
+      {/* Top Banner - Social Media Links - PERMANENTLY VISIBLE FOR ALL USERS */}
       <div className={`fixed top-0 left-0 right-0 z-[60] text-white py-2 px-4`}
         style={{ background: 'linear-gradient(90deg,#0033CC,#1a3de8,#0033CC)', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
@@ -182,7 +182,7 @@ export default function Navbar() {
               </span>
             )}
           </div>
-          {/* Right: 1MarketPH Social Links - Always Visible */}
+          {/* Right: 1MarketPH Social Links - ALWAYS VISIBLE */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
             <span className="font-body text-[9px] text-white/40 hidden md:block mr-1">Follow us:</span>
             <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
