@@ -131,8 +131,8 @@ export default function HeroSection({ heroImage }) {
             transition={{ duration: 1, delay: 0.5 }}
             className="relative order-first lg:order-last flex items-center justify-center">
             <img 
-              src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/b00d7d6ed_92525A52-5C4B-496A-B9DF-F84AECB255D1.png"
-              alt="1Market Philippines mascot"
+              src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/5ff8f71e7_11B06DC9-6DB1-4C2D-8FD7-9334440CEFF0.png"
+              alt="1Market Philippines mascot car"
               className="w-full max-w-md drop-shadow-2xl"
               style={{ filter: 'drop-shadow(0 20px 40px rgba(0,212,255,0.2))' }}
             />
