@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Home, Plane, UtensilsCrossed, ShoppingBag, KeyRound, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, LogOut, Ghost, ChevronDown, Globe, Package, BarChart2, Settings, Shield, Search } from 'lucide-react';
+import { Menu, X, Home, Plane, UtensilsCrossed, ShoppingBag, KeyRound, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, LogOut, Ghost, ChevronDown, Globe, Package, BarChart2, Settings, Shield, Search, ShoppingCart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -66,7 +66,7 @@ export default function FloatingNavbar() {
       <motion.div
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] rounded-2xl shadow-2xl"
+        className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] rounded-2xl shadow-2xl w-[95%] max-w-6xl"
         style={{
           background: scrolled ? 'rgba(13,31,60,0.95)' : 'rgba(13,31,60,0.85)',
           backdropFilter: 'blur(24px)',
@@ -103,15 +103,16 @@ export default function FloatingNavbar() {
           </form>
 
           {/* Navigation Items (Desktop) */}
-          <div className="hidden lg:flex items-center gap-1">
-            {NAV_ITEMS.slice(0, 5).map((item) => (
+          <div className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
+            {NAV_ITEMS.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl transition-all hover:bg-white/10 group"
+                className="flex items-center gap-1.5 px-2 py-1.5 rounded-xl transition-all hover:bg-white/10 group"
                 title={item.label}
               >
                 <item.icon className="w-3.5 h-3.5 text-white/60 group-hover:text-white transition-colors" />
+                <span className="font-body text-[10px] font-semibold text-white/70 group-hover:text-white whitespace-nowrap">{item.label}</span>
               </Link>
             ))}
           </div>
@@ -181,42 +182,67 @@ export default function FloatingNavbar() {
                         </div>
 
                         {/* Menu Items */}
-                        <div className="p-2 space-y-0.5">
+                        <div className="p-2 space-y-0.5 max-h-[70vh] overflow-y-auto">
+                          {/* Buyer Section */}
                           <Link to="/profile" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
                             <User className="w-3.5 h-3.5 text-[#00D4FF]" /> My Profile
                           </Link>
                           <Link to="/favourites" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-pink-400 font-body text-xs">
-                            <Heart className="w-3.5 h-3.5 text-pink-400" /> Saved
+                            <Heart className="w-3.5 h-3.5 text-pink-400" /> Saved Favourites
                           </Link>
                           <Link to="/messages" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-[#00D4FF] font-body text-xs">
                             <MessageSquare className="w-3.5 h-3.5 text-[#00D4FF]" /> Messages
                           </Link>
-                          {(isSeller || isGhostSession) && (
+                          <Link to="/profile?tab=orders" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-[#00D4FF] font-body text-xs">
+                            <Package className="w-3.5 h-3.5 text-[#00D4FF]" /> My Orders
+                          </Link>
+                          <Link to="/profile?tab=cart" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400 font-body text-xs">
+                            <ShoppingCart className="w-3.5 h-3.5 text-green-400" /> My Cart
+                          </Link>
+
+                          {/* Seller Section */}
+                          {(isSeller || isGhostSession || isAdmin) && (
                             <>
                               <div className="border-t border-white/8 my-1" />
+                              <p className="px-3 py-1 font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold">Seller Tools</p>
+                              <div className="px-3 py-1">
+                                <PostListingMenu user={activeUser} compact />
+                              </div>
                               <Link to="/profile?tab=listings" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-[#00D4FF] font-body text-xs">
                                 <Package className="w-3.5 h-3.5 text-[#00D4FF]" /> My Listings
                               </Link>
+                              <Link to="/profile?tab=sellerorders" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400 font-body text-xs">
+                                <Package className="w-3.5 h-3.5 text-green-400" /> Seller Orders
+                              </Link>
                               <Link to="/profile?tab=analytics" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-yellow-400 font-body text-xs">
-                                <BarChart2 className="w-3.5 h-3.5 text-yellow-400" /> Analytics
+                                <BarChart2 className="w-3.5 h-3.5 text-yellow-400" /> Statistics Dashboard
+                              </Link>
+                              <Link to={`/seller/${isGhostSession ? (ghostUser?.username || ghostUser?.id) : (activeUser?.username || activeUser?.id)}`} onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400 font-body text-xs">
+                                <Globe className="w-3.5 h-3.5 text-green-400" /> My Seller Profile
                               </Link>
                             </>
                           )}
+
+                          {/* Admin Section */}
                           {isAdmin && !isGhostSession && (
                             <>
                               <div className="border-t border-white/8 my-1" />
+                              <p className="px-3 py-1 font-body text-[9px] text-amber-400/60 uppercase tracking-wider font-bold">Admin Panel</p>
                               <Link to="/admin" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-amber-500/10 transition-colors text-amber-400 font-body text-xs">
-                                <Shield className="w-3.5 h-3.5" /> Admin Panel
+                                <Shield className="w-3.5 h-3.5" /> CEO Dashboard
+                                {isAdmin && <MetaVerifiedBadge size="xs" label="" />}
                               </Link>
                               <Link to="/connected-accounts" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-purple-500/10 transition-colors text-purple-400 font-body text-xs">
                                 <Users className="w-3.5 h-3.5" /> Connected Accounts
                               </Link>
                             </>
                           )}
+
+                          {/* Sign Out */}
                           <div className="border-t border-white/8 my-1" />
                           {isGhostSession ? (
                             <button onClick={() => { clearImpersonation(); setShowProfile(false); }} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 transition-colors text-red-300 font-body text-xs font-bold">
-                              <LogOut className="w-3.5 h-3.5" /> Sign Out Ghost
+                              <LogOut className="w-3.5 h-3.5" /> Sign Out of Ghost
                             </button>
                           ) : (
                             <button onClick={() => { logout(true); setShowProfile(false); }} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 transition-colors text-red-400 font-body text-xs">
