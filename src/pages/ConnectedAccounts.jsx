@@ -95,6 +95,10 @@ export default function ConnectedAccounts() {
       const randomStr = Math.random().toString(36).substring(2, 8);
       const ghostId = `ghost_${timestamp}_${randomStr}`;
       const ghostEmail = `${ghostId}@1marketph-ghost.internal`;
+      // Create clean username without special characters
+      const cleanUsername = `ghost_${timestamp}_${randomStr}`.toLowerCase().replace(/[^a-z0-9_]/g, '');
+      
+      console.log('Creating ghost account:', { ghostId, ghostEmail, cleanUsername });
       
       if (editingAccount) {
         await base44.entities.User.update(editingAccount.id, {
@@ -147,8 +151,8 @@ export default function ConnectedAccounts() {
           ghost_id: ghostId,
           ghost_linked: false,
           
-          // Username
-          username: ghostId.toLowerCase().replace(/[^a-z0-9_]/g, ''),
+          // Username - clean and URL-safe
+          username: cleanUsername,
           username_set: false,
           
           // Profile
@@ -183,21 +187,55 @@ export default function ConnectedAccounts() {
         };
         
         const result = await base44.entities.User.create(userData);
+        console.log('✓ Ghost account created:', result);
         clearInterval(progressInterval);
         setSaveProgress(100);
         showToast('Account created! Redirecting...');
         
-        // Redirect to the ghost account's profile page
-        setTimeout(() => {
-          setSaving(false);
-          setSaveProgress(0);
-          setShowForm(false);
-          setEditingAccount(null);
-          setForm(EMPTY_FORM);
-          loadAccounts();
-          // Navigate to the newly created ghost profile
-          navigate(`/seller/${userData.username}`);
-        }, 800);
+        // Wait for database to persist then redirect
+        setTimeout(async () => {
+          // Verify the account exists before redirecting
+          try {
+            const verifyUser = await base44.entities.User.filter({ username: cleanUsername });
+            console.log('Verification query result:', verifyUser);
+            if (verifyUser && verifyUser.length > 0) {
+              console.log('✓ Verified account exists, redirecting to:', `/seller/${cleanUsername}`);
+              setSaving(false);
+              setSaveProgress(0);
+              setShowForm(false);
+              setEditingAccount(null);
+              setForm(EMPTY_FORM);
+              loadAccounts();
+              navigate(`/seller/${cleanUsername}`);
+            } else {
+              console.warn('⚠ Account not found in verification, retrying...');
+              // Retry once more after another short delay
+              setTimeout(async () => {
+                const retryUser = await base44.entities.User.filter({ username: cleanUsername });
+                if (retryUser && retryUser.length > 0) {
+                  navigate(`/seller/${cleanUsername}`);
+                } else {
+                  showToast('Account created but profile not ready yet. Please refresh.');
+                  setSaving(false);
+                  setSaveProgress(0);
+                  setShowForm(false);
+                  setEditingAccount(null);
+                  setForm(EMPTY_FORM);
+                  loadAccounts();
+                }
+              }, 1000);
+            }
+          } catch (err) {
+            console.error('✗ Verification failed:', err);
+            showToast('Account created!');
+            setSaving(false);
+            setSaveProgress(0);
+            setShowForm(false);
+            setEditingAccount(null);
+            setForm(EMPTY_FORM);
+            loadAccounts();
+          }
+        }, 1000);
       }
     } catch (err) {
       console.error('Failed to create account:', err);
