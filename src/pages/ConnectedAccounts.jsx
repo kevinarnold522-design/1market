@@ -43,6 +43,7 @@ export default function ConnectedAccounts() {
   const [editingAccount, setEditingAccount] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [saveProgress, setSaveProgress] = useState(0);
   const [toast, setToast] = useState('');
   const [activeSession, setActiveSession] = useState(null);
   const navigate = useNavigate();
@@ -76,8 +77,20 @@ export default function ConnectedAccounts() {
   const handleCreate = async () => {
     if (!form.full_name.trim()) { showToast('Name is required'); return; }
     setSaving(true);
+    setSaveProgress(0);
     
     try {
+      // Simulate progress for better UX
+      const progressInterval = setInterval(() => {
+        setSaveProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90;
+          }
+          return prev + 10;
+        });
+      }, 150);
+      
       const ghostId = `ghost_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
       if (editingAccount) {
         await base44.entities.User.update(editingAccount.id, {
@@ -93,6 +106,8 @@ export default function ConnectedAccounts() {
           social_tiktok: form.social_tiktok,
           is_seller: form.user_type === 'seller' || form.user_type === 'business',
         });
+        clearInterval(progressInterval);
+        setSaveProgress(100);
         showToast('Account updated!');
       } else {
         await base44.entities.User.create({
@@ -115,16 +130,22 @@ export default function ConnectedAccounts() {
           role: 'user',
           seller_page_enabled: true,
         });
+        clearInterval(progressInterval);
+        setSaveProgress(100);
         showToast('Account created!');
       }
-      setSaving(false);
-      setShowForm(false);
-      setEditingAccount(null);
-      setForm(EMPTY_FORM);
-      loadAccounts();
+      setTimeout(() => {
+        setSaving(false);
+        setSaveProgress(0);
+        setShowForm(false);
+        setEditingAccount(null);
+        setForm(EMPTY_FORM);
+        loadAccounts();
+      }, 500);
     } catch (err) {
       console.error('Failed to create account:', err);
       setSaving(false);
+      setSaveProgress(0);
       showToast('Failed to create account. Please try again.');
     }
   };
@@ -341,12 +362,20 @@ export default function ConnectedAccounts() {
                 </div>
               </div>
 
-              <button onClick={handleCreate} disabled={saving}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-colors disabled:opacity-50"
-                style={{ background: 'linear-gradient(135deg,#a855f7,#7c3aed)' }}>
-                {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Save className="w-4 h-4" />}
-                {editingAccount ? 'Save Changes' : 'Create Account'}
-              </button>
+              <div className="space-y-2">
+                <button onClick={handleCreate} disabled={saving}
+                  className="w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-colors disabled:opacity-50"
+                  style={{ background: 'linear-gradient(135deg,#a855f7,#7c3aed)' }}>
+                  {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Save className="w-4 h-4" />}
+                  {saving ? `Creating... ${saveProgress}%` : (editingAccount ? 'Save Changes' : 'Create Account')}
+                </button>
+                {saving && (
+                  <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-purple-400 to-cyan-400 transition-all duration-300"
+                      style={{ width: `${saveProgress}%` }} />
+                  </div>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

@@ -423,7 +423,7 @@ export default function Navbar() {
                                 <PostListingMenu user={user} compact={false} />
                               </div>
                               {/* Admin-only: Connected Accounts below Post an Ad */}
-                              {isAdmin && (
+                              {(isAdmin || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com') && (
                                 <Link to="/connected-accounts" onClick={() => setProfileOpen(false)}
                                   className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold mb-1"
                                   style={{ background: 'linear-gradient(135deg,rgba(168,85,247,0.15),rgba(124,58,237,0.1))', border: '1px solid rgba(168,85,247,0.3)' }}>
@@ -620,7 +620,7 @@ export default function Navbar() {
                         </button>
                       </>
                     )}
-                    {user.role === 'admin' && (
+                    {(user.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com') && (
                       <>
                         <Link to="/admin" onClick={() => setMenuOpen(false)}
                           className="block text-amber-400 font-body text-sm font-semibold py-2">
