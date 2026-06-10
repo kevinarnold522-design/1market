@@ -125,6 +125,19 @@ export default function ConnectedAccounts() {
           social_tiktok: form.social_tiktok,
           seller_page_enabled: true,
           role: 'user',
+          // Required fields with defaults
+          username: ghostId,
+          username_set: false,
+          verification_submitted: false,
+          member_type: form.user_type,
+          location: form.location || 'Manila',
+          profile_picture: '',
+          cover_photo: '',
+          seller_bio: form.bio,
+          business_type: '',
+          social_youtube: '',
+          social_viber: '',
+          social_telegram: '',
         };
         if (form.user_type === 'business') {
           userData.account_type = 'business_owner';
