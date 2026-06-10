@@ -181,7 +181,7 @@ export default function Jobs() {
 
   const [activeType, setActiveType] = useState('all');
   const [locationFilter, setLocationFilter] = useState('All');
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(urlSub || '');
   const [applyJob, setApplyJob] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);

@@ -223,9 +223,9 @@ export default function Services() {
   const urlParams = new URLSearchParams(window.location.search);
   const urlSub = urlParams.get('sub');
 
-  const [activeCategory, setActiveCategory] = useState(null);
+  const [activeCategory, setActiveCategory] = useState(urlSub ? 'all' : null);
   const [locationFilter, setLocationFilter] = useState('All');
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(urlSub || '');
   const [contactItem, setContactItem] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
   const [showAddListing, setShowAddListing] = useState(false);

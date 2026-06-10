@@ -634,48 +634,43 @@ export default function ListingDetail() {
                 </div>
               )}
 
-              {/* Buy Now — ONLY for buysell category listings */}
-              {listing.main_category === 'buysell' && (
-                listing.quantity === 0 ? (
-                  <div className="w-full mb-4 py-3 rounded-xl text-center font-body font-bold text-sm text-red-400 border border-red-500/30 bg-red-500/5">
-                    Out of Stock
-                  </div>
-                ) : (
-                  <button onClick={() => {
+              {/* Buy Now (buysell only) OR Contact Seller/Business (all others) */}
+              {(() => {
+                const BUYSELL_TYPES = ['product','electronics','shoes','clothing','furniture','homeappliances','cars','houses','mods','other'];
+                const isBuySell = listing.main_category === 'buysell' || BUYSELL_TYPES.includes(listing.type);
+                const isBusiness = listing.main_category === 'food' || listing.business_id;
+                if (isBuySell) {
+                  return listing.quantity === 0 ? (
+                    <div className="w-full mb-4 py-3 rounded-xl text-center font-body font-bold text-sm text-red-400 border border-red-500/30 bg-red-500/5">Out of Stock</div>
+                  ) : (
+                    <button onClick={() => { if (!user) { base44.auth.redirectToLogin(window.location.href); return; } setShowReceipt(true); }}
+                      className="w-full mb-4 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-[1.01]"
+                      style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 20px rgba(0,212,255,0.3)' }}>
+                      <ShoppingCart className="w-4 h-4" /> Buy Now / Get Receipt
+                    </button>
+                  );
+                }
+                return (
+                  <button onClick={async () => {
                     if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
-                    setShowReceipt(true);
+                    if (listing.email_contact) {
+                      await base44.entities.ChatMessage.create({
+                        listing_id: listing.id, listing_title: listing.title,
+                        seller_email: listing.email_contact, buyer_email: user.email,
+                        sender_email: user.email, sender_name: user.full_name || user.email,
+                        message: 'Hi! I am interested in your listing: ' + listing.title,
+                        chat_type: 'listing',
+                      });
+                      window.location.href = '/messages';
+                    }
                   }}
-                    className="w-full mb-4 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-[1.01]"
-                    style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 20px rgba(0,212,255,0.3)' }}>
-                    <ShoppingCart className="w-4 h-4" /> Buy Now / Get Receipt
+                    className="w-full mb-4 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-[1.01] border border-[#00D4FF]/40"
+                    style={{ background: 'rgba(0,212,255,0.12)', boxShadow: '0 0 16px rgba(0,212,255,0.15)' }}>
+                    <MessageSquare className="w-4 h-4 text-[#00D4FF]" />
+                    <span className="text-[#00D4FF]">{isBusiness ? 'Contact Business' : 'Contact Seller'}</span>
                   </button>
-                )
-              )}
-
-              {/* Contact Seller / Contact Business — for all NON-buysell listings */}
-              {listing.main_category !== 'buysell' && listing.email_contact && (
-                <button onClick={async () => {
-                  if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
-                  await base44.entities.ChatMessage.create({
-                    listing_id: listing.id,
-                    listing_title: listing.title,
-                    seller_email: listing.email_contact,
-                    buyer_email: user.email,
-                    sender_email: user.email,
-                    sender_name: user.full_name || user.email,
-                    message: 'Hi! I am interested in your listing: ' + listing.title,
-                    chat_type: 'listing',
-                  });
-                  window.location.href = '/messages';
-                }}
-                  className="w-full mb-4 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-[1.01] border border-[#00D4FF]/40"
-                  style={{ background: 'rgba(0,212,255,0.12)', boxShadow: '0 0 16px rgba(0,212,255,0.15)' }}>
-                  <MessageSquare className="w-4 h-4 text-[#00D4FF]" />
-                  <span className="text-[#00D4FF]">
-                    {listing.main_category === 'food' || listing.business_id ? 'Contact Business' : 'Contact Seller'}
-                  </span>
-                </button>
-              )}
+                );
+              })()}
 
               {/* Contact */}
               {listing.phone && (

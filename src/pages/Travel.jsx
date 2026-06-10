@@ -184,8 +184,9 @@ function ShareModal({ listing, onClose }) {
 export default function Travel() {
   const urlParams = new URLSearchParams(window.location.search);
   const shouldPost = urlParams.get('post') === '1';
+  const urlSub = urlParams.get('sub');
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(urlSub || '');
   const [dbListings, setDbListings] = useState([]);
   const [shareTarget, setShareTarget] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);

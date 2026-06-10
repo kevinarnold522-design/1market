@@ -287,7 +287,9 @@ const BUSINESS_ADMIN_FIELDS = [
 ];
 
 export default function Food() {
-  const [search, setSearch] = useState('');
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlSub = urlParams.get('sub');
+  const [search, setSearch] = useState(urlSub || '');
   const [locationFilter, setLocationFilter] = useState('All');
   const [activeTypes, setActiveTypes] = useState([]);
   const [selectedSubcat, setSelectedSubcat] = useState(null);

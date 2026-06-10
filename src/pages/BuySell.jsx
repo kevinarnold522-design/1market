@@ -115,11 +115,12 @@ export default function BuySell() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const urlType = params.get('type');
+  const urlSub = params.get('sub');
   const shouldPost = params.get('post') === '1';
 
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(urlSub || '');
   const [activeCategory, setActiveCategory] = useState(urlType || 'all');
   const [activeLocation, setActiveLocation] = useState('All');
   const [priceMin, setPriceMin] = useState('');
@@ -163,7 +164,8 @@ export default function BuySell() {
   const filtered = listings
     .filter(l => {
       if (search && !l.title?.toLowerCase().includes(search.toLowerCase()) &&
-        !l.description?.toLowerCase().includes(search.toLowerCase())) return false;
+        !l.description?.toLowerCase().includes(search.toLowerCase()) &&
+        !l.subcategory?.toLowerCase().includes(search.toLowerCase())) return false;
       if (activeCategory !== 'all' && l.type !== activeCategory) return false;
       if (activeLocation !== 'All' && !l.location?.includes(activeLocation)) return false;
       if (priceMin && l.price < Number(priceMin)) return false;
@@ -242,9 +244,21 @@ export default function BuySell() {
         {/* Listings Grid */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-4">
-            <p className="font-body text-sm text-white/40">
-              {loading ? 'Loading...' : `${filtered.length} listing${filtered.length !== 1 ? 's' : ''} found`}
-            </p>
+            <div>
+              {urlSub && (
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="px-3 py-1 rounded-full font-body text-xs font-bold"
+                    style={{ background: 'rgba(0,212,255,0.15)', border: '1px solid rgba(0,212,255,0.35)', color: '#00D4FF' }}>
+                    {urlType?.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())} › {urlSub}
+                  </span>
+                  <button onClick={() => { setSearch(''); window.history.replaceState({}, '', '/buysell'); }}
+                    className="text-white/30 hover:text-white/60 text-xs font-body">✕ Clear</button>
+                </div>
+              )}
+              <p className="font-body text-sm text-white/40">
+                {loading ? 'Loading...' : `${filtered.length} listing${filtered.length !== 1 ? 's' : ''} found`}
+              </p>
+            </div>
           </div>
 
           {loading ? (

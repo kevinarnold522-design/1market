@@ -205,7 +205,7 @@ export default function ForRent() {
   const [activeCategory, setActiveCategory] = useState(urlType || null);
   const [locationFilter, setLocationFilter] = useState('All');
   const [spaceType, setSpaceType] = useState('All Types');
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(urlSub || '');
   const [contactItem, setContactItem] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
   const [showAddListing, setShowAddListing] = useState(false);
