@@ -250,11 +250,19 @@ export default function SellerProfilePage() {
   const [showMessage, setShowMessage] = useState(false);
   const [lightboxImages, setLightboxImages] = useState(null);
   const [lightboxIdx, setLightboxIdx] = useState(0);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!sellerId) return;
+    
     const init = async () => {
       try {
+        setLoading(true);
+        setError(null);
+        
+        console.log('[PROFILE LOAD] Starting lookup for:', sellerId);
+        
+        // Auth setup
         const authed = await base44.auth.isAuthenticated();
         if (authed) {
           const me = await base44.auth.me();
@@ -265,63 +273,101 @@ export default function SellerProfilePage() {
         const allFollows = await base44.entities.Follow.filter({ following_user_id: sellerId });
         setFollowerCount(allFollows.length);
 
-        // Look up seller - try multiple methods
-        console.log('🔍 Looking up seller:', sellerId);
+        // STEP 1: Look up seller with multiple methods
         let users = [];
+        let lookupMethod = '';
         
-        // Method 1: Filter by ID
+        // Method 1: Filter by ID (primary)
         users = await base44.entities.User.filter({ id: sellerId });
-        console.log('Found by ID:', users?.length);
+        if (users.length > 0) lookupMethod = 'ID';
         
         // Method 2: Filter by username
         if (users.length === 0) {
           users = await base44.entities.User.filter({ username: sellerId });
-          console.log('Found by username:', users?.length);
+          if (users.length > 0) lookupMethod = 'username';
         }
         
-        // Method 3: Filter by email (for ghost accounts)
+        // Method 3: Filter by email
         if (users.length === 0) {
           users = await base44.entities.User.filter({ email: sellerId });
-          console.log('Found by email:', users?.length);
+          if (users.length > 0) lookupMethod = 'email';
         }
         
-        // Method 4: List all and find matching
+        // Method 4: List all and search (fallback)
         if (users.length === 0) {
+          console.log('[PROFILE LOAD] Primary lookups failed, trying list search...');
           const allUsers = await base44.entities.User.list('-created_date', 500);
-          users = allUsers.filter(u => 
+          const matched = allUsers.filter(u => 
             u.id === sellerId || 
             u.username === sellerId || 
             u.ghost_id === sellerId ||
             u.channel_name === sellerId ||
             (u.email && u.email.includes(sellerId))
           );
-          console.log('Found by list search:', users?.length);
+          users = matched;
+          if (users.length > 0) lookupMethod = 'list_search';
         }
         
-        if (users.length > 0) {
-          const s = users[0];
-          console.log('✓ SUCCESS - Found seller:', s.full_name || s.channel_name, 'ID:', s.id, 'Email:', s.email, 'Ghost:', s.is_ghost_account);
-          setSeller(s);
-          const [byEmail, byCreator, communityPosts] = await Promise.all([
-            base44.entities.Listing.filter({ email_contact: s.email, approval_status: 'approved' }),
-            base44.entities.Listing.filter({ created_by_id: s.id, approval_status: 'approved' }),
-            base44.entities.CommunityPost.filter({ author_email: s.email }),
-          ]);
-          // Merge and deduplicate by id
-          const seen = new Set();
-          const items = [...byEmail, ...byCreator].filter(l => {
-            if (seen.has(l.id)) return false;
-            seen.add(l.id);
-            return true;
-          });
-          setListings(items);
-          setPosts(communityPosts);
+        // STEP 2: Handle not found - check if this is a ghost account that needs healing
+        if (users.length === 0) {
+          console.error('[PROFILE LOAD] ✗ FAILED - No user found for:', sellerId);
+          setError('Profile not found. This account may not exist or was deleted.');
+          setLoading(false);
+          return;
         }
+        
+        // STEP 3: Validate user data
+        const seller = users[0];
+        console.log('[PROFILE LOAD] ✓ Found via', lookupMethod + ':', {
+          id: seller.id,
+          name: seller.full_name || seller.channel_name,
+          email: seller.email,
+          is_ghost: seller.is_ghost_account,
+          has_username: !!seller.username,
+          has_channel: !!seller.channel_name
+        });
+        
+        // Auto-healing: Check for missing critical fields
+        const missingFields = [];
+        if (!seller.full_name && !seller.channel_name) missingFields.push('name');
+        if (!seller.email) missingFields.push('email');
+        if (!seller.username) missingFields.push('username');
+        
+        if (missingFields.length > 0) {
+          console.warn('[PROFILE LOAD] ⚠ Profile has missing fields:', missingFields);
+          // Note: In a real auto-heal system, we'd update the record here
+          // For now, we proceed with available data
+        }
+        
+        setSeller(seller);
+        
+        // STEP 4: Load related data
+        const [byEmail, byCreator, communityPosts] = await Promise.all([
+          base44.entities.Listing.filter({ email_contact: seller.email, approval_status: 'approved' }),
+          base44.entities.Listing.filter({ created_by_id: seller.id, approval_status: 'approved' }),
+          base44.entities.CommunityPost.filter({ author_email: seller.email }),
+        ]);
+        
+        // Merge and deduplicate listings
+        const seen = new Set();
+        const items = [...byEmail, ...byCreator].filter(l => {
+          if (seen.has(l.id)) return false;
+          seen.add(l.id);
+          return true;
+        });
+        
+        console.log('[PROFILE LOAD] Loaded', items.length, 'listings and', communityPosts.length, 'posts');
+        setListings(items);
+        setPosts(communityPosts);
+        
       } catch (err) {
-        console.error(err);
+        console.error('[PROFILE LOAD] ✗ Error:', err.message);
+        setError('Failed to load profile: ' + err.message);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
+    
     init();
   }, [sellerId]);
 

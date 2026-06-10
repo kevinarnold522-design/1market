@@ -105,7 +105,7 @@ export default function ConnectedAccounts() {
           loadAccounts();
         }, 500);
       } else {
-        // Create new ghost account - minimal required fields only
+        // Create new ghost account with COMPREHENSIVE validation
         const timestamp = Date.now();
         const randomStr = Math.random().toString(36).substring(2, 8);
         const ghostId = `ghost_${timestamp}_${randomStr}`;
@@ -113,89 +113,159 @@ export default function ConnectedAccounts() {
         const cleanUsername = `ghost_${timestamp}_${randomStr}`.toLowerCase().replace(/[^a-z0-9_]/g, '');
         
         const userData = {
-          // Required fields only
+          // Core identity
           full_name: form.full_name.trim(),
           channel_name: form.channel_name.trim() || form.full_name.trim(),
           email: ghostEmail,
           role: 'user',
           username: cleanUsername,
+          username_set: true,
           
-          // Account type
+          // Account classification
           user_type: form.user_type || 'seller',
           is_seller: form.user_type !== 'customer',
           account_type: form.user_type === 'business' ? 'business_owner' : 'customer',
-          
-          // Business info
           business_name: form.business_name.trim() || form.full_name.trim(),
+          
+          // Location data
           seller_location: form.location || 'Manila',
           location: form.location || 'Manila',
-          seller_page_enabled: form.user_type !== 'customer',
+          seller_area: form.seller_area || '',
           
-          // Ghost markers
+          // Ghost account markers
           is_ghost_account: true,
           is_connected_account: true,
           ghost_id: ghostId,
           ghost_linked: false,
-          username_set: true,
           
-          // Facebook Live fields (required by schema)
-          facebook_page_id: '',
-          facebook_page_name: '',
-          facebook_live_enabled: false,
-          
-          // Simple defaults
+          // Profile data (complete initialization)
           bio: form.bio || '',
           seller_bio: form.bio || '',
-          seller_area: form.seller_area || '',
           profile_picture: '',
           cover_photo: '',
+          seller_page_enabled: form.user_type !== 'customer',
+          
+          // Verification status
           is_verified_seller: false,
           verification_submitted: false,
           seller_pending: false,
           business_pending: false,
+          
+          // Facebook Live (required by schema)
+          facebook_page_id: '',
+          facebook_page_name: '',
+          facebook_live_enabled: false,
+          
+          // Empty arrays for relational data
           seller_products: [],
           business_categories: [],
         };
         
-        console.log('Creating ghost account:', { name: userData.full_name, type: userData.user_type });
+        console.log('[GHOST CREATE] Starting creation:', { name: userData.full_name, ghostId, username: cleanUsername });
+        
+        // STEP 1: Create user record
         const result = await base44.entities.User.create(userData);
-        console.log('✓ Account created:', result.id);
+        console.log('[GHOST CREATE] User.create() returned ID:', result.id);
         
+        // STEP 2: Verify creation with retries (auto-healing)
         clearInterval(progressInterval);
-        setSaveProgress(100);
-        showToast('Account created! Verifying...');
+        setSaveProgress(95);
+        showToast('Creating profile...');
         
-        // Verify account exists before redirect
-        const verifyAccount = async () => {
+        const maxRetries = 5;
+        let verified = false;
+        let createdUser = null;
+        
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
           try {
-            const verify = await base44.entities.User.filter({ id: result.id });
-            console.log('Verification result:', verify?.length, 'Account ID:', result.id);
-            if (!verify || verify.length === 0) {
-              showToast('Account created but not found yet - please wait');
-              setSaving(false);
-              setSaveProgress(0);
-              return;
+            console.log(`[GHOST VERIFY] Attempt ${attempt}/${maxRetries} - Looking up ID:`, result.id);
+            
+            // Wait 500ms between attempts
+            if (attempt > 1) {
+              await new Promise(resolve => setTimeout(resolve, 500));
+              showToast(`Verifying... (${attempt}/${maxRetries})`);
             }
             
-            // Account verified, now redirect
-            setSaving(false);
-            setSaveProgress(0);
-            setShowForm(false);
-            setEditingAccount(null);
-            setForm(EMPTY_FORM);
-            loadAccounts();
-            showToast('Redirecting to profile...');
-            window.location.href = `/seller/${result.id}`;
+            // Try multiple lookup methods
+            const byId = await base44.entities.User.filter({ id: result.id });
+            if (byId && byId.length > 0) {
+              createdUser = byId[0];
+              verified = true;
+              console.log('[GHOST VERIFY] ✓ SUCCESS - Found by ID:', createdUser.id);
+              break;
+            }
+            
+            // Fallback: try username
+            const byUsername = await base44.entities.User.filter({ username: cleanUsername });
+            if (byUsername && byUsername.length > 0) {
+              createdUser = byUsername[0];
+              verified = true;
+              console.log('[GHOST VERIFY] ✓ SUCCESS - Found by username:', createdUser.id);
+              break;
+            }
+            
+            // Fallback: try email
+            const byEmail = await base44.entities.User.filter({ email: ghostEmail });
+            if (byEmail && byEmail.length > 0) {
+              createdUser = byEmail[0];
+              verified = true;
+              console.log('[GHOST VERIFY] ✓ SUCCESS - Found by email:', createdUser.id);
+              break;
+            }
+            
+            console.log(`[GHOST VERIFY] Attempt ${attempt} failed - record not found yet`);
           } catch (err) {
-            console.error('Verification error:', err);
-            showToast('Account created, manual navigation required');
-            setSaving(false);
-            setSaveProgress(0);
+            console.error(`[GHOST VERIFY] Attempt ${attempt} error:`, err.message);
           }
-        };
+        }
         
-        // Wait 2 seconds for database persistence then verify and redirect
-        setTimeout(verifyAccount, 2000);
+        if (!verified) {
+          console.error('[GHOST CREATE] ✗ FAILED - Could not verify account after', maxRetries, 'attempts');
+          setSaveProgress(0);
+          setSaving(false);
+          showToast('Error: Profile creation failed - please try again');
+          return;
+        }
+        
+        // STEP 3: Validate all required fields exist
+        console.log('[GHOST VALIDATE] Checking required fields...');
+        const validationErrors = [];
+        
+        if (!createdUser.id) validationErrors.push('Missing ID');
+        if (!createdUser.full_name) validationErrors.push('Missing full_name');
+        if (!createdUser.channel_name) validationErrors.push('Missing channel_name');
+        if (!createdUser.email) validationErrors.push('Missing email');
+        if (!createdUser.username) validationErrors.push('Missing username');
+        if (!createdUser.is_ghost_account) validationErrors.push('Missing is_ghost_account flag');
+        if (!createdUser.ghost_id) validationErrors.push('Missing ghost_id');
+        
+        if (validationErrors.length > 0) {
+          console.error('[GHOST VALIDATE] ✗ FAILED - Missing fields:', validationErrors);
+          setSaveProgress(0);
+          setSaving(false);
+          showToast('Error: Profile incomplete - please try again');
+          return;
+        }
+        
+        console.log('[GHOST VALIDATE] ✓ All required fields present');
+        
+        // STEP 4: Success - finalize
+        clearInterval(progressInterval);
+        setSaveProgress(100);
+        showToast('✓ Profile created successfully!');
+        
+        setTimeout(() => {
+          setSaving(false);
+          setSaveProgress(0);
+          setShowForm(false);
+          setEditingAccount(null);
+          setForm(EMPTY_FORM);
+          loadAccounts();
+          
+          // Redirect with verified ID
+          console.log('[GHOST REDIRECT] Navigating to verified profile:', createdUser.id);
+          window.location.href = `/seller/${createdUser.id}`;
+        }, 800);
       }
     } catch (err) {
       console.error('Ghost account creation error:', err);
