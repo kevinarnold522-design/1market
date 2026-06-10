@@ -62,14 +62,10 @@ export default function HeroSection({ heroImage }) {
               </div>
 
               <p className="font-body text-sm sm:text-base lg:text-lg text-white/70 max-w-md leading-relaxed font-semibold">
-                Building Dreams under 1Vision, Together.
+                The #1 Filipino Marketplace — Buy, Sell &amp; Connect Nationwide.
               </p>
 
               <div className="h-[1px] w-16 bg-[#00D4FF]" />
-
-              <p className="font-body text-xs sm:text-sm text-white/55 max-w-lg leading-relaxed">
-                Founded in 2026 by Kevin Roberto, 1Market was born from a simple vision: to bridge the gap between Filipino consumers and businesses that power our communities. Proudly Filipino, built for Filipinos — because when we connect, we grow together.
-              </p>
 
               {/* Trust badges */}
               <div className="flex flex-wrap gap-2 mt-1">

@@ -37,10 +37,10 @@ export default function About() {
                 <span className="font-body text-xs tracking-[0.2em] uppercase text-[#00D4FF]">Our Story</span>
               </div>
               <h1 className="font-heading font-bold text-4xl sm:text-6xl text-white mb-6 leading-tight">
-                Building Dreams<br /><span className="text-[#00D4FF]">Under 1Vision</span>
+                Building Dreams<br /><span className="text-[#00D4FF]">Under 1Vision,<br />Together.</span>
               </h1>
               <p className="font-body text-base sm:text-lg text-white/60 max-w-2xl leading-relaxed">
-                1Marketph.com was born from a simple dream: to create a single, trusted place where every Filipino can buy, sell, discover, travel, and connect — all in one app. Founded in 2026 by Kevin Roberto, we are proudly homegrown and built for the Filipino people.
+                Founded in 2026 by Kevin Roberto, 1Market was born from a simple vision: to bridge the gap between Filipino consumers and businesses that power our communities. Proudly Filipino, built for Filipinos — because when we connect, we grow together.
               </p>
             </motion.div>
           </div>
