@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Home, Plane, UtensilsCrossed, ShoppingBag, KeyRound, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, LogOut, Ghost, Globe, Package, BarChart2, Shield, Search, ShoppingCart } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 import { getImpersonatedUser, clearImpersonation } from '@/pages/ConnectedAccounts';
@@ -265,12 +265,12 @@ return (
                 ) : (
                   /* Not Authenticated */
                   <div className="space-y-2 pt-2">
-                    <button onClick={() => { navigate('/login'); setIsOpen(false); }} className="w-full py-2.5 border border-white/20 text-white rounded-xl font-body font-bold text-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
+                    <Link to="/login" onClick={() => setIsOpen(false)} className="block w-full py-2.5 border border-white/20 text-white text-center rounded-xl font-body font-bold text-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
                       Login
-                    </button>
-                    <button onClick={() => { navigate('/register'); setIsOpen(false); }} className="w-full py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all" style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}>
+                    </Link>
+                    <Link to="/register" onClick={() => setIsOpen(false)} className="block w-full py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all text-center" style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}>
                       Get Started
-                    </button>
+                    </Link>
                   </div>
                 )}
               </div>

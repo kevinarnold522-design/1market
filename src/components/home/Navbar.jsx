@@ -558,10 +558,10 @@ export default function Navbar() {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <button onClick={redirectToLogin}
+                  <Link to="/login"
                     className="px-4 py-2 border border-white/20 text-white/80 rounded-lg font-body font-bold text-xs hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
                     Login
-                  </button>
+                  </Link>
                   <button onClick={() => { setShowSignup(true); window.dispatchEvent(new CustomEvent('alfie-get-started')); }}
                     className="px-4 py-2 rounded-lg font-body font-bold text-xs text-[#0A192F] transition-all hover:scale-105"
                     style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 16px rgba(0,212,255,0.4)' }}>
@@ -680,12 +680,12 @@ export default function Navbar() {
                       Explore Listings
                     </Link>
                     <div className="flex gap-2 mt-2">
-                      <button onClick={() => { setMenuOpen(false); redirectToLogin(); }}
-                        className="flex-1 py-2.5 border border-white/20 text-white rounded-xl font-body font-bold text-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
+                      <Link to="/login" onClick={() => setMenuOpen(false)}
+                        className="flex-1 py-2.5 border border-white/20 text-white text-center rounded-xl font-body font-bold text-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
                         Login
-                      </button>
+                      </Link>
                       <button onClick={() => { setMenuOpen(false); setShowSignup(true); }}
-                        className="flex-1 py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all"
+                        className="flex-1 py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all text-center"
                         style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 14px rgba(0,212,255,0.35)' }}>
                         Get Started
                       </button>

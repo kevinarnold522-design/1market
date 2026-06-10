@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import StarField from '../components/StarField';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, Phone, MessageSquare, Star, AlertCircle, Plus, Pencil, Trash2, X } from 'lucide-react';
+import { ArrowLeft, Search, Phone, MessageSquare, Star, AlertCircle, Plus, Pencil, Trash2, X, Home, Zap, Heart, UtensilsCrossed, Briefcase, GraduationCap, Scale, Plane, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
@@ -10,18 +10,18 @@ import PostListingMenu from '../components/PostListingMenu';
 import { base44 } from '@/api/base44Client';
 
 const SUBCATEGORIES = [
-  { key: 'all', label: 'All Services', desc: 'Browse everything' },
-  { key: 'home', label: 'Home Services', desc: 'Cleaning, repairs, plumbing' },
-  { key: 'tech', label: 'Tech & Digital', desc: 'IT, web, design, repair' },
-  { key: 'beauty', label: 'Beauty & Wellness', desc: 'Salon, spa, massage, nails' },
-  { key: 'events', label: 'Events & Catering', desc: 'Planning, catering, DJ' },
-  { key: 'professional', label: 'Professional', desc: 'Legal, financial, HR' },
-  { key: 'transport', label: 'Transport & Delivery', desc: 'Movers, courier, trucking' },
-  { key: 'health', label: 'Health & Medical', desc: 'Dental, therapy, caregiving' },
-  { key: 'legal', label: 'Legal Services', desc: 'Lawyers, notary, contracts' },
-  { key: 'finance', label: 'Finance & Tax', desc: 'Accounting, tax, investment' },
-  { key: 'education', label: 'Education & Tutoring', desc: 'Tutors, coaching, training' },
-  { key: 'media', label: 'Media & Creative', desc: 'Video, design, photography' },
+  { key: 'all', label: 'All Services', desc: 'Browse everything', icon: ShoppingBag },
+  { key: 'home', label: 'Home Services', desc: 'Cleaning, repairs, plumbing', icon: Home },
+  { key: 'tech', label: 'Tech & Digital', desc: 'IT, web, design, repair', icon: Zap },
+  { key: 'beauty', label: 'Beauty & Wellness', desc: 'Salon, spa, massage, nails', icon: Heart },
+  { key: 'events', label: 'Events & Catering', desc: 'Planning, catering, DJ', icon: UtensilsCrossed },
+  { key: 'professional', label: 'Professional', desc: 'Legal, financial, HR', icon: Briefcase },
+  { key: 'transport', label: 'Transport & Delivery', desc: 'Movers, courier, trucking', icon: Plane },
+  { key: 'health', label: 'Health & Medical', desc: 'Dental, therapy, caregiving', icon: Heart },
+  { key: 'legal', label: 'Legal Services', desc: 'Lawyers, notary, contracts', icon: Scale },
+  { key: 'finance', label: 'Finance & Tax', desc: 'Accounting, tax, investment', icon: Briefcase },
+  { key: 'education', label: 'Education & Tutoring', desc: 'Tutors, coaching, training', icon: GraduationCap },
+  { key: 'media', label: 'Media & Creative', desc: 'Video, design, photography', icon: Zap },
 ];
 
 const services = [];
