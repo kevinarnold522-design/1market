@@ -887,17 +887,22 @@ export default function ListingDetail() {
                   );
                 }
 
-                // Buy & Sell → Buy Now / Avail
+                // Buy & Sell → Chat Seller
                 if (isBuySell) {
-                  const btnLabel = listing.subcategory?.toLowerCase().includes('electronics') || listing.type === 'electronics' ? 'Buy Now'
-                    : listing.subcategory?.toLowerCase().includes('shoes') || listing.type === 'shoes' ? 'Buy Now'
-                    : listing.subcategory?.toLowerCase().includes('clothing') || listing.type === 'clothing' ? 'Shop Now'
-                    : 'Avail / Buy Now';
+                  const btnLabel = listing.subcategory?.toLowerCase().includes('electronics') || listing.type === 'electronics' ? 'Buy Now — Chat Seller'
+                    : listing.subcategory?.toLowerCase().includes('shoes') || listing.type === 'shoes' ? 'Buy Now — Chat Seller'
+                    : listing.subcategory?.toLowerCase().includes('clothing') || listing.type === 'clothing' ? 'Shop Now — Chat Seller'
+                    : 'Avail / Buy — Chat Seller';
                   return (
-                    <button onClick={() => { if (!user) { base44.auth.redirectToLogin(window.location.href); return; } setShowReceipt(true); }}
-                      className="w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-[1.01]"
+                    <button onClick={async () => {
+                      if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
+                      if (listing.email_contact) {
+                        await base44.entities.ChatMessage.create({ listing_id: listing.id, listing_title: listing.title, seller_email: listing.email_contact, buyer_email: user.email, sender_email: user.email, sender_name: user.full_name || user.email, message: `Hi! I'm interested in: ${listing.title}. Is it available?`, chat_type: 'listing' });
+                        window.location.href = '/messages';
+                      }
+                    }} className="w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-[1.01]"
                       style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 20px rgba(0,212,255,0.3)' }}>
-                      <ShoppingCart className="w-4 h-4" /> {btnLabel}
+                      <MessageSquare className="w-4 h-4" /> {btnLabel}
                     </button>
                   );
                 }

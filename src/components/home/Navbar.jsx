@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { redirectToLogin } from '@/lib/loginRedirect';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Building2, Users, Bell, Facebook, Instagram, Youtube } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Building2, Users, Bell, Facebook, Instagram, Youtube, Ghost } from 'lucide-react';
 import BecomeSellerModal from '../BecomeSellerModal';
 import BecomeBusinessModal from '../BecomeBusinessModal';
 import NotificationsBell from '../NotificationsBell';
@@ -495,6 +495,10 @@ export default function Navbar() {
                                 className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-amber-500/10 transition-colors text-amber-400 font-body text-xs">
                                 <Settings className="w-3.5 h-3.5" /> CEO Dashboard
                                 <MetaVerifiedBadge size="xs" label="" />
+                              </Link>
+                              <Link to="/connected-accounts" onClick={() => setProfileOpen(false)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-purple-500/10 transition-colors text-purple-400 font-body text-xs">
+                                <Ghost className="w-3.5 h-3.5" /> Connected Accounts
                               </Link>
                               <button
                                 onClick={() => { toggleEditMode(); setProfileOpen(false); }}
