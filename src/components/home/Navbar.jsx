@@ -45,13 +45,16 @@ export default function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [editMode, setEditModeLocal] = useState(false);
   const [showRewards, setShowRewards] = useState(false);
+  const [toast, setToast] = useState('');
   const navigate = useNavigate();
   const [showSellerModal, setShowSellerModal] = useState(false);
   const [showBusinessModal, setShowBusinessModal] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const [ghostUser, setGhostUser] = useState(null);
   
-  // Check for ghost session on mount
+  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2000); };
+  
+  // Check for ghost session on mount and whenever user changes
   useEffect(() => {
     const ghost = getImpersonatedUser();
     if (ghost) {
@@ -59,16 +62,17 @@ export default function Navbar() {
     }
   }, []);
   
-  const isAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
-  const isGhost = user?.is_ghost_account || user?.ghost_id;
+  // Use ghost user if in ghost session, otherwise use regular user
+  const activeUser = ghostUser || user;
+  const isAdmin = activeUser?.role === 'admin' || activeUser?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
+  const isGhost = activeUser?.is_ghost_account || activeUser?.ghost_id;
   const isGhostSession = !!ghostUser;
-  const isSeller = user?.user_type === 'seller' || user?.user_type === 'business' || user?.is_seller || user?.account_type === 'business_owner';
-  const isBusiness = user?.user_type === 'business';
+  const isSeller = activeUser?.user_type === 'seller' || activeUser?.user_type === 'business' || activeUser?.is_seller || activeUser?.account_type === 'business_owner';
+  const isBusiness = activeUser?.user_type === 'business';
   const isCustomer = !isSeller && !isBusiness;
-  const isVerified = user?.is_verified_seller;
-  const adminLabel = isAdmin ? 'CEO & Founder' : isBusiness ? (user?.business_name || 'Business Owner') : isSeller ? 'Seller' : 'Customer';
+  const isVerified = activeUser?.is_verified_seller;
+  const adminLabel = isAdmin ? 'CEO & Founder' : isBusiness ? (activeUser?.business_name || 'Business Owner') : isSeller ? 'Seller' : 'Customer';
   const [uploadingPfp, setUploadingPfp] = useState(false);
-
 
   const handleNavPfpUpload = async (e) => {
     const file = e.target.files[0]; if (!file) return;
@@ -103,8 +107,8 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (user) setNameVal(user.full_name || '');
-  }, [user]);
+    if (activeUser) setNameVal(activeUser.full_name || '');
+  }, [activeUser]);
 
   useEffect(() => {
     const handler = (e) => {
@@ -117,6 +121,7 @@ export default function Navbar() {
   }, []);
 
   const handleSaveName = async () => {
+    if (isGhostSession) { showToast('Cannot edit ghost account name'); return; }
     const clean = nameVal.trim().toLowerCase().replace(/\s/g, '');
     if (clean.length < 3) { setNameError('At least 3 characters required.'); return; }
     if (!/^[a-zA-Z0-9_.-]+$/.test(clean)) { setNameError('Letters, numbers, _ . - only.'); return; }
@@ -124,7 +129,7 @@ export default function Navbar() {
     setNameError('');
     try {
       const existing = await base44.entities.User.filter({ username: clean });
-      const conflict = existing.find(u => u.id !== user.id);
+      const conflict = existing.find(u => u.id !== activeUser.id);
       if (conflict) { setNameError('This username is already taken.'); setNameSaving(false); return; }
       await base44.auth.updateMe({ username: clean, username_set: true });
       setNameSaved(true);
@@ -137,9 +142,9 @@ export default function Navbar() {
     setNameSaving(false);
   };
 
-  const initials = user ? (user.full_name || user.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
-  const memberSince = user?.created_date ? new Date(user.created_date).toLocaleDateString('en-PH', { year: 'numeric', month: 'short' }) : '';
-  const accountTypeBadge = user?.account_type === 'business_owner'
+  const initials = activeUser ? (activeUser.full_name || activeUser.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
+  const memberSince = activeUser?.created_date ? new Date(activeUser.created_date).toLocaleDateString('en-PH', { year: 'numeric', month: 'short' }) : '';
+  const accountTypeBadge = activeUser?.account_type === 'business_owner'
     ? 'bg-[#00D4FF]/15 text-[#00D4FF] border-[#00D4FF]/25'
     : isSeller
     ? 'bg-purple-500/15 text-purple-400 border-purple-500/25'

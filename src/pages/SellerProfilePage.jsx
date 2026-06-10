@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
+// Ghost session helpers
+const getGhostSession = () => { try { return JSON.parse(sessionStorage.getItem('1m_ghost_session')); } catch { return null; } };
 
 const SOCIAL_CONFIGS = {
   facebook: { icon: Facebook, color: '#1877f2', bg: 'rgba(24,119,242,0.15)', label: 'Facebook' },
@@ -253,6 +255,9 @@ export default function SellerProfilePage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Get current user
+    base44.auth.me().then(u => setUser(u)).catch(() => {});
+    
     if (!sellerId) return;
     
     const init = async () => {
@@ -262,8 +267,24 @@ export default function SellerProfilePage() {
         
         console.log('[PROFILE LOAD] Starting lookup for:', sellerId);
         
-        // STEP 0: Check if this is a ghost account (localStorage)
-        const ghostKey = `1marketph_ghost_${sellerId}`;
+        // STEP 0: Check if this is a ghost account (sessionStorage or localStorage)
+        const session = getGhostSession();
+        if (session && (session.id === sellerId || session.ghost_id === sellerId)) {
+          console.log('[PROFILE LOAD] ✓ Found active ghost session');
+          setSeller(session);
+          
+          // Load ghost's listings (created by ghost_id)
+          const listings = await base44.entities.Listing.filter({ created_by_id: sellerId, approval_status: 'approved' });
+          const posts = await base44.entities.CommunityPost.filter({ author_email: session.email });
+          
+          setListings(listings);
+          setPosts(posts);
+          setLoading(false);
+          return;
+        }
+        
+        // STEP 1: Check localStorage for ghost
+        const ghostKey = `1m_ghost_${sellerId}`;
         const ghostData = localStorage.getItem(ghostKey);
         
         if (ghostData) {
