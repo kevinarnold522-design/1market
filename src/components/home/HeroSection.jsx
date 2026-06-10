@@ -74,7 +74,6 @@ export default function HeroSection({ heroImage }) {
               {/* Trust badges */}
               <div className="flex flex-wrap gap-2 mt-1">
                 {[
-                  { label: '10,000+ Members', color: 'rgba(0,212,255,0.15)', border: 'rgba(0,212,255,0.3)', text: '#00D4FF' },
                   { label: 'Free to List', color: 'rgba(16,185,129,0.15)', border: 'rgba(16,185,129,0.3)', text: '#10b981' },
                   { label: 'Verified Sellers', color: 'rgba(37,99,235,0.15)', border: 'rgba(37,99,235,0.3)', text: '#60a5fa' },
                   { label: 'Proudly Filipino', color: 'rgba(255,215,0,0.1)', border: 'rgba(255,215,0,0.25)', text: '#FFD700' },
