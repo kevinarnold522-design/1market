@@ -273,9 +273,29 @@ export default function SellerProfilePage() {
           users = await base44.entities.User.filter({ username: sellerId });
         }
         
+        // Final fallback: try email (for ghost accounts with internal email)
+        if (!users || users.length === 0) {
+          users = await base44.entities.User.filter({ email: sellerId });
+        }
+        
+        // Fallback: try email (for ghost accounts with internal email format)
+        if (!users || users.length === 0) {
+          users = await base44.entities.User.filter({ email: sellerId });
+        }
+        
+        // Final fallback: search all users for matching ghost_id or channel_name
+        if (!users || users.length === 0) {
+          const allUsers = await base44.entities.User.list('-created_date', 1000);
+          users = allUsers.filter(u => 
+            u.ghost_id === sellerId ||
+            u.channel_name === sellerId ||
+            (u.email && u.email.includes(sellerId))
+          );
+        }
+        
         if (users && users.length > 0) {
           const s = users[0];
-          console.log('✓ Found seller profile:', s.full_name || s.username, 'Email:', s.email);
+          console.log('✓ Found seller profile:', s.full_name || s.username || s.ghost_id, 'Email:', s.email);
           setSeller(s);
           const [byEmail, byCreator, communityPosts] = await Promise.all([
             base44.entities.Listing.filter({ email_contact: s.email, approval_status: 'approved' }),

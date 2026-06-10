@@ -24,10 +24,10 @@ export default function WaveBackground() {
       waves.push({
         y: canvas.height / 2 + i * 100,
         amplitude: 40 + i * 20,
-        wavelength: 0.002 + i * 0.001,
+        wavelength: 0.0015 + i * 0.0008,
         phase: Math.random() * Math.PI * 2,
-        speed: 0.005 + i * 0.003, // Slower wave speed
-        opacity: 0.1 + (WAVE_COUNT - i) * 0.08,
+        speed: 0.002 + i * 0.001, // Much slower wave speed
+        opacity: 0.08 + (WAVE_COUNT - i) * 0.06,
       });
     }
 
@@ -36,11 +36,11 @@ export default function WaveBackground() {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Draw gradient background
+      // Draw gradient background - royal blue theme
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, '#001240');
-      gradient.addColorStop(0.5, '#002366');
-      gradient.addColorStop(1, '#001a5c');
+      gradient.addColorStop(0, '#0033CC');
+      gradient.addColorStop(0.5, '#002399');
+      gradient.addColorStop(1, '#001a80');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -69,7 +69,7 @@ export default function WaveBackground() {
         wave.phase += wave.speed;
       });
 
-      time += 0.5; // Slower time progression
+      time += 0.15; // Much slower time progression
       animationId = requestAnimationFrame(draw);
     };
 
