@@ -3,7 +3,7 @@ import ParticleBackground from '../components/ParticleBackground';
 import MascotDog from '../components/MascotDog';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, MapPin, Briefcase, ExternalLink, X, Building2, DollarSign, Plus, Clock, Users } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import PostListingMenu from '../components/PostListingMenu';
 import { base44 } from '@/api/base44Client';
@@ -251,7 +251,11 @@ export default function Jobs() {
             <div className="flex items-center gap-4 flex-wrap mb-2">
               <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Jobs in the Philippines</h1>
               {currentUser ? (
-                <PostListingMenu user={currentUser} compact={true} />
+                <Link to="/post-ad?category=jobs&type=jobs"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105 whitespace-nowrap"
+                  style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }}>
+                  <Plus className="w-3.5 h-3.5" /> Post a Job Ad
+                </Link>
               ) : (
                 <button
                   onClick={() => setShowSignup(true)}

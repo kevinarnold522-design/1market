@@ -27,6 +27,7 @@ import Favourites from './pages/Favourites';
 import BusinessCommunity from './pages/BusinessCommunity';
 import Notifications from './pages/Notifications';
 import SellerOnboarding from './pages/SellerOnboarding';
+import PostAdLanding from './pages/PostAdLanding';
 import GlowInteraction from './components/GlowInteraction';
 
 const AuthenticatedApp = () => {
@@ -77,6 +78,7 @@ const AuthenticatedApp = () => {
         <Route path="/community" element={<BusinessCommunity />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/onboarding" element={<SellerOnboarding />} />
+        <Route path="/post-ad" element={<PostAdLanding />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>

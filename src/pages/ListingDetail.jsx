@@ -537,7 +537,7 @@ export default function ListingDetail() {
                   )}
                 </div>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
-                  {listing.condition && listing.condition !== 'N/A' && (
+                  {listing.condition && listing.condition !== 'N/A' && (listing.main_category === 'buysell' || ['product','electronics','shoes','clothing','furniture','homeappliances','cars','houses','mods','other'].includes(listing.type)) && (
                     <span className="inline-block px-2 py-0.5 rounded-full bg-white/10 text-white/60 font-body text-[10px]">{listing.condition}</span>
                   )}
                   {listing.quantity != null && listing.quantity > 0 && listing.type !== 'jobs' && listing.type !== 'services' && listing.type !== 'rent_lease' && (
@@ -676,6 +676,20 @@ export default function ListingDetail() {
 
                 if (isOutOfStock) {
                   return <div className="w-full mb-4 py-3 rounded-xl text-center font-body font-bold text-sm text-red-400 border border-red-500/30 bg-red-500/5">Out of Stock</div>;
+                }
+
+                const isJobListing = listing.type === 'jobs';
+
+                if (isJobListing) {
+                  return (
+                    <a href={listing.apply_link || (listing.email_contact ? `mailto:${listing.email_contact}` : '#')}
+                      target={listing.apply_link ? '_blank' : undefined}
+                      rel="noopener noreferrer"
+                      className="w-full mb-4 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-[1.01]"
+                      style={{ background: 'linear-gradient(135deg,#f59e0b,#f97316)', boxShadow: '0 0 20px rgba(245,158,11,0.3)' }}>
+                      💼 Apply Now
+                    </a>
+                  );
                 }
 
                 if (isBuySell) {

@@ -84,8 +84,7 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
     setOpen(false);
     setExpandedCat(null);
     if (!user) { setShowSignup(true); return; }
-    const route = CATEGORY_ROUTES[cat.key] || '/explore';
-    navigate(`${route}?post=1&type=${subtype.type}`);
+    navigate(`/post-ad?category=${cat.key}&type=${subtype.type}`);
   };
 
   const handleSelectCat = (cat) => {
@@ -93,8 +92,7 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
     if (cat.subtypes.length === 1) {
       setOpen(false);
       setExpandedCat(null);
-      const route = CATEGORY_ROUTES[cat.key] || '/explore';
-      navigate(`${route}?post=1&type=${cat.subtypes[0].type}`);
+      navigate(`/post-ad?category=${cat.key}&type=${cat.subtypes[0].type}`);
     } else {
       setExpandedCat(expandedCat === cat.key ? null : cat.key);
     }

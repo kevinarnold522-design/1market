@@ -65,6 +65,21 @@ function ListingCard({ listing, idx }) {
       </Link>
 
       <div className="p-3 flex flex-col gap-1.5 flex-1">
+        {/* Category + Subcategory */}
+        <div className="flex flex-wrap items-center gap-1 mb-0.5">
+          {listing.type && (
+            <span className="px-1.5 py-0.5 rounded-md font-body text-[9px] font-bold"
+              style={{ background: 'rgba(139,92,246,0.15)', color: '#c084fc', border: '1px solid rgba(139,92,246,0.25)' }}>
+              {listing.type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+            </span>
+          )}
+          {listing.subcategory && (
+            <span className="px-1.5 py-0.5 rounded-md font-body text-[9px] text-white/45"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              {listing.subcategory}
+            </span>
+          )}
+        </div>
         <Link to={`/listing/${listing.id}`}>
           <h3 className="font-body font-semibold text-sm text-white leading-tight line-clamp-2 hover:text-[#00D4FF] transition-colors">
             {listing.title}
