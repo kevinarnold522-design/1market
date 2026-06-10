@@ -253,6 +253,7 @@ export default function ForRent() {
         onSelect={setActiveCategory}
         title="What are you looking to rent?"
         subtitle="Choose a category to browse listings"
+        onBack={() => window.history.back()}
       />
       <div className="relative bg-[#0A192F] overflow-hidden">
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />

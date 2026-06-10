@@ -284,6 +284,7 @@ export default function Services() {
         onSelect={setActiveCategory}
         title="What service are you looking for?"
         subtitle="Pick a category to find the right provider"
+        onBack={() => window.history.back()}
       />
       <div className="relative bg-[#0A192F] overflow-hidden">
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />

@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, X } from 'lucide-react';
 import CategoryTransitionOverlay, { getSubtypeForSubcategory } from './transitions/CategoryTransitionOverlay';
 
 const SUITS = ['♠', '♥', '♦', '♣'];
@@ -141,7 +142,7 @@ function CasinoCard({ sc, index, isActive, onClick }) {
   );
 }
 
-export default function SubcategorySplash({ subcategories, activeKey, onSelect, title, subtitle, category }) {
+export default function SubcategorySplash({ subcategories, activeKey, onSelect, title, subtitle, category, onBack }) {
   const [dismissed, setDismissed] = useState(false);
   const [transition, setTransition] = useState(null);
   const [transitionSubtype, setTransitionSubtype] = useState(null);
@@ -185,6 +186,18 @@ export default function SubcategorySplash({ subcategories, activeKey, onSelect, 
           {/* Background shimmer */}
           <div className="absolute inset-0 pointer-events-none"
             style={{ background: 'repeating-linear-gradient(60deg,transparent,transparent 20px,rgba(255,255,255,0.01) 20px,rgba(255,255,255,0.01) 21px)' }} />
+
+          {/* Back / Close button */}
+          {onBack && (
+            <button onClick={onBack}
+              className="absolute top-4 left-4 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body text-xs font-semibold text-white/60 hover:text-white hover:bg-white/10 transition-all border border-white/10">
+              <ArrowLeft className="w-3.5 h-3.5" /> Back
+            </button>
+          )}
+          <button onClick={onBack || (() => setDismissed(true))}
+            className="absolute top-4 right-4 z-20 w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+            <X className="w-3.5 h-3.5 text-white/60" />
+          </button>
 
           <div className="text-center mb-6 relative z-10">
             <div className="flex items-center justify-center gap-2 mb-2">

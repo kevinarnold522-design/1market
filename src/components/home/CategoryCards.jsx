@@ -3,20 +3,122 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useFireTransition, FireOverlay } from './FireTransition';
 import CategoryTransitionOverlay, { getTransitionTypeForHref } from '../transitions/CategoryTransitionOverlay';
 import { useNavigate } from 'react-router-dom';
-import { Plane, UtensilsCrossed, ShoppingBag, Home, Wrench, Briefcase } from 'lucide-react';
+import { Plane, UtensilsCrossed, ShoppingBag, Home, Wrench, Briefcase, ArrowLeft, X } from 'lucide-react';
+
+// ── Subcategory definitions for each main category ──────────────────────────
+
+const TRAVEL_SUBS = [
+  { key: 'hotel',       label: 'Hotels',          icon: '🏨', desc: 'Budget to Luxury', href: '/travel' },
+  { key: 'resort',      label: 'Resorts',          icon: '🌴', desc: 'Beach & Mountain', href: '/travel' },
+  { key: 'flights',     label: 'Flights & Tours',  icon: '✈️', desc: 'Packages & Promos', href: '/travel' },
+  { key: 'island',      label: 'Island Hopping',   icon: '🏝️', desc: 'El Nido, Coron…', href: '/travel' },
+  { key: 'car_rental',  label: 'Car Rentals',      icon: '🚗', desc: 'With/Without Driver', href: '/travel' },
+  { key: 'van_rental',  label: 'Van Rentals',      icon: '🚐', desc: 'Group Trips', href: '/travel' },
+  { key: 'ferry',       label: 'Ferry & Bus',       icon: '⛴️', desc: 'Inter-island', href: '/travel' },
+  { key: 'diving',      label: 'Diving',            icon: '🤿', desc: 'Scuba & Freedive', href: '/travel' },
+  { key: 'surfing',     label: 'Surfing',           icon: '🏄', desc: 'Lessons & Camps', href: '/travel' },
+  { key: 'hiking',      label: 'Hiking',            icon: '🥾', desc: 'Treks & Expeditions', href: '/travel' },
+  { key: 'camping',     label: 'Camping',           icon: '⛺', desc: 'Beach & Mountain', href: '/travel' },
+];
+
+const JOBS_SUBS = [
+  { key: 'bpo',         label: 'BPO / Call Center', icon: '🎧', desc: 'CSR, TSR, Ops', href: '/jobs' },
+  { key: 'tech',        label: 'IT & Tech',          icon: '💻', desc: 'Dev, QA, IT Support', href: '/jobs' },
+  { key: 'healthcare',  label: 'Healthcare',         icon: '🏥', desc: 'Nurses, MedTech', href: '/jobs' },
+  { key: 'finance',     label: 'Finance & Acctg',    icon: '💰', desc: 'CPA, Audit, Banking', href: '/jobs' },
+  { key: 'hr',          label: 'HR & Admin',          icon: '🗂️', desc: 'Recruitment, Payroll', href: '/jobs' },
+  { key: 'engineering', label: 'Engineering',        icon: '🏗️', desc: 'Civil, Safety, Logistics', href: '/jobs' },
+  { key: 'creative',    label: 'Creative & Marketing',icon: '🎨', desc: 'Design, Social Media', href: '/jobs' },
+  { key: 'food',        label: 'Food & Restaurant',  icon: '🍜', desc: 'Chef, Server, Barista', href: '/jobs' },
+  { key: 'bluecolar',   label: 'Blue Collar',         icon: '🔧', desc: 'Janitor, Guard, Driver', href: '/jobs' },
+  { key: 'education',   label: 'Education',           icon: '📚', desc: 'Teacher, Tutor', href: '/jobs' },
+  { key: 'wfh',         label: 'WFH / Remote',        icon: '🏠', desc: 'Virtual, Online', href: '/jobs' },
+  { key: 'other',       label: 'Other / Not Listed',  icon: '📋', desc: 'All other roles', href: '/jobs' },
+];
+
+const FOOD_SUBS = [
+  { key: 'Baked Goods',            label: 'Baked Goods',        icon: '🥖', href: '/food' },
+  { key: 'Ready-to-Eat Meals',     label: 'Lutong Bahay',       icon: '🍱', href: '/food' },
+  { key: 'Beverages',              label: 'Beverages',          icon: '🥤', href: '/food' },
+  { key: 'Snacks',                 label: 'Snacks',             icon: '🍿', href: '/food' },
+  { key: 'Desserts',               label: 'Desserts',           icon: '🍰', href: '/food' },
+  { key: 'Karinderya / Turo-turo', label: 'Karinderya',         icon: '🍽️', href: '/food' },
+  { key: 'Health Food',            label: 'Health Food',        icon: '🥗', href: '/food' },
+  { key: 'Ingredients / Grocery',  label: 'Grocery Items',      icon: '🛒', href: '/food' },
+];
+
+const BUYSELL_SUBS = [
+  { key: 'electronics', label: 'Electronics',    icon: '📱', href: '/buysell' },
+  { key: 'cars',        label: 'Cars & Vehicles', icon: '🚗', href: '/buysell' },
+  { key: 'clothing',    label: 'Clothing',        icon: '👕', href: '/buysell' },
+  { key: 'shoes',       label: 'Shoes',           icon: '👟', href: '/buysell' },
+  { key: 'furniture',   label: 'Furniture',       icon: '🪑', href: '/buysell' },
+  { key: 'houses',      label: 'Real Estate',     icon: '🏠', href: '/buysell' },
+  { key: 'homeappliances', label: 'Appliances',   icon: '🏠', href: '/buysell' },
+  { key: 'mods',        label: 'Mods & Customs',  icon: '⚙️', href: '/buysell' },
+  { key: 'product',     label: 'General Products', icon: '📦', href: '/buysell' },
+  { key: 'other',       label: 'Other / Misc',    icon: '🗂️', href: '/buysell' },
+];
+
+const RENT_SUBS = [
+  { key: 'Room for Rent',       label: 'Room for Rent',     icon: '🛏️', href: '/rent' },
+  { key: 'Apartment / Condo',   label: 'Apartment / Condo', icon: '🏢', href: '/rent' },
+  { key: 'House for Rent',      label: 'House for Rent',    icon: '🏠', href: '/rent' },
+  { key: 'Bedspace / Dorm',     label: 'Bedspace / Dorm',   icon: '🪹', href: '/rent' },
+  { key: 'Commercial Space',    label: 'Commercial Space',  icon: '🏪', href: '/rent' },
+  { key: 'Office for Rent',     label: 'Office for Rent',   icon: '🏬', href: '/rent' },
+  { key: 'Venue / Events Space',label: 'Event Venue',       icon: '🎪', href: '/rent' },
+  { key: 'Land for Lease',      label: 'Land / Lot',        icon: '🌾', href: '/rent' },
+  { key: 'Warehouse / Storage', label: 'Warehouse',         icon: '🏭', href: '/rent' },
+];
+
+const SERVICES_SUBS = [
+  { key: 'Home Cleaning',      label: 'Cleaning',       icon: '🧹', href: '/services' },
+  { key: 'Plumbing',           label: 'Plumbing',       icon: '🔧', href: '/services' },
+  { key: 'Electrical',         label: 'Electrical',     icon: '⚡', href: '/services' },
+  { key: 'Aircon Services',    label: 'Aircon',         icon: '❄️', href: '/services' },
+  { key: 'Web Development',    label: 'Web Dev',        icon: '💻', href: '/services' },
+  { key: 'Graphic Design',     label: 'Design',         icon: '🎨', href: '/services' },
+  { key: 'Event Planning',     label: 'Events',         icon: '🎉', href: '/services' },
+  { key: 'Photography / Videography', label: 'Photo/Video', icon: '📸', href: '/services' },
+  { key: 'Tutoring',           label: 'Tutoring',       icon: '📚', href: '/services' },
+  { key: 'Massage / Spa',      label: 'Massage / Spa',  icon: '💆', href: '/services' },
+  { key: 'Trucking',           label: 'Trucking',       icon: '🚚', href: '/services' },
+  { key: 'Other / Type Manually', label: 'Other',       icon: '🗂️', href: '/services' },
+];
+
+const CATEGORY_SUBS = {
+  '/travel':   TRAVEL_SUBS,
+  '/food':     FOOD_SUBS,
+  '/buysell':  BUYSELL_SUBS,
+  '/rent':     RENT_SUBS,
+  '/services': SERVICES_SUBS,
+  '/jobs':     JOBS_SUBS,
+};
+
+const CATEGORY_TITLES = {
+  '/travel':   'Where are you going? ✈️',
+  '/food':     'What are you craving? 🍜',
+  '/buysell':  'What are you looking for? 🛍️',
+  '/rent':     'What do you need to rent? 🏠',
+  '/services': 'What service do you need? 🔧',
+  '/jobs':     'What kind of job? 💼',
+};
+
+// ── Casino card for main categories ──────────────────────────────────────────
 
 const CATEGORIES = [
-  { label: 'Travel', href: '/travel', Icon: Plane, desc: 'Hotels, Tours & Transport', accent: '#60a5fa', suit: '♠', gradient: 'linear-gradient(135deg,#0f2050,#1d4ed8)' },
-  { label: 'Food', href: '/food', Icon: UtensilsCrossed, desc: 'Restaurants, Cafes & Home Cooks', accent: '#f87171', suit: '♥', gradient: 'linear-gradient(135deg,#3b0000,#b91c1c)' },
-  { label: 'Buy & Sell', href: '/buysell', Icon: ShoppingBag, desc: 'Shoes, Cars, Gadgets & More', accent: '#c084fc', suit: '♦', gradient: 'linear-gradient(135deg,#1e0050,#7e22ce)' },
-  { label: 'Rent & Lease', href: '/rent', Icon: Home, desc: 'Homes, Vehicles & Equipment', accent: '#4ade80', suit: '♣', gradient: 'linear-gradient(135deg,#002a00,#15803d)' },
-  { label: 'Services', href: '/services', Icon: Wrench, desc: 'Plumbers, Tutors & Freelancers', accent: '#fb923c', suit: '♠', gradient: 'linear-gradient(135deg,#2a1000,#c2410c)' },
-  { label: 'Jobs', href: '/jobs', Icon: Briefcase, desc: 'Hiring, Freelance & Remote Work', accent: '#fbbf24', suit: '♦', gradient: 'linear-gradient(135deg,#1a1000,#b45309)' },
+  { label: 'Travel',       href: '/travel',   Icon: Plane,           desc: 'Hotels, Tours & Transport',    accent: '#60a5fa', suit: '♠', gradient: 'linear-gradient(135deg,#0f2050,#1d4ed8)' },
+  { label: 'Food',         href: '/food',     Icon: UtensilsCrossed, desc: 'Restaurants, Cafes & Home Cooks', accent: '#f87171', suit: '♥', gradient: 'linear-gradient(135deg,#3b0000,#b91c1c)' },
+  { label: 'Buy & Sell',   href: '/buysell',  Icon: ShoppingBag,     desc: 'Shoes, Cars, Gadgets & More',  accent: '#c084fc', suit: '♦', gradient: 'linear-gradient(135deg,#1e0050,#7e22ce)' },
+  { label: 'Rent & Lease', href: '/rent',     Icon: Home,            desc: 'Homes, Vehicles & Equipment',  accent: '#4ade80', suit: '♣', gradient: 'linear-gradient(135deg,#002a00,#15803d)' },
+  { label: 'Services',     href: '/services', Icon: Wrench,          desc: 'Plumbers, Tutors & Freelancers',accent: '#fb923c', suit: '♠', gradient: 'linear-gradient(135deg,#2a1000,#c2410c)' },
+  { label: 'Jobs',         href: '/jobs',     Icon: Briefcase,       desc: 'Hiring, Freelance & Remote Work',accent: '#fbbf24', suit: '♦', gradient: 'linear-gradient(135deg,#1a1000,#b45309)' },
 ];
 
 const CARD_VALUES = ['A', 'K', 'Q', 'J', '10', '9'];
 
-function CasinoCategoryCard({ cat, index, onFire }) {
+function CasinoCategoryCard({ cat, index, onClick }) {
   const ref = useRef(null);
   const [flipped, setFlipped] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -54,7 +156,7 @@ function CasinoCategoryCard({ cat, index, onFire }) {
       onTouchStart={() => setFlipped(true)}
       onTouchEnd={() => { setFlipped(false); reset(); }}
     >
-      <button onClick={() => onFire(cat.href)} className="block w-full text-left">
+      <button onClick={() => onClick(cat.href)} className="block w-full text-left">
         <motion.div
           style={{
             transformStyle: 'preserve-3d',
@@ -65,13 +167,11 @@ function CasinoCategoryCard({ cat, index, onFire }) {
           }}
         >
           {/* FRONT */}
-          <div
-            className="absolute inset-0 rounded-2xl overflow-hidden"
+          <div className="absolute inset-0 rounded-2xl overflow-hidden"
             style={{ backfaceVisibility: 'hidden', background: cat.gradient,
               border: `1.5px solid ${cat.accent}44`,
               boxShadow: `0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px ${cat.accent}22`,
-            }}
-          >
+            }}>
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
             <div className="absolute top-2 left-2.5 text-[9px] font-black leading-none" style={{ color: cat.accent }}>
               <div>{CARD_VALUES[cardIdx]}</div>
@@ -91,14 +191,12 @@ function CasinoCategoryCard({ cat, index, onFire }) {
           </div>
 
           {/* BACK — casino */}
-          <div
-            className="absolute inset-0 rounded-2xl overflow-hidden flex flex-col items-center justify-center"
+          <div className="absolute inset-0 rounded-2xl overflow-hidden flex flex-col items-center justify-center"
             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)',
               background: 'linear-gradient(135deg,#0f172a,#1e1b4b)',
               border: `1.5px solid ${cat.accent}88`,
               boxShadow: `0 0 30px 8px ${cat.accent}33`,
-            }}
-          >
+            }}>
             <div className="absolute inset-1 rounded-xl border border-white/5"
               style={{ background: 'repeating-linear-gradient(45deg,rgba(255,255,255,0.015) 0,rgba(255,255,255,0.015) 2px,transparent 2px,transparent 10px)' }} />
             <div className="relative z-10 flex flex-col items-center gap-1">
@@ -108,8 +206,7 @@ function CasinoCategoryCard({ cat, index, onFire }) {
                   animate={{ scale: 1, rotate: 0, opacity: 1 }}
                   exit={{ scale: 0, rotate: 20, opacity: 0 }}
                   transition={{ duration: 0.22 }}
-                  className="text-center"
-                >
+                  className="text-center">
                   <p className="font-heading font-black text-5xl text-white drop-shadow-lg">{CARD_VALUES[cardIdx]}</p>
                   <p className="text-2xl" style={{ color: isRed ? '#f87171' : '#f8fafc' }}>{cat.suit}</p>
                 </motion.div>
@@ -130,18 +227,198 @@ function CasinoCategoryCard({ cat, index, onFire }) {
   );
 }
 
+// ── Subcategory picker overlay ────────────────────────────────────────────────
+
+const SUITS_SUB = ['♠', '♥', '♦', '♣'];
+const VALS_SUB  = ['A', 'K', 'Q', 'J', '10', '9'];
+const GRADS_SUB = [
+  'linear-gradient(135deg,#1a1a2e,#16213e)',
+  'linear-gradient(135deg,#1a1a2e,#0f3460)',
+  'linear-gradient(135deg,#0d1b2a,#1b4332)',
+  'linear-gradient(135deg,#1a0030,#3b0764)',
+  'linear-gradient(135deg,#1a1a2e,#3a0ca3)',
+  'linear-gradient(135deg,#0a1628,#1d4ed8)',
+  'linear-gradient(135deg,#1a0a00,#78350f)',
+  'linear-gradient(135deg,#0f2027,#203a43)',
+  'linear-gradient(135deg,#1a1a2e,#2d6a4f)',
+];
+const ACCENTS_SUB = ['#60a5fa','#f87171','#34d399','#c084fc','#38bdf8','#fbbf24','#fb923c','#4ade80','#e879f9'];
+
+function SubCard({ sc, index, onClick }) {
+  const [flipped, setFlipped] = useState(false);
+  const accent = ACCENTS_SUB[index % ACCENTS_SUB.length];
+  const suit   = SUITS_SUB[index % SUITS_SUB.length];
+  const [vIdx, setVIdx] = useState(index % VALS_SUB.length);
+  const isRed = suit === '♥' || suit === '♦';
+
+  useEffect(() => {
+    const t = setInterval(() => setVIdx(i => (i + 1) % VALS_SUB.length), 850);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ delay: index * 0.04, type: 'spring', stiffness: 200, damping: 18 }}
+      style={{ perspective: '600px' }}
+      onMouseEnter={() => setFlipped(true)}
+      onMouseLeave={() => setFlipped(false)}
+      onTouchStart={() => setFlipped(true)}
+      onTouchEnd={() => setFlipped(false)}
+      onClick={onClick}
+      className="cursor-pointer select-none"
+    >
+      <motion.div style={{
+        transformStyle: 'preserve-3d',
+        transform: `perspective(600px) rotateY(${flipped ? 180 : 0}deg)`,
+        transition: 'transform 0.4s cubic-bezier(0.4,0,0.2,1)',
+        aspectRatio: '1/1.1',
+        position: 'relative',
+      }}>
+        {/* FRONT */}
+        <div className="absolute inset-0 rounded-2xl overflow-hidden"
+          style={{ backfaceVisibility: 'hidden', background: GRADS_SUB[index % GRADS_SUB.length],
+            border: `1.5px solid ${accent}44`,
+            boxShadow: `0 4px 16px rgba(0,0,0,0.4)`,
+          }}>
+          <div className="absolute inset-0 bg-gradient-to-br from-white/8 to-transparent pointer-events-none" />
+          <div className="absolute top-1.5 left-2 text-[8px] font-black" style={{ color: accent }}><div>{VALS_SUB[vIdx]}</div><div>{suit}</div></div>
+          <div className="absolute bottom-1.5 right-2 text-[8px] font-black rotate-180" style={{ color: accent }}><div>{VALS_SUB[vIdx]}</div><div>{suit}</div></div>
+          <div className="relative z-10 flex flex-col items-center justify-center h-full p-2">
+            <div className="text-xl sm:text-2xl mb-1">{sc.icon}</div>
+            <p className="font-heading font-bold text-[10px] sm:text-xs text-white leading-tight text-center">{sc.label}</p>
+            {sc.desc && <p className="font-body text-[8px] text-white/50 mt-0.5 text-center hidden sm:block">{sc.desc}</p>}
+          </div>
+        </div>
+        {/* BACK */}
+        <div className="absolute inset-0 rounded-2xl overflow-hidden flex items-center justify-center"
+          style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)',
+            background: 'linear-gradient(135deg,#0f172a,#1e1b4b)',
+            border: `1.5px solid ${accent}88`,
+            boxShadow: `0 0 24px 6px ${accent}33`,
+          }}>
+          <div className="absolute inset-1 rounded-xl"
+            style={{ background: 'repeating-linear-gradient(45deg,rgba(255,255,255,0.015) 0,rgba(255,255,255,0.015) 2px,transparent 2px,transparent 10px)' }} />
+          <div className="relative z-10 text-center">
+            <p className="font-heading font-black text-2xl text-white">{VALS_SUB[vIdx]}</p>
+            <p className="text-lg" style={{ color: isRed ? '#f87171' : '#f8fafc' }}>{suit}</p>
+            <p className="font-body text-[8px] mt-0.5" style={{ color: accent }}>{sc.label}</p>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function SubcategoryPicker({ href, onClose, navigate }) {
+  const subs = CATEGORY_SUBS[href] || [];
+  const title = CATEGORY_TITLES[href] || 'Choose a category';
+  const [filter, setFilter] = useState('');
+
+  const filtered = subs.filter(s =>
+    !filter || s.label.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  const handleSelect = (sub) => {
+    onClose();
+    navigate(`${sub.href}?type=${sub.key}&sub=${encodeURIComponent(sub.label)}`);
+  };
+
+  const handleBrowseAll = () => {
+    onClose();
+    navigate(href);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-[#070E1A]/92 backdrop-blur-md"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.94, y: 40 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.94 }}
+        transition={{ type: 'spring', stiffness: 160, damping: 20 }}
+        onClick={e => e.stopPropagation()}
+        className="w-full max-w-3xl rounded-3xl p-5 sm:p-7 shadow-2xl relative overflow-hidden max-h-[90vh] flex flex-col"
+        style={{ background: 'linear-gradient(135deg,#0f172a,#1e1b4b)', border: '1px solid rgba(96,165,250,0.2)' }}
+      >
+        {/* shimmer bg */}
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: 'repeating-linear-gradient(60deg,transparent,transparent 20px,rgba(255,255,255,0.008) 20px,rgba(255,255,255,0.008) 21px)' }} />
+
+        {/* Back + Close */}
+        <button onClick={onClose}
+          className="absolute top-4 left-4 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body text-xs font-semibold text-white/60 hover:text-white hover:bg-white/10 transition-all border border-white/10">
+          <ArrowLeft className="w-3.5 h-3.5" /> Back
+        </button>
+        <button onClick={onClose}
+          className="absolute top-4 right-4 z-20 w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+          <X className="w-3.5 h-3.5 text-white/60" />
+        </button>
+
+        {/* Header */}
+        <div className="text-center mb-4 relative z-10 pt-4">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
+            <span className="font-body text-xs tracking-[0.2em] uppercase text-[#00D4FF]">1Marketph.com</span>
+          </div>
+          <h2 className="font-heading font-bold text-xl sm:text-2xl text-white">{title}</h2>
+          <p className="font-body text-[10px] text-white/25 mt-1">Hover to flip • Tap to browse</p>
+        </div>
+
+        {/* Filter */}
+        <div className="relative mb-4 z-10 flex-shrink-0">
+          <input value={filter} onChange={e => setFilter(e.target.value)}
+            placeholder="🔍 Filter..."
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
+        </div>
+
+        {/* Grid */}
+        <div className="overflow-y-auto flex-1 pr-1" style={{ scrollbarWidth: 'none' }}>
+          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 relative z-10">
+            {filtered.map((sc, i) => (
+              <SubCard key={sc.key} sc={sc} index={i} onClick={() => handleSelect(sc)} />
+            ))}
+          </div>
+        </div>
+
+        {/* Browse all link */}
+        <div className="text-center mt-4 relative z-10 flex-shrink-0">
+          <button onClick={handleBrowseAll}
+            className="font-body text-xs text-[#00D4FF]/60 hover:text-[#00D4FF] transition-colors underline underline-offset-2">
+            Browse all → (no filter)
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ── Main CategoryCards ────────────────────────────────────────────────────────
+
 export default function CategoryCards() {
   const { firing, fireNavigate } = useFireTransition();
   const navigate = useNavigate();
   const [transition, setTransition] = useState(null);
+  const [pickerHref, setPickerHref] = useState(null);
 
   const handleCategoryClick = (href) => {
-    const type = getTransitionTypeForHref(href);
-    if (type) {
-      setTransition(type);
-      setTimeout(() => { navigate(href); setTransition(null); }, 1100);
+    // Always show subcategory picker first if we have subs defined
+    if (CATEGORY_SUBS[href]?.length) {
+      setPickerHref(href);
     } else {
-      fireNavigate(href);
+      const type = getTransitionTypeForHref(href);
+      if (type) {
+        setTransition(type);
+        setTimeout(() => { navigate(href); setTransition(null); }, 1100);
+      } else {
+        fireNavigate(href);
+      }
     }
   };
 
@@ -149,6 +426,17 @@ export default function CategoryCards() {
     <>
       <FireOverlay firing={firing} />
       <CategoryTransitionOverlay type={transition} subtype={null} />
+
+      <AnimatePresence>
+        {pickerHref && (
+          <SubcategoryPicker
+            href={pickerHref}
+            onClose={() => setPickerHref(null)}
+            navigate={navigate}
+          />
+        )}
+      </AnimatePresence>
+
       <section className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
         <div className="mb-8 text-center">
           <span className="font-body text-xs tracking-[0.2em] uppercase text-[#00D4FF]">Explore 1Marketph.com</span>
@@ -157,7 +445,7 @@ export default function CategoryCards() {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
           {CATEGORIES.map((cat, i) => (
-            <CasinoCategoryCard key={cat.label} cat={cat} index={i} onFire={handleCategoryClick} />
+            <CasinoCategoryCard key={cat.label} cat={cat} index={i} onClick={handleCategoryClick} />
           ))}
         </div>
       </section>
