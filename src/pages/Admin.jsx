@@ -352,10 +352,16 @@ export default function Admin() {
     
     // Load users separately with smaller limit for speed
     base44.entities.User.list('-created_date', 100).then(userList => {
+      console.log('Loaded users:', userList.length);
       setUsers(userList);
-      setGhostUsers(userList.filter(u => u.email?.includes('@ghost.1marketph.internal') || u.is_ghost_account));
+      const ghosts = userList.filter(u => u.email?.includes('@ghost.1marketph.internal') || u.is_ghost_account);
+      console.log('Ghost users found:', ghosts.length);
+      setGhostUsers(ghosts);
       setLoading(false);
-    }).catch(() => setLoading(false));
+    }).catch(err => {
+      console.error('Failed to load users:', err);
+      setLoading(false);
+    });
   };
 
   const toggleVerified = async (u) => {
@@ -470,11 +476,13 @@ export default function Admin() {
       if (ghostForm.user_type === 'business') {
         userData.account_type = 'business_owner';
       }
-      await base44.entities.User.create(userData);
+      const result = await base44.entities.User.create(userData);
+      console.log('Ghost account created successfully:', result);
       setGhostSaving(false);
       setGhostForm({ full_name: '', user_type: 'seller', business_name: '', location: 'Manila' });
-      showToast('Ghost account created!');
-      loadAll();
+      showToast('Ghost account created! Refreshing list...');
+      // Force reload immediately
+      await loadAll();
     } catch (err) {
       console.error('Ghost account creation failed:', err);
       console.error('Error details:', err.message, err.stack);
