@@ -90,6 +90,11 @@
     "price_label": {
       "type": "string"
     },
+    "quantity": {
+      "type": "integer",
+      "default": 1,
+      "description": "Stock quantity available"
+    },
     "flash_deal_active": {
       "type": "boolean",
       "default": false
@@ -431,7 +436,7 @@
       "items": {
         "type": "string"
       },
-      "description": "Available delivery/pickup options: LBC, Lalamove, J&T, GrabExpress, Shopee Express, Flash Express, Meetup, Pickup at Location, etc."
+      "description": "Available delivery/pickup options"
     },
     "meetup_details": {
       "type": "string",

@@ -474,9 +474,19 @@ export default function ListingDetail() {
                     </>
                   )}
                 </div>
-                {listing.condition && listing.condition !== 'N/A' && (
-                  <span className="mt-1 inline-block px-2 py-0.5 rounded-full bg-white/10 text-white/60 font-body text-[10px]">{listing.condition}</span>
-                )}
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                  {listing.condition && listing.condition !== 'N/A' && (
+                    <span className="inline-block px-2 py-0.5 rounded-full bg-white/10 text-white/60 font-body text-[10px]">{listing.condition}</span>
+                  )}
+                  {listing.quantity != null && listing.quantity > 0 && listing.type !== 'jobs' && listing.type !== 'services' && listing.type !== 'rent_lease' && (
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-body text-[10px] font-bold ${listing.quantity <= 5 ? 'bg-orange-500/15 text-orange-400 border border-orange-500/25' : 'bg-green-500/15 text-green-400 border border-green-500/25'}`}>
+                      📦 {listing.quantity <= 5 ? `Only ${listing.quantity} left!` : `${listing.quantity} in stock`}
+                    </span>
+                  )}
+                  {listing.quantity === 0 && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-body text-[10px] font-bold bg-red-500/15 text-red-400 border border-red-500/25">Out of Stock</span>
+                  )}
+                </div>
               </div>
 
               {listing.description && (

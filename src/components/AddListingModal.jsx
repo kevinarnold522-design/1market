@@ -170,7 +170,7 @@ const LEASE_MONTHS = [1, 2, 3, 6, 12, 18, 24, 36, 60];
 const EMPTY_FORM = {
   main_category: '', type: '', subcategory: '', title: '', description: '',
   city: '', state_region: '', zip: '', area: '',
-  price: '', original_price: '', price_label: '',
+  price: '', original_price: '', price_label: '', quantity: 1,
   seller_name: '', phone: '', email_contact: '', apply_link: '',
   condition: 'Brand New', image_url: '', extra_images: [], is_active: true,
   slideshow_animation: 'fade',
@@ -302,6 +302,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       phone: form.phone, seller_name: form.seller_name, email_contact: form.email_contact, apply_link: form.apply_link,
       condition: form.condition, is_active: false,
       approval_status: 'pending',
+      quantity: Number(form.quantity) || 1,
       tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean).join(',') : '',
       specs: [form.custom_product_name, form.custom_service_name].filter(Boolean).join(' | ') || undefined,
       slideshow_animation: form.slideshow_animation || 'fade',
@@ -922,11 +923,17 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                           <label className={labelCls}>Compare-at Price (optional)</label>
                           <input type="number" value={form.original_price} onChange={e => set('original_price', e.target.value)} placeholder="Higher original" className={inputCls} />
                         </div>
-                      </div>
-                      <div>
-                        <label className={labelCls}>Price Display Label</label>
-                        <input value={form.price_label} onChange={e => set('price_label', e.target.value)} placeholder={isRent ? '18,000/mo' : '3,500 neg'} className={inputCls} />
-                      </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className={labelCls}>Price Display Label</label>
+                          <input value={form.price_label} onChange={e => set('price_label', e.target.value)} placeholder={isRent ? '18,000/mo' : '3,500 neg'} className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls}>Quantity / Stock</label>
+                          <input type="number" min="1" value={form.quantity} onChange={e => set('quantity', Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
+                        </div>
+                        </div>
                     </div>
                   )}
 
