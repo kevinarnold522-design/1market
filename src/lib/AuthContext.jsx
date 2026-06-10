@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
+import { getImpersonatedUser } from '@/pages/ConnectedAccounts';
 
 const AuthContext = createContext();
 
@@ -55,6 +56,12 @@ export const AuthProvider = ({ children }) => {
       let publicSettings, currentUser;
       try {
         [publicSettings, currentUser] = await Promise.all([settingsPromise, authPromise]);
+        
+        // Check for impersonation session (ghost account login)
+        const impersonated = getImpersonatedUser();
+        if (impersonated) {
+          currentUser = impersonated;
+        }
       } catch (appError) {
         console.error('App state check failed:', appError);
         if (appError.status === 403 && appError.data?.extra_data?.reason) {

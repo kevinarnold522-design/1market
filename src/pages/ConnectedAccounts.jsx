@@ -46,7 +46,7 @@ export default function ConnectedAccounts() {
   const [activeSession, setActiveSession] = useState(null);
   const navigate = useNavigate();
 
-  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
+  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 1800); };
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   useEffect(() => {
@@ -64,7 +64,9 @@ export default function ConnectedAccounts() {
   const loadAccounts = async () => {
     setLoading(true);
     const all = await base44.entities.User.list('-created_date', 500);
-    setAccounts(all.filter(u => u.is_ghost_account || u.is_connected_account));
+    // Filter to show only accounts created by admin (ghost accounts)
+    // Ghost accounts have internal email domain
+    setAccounts(all.filter(u => u.email?.includes('@ghost.1marketph.internal') || u.is_ghost_account || u.is_connected_account));
     setLoading(false);
   };
 
@@ -110,7 +112,7 @@ export default function ConnectedAccounts() {
         role: 'user',
         seller_page_enabled: true,
       });
-      showToast('Connected account created!');
+      showToast('Account created!');
     }
     setSaving(false);
     setShowForm(false);
@@ -120,7 +122,7 @@ export default function ConnectedAccounts() {
   };
 
   const deleteAccount = async (id) => {
-    if (!window.confirm('Delete this connected account?')) return;
+    if (!window.confirm('Delete this account?')) return;
     await base44.entities.User.delete(id);
     showToast('Account deleted.');
     loadAccounts();
@@ -146,14 +148,14 @@ export default function ConnectedAccounts() {
     };
     sessionStorage.setItem(IMPERSONATE_KEY, JSON.stringify(impersonateData));
     setActiveSession(impersonateData);
-    showToast(`Now acting as: ${account.full_name}`);
+    showToast(`Switched to: ${account.full_name}`);
     setTimeout(() => navigate('/'), 800);
   };
 
   const stopImpersonation = () => {
     sessionStorage.removeItem(IMPERSONATE_KEY);
     setActiveSession(null);
-    showToast('Returned to admin account.');
+    showToast('Session ended.');
   };
 
   const openEdit = (account) => {
@@ -211,11 +213,11 @@ export default function ConnectedAccounts() {
             <div className="h-5 w-px bg-white/20" />
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#a855f7,#7c3aed)' }}>
-                <Ghost className="w-4 h-4 text-white" />
+                <User className="w-4 h-4 text-white" />
               </div>
               <div>
                 <span className="font-heading font-bold text-white block text-sm">Connected Accounts</span>
-                <span className="font-body text-[10px] text-purple-300/60">Ghost / Dummy accounts — Login & act as users</span>
+                <span className="font-body text-[10px] text-white/40">Manage user profiles</span>
               </div>
             </div>
           </div>
@@ -258,7 +260,7 @@ export default function ConnectedAccounts() {
         {/* Info card */}
         <div className="mb-6 p-4 rounded-2xl" style={{ background: 'rgba(168,85,247,0.07)', border: '1px solid rgba(168,85,247,0.2)' }}>
           <p className="font-body text-xs text-purple-300 leading-relaxed">
-            <strong className="text-white">How it works:</strong> Create ghost/dummy accounts with any profile. Click <strong>"Login As"</strong> to act as that user on the site — you can browse, post listings, send messages, and do everything a normal user can. The session is stored locally and doesn't affect the actual auth system. Click <strong>"Stop / Exit"</strong> to return to your admin account.
+            <strong className="text-white">How it works:</strong> Create test accounts with custom profiles. Click <strong>"Login As"</strong> to switch to that persona — you can browse, post listings, send messages, and interact as that user. The session is stored locally for testing. Click <strong>"Stop / Exit"</strong> to return to your admin account.
           </p>
         </div>
 
@@ -376,11 +378,11 @@ export default function ConnectedAccounts() {
                   <div className="flex items-center gap-2 flex-wrap mb-0.5">
                     <p className="font-heading font-bold text-sm text-white">{account.full_name}</p>
                     {account.channel_name && account.channel_name !== account.full_name && (
-                      <span className="font-body text-[10px] text-purple-300">@{account.channel_name}</span>
+                      <span className="font-body text-[10px] text-white/40">@{account.channel_name}</span>
                     )}
-                    <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-purple-500/20 text-purple-300 capitalize">{account.user_type || 'seller'}</span>
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-white/10 text-white/60 capitalize">{account.user_type || 'seller'}</span>
                     {activeSession?.id === account.id && (
-                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-green-500/20 text-green-400 border border-green-500/25">● Active Session</span>
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-green-500/20 text-green-400 border border-green-500/25">● Active</span>
                     )}
                   </div>
                   <p className="font-body text-xs text-white/40">{account.seller_location || 'No location'}{account.seller_area ? ` · ${account.seller_area}` : ''}{account.business_name ? ` · ${account.business_name}` : ''}</p>
