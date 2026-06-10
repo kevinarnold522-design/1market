@@ -265,37 +265,12 @@ export default function SellerProfilePage() {
         const allFollows = await base44.entities.Follow.filter({ following_user_id: sellerId });
         setFollowerCount(allFollows.length);
 
-        // Try multiple lookup methods for all account types
-        let users = [];
+        // Look up seller by ID (primary method - works for all account types)
+        let users = await base44.entities.User.filter({ id: sellerId });
         
-        console.log('🔍 Looking up seller profile:', sellerId);
-        
-        // Try by ID first (most reliable for ghost accounts)
-        users = await base44.entities.User.filter({ id: sellerId });
-        console.log('Found by ID:', users?.length);
-        
-        // If not found, try by username
+        // Fallback: try username if ID didn't work
         if (!users || users.length === 0) {
           users = await base44.entities.User.filter({ username: sellerId });
-          console.log('Found by username:', users?.length);
-        }
-        
-        // If still not found, try by email (for ghost accounts with internal email)
-        if (!users || users.length === 0) {
-          users = await base44.entities.User.filter({ email: sellerId });
-          console.log('Found by email:', users?.length);
-        }
-        
-        // Final fallback: search all users
-        if (!users || users.length === 0) {
-          const allUsers = await base44.entities.User.list('-created_date', 1000);
-          users = allUsers.filter(u => 
-            u.id === sellerId ||
-            u.username === sellerId || 
-            u.channel_name === sellerId ||
-            (u.email && (u.email.includes(sellerId) || u.email === sellerId))
-          );
-          console.log('Found by fallback search:', users?.length);
         }
         
         if (users && users.length > 0) {

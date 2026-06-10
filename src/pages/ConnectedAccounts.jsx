@@ -136,7 +136,7 @@ export default function ConnectedAccounts() {
           is_connected_account: true,
           ghost_id: ghostId,
           ghost_linked: false,
-          username_set: false,
+          username_set: true,
           
           // Facebook Live fields (required by schema)
           facebook_page_id: '',
@@ -165,7 +165,7 @@ export default function ConnectedAccounts() {
         setSaveProgress(100);
         showToast('Account created! Redirecting...');
         
-        // Wait for database to persist then redirect using username for better compatibility
+        // Wait for database to persist then redirect using ID (most reliable)
         setTimeout(() => {
           setSaving(false);
           setSaveProgress(0);
@@ -173,8 +173,8 @@ export default function ConnectedAccounts() {
           setEditingAccount(null);
           setForm(EMPTY_FORM);
           loadAccounts();
-          // Use username instead of ID for more reliable lookup
-          window.location.href = `/seller/${cleanUsername}`;
+          // Use result.id for guaranteed lookup
+          window.location.href = `/seller/${result.id}`;
         }, 1500);
       }
     } catch (err) {
@@ -244,13 +244,13 @@ export default function ConnectedAccounts() {
   );
 
   if (!authChecked) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: '#070F1A' }}>
+    <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
       <div className="w-8 h-8 border-4 border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" />
     </div>
   );
 
   if (!isAdmin) return (
-    <div className="min-h-screen flex items-center justify-center p-6" style={{ background: '#070F1A' }}>
+    <div className="min-h-screen flex items-center justify-center p-6" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
       <div className="text-center">
         <div className="text-4xl mb-4">🔒</div>
         <p className="font-body text-white/50 mb-4">Admin only.</p>
@@ -263,7 +263,7 @@ export default function ConnectedAccounts() {
   const labelCls = 'block font-body text-[10px] font-semibold text-white/40 uppercase tracking-wider mb-1';
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#070F1A 0%,#0a1940 100%)' }}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
       {/* Header */}
       <div className="px-4 sm:px-6 lg:px-8 py-6" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)', borderBottom: '1px solid rgba(0,212,255,0.2)' }}>
         <div className="max-w-5xl mx-auto flex items-center justify-between flex-wrap gap-4">
@@ -355,9 +355,9 @@ export default function ConnectedAccounts() {
                 <div>
                   <label className={labelCls}>Account Type</label>
                   <select value={form.user_type} onChange={e => set('user_type', e.target.value)} className={inputCls}>
-                    <option value="customer" className="bg-[#0D1F3C]">Customer</option>
-                    <option value="seller" className="bg-[#0D1F3C]">Seller</option>
-                    <option value="business" className="bg-[#0D1F3C]">Business</option>
+                    <option value="customer" className="bg-[#001a80]">Customer</option>
+                    <option value="seller" className="bg-[#001a80]">Seller</option>
+                    <option value="business" className="bg-[#001a80]">Business</option>
                   </select>
                 </div>
                 <div>

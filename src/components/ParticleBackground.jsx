@@ -18,7 +18,7 @@ export default function ParticleBackground() {
 
     const ORANGE = [[255, 120, 30], [255, 160, 60], [255, 90, 10]];
     const BLUE   = [[30, 120, 255], [0, 180, 255], [60, 90, 240]];
-    const COUNT  = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 5000), 180);
+    const COUNT  = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 12000), 60);
 
     const rand = (min, max) => Math.random() * (max - min) + min;
 
@@ -88,7 +88,7 @@ export default function ParticleBackground() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 0, opacity: 0.6 }}
+      style={{ zIndex: 0, opacity: 0.35 }}
     />
   );
 }
