@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import LeftSidebar from './LeftSidebar';
-import Navbar from './home/Navbar';
+import FloatingNavbar from './FloatingNavbar';
 import WaveTransition from './WaveTransition';
 import UserTasks from './UserTasks';
 import { subscribeWave, isWaveActive, triggerWave } from '@/lib/waveTransition';
@@ -38,7 +38,7 @@ export default function AppLayout() {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left Sidebar — desktop only, starts below dual navbar */}
+      {/* Left Sidebar — desktop only */}
       {!isMobile && <LeftSidebar isMobileHidden={false} />}
 
       {/* Main content — offset by sidebar width on desktop */}
@@ -46,11 +46,8 @@ export default function AppLayout() {
         className="flex-1 min-w-0 overflow-x-hidden"
         style={{ marginLeft: isMobile ? 0 : (220) }}
       >
-        <>
-          <Navbar />
-          <div style={{ height: 116 }} />
-          <Outlet />
-        </>
+        <FloatingNavbar />
+        <Outlet />
       </main>
 
       {/* Wave overlay */}
