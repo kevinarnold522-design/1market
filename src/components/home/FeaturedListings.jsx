@@ -89,10 +89,28 @@ function ListingCard({ item, user }) {
 
   return (
     <motion.div
-      whileHover={{ y: -4, boxShadow: '0 0 30px rgba(0,212,255,0.2)' }}
-      className="flex-shrink-0 w-52 rounded-2xl overflow-hidden transition-all duration-300 group"
-      style={{ background: 'rgba(13,31,60,0.9)', border: '1px solid rgba(0,212,255,0.1)' }}
+      whileHover={{ y: -4, boxShadow: '0 0 40px rgba(37,99,235,0.4)' }}
+      className="flex-shrink-0 w-52 rounded-2xl overflow-hidden transition-all duration-300 group relative"
+      style={{ 
+        background: 'rgba(13,31,60,0.9)', 
+        border: '1px solid rgba(37,99,235,0.3)',
+        boxShadow: '0 0 20px rgba(37,99,235,0.2), inset 0 0 20px rgba(37,99,235,0.05)'
+      }}
     >
+      {/* Circulating glow bar */}
+      <div className="absolute inset-0 rounded-2xl pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 rounded-2xl" style={{
+          background: 'conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(37,99,235,0.4) 60deg, rgba(59,130,246,0.6) 120deg, rgba(37,99,235,0.4) 180deg, transparent 240deg, rgba(37,99,235,0.3) 300deg, transparent 360deg)',
+          animation: 'spin 3s linear infinite',
+          filter: 'blur(8px)',
+          opacity: 0.6
+        }} />
+      </div>
+      {/* Inner border glow */}
+      <div className="absolute inset-[1px] rounded-2xl pointer-events-none" style={{
+        background: 'rgba(13,31,60,0.95)',
+        boxShadow: 'inset 0 0 30px rgba(37,99,235,0.15)'
+      }} />
       <Link to={`/listing/${item.id}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden">
           <img
@@ -128,6 +146,19 @@ function ListingCard({ item, user }) {
       </div>
     </motion.div>
   );
+}
+
+// Add CSS animation for circulating glow
+const style = document.createElement('style');
+if (!document.getElementById('glow-animation-style')) {
+  style.id = 'glow-animation-style';
+  style.textContent = `
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
 }
 
 export default function FeaturedListings() {

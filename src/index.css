@@ -89,3 +89,56 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .royal-blue-glow {
+    animation: circulating-glow 3s linear infinite;
+  }
+}
+
+@keyframes circulating-glow {
+  0% {
+    background: conic-gradient(from 0deg at 50% 50%, 
+      transparent 0deg, 
+      rgba(37,99,235,0.4) 60deg, 
+      rgba(59,130,246,0.6) 120deg, 
+      rgba(37,99,235,0.4) 180deg, 
+      transparent 240deg, 
+      rgba(37,99,235,0.3) 300deg, 
+      transparent 360deg);
+  }
+  100% {
+    background: conic-gradient(from 360deg at 50% 50%, 
+      transparent 0deg, 
+      rgba(37,99,235,0.4) 60deg, 
+      rgba(59,130,246,0.6) 120deg, 
+      rgba(37,99,235,0.4) 180deg, 
+      transparent 240deg, 
+      rgba(37,99,235,0.3) 300deg, 
+      transparent 360deg);
+  }
+}
+
+@keyframes wave-motion {
+  0%, 100% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.wave-background {
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(37,99,235,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(59,130,246,0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(0,51,204,0.08) 0%, transparent 70%),
+    linear-gradient(180deg, #001240 0%, #002366 50%, #001a5c 100%);
+  background-size: 200% 200%;
+  animation: wave-motion 8s ease-in-out infinite;
+}

@@ -8,6 +8,7 @@ import CategoryCards from '../components/home/CategoryCards';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
 import AdOverlay from '../components/AdOverlay';
+import WaveBackground from '../components/WaveBackground';
 
 
 // Lazy-load heavy/below-fold sections
@@ -40,7 +41,8 @@ const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c
 
 export default function Home() {
   return (
-    <div className="min-h-screen overflow-x-hidden relative">
+    <div className="min-h-screen overflow-x-hidden relative wave-background">
+      <WaveBackground />
       <Suspense fallback={<Spinner />}>
         <StarField />
         <ParticleBackground />
