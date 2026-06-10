@@ -621,10 +621,16 @@ export default function Navbar() {
                       </>
                     )}
                     {user.role === 'admin' && (
-                      <Link to="/admin" onClick={() => setMenuOpen(false)}
-                        className="block text-amber-400 font-body text-sm font-semibold py-2">
-                        Admin Dashboard
-                      </Link>
+                      <>
+                        <Link to="/admin" onClick={() => setMenuOpen(false)}
+                          className="block text-amber-400 font-body text-sm font-semibold py-2">
+                          Admin Dashboard
+                        </Link>
+                        <Link to="/connected-accounts" onClick={() => setMenuOpen(false)}
+                          className="block text-purple-400 font-body text-sm font-semibold py-2">
+                          Connected Accounts
+                        </Link>
+                      </>
                     )}
                     <Link to="/favourites" onClick={() => setMenuOpen(false)}
                       className="block text-pink-300 font-body text-sm font-medium py-2 transition-colors">

@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Ghost, Plus, Trash2, X, ArrowLeft, User, LogIn, Shield, Search, Edit2, Save, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { getAdminEditMode } from '@/components/home/Navbar';
 
 const OWNER_EMAIL = 'Kevinarnold522@gmail.com';
 const LOCATIONS = ['Manila', 'Cavite', 'Nationwide'];
@@ -75,50 +76,57 @@ export default function ConnectedAccounts() {
   const handleCreate = async () => {
     if (!form.full_name.trim()) { showToast('Name is required'); return; }
     setSaving(true);
-    const ghostId = `ghost_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    if (editingAccount) {
-      await base44.entities.User.update(editingAccount.id, {
-        full_name: form.full_name.trim(),
-        channel_name: form.channel_name.trim() || form.full_name.trim(),
-        user_type: form.user_type,
-        business_name: form.business_name.trim() || form.full_name.trim(),
-        seller_location: form.location,
-        bio: form.bio,
-        seller_area: form.seller_area,
-        social_facebook: form.social_facebook,
-        social_instagram: form.social_instagram,
-        social_tiktok: form.social_tiktok,
-        is_seller: form.user_type === 'seller' || form.user_type === 'business',
-      });
-      showToast('Account updated!');
-    } else {
-      await base44.entities.User.create({
-        full_name: form.full_name.trim(),
-        channel_name: form.channel_name.trim() || form.full_name.trim(),
-        email: `${ghostId}@ghost.1marketph.internal`,
-        user_type: form.user_type,
-        is_seller: form.user_type === 'seller' || form.user_type === 'business',
-        account_type: form.user_type === 'business' ? 'business_owner' : form.user_type,
-        business_name: form.business_name.trim() || form.full_name.trim(),
-        seller_location: form.location,
-        bio: form.bio,
-        seller_area: form.seller_area,
-        social_facebook: form.social_facebook,
-        social_instagram: form.social_instagram,
-        social_tiktok: form.social_tiktok,
-        is_ghost_account: true,
-        is_connected_account: true,
-        ghost_id: ghostId,
-        role: 'user',
-        seller_page_enabled: true,
-      });
-      showToast('Account created!');
+    
+    try {
+      const ghostId = `ghost_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      if (editingAccount) {
+        await base44.entities.User.update(editingAccount.id, {
+          full_name: form.full_name.trim(),
+          channel_name: form.channel_name.trim() || form.full_name.trim(),
+          user_type: form.user_type,
+          business_name: form.business_name.trim() || form.full_name.trim(),
+          seller_location: form.location,
+          bio: form.bio,
+          seller_area: form.seller_area,
+          social_facebook: form.social_facebook,
+          social_instagram: form.social_instagram,
+          social_tiktok: form.social_tiktok,
+          is_seller: form.user_type === 'seller' || form.user_type === 'business',
+        });
+        showToast('Account updated!');
+      } else {
+        await base44.entities.User.create({
+          full_name: form.full_name.trim(),
+          channel_name: form.channel_name.trim() || form.full_name.trim(),
+          email: `${ghostId}@ghost.1marketph.internal`,
+          user_type: form.user_type,
+          is_seller: form.user_type === 'seller' || form.user_type === 'business',
+          account_type: form.user_type === 'business' ? 'business_owner' : form.user_type,
+          business_name: form.business_name.trim() || form.full_name.trim(),
+          seller_location: form.location,
+          bio: form.bio,
+          seller_area: form.seller_area,
+          social_facebook: form.social_facebook,
+          social_instagram: form.social_instagram,
+          social_tiktok: form.social_tiktok,
+          is_ghost_account: true,
+          is_connected_account: true,
+          ghost_id: ghostId,
+          role: 'user',
+          seller_page_enabled: true,
+        });
+        showToast('Account created!');
+      }
+      setSaving(false);
+      setShowForm(false);
+      setEditingAccount(null);
+      setForm(EMPTY_FORM);
+      loadAccounts();
+    } catch (err) {
+      console.error('Failed to create account:', err);
+      setSaving(false);
+      showToast('Failed to create account. Please try again.');
     }
-    setSaving(false);
-    setShowForm(false);
-    setEditingAccount(null);
-    setForm(EMPTY_FORM);
-    loadAccounts();
   };
 
   const deleteAccount = async (id) => {
