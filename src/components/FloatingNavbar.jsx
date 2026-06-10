@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Home, Plane, UtensilsCrossed, ShoppingBag, KeyRound, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, LogOut, Ghost, ChevronDown, Globe, Package, BarChart2, Settings, Shield, Search, ShoppingCart } from 'lucide-react';
+import { Menu, X, Home, Plane, UtensilsCrossed, ShoppingBag, KeyRound, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, LogOut, Ghost, Globe, Package, BarChart2, Shield, Search, ShoppingCart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -25,8 +25,6 @@ const NAV_ITEMS = [
 export default function FloatingNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { user, isAuthenticated, logout } = useAuth();
   const [ghostUser, setGhostUser] = useState(null);
@@ -36,6 +34,17 @@ export default function FloatingNavbar() {
     const ghost = getImpersonatedUser();
     if (ghost) setGhostUser(ghost);
   }, []);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (isOpen && !e.target.closest('[data-navbar]')) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
 
   const activeUser = ghostUser || user;
   const isAdmin = activeUser?.role === 'admin' || activeUser?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
@@ -60,268 +69,211 @@ export default function FloatingNavbar() {
     }
   };
 
-  return (
+return (
     <>
-      {/* Floating Middle Navbar */}
+      {/* Floating Top-Left Navbar */}
       <motion.div
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] rounded-2xl shadow-2xl w-[95%] max-w-6xl"
-        style={{
-          background: scrolled ? 'rgba(13,31,60,0.95)' : 'rgba(13,31,60,0.85)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          border: '1px solid rgba(0,212,255,0.2)',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 20px rgba(0,212,255,0.1)',
-        }}
+        initial={{ x: -100 }}
+        animate={{ x: 0 }}
+        className="fixed top-4 left-4 z-[100]"
+        data-navbar
       >
-        <div className="flex items-center gap-2 px-3 py-2">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-            <img
-              src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
-              alt="1MarketPH"
-              className="w-7 h-7 rounded-lg object-cover"
-            />
-            <span className="font-heading font-bold text-xs text-white hidden sm:block">
-              1Market<span className="text-[#FFD700]">PH</span>
-            </span>
-          </Link>
+        {/* Hamburger Button */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-2xl transition-all hover:scale-105"
+          style={{
+            background: scrolled ? 'rgba(13,31,60,0.95)' : 'rgba(13,31,60,0.85)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            border: '1px solid rgba(0,212,255,0.2)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 20px rgba(0,212,255,0.1)',
+          }}
+          data-navbar
+        >
+          <Menu className={`w-5 h-5 text-white transition-transform ${isOpen ? 'rotate-90' : ''}`} />
+        </button>
 
-          {/* Search Bar */}
-          <form onSubmit={handleSearch} className="flex-1 max-w-xs mx-2">
-            <div className="relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search listings..."
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 pl-8 font-body text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#00D4FF]/50 transition-colors"
-              />
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30" />
-            </div>
-          </form>
+        {/* Expanded Menu */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, x: -20, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -20, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="absolute top-14 left-0 w-80 rounded-2xl overflow-hidden shadow-2xl mt-2"
+              style={{
+                background: 'rgba(13,31,60,0.98)',
+                backdropFilter: 'blur(24px)',
+                WebkitBackdropFilter: 'blur(24px)',
+                border: '1px solid rgba(0,212,255,0.2)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 20px rgba(0,212,255,0.15)',
+              }}
+              data-navbar
+            >
+              {/* Header with Logo */}
+              <div className="flex items-center gap-3 px-4 py-3 border-b border-white/10">
+                <img
+                  src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
+                  alt="1MarketPH"
+                  className="w-8 h-8 rounded-lg object-cover"
+                />
+                <div className="flex-1">
+                  <p className="font-heading font-bold text-sm text-white">1Market<span className="text-[#FFD700]">PH</span></p>
+                  <p className="font-body text-[9px] text-white/40">Buy, Sell & Connect</p>
+                </div>
+                <button onClick={() => setIsOpen(false)} className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                  <X className="w-3.5 h-3.5 text-white" />
+                </button>
+              </div>
 
-          {/* Navigation Items (Desktop) */}
-          <div className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                className="flex items-center gap-1.5 px-2 py-1.5 rounded-xl transition-all hover:bg-white/10 group"
-                title={item.label}
-              >
-                <item.icon className="w-3.5 h-3.5 text-white/60 group-hover:text-white transition-colors" />
-                <span className="font-body text-[10px] font-semibold text-white/70 group-hover:text-white whitespace-nowrap">{item.label}</span>
-              </Link>
-            ))}
-          </div>
+              {/* Search Bar */}
+              <form onSubmit={handleSearch} className="px-4 py-3 border-b border-white/8">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search listings..."
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 pl-9 font-body text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#00D4FF]/50 transition-colors"
+                  />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30" />
+                </div>
+              </form>
 
-          {/* Auth Actions */}
-          <div className="flex items-center gap-1.5">
-            {isAuthenticated && activeUser ? (
-              <>
-                {/* Notifications */}
-                <div className="hidden sm:block">
-                  <NotificationsBell user={activeUser} />
+              {/* Navigation Menu */}
+              <div className="p-3 max-h-[60vh] overflow-y-auto">
+                {/* Main Navigation */}
+                <div className="space-y-0.5 mb-3">
+                  {NAV_ITEMS.map((item) => (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all hover:bg-white/10 group"
+                    >
+                      <item.icon className="w-4 h-4 flex-shrink-0" style={{ color: item.color }} />
+                      <span className="font-body text-sm font-semibold text-white/80 group-hover:text-white">{item.label}</span>
+                    </Link>
+                  ))}
                 </div>
 
-                {/* Post Ad */}
-                {(isSeller || isAdmin || isGhostSession) && (
-                  <div className="hidden sm:block">
-                    <PostListingMenu user={activeUser} compact iconOnly />
+                {/* Auth Section */}
+                {isAuthenticated && activeUser ? (
+                  <>
+                    {/* User Info */}
+                    <div className="px-3 py-2 mb-2 rounded-xl bg-white/5 border border-white/10">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className={`w-8 h-8 rounded-lg overflow-hidden flex-shrink-0 ${isGhostSession ? 'ring-2 ring-purple-400' : ''}`}>
+                          {activeUser?.profile_picture ? (
+                            <img src={activeUser.profile_picture} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <div className={`w-full h-full rounded-lg flex items-center justify-center text-white font-heading font-bold text-sm ${isGhostSession ? 'bg-gradient-to-br from-purple-500 to-cyan-500' : 'bg-gradient-to-br from-[#2563EB] to-[#00D4FF]'}`}>
+                              {initials}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-body text-xs font-bold text-white truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
+                          <p className={`font-body text-[9px] truncate ${isGhostSession ? 'text-purple-400' : 'text-[#00D4FF]/70'}`}>
+                            {isGhostSession ? 'Ghost Account' : activeUser.email}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Buyer Section */}
+                    <div className="space-y-0.5 mb-3">
+                      <p className="px-3 py-1 font-body text-[9px] text-white/40 uppercase tracking-wider font-bold">My Account</p>
+                      <Link to="/profile" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70">
+                        <User className="w-4 h-4 text-[#00D4FF]" /> My Profile
+                      </Link>
+                      <Link to="/favourites" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-pink-400">
+                        <Heart className="w-4 h-4 text-pink-400" /> Saved Favourites
+                      </Link>
+                      <Link to="/messages" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-[#00D4FF]">
+                        <MessageSquare className="w-4 h-4 text-[#00D4FF]" /> Messages
+                      </Link>
+                      <Link to="/profile?tab=orders" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-[#00D4FF]">
+                        <Package className="w-4 h-4 text-[#00D4FF]" /> My Orders
+                      </Link>
+                      <Link to="/profile?tab=cart" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400">
+                        <ShoppingCart className="w-4 h-4 text-green-400" /> My Cart
+                      </Link>
+                    </div>
+
+                    {/* Seller Section */}
+                    {(isSeller || isGhostSession || isAdmin) && (
+                      <div className="space-y-0.5 mb-3">
+                        <p className="px-3 py-1 font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold">Seller Tools</p>
+                        <div className="px-3 py-2">
+                          <PostListingMenu user={activeUser} compact />
+                        </div>
+                        <Link to="/profile?tab=listings" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-[#00D4FF]">
+                          <Package className="w-4 h-4 text-[#00D4FF]" /> My Listings
+                        </Link>
+                        <Link to="/profile?tab=sellerorders" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400">
+                          <Package className="w-4 h-4 text-green-400" /> Seller Orders
+                        </Link>
+                        <Link to="/profile?tab=analytics" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-yellow-400">
+                          <BarChart2 className="w-4 h-4 text-yellow-400" /> Statistics Dashboard
+                        </Link>
+                        <Link to={`/seller/${isGhostSession ? (ghostUser?.username || ghostUser?.id) : (activeUser?.username || activeUser?.id)}`} onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400">
+                          <Globe className="w-4 h-4 text-green-400" /> My Seller Profile
+                        </Link>
+                      </div>
+                    )}
+
+                    {/* Admin Section */}
+                    {isAdmin && !isGhostSession && (
+                      <div className="space-y-0.5 mb-3">
+                        <p className="px-3 py-1 font-body text-[9px] text-amber-400/60 uppercase tracking-wider font-bold">Admin Panel</p>
+                        <Link to="/admin" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-amber-500/10 transition-colors text-amber-400">
+                          <Shield className="w-4 h-4" /> CEO Dashboard
+                          {isAdmin && <MetaVerifiedBadge size="xs" label="" />}
+                        </Link>
+                        <Link to="/connected-accounts" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-purple-500/10 transition-colors text-purple-400">
+                          <Users className="w-4 h-4" /> Connected Accounts
+                        </Link>
+                      </div>
+                    )}
+
+                    {/* Notifications Bell */}
+                    <div className="px-3 py-2 border-t border-white/8 mb-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-body text-xs text-white/60">Notifications</span>
+                        <NotificationsBell user={activeUser} />
+                      </div>
+                    </div>
+
+                    {/* Sign Out */}
+                    {isGhostSession ? (
+                      <button onClick={() => { clearImpersonation(); setIsOpen(false); }} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 transition-colors text-red-300 font-body text-xs font-bold">
+                        <LogOut className="w-4 h-4" /> Sign Out of Ghost
+                      </button>
+                    ) : (
+                      <button onClick={() => { logout(true); setIsOpen(false); }} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-500/10 transition-colors text-red-400 font-body text-xs">
+                        <LogOut className="w-4 h-4" /> Sign Out
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  /* Not Authenticated */
+                  <div className="space-y-2 pt-2">
+                    <button onClick={() => { navigate('/login'); setIsOpen(false); }} className="w-full py-2.5 border border-white/20 text-white rounded-xl font-body font-bold text-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
+                      Login
+                    </button>
+                    <button onClick={() => { navigate('/register'); setIsOpen(false); }} className="w-full py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all" style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}>
+                      Get Started
+                    </button>
                   </div>
                 )}
-
-                {/* Profile Dropdown */}
-                <div className="relative">
-                  <button
-                    onClick={() => setShowProfile(!showProfile)}
-                    className="flex items-center gap-1.5 px-2 py-1.5 rounded-xl bg-white/10 border border-white/10 hover:border-[#00D4FF]/40 transition-all"
-                  >
-                    <div className={`w-6 h-6 rounded-lg overflow-hidden flex-shrink-0 ${isGhostSession ? 'ring-2 ring-purple-400' : ''}`}>
-                      {activeUser?.profile_picture ? (
-                        <img src={activeUser.profile_picture} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <div className={`w-full h-full rounded-lg flex items-center justify-center text-white font-heading font-bold text-[10px] ${isGhostSession ? 'bg-gradient-to-br from-purple-500 to-cyan-500' : 'bg-gradient-to-br from-[#2563EB] to-[#00D4FF]'}`}>
-                          {initials}
-                        </div>
-                      )}
-                    </div>
-                    <ChevronDown className="w-3 h-3 text-white/60" />
-                  </button>
-
-                  <AnimatePresence>
-                    {showProfile && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                        className="absolute right-0 top-full mt-2 w-64 rounded-2xl overflow-hidden shadow-2xl z-50"
-                        style={{ background: '#0D1F3C', border: '1px solid rgba(168,85,247,0.3)' }}
-                      >
-                        {/* Profile Header */}
-                        <div className="p-3 border-b border-white/10">
-                          <div className="flex items-center gap-2 mb-2">
-                            <div className={`w-8 h-8 rounded-lg overflow-hidden flex-shrink-0 ${isGhostSession ? 'ring-2 ring-purple-400' : ''}`}>
-                              {activeUser?.profile_picture ? (
-                                <img src={activeUser.profile_picture} alt="" className="w-full h-full object-cover" />
-                              ) : (
-                                <div className={`w-full h-full rounded-lg flex items-center justify-center text-white font-heading font-bold text-sm ${isGhostSession ? 'bg-gradient-to-br from-purple-500 to-cyan-500' : 'bg-gradient-to-br from-[#2563EB] to-[#00D4FF]'}`}>
-                                  {initials}
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-body text-xs font-bold text-white truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
-                              <p className={`font-body text-[9px] truncate ${isGhostSession ? 'text-purple-400' : 'text-[#00D4FF]/70'}`}>
-                                {isGhostSession ? 'Ghost Account' : activeUser.email}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Menu Items */}
-                        <div className="p-2 space-y-0.5 max-h-[70vh] overflow-y-auto">
-                          {/* Buyer Section */}
-                          <Link to="/profile" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
-                            <User className="w-3.5 h-3.5 text-[#00D4FF]" /> My Profile
-                          </Link>
-                          <Link to="/favourites" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-pink-400 font-body text-xs">
-                            <Heart className="w-3.5 h-3.5 text-pink-400" /> Saved Favourites
-                          </Link>
-                          <Link to="/messages" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-[#00D4FF] font-body text-xs">
-                            <MessageSquare className="w-3.5 h-3.5 text-[#00D4FF]" /> Messages
-                          </Link>
-                          <Link to="/profile?tab=orders" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-[#00D4FF] font-body text-xs">
-                            <Package className="w-3.5 h-3.5 text-[#00D4FF]" /> My Orders
-                          </Link>
-                          <Link to="/profile?tab=cart" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400 font-body text-xs">
-                            <ShoppingCart className="w-3.5 h-3.5 text-green-400" /> My Cart
-                          </Link>
-
-                          {/* Seller Section */}
-                          {(isSeller || isGhostSession || isAdmin) && (
-                            <>
-                              <div className="border-t border-white/8 my-1" />
-                              <p className="px-3 py-1 font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold">Seller Tools</p>
-                              <div className="px-3 py-1">
-                                <PostListingMenu user={activeUser} compact />
-                              </div>
-                              <Link to="/profile?tab=listings" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-[#00D4FF] font-body text-xs">
-                                <Package className="w-3.5 h-3.5 text-[#00D4FF]" /> My Listings
-                              </Link>
-                              <Link to="/profile?tab=sellerorders" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400 font-body text-xs">
-                                <Package className="w-3.5 h-3.5 text-green-400" /> Seller Orders
-                              </Link>
-                              <Link to="/profile?tab=analytics" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-yellow-400 font-body text-xs">
-                                <BarChart2 className="w-3.5 h-3.5 text-yellow-400" /> Statistics Dashboard
-                              </Link>
-                              <Link to={`/seller/${isGhostSession ? (ghostUser?.username || ghostUser?.id) : (activeUser?.username || activeUser?.id)}`} onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400 font-body text-xs">
-                                <Globe className="w-3.5 h-3.5 text-green-400" /> My Seller Profile
-                              </Link>
-                            </>
-                          )}
-
-                          {/* Admin Section */}
-                          {isAdmin && !isGhostSession && (
-                            <>
-                              <div className="border-t border-white/8 my-1" />
-                              <p className="px-3 py-1 font-body text-[9px] text-amber-400/60 uppercase tracking-wider font-bold">Admin Panel</p>
-                              <Link to="/admin" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-amber-500/10 transition-colors text-amber-400 font-body text-xs">
-                                <Shield className="w-3.5 h-3.5" /> CEO Dashboard
-                                {isAdmin && <MetaVerifiedBadge size="xs" label="" />}
-                              </Link>
-                              <Link to="/connected-accounts" onClick={() => setShowProfile(false)} className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-purple-500/10 transition-colors text-purple-400 font-body text-xs">
-                                <Users className="w-3.5 h-3.5" /> Connected Accounts
-                              </Link>
-                            </>
-                          )}
-
-                          {/* Sign Out */}
-                          <div className="border-t border-white/8 my-1" />
-                          {isGhostSession ? (
-                            <button onClick={() => { clearImpersonation(); setShowProfile(false); }} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 transition-colors text-red-300 font-body text-xs font-bold">
-                              <LogOut className="w-3.5 h-3.5" /> Sign Out of Ghost
-                            </button>
-                          ) : (
-                            <button onClick={() => { logout(true); setShowProfile(false); }} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 transition-colors text-red-400 font-body text-xs">
-                              <LogOut className="w-3.5 h-3.5" /> Sign Out
-                            </button>
-                          )}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </>
-            ) : (
-              <>
-                <button onClick={() => navigate('/login')} className="px-3 py-1.5 border border-white/20 text-white/80 rounded-xl font-body font-bold text-xs hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors hidden sm:block">
-                  Login
-                </button>
-                <button onClick={() => navigate('/register')} className="px-3 py-1.5 rounded-xl font-body font-bold text-xs text-[#0A192F] transition-all hover:scale-105" style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}>
-                  Get Started
-                </button>
-              </>
-            )}
-
-            {/* Mobile Menu Toggle */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-1.5 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
-            >
-              {isOpen ? <X className="w-4 h-4 text-white" /> : <Menu className="w-4 h-4 text-white" />}
-            </button>
-          </div>
-        </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
-
-      {/* Mobile Full Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed top-20 left-1/2 -translate-x-1/2 w-[95vw] max-w-md rounded-2xl overflow-hidden shadow-2xl z-[99] lg:hidden"
-            style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)' }}
-          >
-            <div className="p-3 space-y-1 max-h-[70vh] overflow-y-auto">
-              {NAV_ITEMS.map((item) => (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all hover:bg-white/10"
-                >
-                  <item.icon className="w-4 h-4" style={{ color: item.color }} />
-                  <span className="font-body text-sm font-semibold text-white">{item.label}</span>
-                </Link>
-              ))}
-              {isAuthenticated && activeUser && (
-                <>
-                  <div className="border-t border-white/8 my-2" />
-                  <Link to="/favourites" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70">
-                    <Heart className="w-4 h-4 text-pink-400" /> Saved Favourites
-                  </Link>
-                  <Link to="/messages" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70">
-                    <MessageSquare className="w-4 h-4 text-[#00D4FF]" /> Messages
-                  </Link>
-                  {(isSeller || isGhostSession) && (
-                    <>
-                      <div className="border-t border-white/8 my-2" />
-                      <div className="px-3 py-2">
-                        <PostListingMenu user={activeUser} compact />
-                      </div>
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
-}
+      </>
+      );
+      }
