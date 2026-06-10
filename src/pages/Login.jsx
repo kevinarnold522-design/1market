@@ -20,7 +20,8 @@ export default function Login() {
     setLoading(true);
     try {
       await base44.auth.loginViaEmailPassword(email, password);
-      window.location.href = "/";
+      // Force reload to ensure auth state is updated
+      window.location.reload();
     } catch (err) {
       setError(err.message || "Invalid email or password");
     } finally {

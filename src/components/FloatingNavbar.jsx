@@ -30,9 +30,12 @@ export default function FloatingNavbar() {
   const [ghostUser, setGhostUser] = useState(null);
   const navigate = useNavigate();
 
+  // Check for ghost session on mount
   useEffect(() => {
     const ghost = getImpersonatedUser();
-    if (ghost) setGhostUser(ghost);
+    if (ghost) {
+      setGhostUser(ghost);
+    }
   }, []);
 
   // Close menu when clicking outside
@@ -47,11 +50,12 @@ export default function FloatingNavbar() {
   }, [isOpen]);
 
   const activeUser = ghostUser || user;
-  const isAdmin = activeUser?.role === 'admin' || activeUser?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
+  const isAdmin = !ghostUser && (activeUser?.role === 'admin' || activeUser?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase());
   const isGhostSession = !!ghostUser;
   const isSeller = activeUser?.user_type === 'seller' || activeUser?.is_seller || activeUser?.account_type === 'business_owner';
   const isBusiness = activeUser?.user_type === 'business';
   const isVerified = activeUser?.is_verified_seller;
+  const isGhost = activeUser?.is_ghost_account || activeUser?.ghost_id;
   const initials = activeUser ? (activeUser.full_name || activeUser.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
 
   useEffect(() => {
@@ -177,7 +181,7 @@ return (
                         <div className="flex-1 min-w-0">
                           <p className="font-body text-xs font-bold text-white truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
                           <p className={`font-body text-[9px] truncate ${isGhostSession ? 'text-purple-400' : 'text-[#00D4FF]/70'}`}>
-                            {isGhostSession ? 'Ghost Account' : activeUser.email}
+                            {isGhostSession ? 'Ghost' : activeUser.email}
                           </p>
                         </div>
                       </div>
@@ -225,13 +229,13 @@ return (
                       </div>
                     )}
 
-                    {/* Admin Section */}
-                    {isAdmin && !isGhostSession && (
+                    {/* Admin Section - Admin only, never show to ghost accounts */}
+                    {isAdmin && (
                       <div className="space-y-0.5 mb-3">
                         <p className="px-3 py-1 font-body text-[9px] text-amber-400/60 uppercase tracking-wider font-bold">Admin Panel</p>
                         <Link to="/admin" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-amber-500/10 transition-colors text-amber-400">
                           <Shield className="w-4 h-4" /> CEO Dashboard
-                          {isAdmin && <MetaVerifiedBadge size="xs" label="" />}
+                          <MetaVerifiedBadge size="xs" label="" />
                         </Link>
                         <Link to="/connected-accounts" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-purple-500/10 transition-colors text-purple-400">
                           <Users className="w-4 h-4" /> Connected Accounts
@@ -239,7 +243,7 @@ return (
                       </div>
                     )}
 
-                    {/* Notifications Bell */}
+                    {/* Notifications Bell - authenticated users only */}
                     <div className="px-3 py-2 border-t border-white/8 mb-2">
                       <div className="flex items-center justify-between">
                         <span className="font-body text-xs text-white/60">Notifications</span>

@@ -65,14 +65,16 @@ export default function ConnectedAccounts() {
   const setField = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   useEffect(() => {
-    // Check for active ghost session
+    // Check for active ghost session - ghost accounts cannot access this page
     const session = getGhostSession();
     if (session) {
       setCurrentGhost(session);
     }
 
     base44.auth.me().then(user => {
-      setIsAdmin(user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase() || user?.role === 'admin');
+      // Ghost accounts cannot access connected accounts - only real admin
+      const isRealAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
+      setIsAdmin(isRealAdmin);
       setAuthChecked(true);
     }).catch(() => setAuthChecked(true));
   }, []);
@@ -324,11 +326,13 @@ export default function ConnectedAccounts() {
     </div>
   );
 
-  if (!isAdmin) return (
+  // Block ghost accounts from accessing this page
+  const session = getGhostSession();
+  if (session || !isAdmin) return (
     <div className="min-h-screen flex items-center justify-center p-6" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
       <div className="text-center">
         <div className="text-4xl mb-4">🔒</div>
-        <p className="font-body text-white/50 mb-4">Admin only</p>
+        <p className="font-body text-white/50 mb-4">{session ? 'Ghost accounts cannot access this page' : 'Admin access required'}</p>
         <Link to="/" className="px-4 py-2 bg-[#2563EB] text-white rounded-xl font-body text-sm font-bold">← Home</Link>
       </div>
     </div>
