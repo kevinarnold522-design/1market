@@ -154,10 +154,9 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Top Banner - hide when in ghost session */}
-      {!isGhostSession && (
-        <div className={`fixed top-0 left-0 right-0 z-[60] text-white py-2 px-4 transition-all`}
-          style={{ background: 'linear-gradient(90deg,#0033CC,#1a3de8,#0033CC)', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
+      {/* Top Banner - Social Links - Always Visible */}
+      <div className={`fixed top-0 left-0 right-0 z-[60] text-white py-2 px-4`}
+        style={{ background: 'linear-gradient(90deg,#0033CC,#1a3de8,#0033CC)', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           {/* Left: welcome or tagline */}
           <div className="flex-1 min-w-0">
@@ -183,7 +182,7 @@ export default function Navbar() {
               </span>
             )}
           </div>
-          {/* Right: 1MarketPH Social Links */}
+          {/* Right: 1MarketPH Social Links - Always Visible */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
             <span className="font-body text-[9px] text-white/40 hidden md:block mr-1">Follow us:</span>
             <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
@@ -209,7 +208,6 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      )}
 
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'backdrop-blur-2xl shadow-lg shadow-[#0033CC]/30' : 'backdrop-blur-xl'}`} style={{ background: scrolled ? 'rgba(0,26,128,0.75)' : 'rgba(0,10,64,0.55)', borderBottom: '1px solid rgba(255,255,255,0.08)', WebkitBackdropFilter: 'blur(24px)' }}>
         {/* Category Bar — LEFT aligned */}
