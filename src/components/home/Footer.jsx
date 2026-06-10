@@ -80,49 +80,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Links grid — 3 columns */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 mb-12">
-          {/* About 1MarketPH — merged */}
-          <div className="space-y-4">
-            <h4 className="font-heading font-bold text-sm uppercase tracking-widest text-white/50">About 1MarketPH</h4>
-            <div className="space-y-2.5">
-              <p className="font-body text-sm text-white/40">Founded by Kevin W. Roberto</p>
-              <p className="font-body text-sm text-white/40">Manila, Philippines</p>
-              <p className="font-body text-xs text-white/30 leading-relaxed">Born from a vision to bridge the gap between Filipino consumers and businesses that power our communities.</p>
-              <Link to="/about" className="block font-body text-xs text-[#00D4FF]/60 hover:text-[#00D4FF] transition-colors">Read Our Story</Link>
-              <Link to="/privacy-policy" className="block font-body text-xs text-white/25 hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
-            </div>
-          </div>
 
-          {/* Marketplace */}
-          <div className="space-y-4">
-            <h4 className="font-heading font-bold text-sm uppercase tracking-widest text-white/50">Marketplace</h4>
-            <div className="space-y-2.5">
-              {[
-                { label: 'Buy & Sell', href: '/buysell' },
-                { label: 'Food', href: '/food' },
-                { label: 'Travel', href: '/travel' },
-                { label: 'For Rent', href: '/rent' },
-              ].map(l => (
-                <Link key={l.label} to={l.href} className="block font-body text-sm text-white/40 hover:text-[#00D4FF] transition-colors">{l.label}</Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Services */}
-          <div className="space-y-4">
-            <h4 className="font-heading font-bold text-sm uppercase tracking-widest text-white/50">Services</h4>
-            <div className="space-y-2.5">
-              {[
-                { label: 'Services', href: '/services' },
-                { label: 'Jobs', href: '/jobs' },
-                { label: 'Explore', href: '/explore' },
-              ].map(l => (
-                <Link key={l.label} to={l.href} className="block font-body text-sm text-white/40 hover:text-[#00D4FF] transition-colors">{l.label}</Link>
-              ))}
-            </div>
-          </div>
-        </div>
 
         {/* Tagline banner */}
         <div className="rounded-2xl p-5 mb-10 text-center" style={{ background: 'linear-gradient(135deg,rgba(0,51,204,0.2),rgba(0,212,255,0.08))', border: '1px solid rgba(0,212,255,0.12)' }}>
@@ -135,7 +93,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/8">
           <p className="font-body text-xs text-white/25 text-center sm:text-left">
-            © 2026 1MarketPH.com — All rights reserved. · <Link to="/about" className="hover:text-[#00D4FF] transition-colors">About</Link> · <Link to="/privacy-policy" className="hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
+            © 2026 1MarketPH.com — All rights reserved.
           </p>
           <div className="flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
