@@ -19,10 +19,7 @@ const FlashDealsSection = lazy(() => import('../components/home/FlashDealsSectio
 const PhFlightDeals = lazy(() => import('../components/home/PhFlightDeals'));
 const PhHotelDeals = lazy(() => import('../components/home/PhHotelDeals'));
 const FeaturedListings = lazy(() => import('../components/home/FeaturedListings'));
-const BuySellElectronicsDeals = lazy(() => import('../components/home/BuySellElectronicsDeals'));
-const RentDashboardLazy = lazy(() => import('../components/home/MovingListingsDashboards').then(m => ({ default: m.RentDashboard })));
-const ShoesClothingLazy = lazy(() => import('../components/home/MovingListingsDashboards').then(m => ({ default: m.ShoesClothingDashboard })));
-const ServicesLazy = lazy(() => import('../components/home/MovingListingsDashboards').then(m => ({ default: m.ServicesDashboard })));
+
 const HowItWorksSection = lazy(() => import('../components/home/HowItWorksSection'));
 const ReviewHighlights = lazy(() => import('../components/home/ReviewHighlights'));
 const CommunityAnimation = lazy(() => import('../components/home/CommunityAnimation'));
@@ -63,10 +60,7 @@ export default function Home() {
         <Suspense fallback={<Spinner />}><PhFlightDeals /></Suspense>
         <Suspense fallback={<Spinner />}><PhHotelDeals /></Suspense>
         <Suspense fallback={<Spinner />}><FeaturedListings /></Suspense>
-        <Suspense fallback={<Spinner />}><BuySellElectronicsDeals /></Suspense>
-        <Suspense fallback={<Spinner />}><RentDashboardLazy /></Suspense>
-        <Suspense fallback={<Spinner />}><ShoesClothingLazy /></Suspense>
-        <Suspense fallback={<Spinner />}><ServicesLazy /></Suspense>
+
         <Suspense fallback={<Spinner />}><HowItWorksSection /></Suspense>
         <Suspense fallback={<Spinner />}><ReviewHighlights /></Suspense>
         <Suspense fallback={<Spinner />}><CommunityAnimation /></Suspense>
