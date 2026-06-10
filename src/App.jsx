@@ -29,6 +29,10 @@ import Notifications from './pages/Notifications';
 import SellerOnboarding from './pages/SellerOnboarding';
 import PostAdLanding from './pages/PostAdLanding';
 import ConnectedAccounts from './pages/ConnectedAccounts';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import GlowInteraction from './components/GlowInteraction';
 
 const AuthenticatedApp = () => {
@@ -83,6 +87,11 @@ const AuthenticatedApp = () => {
         <Route path="/connected-accounts" element={<ConnectedAccounts />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
+      {/* Auth pages - outside AppLayout */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
     </Routes>
   );
 };
