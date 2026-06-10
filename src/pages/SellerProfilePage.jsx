@@ -152,6 +152,7 @@ function Lightbox({ images, startIdx, onClose }) {
 function ListingCard({ item, user }) {
   const [hearted, setHearted] = useState(false);
   const [heartCount, setHeartCount] = useState(0);
+  const borderColor = item.border_color || '#00D4FF';
 
   const handleHeart = async (e) => {
     e.preventDefault();
@@ -174,7 +175,7 @@ function ListingCard({ item, user }) {
 
   return (
     <div className="rounded-2xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-xl"
-      style={{ background: 'rgba(13,31,60,0.9)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 20px rgba(0,0,0,0.35)' }}>
+      style={{ background: 'rgba(13,31,60,0.9)', border: `2px solid ${borderColor}`, boxShadow: `0 4px 20px ${borderColor}40` }}>
       <Link to={`/listing/${item.id}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden">
           {item.image_url
@@ -341,13 +342,13 @@ export default function SellerProfilePage() {
   };
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: '#070F1A' }}>
+    <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
       <div className="w-8 h-8 border-4 border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" />
     </div>
   );
 
   if (!seller && !loading) return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: '#070F1A' }}>
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
       <p className="font-heading font-bold text-xl text-white">Profile Not Found</p>
       <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#00D4FF] font-body text-sm hover:underline">
         <ArrowLeft className="w-4 h-4" /> Go Back
@@ -391,7 +392,7 @@ export default function SellerProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#070F1A 0%,#0A192F 100%)' }}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
       {/* Cover Photo */}
       <div className="relative h-52 md:h-64 overflow-hidden">
         {seller.cover_photo

@@ -39,7 +39,7 @@ const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c
 
 export default function Home() {
   return (
-    <div className="min-h-screen overflow-x-hidden relative" style={{ background: 'linear-gradient(180deg, #001240 0%, #002366 50%, #001a5c 100%)' }}>
+    <div className="min-h-screen overflow-x-hidden relative" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
       <WaveBackground />
 
       <div className="relative z-10">

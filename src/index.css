@@ -9,7 +9,7 @@
     --font-heading: 'Space Grotesk', sans-serif;
     --font-body: 'Inter', sans-serif;
 
-    --background: 225 100% 6%;
+    --background: 221 83% 53%;
     --foreground: 216 72% 11%;
     --card: 0 0% 100%;
     --card-foreground: 216 72% 11%;
@@ -45,7 +45,7 @@
   }
 
   .dark {
-    --background: 228 100% 10%;
+    --background: 221 83% 53%;
     --foreground: 210 40% 98%;
     --card: 216 72% 9%;
     --card-foreground: 210 40% 98%;

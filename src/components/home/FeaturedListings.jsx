@@ -65,6 +65,7 @@ function ListingCard({ item, user }) {
   const price = item.price_label || (item.price ? `₱${Number(item.price).toLocaleString()}` : null);
   const colorClass = CATEGORY_COLORS[item.type] || 'bg-gray-500/20 text-gray-300';
   const icon = CATEGORY_ICONS[item.type] || '📦';
+  const borderColor = item.border_color || '#00D4FF';
 
   const handleShare = (e) => {
     e.preventDefault(); e.stopPropagation();
@@ -89,12 +90,12 @@ function ListingCard({ item, user }) {
 
   return (
     <motion.div
-      whileHover={{ y: -4, boxShadow: '0 0 25px rgba(37,99,235,0.3)' }}
+      whileHover={{ y: -4, boxShadow: `0 0 25px ${borderColor}60` }}
       className="flex-shrink-0 w-52 rounded-2xl overflow-hidden transition-all duration-300 group"
       style={{ 
         background: 'rgba(13,31,60,0.95)', 
-        border: '1px solid rgba(37,99,235,0.25)',
-        boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+        border: `2px solid ${borderColor}`,
+        boxShadow: `0 4px 15px ${borderColor}30`
       }}
     >
       <Link to={`/listing/${item.id}`} className="block">
@@ -105,7 +106,7 @@ function ListingCard({ item, user }) {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             onError={e => { e.target.src = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=70'; }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#070F1A]/70 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0033CC]/70 to-transparent pointer-events-none" />
           <span className={`absolute top-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-sm ${colorClass}`}>
             {icon} {item.type}
           </span>
