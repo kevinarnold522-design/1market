@@ -151,7 +151,7 @@ const TRUST_BADGES = [
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#070F1A 0%,#0A192F 100%)' }}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
       {/* Header */}
       <div style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)', borderBottom: '1px solid rgba(0,212,255,0.2)' }} className="py-16 px-6">
         <div className="max-w-4xl mx-auto">
@@ -197,9 +197,9 @@ export default function PrivacyPolicy() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.04 }}
               className="rounded-2xl overflow-hidden"
-              style={{ background: 'rgba(13,31,60,0.85)', border: `1px solid ${sec.border}`, backdropFilter: 'blur(12px)' }}
+              style={{ background: 'rgba(0,26,128,0.5)', border: `1px solid rgba(0,212,255,0.18)`, backdropFilter: 'blur(12px)' }}
             >
-              <div className="px-6 py-4 border-b flex items-center gap-3" style={{ borderColor: sec.border, background: sec.bg }}>
+              <div className="px-6 py-4 border-b flex items-center gap-3" style={{ borderColor: 'rgba(0,212,255,0.18)', background: 'rgba(0,51,204,0.25)' }}>
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ background: `${sec.color}20`, border: `1px solid ${sec.color}40` }}>
                   <Icon className="w-4 h-4" style={{ color: sec.color }} />

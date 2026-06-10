@@ -80,15 +80,16 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Links grid — 3 columns, no Account */}
+        {/* Links grid — 3 columns */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 mb-12">
-          {/* About */}
+          {/* About 1MarketPH — merged */}
           <div className="space-y-4">
-            <h4 className="font-heading font-bold text-sm uppercase tracking-widest text-white/50">About</h4>
+            <h4 className="font-heading font-bold text-sm uppercase tracking-widest text-white/50">About 1MarketPH</h4>
             <div className="space-y-2.5">
               <p className="font-body text-sm text-white/40">Founded by Kevin W. Roberto</p>
               <p className="font-body text-sm text-white/40">Manila, Philippines</p>
-              <Link to="/about" className="block font-body text-xs text-[#00D4FF]/60 hover:text-[#00D4FF] transition-colors">About 1MarketPH</Link>
+              <p className="font-body text-xs text-white/30 leading-relaxed">Born from a vision to bridge the gap between Filipino consumers and businesses that power our communities.</p>
+              <Link to="/about" className="block font-body text-xs text-[#00D4FF]/60 hover:text-[#00D4FF] transition-colors">Read Our Story</Link>
               <Link to="/privacy-policy" className="block font-body text-xs text-white/25 hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
             </div>
           </div>
