@@ -85,20 +85,23 @@ export default function ConnectedAccounts() {
       }, 100);
       
       if (editingAccount) {
-        // Edit existing account
-        await base44.entities.User.update(editingAccount.id, {
+        // Edit existing account - only update provided fields
+        const updateData = {
           full_name: form.full_name.trim(),
           channel_name: form.channel_name.trim() || form.full_name.trim(),
           user_type: form.user_type,
           business_name: form.business_name.trim() || form.full_name.trim(),
           seller_location: form.location,
-          bio: form.bio,
-          seller_area: form.seller_area,
-          social_facebook: form.social_facebook,
-          social_instagram: form.social_instagram,
-          social_tiktok: form.social_tiktok,
+          bio: form.bio || '',
+          seller_area: form.seller_area || '',
           is_seller: form.user_type === 'seller' || form.user_type === 'business',
-        });
+        };
+        // Only include social fields if they have values
+        if (form.social_facebook) updateData.social_facebook = form.social_facebook;
+        if (form.social_instagram) updateData.social_instagram = form.social_instagram;
+        if (form.social_tiktok) updateData.social_tiktok = form.social_tiktok;
+        
+        await base44.entities.User.update(editingAccount.id, updateData);
         clearInterval(progressInterval);
         setSaveProgress(100);
         showToast('Account updated!');
@@ -111,7 +114,7 @@ export default function ConnectedAccounts() {
           loadAccounts();
         }, 500);
       } else {
-        // Create new ghost account
+        // Create new ghost account - minimal required fields only
         const timestamp = Date.now();
         const randomStr = Math.random().toString(36).substring(2, 8);
         const ghostId = `ghost_${timestamp}_${randomStr}`;
@@ -119,50 +122,71 @@ export default function ConnectedAccounts() {
         const cleanUsername = `ghost_${timestamp}_${randomStr}`.toLowerCase().replace(/[^a-z0-9_]/g, '');
         
         const userData = {
+          // Required fields only
           full_name: form.full_name.trim(),
           channel_name: form.channel_name.trim() || form.full_name.trim(),
           email: ghostEmail,
           role: 'user',
-          user_type: form.user_type,
-          is_seller: form.user_type === 'seller' || form.user_type === 'business',
+          username: cleanUsername,
+          
+          // Account type
+          user_type: form.user_type || 'seller',
+          is_seller: form.user_type !== 'customer',
           account_type: form.user_type === 'business' ? 'business_owner' : 'customer',
+          
+          // Business info
           business_name: form.business_name.trim() || form.full_name.trim(),
           seller_location: form.location || 'Manila',
           location: form.location || 'Manila',
           seller_page_enabled: form.user_type !== 'customer',
+          
+          // Ghost markers
           is_ghost_account: true,
           is_connected_account: true,
           ghost_id: ghostId,
           ghost_linked: false,
-          username: cleanUsername,
           username_set: false,
+          
+          // Optional fields with defaults
+          bio: form.bio || '',
+          seller_bio: form.bio || '',
+          seller_area: form.seller_area || '',
+          business_type: '',
           profile_picture: '',
           cover_photo: '',
-          bio: form.bio,
-          seller_bio: form.bio,
-          business_type: '',
-          seller_area: form.seller_area,
-          social_facebook: form.social_facebook,
-          social_instagram: form.social_instagram,
-          social_tiktok: form.social_tiktok,
+          
+          // Social links - only if provided (empty strings by default)
+          social_facebook: form.social_facebook || '',
+          social_instagram: form.social_instagram || '',
+          social_tiktok: form.social_tiktok || '',
           social_youtube: '',
           social_viber: '',
           social_telegram: '',
+          
+          // Privacy defaults
           show_phone_public: false,
           show_email_public: false,
+          
+          // Verification defaults
           is_verified_seller: false,
           verification_submitted: false,
           seller_pending: false,
           business_pending: false,
+          
+          // Empty arrays
           seller_products: [],
           business_categories: [],
         };
         
+        console.log('Creating ghost account:', { name: userData.full_name, type: userData.user_type });
         const result = await base44.entities.User.create(userData);
+        console.log('✓ Account created:', result.id);
+        
         clearInterval(progressInterval);
         setSaveProgress(100);
-        showToast('Account created!');
+        showToast('Account created! Redirecting...');
         
+        // Wait for database to persist then redirect
         setTimeout(() => {
           setSaving(false);
           setSaveProgress(0);
@@ -171,13 +195,13 @@ export default function ConnectedAccounts() {
           setForm(EMPTY_FORM);
           loadAccounts();
           window.location.href = `/seller/${result.id}`;
-        }, 800);
+        }, 1000);
       }
     } catch (err) {
-      console.error('Ghost account error:', err);
+      console.error('Ghost account creation error:', err);
       setSaving(false);
       setSaveProgress(0);
-      showToast('Failed: ' + (err.message || 'Please try again'));
+      showToast('Error: ' + (err.message || 'Please try again'));
     }
   };
 

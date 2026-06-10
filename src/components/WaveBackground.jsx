@@ -26,7 +26,7 @@ export default function WaveBackground() {
         amplitude: 40 + i * 20,
         wavelength: 0.002 + i * 0.001,
         phase: Math.random() * Math.PI * 2,
-        speed: 0.015 + i * 0.01,
+        speed: 0.005 + i * 0.003, // Slower wave speed
         opacity: 0.1 + (WAVE_COUNT - i) * 0.08,
       });
     }
@@ -69,7 +69,7 @@ export default function WaveBackground() {
         wave.phase += wave.speed;
       });
 
-      time += 1;
+      time += 0.5; // Slower time progression
       animationId = requestAnimationFrame(draw);
     };
 
