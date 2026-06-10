@@ -155,12 +155,6 @@ export default function LeftSidebar({ isMobileHidden = false }) {
               <Shield className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span className="font-body text-xs font-semibold truncate">Admin Panel</span>}
             </Link>
-            <Link to="/connected-accounts"
-              className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-purple-400/70 hover:text-purple-400 hover:bg-purple-400/10"
-              title={collapsed ? 'Connected Accounts' : undefined}>
-              <Users className="w-4 h-4 flex-shrink-0" />
-              {!collapsed && <span className="font-body text-xs font-semibold truncate">Connected Accounts</span>}
-            </Link>
           </>
         )}
       </nav>
@@ -181,23 +175,34 @@ export default function LeftSidebar({ isMobileHidden = false }) {
       {/* User profile footer */}
       <div className="px-2 pb-3 flex-shrink-0 border-t border-white/8 pt-2">
         {isAuthenticated && user ? (
-          <Link to="/profile" className="flex items-center gap-2 px-2 py-2 rounded-xl hover:bg-white/8 transition-colors group">
-            <div className="w-7 h-7 rounded-lg overflow-hidden flex-shrink-0">
-              {user?.profile_picture ? (
-                <img src={user.profile_picture} alt="" className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-[10px]">
-                  {initials}
+          <>
+            <Link to="/profile" className="flex items-center gap-2 px-2 py-2 rounded-xl hover:bg-white/8 transition-colors group">
+              <div className="w-7 h-7 rounded-lg overflow-hidden flex-shrink-0">
+                {user?.profile_picture ? (
+                  <img src={user.profile_picture} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-[10px]">
+                    {initials}
+                  </div>
+                )}
+              </div>
+              {!collapsed && (
+                <div className="flex-1 min-w-0">
+                  <p className="font-body text-[11px] font-bold text-white truncate">{user.full_name?.split(' ')[0] || 'Account'}</p>
+                  <p className="font-body text-[9px] text-[#00D4FF]/70 truncate">{user.email}</p>
                 </div>
               )}
-            </div>
-            {!collapsed && (
-              <div className="flex-1 min-w-0">
-                <p className="font-body text-[11px] font-bold text-white truncate">{user.full_name?.split(' ')[0] || 'Account'}</p>
-                <p className="font-body text-[9px] text-[#00D4FF]/70 truncate">{user.email}</p>
-              </div>
+            </Link>
+            {/* Admin-only: Connected Accounts below profile */}
+            {isAdmin && (
+              <Link to="/connected-accounts"
+                className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-purple-400/70 hover:text-purple-400 hover:bg-purple-400/10 mt-1"
+                title={collapsed ? 'Connected Accounts' : undefined}>
+                <Users className="w-4 h-4 flex-shrink-0" />
+                {!collapsed && <span className="font-body text-xs font-semibold truncate">Connected Accounts</span>}
+              </Link>
             )}
-          </Link>
+          </>
         ) : (
           <Link to="/login" className="flex items-center gap-2 px-2 py-2 rounded-xl bg-[#2563EB]/20 hover:bg-[#2563EB]/30 transition-colors">
             <User className="w-4 h-4 text-[#00D4FF] flex-shrink-0" />

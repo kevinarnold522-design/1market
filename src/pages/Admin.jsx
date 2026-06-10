@@ -329,26 +329,33 @@ export default function Admin() {
 
   const loadAll = async () => {
     setLoading(true);
-    const [bizs, lists, rpts, verifs, jobs] = await Promise.all([
+    // Load critical data first
+    const [bizs, lists] = await Promise.all([
       base44.entities.Business.list('-created_date', 200),
       base44.entities.Listing.list('-created_date', 200),
-      base44.entities.Report.list('-created_date', 200),
-      base44.entities.VerificationApplication.list('-created_date', 200),
-      base44.entities.Listing.filter({ type: 'jobs' }, '-created_date', 200),
     ]);
     setBusinesses(bizs);
     setListings(lists);
-    setReports(rpts);
-    setVerifications(verifs);
-    // Load ghost accounts separately to avoid blocking
-    base44.entities.User.list('-created_date', 500).then(userList => {
+    
+    // Load other data in parallel but non-blocking
+    Promise.all([
+      base44.entities.Report.list('-created_date', 200),
+      base44.entities.VerificationApplication.list('-created_date', 200),
+      base44.entities.Listing.filter({ type: 'jobs' }, '-created_date', 200),
+    ]).then(([rpts, verifs, jobs]) => {
+      setReports(rpts);
+      setVerifications(verifs);
+      const allPending = lists.filter(j => !j.approval_status || j.approval_status === 'pending').sort((a,b) => new Date(b.created_date) - new Date(a.created_date));
+      setPendingListings(allPending);
+      setPendingJobs(allPending.filter(j => j.type === 'jobs'));
+    });
+    
+    // Load users separately with smaller limit for speed
+    base44.entities.User.list('-created_date', 100).then(userList => {
       setUsers(userList);
       setGhostUsers(userList.filter(u => u.email?.includes('@ghost.1marketph.internal') || u.is_ghost_account));
       setLoading(false);
     }).catch(() => setLoading(false));
-    const allPending = lists.filter(j => !j.approval_status || j.approval_status === 'pending').sort((a,b) => new Date(b.created_date) - new Date(a.created_date));
-    setPendingListings(allPending);
-    setPendingJobs(allPending.filter(j => j.type === 'jobs'));
   };
 
   const toggleVerified = async (u) => {
