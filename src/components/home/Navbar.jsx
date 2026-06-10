@@ -220,27 +220,36 @@ export default function Navbar() {
 
             {/* Messages button — signed-in only */}
             {isAuthenticated && user && (
-              <Link to="/messages" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 border border-white/10 hover:border-[#00D4FF]/40 hover:bg-[#00D4FF]/10 transition-all text-white/70 hover:text-[#00D4FF]">
-                <MessageSquare className="w-4 h-4" />
-                <span className="font-body text-xs font-semibold">Messages</span>
+              <Link to="/messages" className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl transition-all group"
+                style={{ background: 'rgba(0,212,255,0.08)', border: '1px solid rgba(0,212,255,0.2)' }}>
+                <div className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(0,212,255,0.18)' }}>
+                  <MessageSquare className="w-3 h-3 text-[#00D4FF]" />
+                </div>
+                <span className="font-body text-xs font-semibold text-[#00D4FF]/80 group-hover:text-[#00D4FF]">Messages</span>
               </Link>
             )}
 
             {/* Favourites */}
             {isAuthenticated && user && (
-              <Link to="/favourites" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 border border-white/10 hover:border-pink-400/40 hover:bg-pink-500/10 transition-all text-white/70 hover:text-pink-400">
-                <Heart className="w-4 h-4" />
-                <span className="font-body text-xs font-semibold">Saved</span>
+              <Link to="/favourites" className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl transition-all group"
+                style={{ background: 'rgba(236,72,153,0.08)', border: '1px solid rgba(236,72,153,0.2)' }}>
+                <div className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(236,72,153,0.18)' }}>
+                  <Heart className="w-3 h-3 text-pink-400" />
+                </div>
+                <span className="font-body text-xs font-semibold text-pink-400/80 group-hover:text-pink-400">Saved</span>
               </Link>
             )}
 
             {/* Community */}
-            <Link to="/community" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 border border-white/10 hover:border-purple-400/40 hover:bg-purple-500/10 transition-all text-white/70 hover:text-purple-400">
-              <Users className="w-4 h-4" />
-              <span className="font-body text-xs font-semibold">Community</span>
+            <Link to="/community" className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl transition-all group"
+              style={{ background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.2)' }}>
+              <div className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(168,85,247,0.18)' }}>
+                <Users className="w-3 h-3 text-purple-400" />
+              </div>
+              <span className="font-body text-xs font-semibold text-purple-400/80 group-hover:text-purple-400">Community</span>
             </Link>
 
-            {/* Notifications — bell for signed-in, link for all */}
+            {/* Notifications */}
             {isAuthenticated && user ? (
               <div className="hidden md:flex items-center gap-1">
                 <NotificationsBell user={user} />
@@ -249,8 +258,11 @@ export default function Navbar() {
                 </Link>
               </div>
             ) : (
-              <Link to="/notifications" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 border border-white/10 hover:border-[#00D4FF]/40 transition-all text-white/50 hover:text-[#00D4FF]">
-                <Bell className="w-4 h-4" />
+              <Link to="/notifications" className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl transition-all"
+                style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.2)' }}>
+                <div className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(251,191,36,0.18)' }}>
+                  <Bell className="w-3 h-3 text-amber-400" />
+                </div>
               </Link>
             )}
 

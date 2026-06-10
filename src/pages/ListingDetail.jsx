@@ -455,29 +455,52 @@ export default function ListingDetail() {
                 </button>
               </div>
 
-              {/* Category / Subcategory breadcrumb — shown on every listing */}
-              <div className="flex flex-wrap items-center gap-1.5 mb-3">
-                {listing.main_category && (
-                  <span className="px-2.5 py-0.5 rounded-full font-body text-[10px] font-bold uppercase tracking-wider"
-                    style={{ background: 'rgba(0,212,255,0.12)', border: '1px solid rgba(0,212,255,0.3)', color: '#00D4FF' }}>
-                    {listing.main_category === 'buysell' ? 'Buy & Sell' : listing.main_category.charAt(0).toUpperCase() + listing.main_category.slice(1)}
-                  </span>
-                )}
-                {listing.main_category && listing.type && <span className="text-white/25 text-[10px]">›</span>}
-                {listing.type && (
-                  <span className="px-2.5 py-0.5 rounded-full font-body text-[10px] font-bold"
-                    style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.6)' }}>
-                    {listing.type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
-                  </span>
-                )}
-                {listing.type && listing.subcategory && <span className="text-white/25 text-[10px]">›</span>}
-                {listing.subcategory && (
-                  <span className="px-2.5 py-0.5 rounded-full font-body text-[10px] font-bold"
-                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.45)' }}>
-                    {listing.subcategory}
-                  </span>
-                )}
-              </div>
+              {/* Category / Subcategory breadcrumb — always visible */}
+              {(() => {
+                const TYPE_TO_MAIN = {
+                  hotel: 'Travel', flights: 'Travel', vehicle_rental: 'Travel',
+                  food: 'Food',
+                  product: 'Buy & Sell', electronics: 'Buy & Sell', shoes: 'Buy & Sell',
+                  clothing: 'Buy & Sell', furniture: 'Buy & Sell', homeappliances: 'Buy & Sell',
+                  cars: 'Buy & Sell', houses: 'Buy & Sell', mods: 'Buy & Sell', other: 'Buy & Sell',
+                  rent_lease: 'Rent & Lease',
+                  services: 'Services',
+                  jobs: 'Jobs',
+                };
+                const mainLabel = listing.main_category
+                  ? (listing.main_category === 'buysell' ? 'Buy & Sell' : listing.main_category === 'rent' ? 'Rent & Lease' : listing.main_category.charAt(0).toUpperCase() + listing.main_category.slice(1))
+                  : (listing.type ? TYPE_TO_MAIN[listing.type] : null);
+                const typeLabel = listing.type ? listing.type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : null;
+                const CAT_COLORS = {
+                  'Buy & Sell': '#c084fc', 'Travel': '#60a5fa', 'Food': '#fb923c',
+                  'Rent & Lease': '#4ade80', 'Services': '#38bdf8', 'Jobs': '#fbbf24',
+                };
+                const color = CAT_COLORS[mainLabel] || '#00D4FF';
+                return (
+                  <div className="flex flex-wrap items-center gap-1.5 mb-3">
+                    {mainLabel && (
+                      <span className="px-2.5 py-1 rounded-lg font-body text-[10px] font-bold uppercase tracking-wider flex items-center gap-1"
+                        style={{ background: `${color}18`, border: `1px solid ${color}44`, color }}>
+                        🏷️ {mainLabel}
+                      </span>
+                    )}
+                    {typeLabel && mainLabel && <span className="text-white/25 text-[10px]">›</span>}
+                    {typeLabel && (
+                      <span className="px-2.5 py-1 rounded-lg font-body text-[10px] font-bold"
+                        style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.65)' }}>
+                        {typeLabel}
+                      </span>
+                    )}
+                    {listing.subcategory && (typeLabel || mainLabel) && <span className="text-white/25 text-[10px]">›</span>}
+                    {listing.subcategory && (
+                      <span className="px-2.5 py-1 rounded-lg font-body text-[10px] font-bold"
+                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.5)' }}>
+                        {listing.subcategory}
+                      </span>
+                    )}
+                  </div>
+                );
+              })()}
 
               <div className="flex items-center gap-2 mb-3">
                 <div className="flex">
