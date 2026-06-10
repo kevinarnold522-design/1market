@@ -445,6 +445,30 @@ export default function ListingDetail() {
                 </button>
               </div>
 
+              {/* Category / Subcategory breadcrumb — shown on every listing */}
+              <div className="flex flex-wrap items-center gap-1.5 mb-3">
+                {listing.main_category && (
+                  <span className="px-2.5 py-0.5 rounded-full font-body text-[10px] font-bold uppercase tracking-wider"
+                    style={{ background: 'rgba(0,212,255,0.12)', border: '1px solid rgba(0,212,255,0.3)', color: '#00D4FF' }}>
+                    {listing.main_category === 'buysell' ? 'Buy & Sell' : listing.main_category.charAt(0).toUpperCase() + listing.main_category.slice(1)}
+                  </span>
+                )}
+                {listing.main_category && listing.type && <span className="text-white/25 text-[10px]">›</span>}
+                {listing.type && (
+                  <span className="px-2.5 py-0.5 rounded-full font-body text-[10px] font-bold"
+                    style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.6)' }}>
+                    {listing.type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                  </span>
+                )}
+                {listing.type && listing.subcategory && <span className="text-white/25 text-[10px]">›</span>}
+                {listing.subcategory && (
+                  <span className="px-2.5 py-0.5 rounded-full font-body text-[10px] font-bold"
+                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.45)' }}>
+                    {listing.subcategory}
+                  </span>
+                )}
+              </div>
+
               <div className="flex items-center gap-2 mb-3">
                 <div className="flex">
                   {[1,2,3,4,5].map(s => <Star key={s} className={`w-3.5 h-3.5 ${parseFloat(avgRating) >= s ? 'text-amber-400 fill-amber-400' : 'text-white/15'}`} />)}
@@ -610,21 +634,47 @@ export default function ListingDetail() {
                 </div>
               )}
 
-              {/* Buy Now / Order button — hide for jobs/services/rent */}
-              {listing.type !== 'jobs' && listing.type !== 'rent_lease' && listing.quantity !== 0 && (
-                <button onClick={() => {
-                  if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
-                  setShowReceipt(true);
-                }}
-                  className="w-full mb-4 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-[1.01]"
-                  style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 20px rgba(0,212,255,0.3)' }}>
-                  <ShoppingCart className="w-4 h-4" /> Buy Now / Get Receipt
-                </button>
+              {/* Buy Now — ONLY for buysell category listings */}
+              {listing.main_category === 'buysell' && (
+                listing.quantity === 0 ? (
+                  <div className="w-full mb-4 py-3 rounded-xl text-center font-body font-bold text-sm text-red-400 border border-red-500/30 bg-red-500/5">
+                    Out of Stock
+                  </div>
+                ) : (
+                  <button onClick={() => {
+                    if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
+                    setShowReceipt(true);
+                  }}
+                    className="w-full mb-4 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-[1.01]"
+                    style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 20px rgba(0,212,255,0.3)' }}>
+                    <ShoppingCart className="w-4 h-4" /> Buy Now / Get Receipt
+                  </button>
+                )
               )}
-              {listing.quantity === 0 && (
-                <div className="w-full mb-4 py-3 rounded-xl text-center font-body font-bold text-sm text-red-400 border border-red-500/30 bg-red-500/5">
-                  Out of Stock
-                </div>
+
+              {/* Contact Seller / Contact Business — for all NON-buysell listings */}
+              {listing.main_category !== 'buysell' && listing.email_contact && (
+                <button onClick={async () => {
+                  if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
+                  await base44.entities.ChatMessage.create({
+                    listing_id: listing.id,
+                    listing_title: listing.title,
+                    seller_email: listing.email_contact,
+                    buyer_email: user.email,
+                    sender_email: user.email,
+                    sender_name: user.full_name || user.email,
+                    message: 'Hi! I am interested in your listing: ' + listing.title,
+                    chat_type: 'listing',
+                  });
+                  window.location.href = '/messages';
+                }}
+                  className="w-full mb-4 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-[1.01] border border-[#00D4FF]/40"
+                  style={{ background: 'rgba(0,212,255,0.12)', boxShadow: '0 0 16px rgba(0,212,255,0.15)' }}>
+                  <MessageSquare className="w-4 h-4 text-[#00D4FF]" />
+                  <span className="text-[#00D4FF]">
+                    {listing.main_category === 'food' || listing.business_id ? 'Contact Business' : 'Contact Seller'}
+                  </span>
+                </button>
               )}
 
               {/* Contact */}
