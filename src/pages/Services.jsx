@@ -24,7 +24,8 @@ const SUBCATEGORIES = [
   { key: 'media', label: 'Media & Creative', desc: 'Video, design, photography' },
 ];
 
-const services = [
+const services = [];
+const _REMOVED_FAKE_SERVICES = [
   // HOME SERVICES
   { id: 1, type: 'home', title: 'Aircon Cleaning & Regas', provider: 'Ernie AC Services', rate: '₱600–₱1,500/unit', location: 'Both', area: 'Manila & Cavite', stars: 4.9, reviews: 128, image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80', desc: 'Licensed technician. Cleaning, regas, and general repair. Same-day available.', contact: '09171234500' },
   { id: 2, type: 'home', title: 'Plumbing & Electrical Works', provider: 'Kuya Romy Trades', rate: '₱800/day', location: 'Manila', area: 'Tondo, Manila', stars: 4.7, reviews: 54, image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=500&q=80', desc: 'Residential repairs: faucets, outlets, rewiring. Available weekdays.', contact: '09185559999' },
@@ -223,7 +224,9 @@ export default function Services() {
   const urlParams = new URLSearchParams(window.location.search);
   const urlSub = urlParams.get('sub');
 
+  // If a sub param is present, skip the splash and go straight to the listing view
   const [activeCategory, setActiveCategory] = useState(urlSub ? 'all' : null);
+  const [splashDismissed, setSplashDismissed] = useState(!!urlSub);
   const [locationFilter, setLocationFilter] = useState('All');
   const [search, setSearch] = useState(urlSub || '');
   const [contactItem, setContactItem] = useState(null);
@@ -253,19 +256,16 @@ export default function Services() {
 
   const typeMap = { legal: 'professional', finance: 'professional', education: 'professional', media: 'tech' };
 
-  const allServices = [
-    ...services,
-    ...dbListings.map(l => ({
-      id: l.id, type: l.subcategory?.toLowerCase().replace(/\s+/g, '') || 'home',
-      title: l.title, provider: l.seller_name || '1Market Listing',
-      rate: l.price_label || (l.price ? `₱${Number(l.price).toLocaleString()}` : 'Contact for rate'),
-      location: l.location === 'Cavite' ? 'Cavite' : 'Manila', area: l.area || l.location,
-      stars: l.rating || 5.0, reviews: l.rating_count || 0,
-      image: l.image_url || 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=500&q=80',
-      desc: l.description || '', contact: l.phone || l.email_contact || '',
-      isDb: true,
-    }))
-  ];
+  const allServices = dbListings.map(l => ({
+    id: l.id, type: l.subcategory?.toLowerCase().replace(/\s+/g, '') || 'home',
+    title: l.title, provider: l.approved_channel_name || l.seller_name || '1Market Listing',
+    rate: l.price_label || (l.price ? `₱${Number(l.price).toLocaleString()}` : 'Contact for rate'),
+    location: l.location === 'Cavite' ? 'Cavite' : 'Manila', area: l.area || l.location,
+    stars: l.rating || 0, reviews: l.rating_count || 0,
+    image: l.image_url || 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=500&q=80',
+    desc: l.description || '', contact: l.phone || l.email_contact || '',
+    isDb: true,
+  }));
 
   const filtered = allServices.filter(s => {
     const resolvedCat = typeMap[activeCategory] || activeCategory;
@@ -278,14 +278,16 @@ export default function Services() {
   return (
     <div className="min-h-screen bg-[#070F1A]">
       <StarField />
-      <SubcategorySplash
-        subcategories={SUBCATEGORIES}
-        activeKey={activeCategory}
-        onSelect={setActiveCategory}
-        title="What service are you looking for?"
-        subtitle="Pick a category to find the right provider"
-        onBack={() => window.history.back()}
-      />
+      {!splashDismissed && (
+        <SubcategorySplash
+          subcategories={SUBCATEGORIES}
+          activeKey={activeCategory}
+          onSelect={(key) => { setActiveCategory(key); setSplashDismissed(true); }}
+          title="What service are you looking for?"
+          subtitle="Pick a category to find the right provider"
+          onBack={() => window.history.back()}
+        />
+      )}
       <div className="relative bg-[#0A192F] overflow-hidden">
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0A192F]/60 to-[#0A192F]" />
@@ -341,7 +343,14 @@ export default function Services() {
             {filtered.map(svc => <ServiceCard key={svc.id} svc={svc} onContact={setContactItem} user={currentUser} isAdmin={isAdmin} onEdit={(s) => s.isDb ? setEditItem(s) : null} />)}
           </div>
         ) : (
-          <div className="text-center py-24"><p className="font-body text-[#0A192F]/40">No services found. Try a different filter.</p></div>
+          <div className="text-center py-24">
+            <p className="font-body text-white/30 text-lg mb-1">
+              {dbListings.length === 0 ? 'No service listings yet.' : 'No services found.'}
+            </p>
+            <p className="font-body text-white/20 text-sm">
+              {dbListings.length === 0 ? 'Be the first to list your service!' : 'Try a different filter or search term.'}
+            </p>
+          </div>
         )}
 
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}

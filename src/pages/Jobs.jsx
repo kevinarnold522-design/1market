@@ -96,9 +96,15 @@ function JobCard({ job, onApply }) {
         <div className="w-8 h-1 rounded-full mb-2" style={{ background: catColor }} />
         <h3 className="font-heading font-bold text-sm text-white leading-tight mb-1 line-clamp-2">{job.title}</h3>
         {job.company && job.company !== 'Posted on 1MarketPH' && (
-          <p className="font-body text-[10px] font-semibold mb-1 flex items-center gap-1" style={{ color: catColor }}>
+          <p className="font-body text-[10px] font-semibold mb-0.5 flex items-center gap-1" style={{ color: catColor }}>
             <Building2 className="w-2.5 h-2.5" />{job.company}
           </p>
+        )}
+        {job.poster_role && (
+          <span className="inline-block mb-1 px-2 py-0.5 rounded-full font-body font-bold text-[9px]"
+            style={{ background: 'rgba(245,158,11,0.15)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.25)' }}>
+            Posted by: {job.poster_role}
+          </span>
         )}
         <p className="font-body text-xs text-white/40 mb-3 line-clamp-2">{job.desc}</p>
         <div className="flex items-center justify-between">
@@ -197,7 +203,8 @@ export default function Jobs() {
     id: j.id,
     type: j.subcategory?.toLowerCase().replace(/\s+/g, '') || 'other',
     title: j.title,
-    company: j.company_hiring || j.seller_name || 'Posted on 1MarketPH',
+    company: j.company_hiring || '',
+    poster_role: j.job_poster_role || '',
     location: j.location,
     area: j.area || j.location,
     pay: j.price_label || (j.job_salary_min ? `₱${Number(j.job_salary_min).toLocaleString()}${j.job_salary_max ? '–₱' + Number(j.job_salary_max).toLocaleString() : '+'}` : 'Negotiable'),

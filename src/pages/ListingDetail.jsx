@@ -637,6 +637,7 @@ export default function ListingDetail() {
                   <p className="font-body text-[10px] text-amber-400 uppercase tracking-wider font-bold mb-2">💼 Job Details</p>
                   <div className="grid grid-cols-2 gap-1.5">
                     {listing.company_hiring && <div className="col-span-2 bg-amber-500/10 border border-amber-500/20 rounded-lg p-2"><p className="font-body text-[9px] text-amber-400/60">Company Hiring</p><p className="font-body text-sm text-amber-300 font-bold">{listing.company_hiring}</p></div>}
+                    {listing.job_poster_role && <div className="col-span-2 bg-white/5 rounded-lg p-2 flex items-center gap-2"><p className="font-body text-[9px] text-white/30">Posted by</p><span className="ml-1 px-2 py-0.5 rounded-full font-body font-bold text-[10px]" style={{ background: 'rgba(245,158,11,0.15)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.3)' }}>{listing.job_poster_role}</span></div>}
                     {listing.job_employment_type && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Type</p><p className="font-body text-xs text-white">{listing.job_employment_type}</p></div>}
                     {listing.job_experience && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Experience</p><p className="font-body text-xs text-white">{listing.job_experience}</p></div>}
                     {(listing.job_salary_min || listing.job_salary_max) && (

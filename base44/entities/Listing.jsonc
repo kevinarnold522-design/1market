@@ -450,6 +450,16 @@
       "type": "string",
       "description": "Company name that is hiring (for job listings)"
     },
+    "job_poster_role": {
+      "type": "string",
+      "enum": [
+        "Recruiter",
+        "Referrer",
+        "Owner / Employer",
+        "Bouncer"
+      ],
+      "description": "Role of the person posting the job listing"
+    },
     "job_employment_type": {
       "type": "string",
       "enum": [

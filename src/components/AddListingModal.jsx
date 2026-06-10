@@ -308,7 +308,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       slideshow_animation: form.slideshow_animation || 'fade',
       ...(form.type === 'food' ? { food_serving: form.food_serving, food_dietary: form.food_dietary, food_spice_level: form.food_spice_level, food_allergens: form.food_allergens, food_business_type: form.food_business_type, food_type: form.food_type, delivery_options: form.delivery_options, meetup_details: form.meetup_details } : {}),
       ...(form.main_category === 'buysell' ? { delivery_options: form.delivery_options, meetup_details: form.meetup_details } : {}),
-      ...(form.type === 'jobs' ? { company_hiring: form.company_hiring || '', job_employment_type: form.job_employment_type, job_experience: form.job_experience, job_salary_min: Number(form.job_salary_min) || 0, job_salary_max: Number(form.job_salary_max) || 0, job_benefits: form.job_benefits } : {}),
+      ...(form.type === 'jobs' ? { company_hiring: form.company_hiring || '', job_poster_role: form.job_poster_role || '', job_employment_type: form.job_employment_type, job_experience: form.job_experience, job_salary_min: Number(form.job_salary_min) || 0, job_salary_max: Number(form.job_salary_max) || 0, job_benefits: form.job_benefits } : {}),
       ...(form.type === 'services' ? {
         service_duration: form.service_duration,
         service_rate_type: form.service_rate_type,
@@ -740,6 +740,22 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                     <div className="rounded-xl p-3 space-y-3" style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.2)' }}>
                       <p className="font-body text-[10px] font-bold text-amber-400 uppercase tracking-wider">Job Details</p>
                       <div><label className={labelCls}>Company Hiring *</label><input value={form.company_hiring || ''} onChange={e => set('company_hiring', e.target.value)} placeholder="e.g. Jollibee, BDO, SM Retail, Private Company..." className={inputCls} /></div>
+                      <div>
+                        <label className={labelCls}>Posted By (Your Role) *</label>
+                        <div className="flex flex-wrap gap-1.5 mt-1">
+                          {['Recruiter', 'Referrer', 'Owner / Employer', 'Bouncer'].map(role => (
+                            <button key={role} type="button" onClick={() => set('job_poster_role', role)}
+                              className="px-3 py-1.5 rounded-full border font-body text-[11px] transition-all"
+                              style={{
+                                borderColor: form.job_poster_role === role ? '#f59e0b' : 'rgba(255,255,255,0.12)',
+                                background: form.job_poster_role === role ? 'rgba(245,158,11,0.18)' : 'rgba(255,255,255,0.04)',
+                                color: form.job_poster_role === role ? '#fbbf24' : 'rgba(255,255,255,0.5)',
+                              }}>
+                              {role}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                       <div><label className={labelCls}>Application Link (optional)</label><input value={form.apply_link} onChange={e => set('apply_link', e.target.value)} placeholder="https://..." className={inputCls} /></div>
                       <div className="grid grid-cols-2 gap-2">
                         <div>
@@ -766,12 +782,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                     <div className="rounded-xl p-3 space-y-4" style={{ background: 'rgba(59,130,246,0.07)', border: '1px solid rgba(59,130,246,0.2)' }}>
                       <p className="font-body text-[10px] font-bold text-blue-400 uppercase tracking-wider">Service Details</p>
 
-                      {/* Channel / Business Name */}
-                      <div>
-                        <label className={labelCls}>Channel / Business Name (Public)</label>
-                        <input value={form.channel_name} onChange={e => set('channel_name', e.target.value)} placeholder="e.g. Kevin's Repair Shop, CleanPro Services..." className={inputCls} />
-                        <p className="font-body text-[9px] text-white/25 mt-1">This name will be shown publicly instead of your personal name.</p>
-                      </div>
+                      {/* Channel / Business Name removed — only admin can set approved_channel_name */}
 
                       {/* Rate & Duration */}
                       <div className="grid grid-cols-2 gap-2">
@@ -895,9 +906,9 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                   {/* CONTACT */}
                   <div className="space-y-2">
                     <div>
-                      <label className={labelCls}>Channel / Business Name (Public Display)</label>
-                      <input value={form.channel_name} onChange={e => { set('channel_name', e.target.value); set('seller_name', e.target.value); }} placeholder="e.g. Juan's Store, CleanPro PH — shown publicly" className={inputCls} />
-                      <p className="font-body text-[9px] text-white/25 mt-1">This replaces your personal name on the public listing.</p>
+                      <label className={labelCls}>Your Display Name (shown on listing)</label>
+                      <input value={form.seller_name} onChange={e => set('seller_name', e.target.value)} placeholder="e.g. Juan Dela Cruz, CleanPro Services..." className={inputCls} />
+                      <p className="font-body text-[9px] text-white/25 mt-1">This is your name shown on the listing. Admin may assign an official Channel Name after approval.</p>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div>
