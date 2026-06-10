@@ -20,13 +20,13 @@ const VALUES = [
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-[#070F1A]">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
       <Navbar />
       <div className="pt-28">
         {/* Hero */}
-        <div className="relative overflow-hidden py-20 px-6" style={{ background: 'linear-gradient(135deg,#0A192F,#112240)' }}>
+        <div className="relative overflow-hidden py-20 px-6" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)' }}>
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1600&q=80)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg,#0A192F/90,#070F1A)' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg,rgba(0,51,204,0.85),rgba(0,13,64,0.9))' }} />
           <div className="relative z-10 max-w-4xl mx-auto">
             <Link to="/" className="inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors mb-8 font-body text-sm">
               <ArrowLeft className="w-4 h-4" /> Back to Home
@@ -50,11 +50,11 @@ export default function About() {
         <div className="max-w-4xl mx-auto px-6 py-16">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             className="rounded-3xl p-8 sm:p-10 mb-16"
-            style={{ background: 'linear-gradient(135deg,#0D1F3C,#112240)', border: '1px solid rgba(0,212,255,0.15)' }}>
+            style={{ background: 'linear-gradient(135deg,rgba(0,51,204,0.3),rgba(0,26,128,0.4))', border: '1px solid rgba(0,212,255,0.2)' }}>
             <div className="flex flex-col sm:flex-row gap-6 items-start">
-              <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 text-3xl"
+              <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0"
                 style={{ background: 'linear-gradient(135deg,#2563EB,#00D4FF)' }}>
-                👨‍💼
+                <span className="font-heading font-bold text-white text-2xl">KR</span>
               </div>
               <div>
                 <p className="font-body text-xs tracking-[0.2em] uppercase text-[#00D4FF] mb-1">Founder & CEO</p>
@@ -63,9 +63,9 @@ export default function About() {
                   Kevin founded 1Marketph.com in 2026 with a mission to bridge the gap between Filipino consumers and the businesses that power our communities. With a passion for technology and a deep love for the Philippines, he envisioned a platform where local commerce thrives, real connections happen, and every Filipino has access to a world-class marketplace. 1Market is his answer to the question: "What if everything Filipinos need was in one place?"
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {['🌍 Nationwide Vision','🛒 Buy & Sell','🏘️ For Rent','✈️ Travel','🍜 Food','💼 Jobs'].map(t => (
+                  {['Nationwide Vision','Buy & Sell','For Rent','Travel','Food','Jobs'].map(t => (
                     <span key={t} className="px-2.5 py-1 rounded-full text-[10px] font-bold font-body"
-                      style={{ background: 'rgba(0,212,255,0.08)', border: '1px solid rgba(0,212,255,0.15)', color: '#a5f3fc' }}>
+                      style={{ background: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.2)', color: '#a5f3fc' }}>
                       {t}
                     </span>
                   ))}
@@ -81,7 +81,7 @@ export default function About() {
               {VALUES.map((v, i) => (
                 <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                   className="rounded-2xl p-6"
-                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  style={{ background: 'rgba(0,51,204,0.2)', border: '1px solid rgba(0,212,255,0.15)' }}>
                   <div className="text-3xl mb-3">{v.icon}</div>
                   <h3 className="font-heading font-bold text-white mb-2">{v.title}</h3>
                   <p className="font-body text-sm text-white/50 leading-relaxed">{v.desc}</p>
@@ -123,7 +123,7 @@ export default function About() {
             ].map((s, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}
                 className="rounded-2xl p-5 text-center"
-                style={{ background: 'linear-gradient(135deg,#0D1F3C,#112240)', border: '1px solid rgba(0,212,255,0.12)' }}>
+                style={{ background: 'linear-gradient(135deg,rgba(0,51,204,0.3),rgba(0,26,128,0.4))', border: '1px solid rgba(0,212,255,0.2)' }}>
                 <div className="text-[#00D4FF] flex justify-center mb-2">{s.icon}</div>
                 <p className="font-heading font-bold text-xl text-white">{s.value}</p>
                 <p className="font-body text-xs text-white/40">{s.label}</p>

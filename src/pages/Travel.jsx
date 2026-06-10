@@ -256,11 +256,11 @@ export default function Travel() {
   const byCategory = (key) => filtered.filter(l => l.type === key);
 
   return (
-    <div className="min-h-screen" style={{ background: '#001060' }}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
       <ParticleBackground />
 
       {/* Hero */}
-      <div className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg,#0c4a6e 0%,#0369a1 60%,#0284c7 100%)' }}>
+      <div className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg,#0033CC 0%,#1a4de8 60%,#0044cc 100%)' }}>
         <div className="absolute inset-0 opacity-20"
           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-14">
@@ -293,7 +293,7 @@ export default function Travel() {
       </div>
 
       {/* Category pill scroll */}
-      <div className="sticky top-[88px] z-30 bg-[#070F1A]/95 backdrop-blur-md border-b border-white/8">
+      <div className="sticky top-[88px] z-30 backdrop-blur-md border-b border-white/8" style={{ background: 'rgba(0,13,64,0.95)' }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex gap-2 py-3 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
             {TRAVEL_CATEGORIES.map(cat => (
@@ -335,7 +335,7 @@ export default function Travel() {
         {/* CTA */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           className="mt-8 rounded-2xl p-8 text-center"
-          style={{ background: 'linear-gradient(135deg,#0c4a6e,#0284c7)', border: '1px solid rgba(14,165,233,0.3)' }}>
+          style={{ background: 'linear-gradient(135deg,#0033CC,#1a4de8)', border: '1px solid rgba(0,212,255,0.3)' }}>
           <h2 className="font-heading font-bold text-2xl text-white mb-2">List Your Travel Business</h2>
           <p className="font-body text-sm text-white/60 mb-5 max-w-md mx-auto">Hotels, tours, rentals, activities — reach thousands of Filipino travelers.</p>
           <div className="flex justify-center">

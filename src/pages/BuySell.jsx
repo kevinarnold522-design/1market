@@ -197,10 +197,10 @@ export default function BuySell() {
     });
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#070F1A 0%,#0A1628 100%)' }}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
       {/* Header */}
       <div className="sticky top-0 z-30 backdrop-blur-xl border-b border-white/8 px-4 py-3"
-        style={{ background: 'rgba(7,15,26,0.85)' }}>
+        style={{ background: 'rgba(0,13,64,0.9)' }}>
         <div className="max-w-7xl mx-auto flex items-center gap-3">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />

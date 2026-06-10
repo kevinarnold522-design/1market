@@ -216,7 +216,7 @@ export default function ForRent() {
   });
 
   return (
-    <div className="min-h-screen bg-[#070F1A]">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
       <ParticleBackground />
       <SubcategorySplash
         subcategories={SUBCATEGORIES}
@@ -226,7 +226,7 @@ export default function ForRent() {
         subtitle="Choose a category to browse listings"
         onBack={() => window.history.back()}
       />
-      <div className="relative bg-[#0A192F] overflow-hidden">
+      <div className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)' }}>
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0A192F]/60 to-[#0A192F]" />
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-8 pb-16">
@@ -322,7 +322,7 @@ export default function ForRent() {
         )}
 
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="mt-12 rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#0D1F3C,#112240)', border: '1px solid rgba(0,212,255,0.15)' }}>
+          className="mt-12 rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)', border: '1px solid rgba(0,212,255,0.2)' }}>
           <h2 className="font-heading font-bold text-2xl text-white mb-2">Have a Property or Item to Rent Out?</h2>
           <p className="font-body text-sm text-white/50 mb-6 max-w-md mx-auto">List your property, vehicle, or equipment for free and reach renters across Manila and Cavite.</p>
           <button onClick={() => setShowSignup(true)} className="px-8 py-3 bg-[#00D4FF] text-[#0A192F] font-body font-bold rounded-xl hover:bg-white transition-colors">

@@ -276,7 +276,7 @@ export default function Services() {
   });
 
   return (
-    <div className="min-h-screen bg-[#070F1A]">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
       <StarField />
       {!splashDismissed && (
         <SubcategorySplash
@@ -288,7 +288,7 @@ export default function Services() {
           onBack={() => window.history.back()}
         />
       )}
-      <div className="relative bg-[#0A192F] overflow-hidden">
+      <div className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)' }}>
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0A192F]/60 to-[#0A192F]" />
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-8 pb-16">
@@ -354,7 +354,7 @@ export default function Services() {
         )}
 
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="mt-12 bg-[#0A192F] rounded-2xl p-8 text-center">
+          className="mt-12 rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)' }}>
           <h2 className="font-heading font-bold text-2xl text-white mb-2">Offer Your Services Here</h2>
           <p className="font-body text-sm text-white/50 mb-6 max-w-md mx-auto">List your services for free and get discovered by thousands of customers across Manila and Cavite.</p>
           <button onClick={() => setShowSignup(true)} className="px-8 py-3 bg-[#00D4FF] text-[#0A192F] font-body font-bold rounded-xl hover:bg-white transition-colors">

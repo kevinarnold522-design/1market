@@ -226,7 +226,7 @@ export default function Jobs() {
   });
 
   return (
-    <div className="min-h-screen" style={{ background: THEME.deep }}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
       <ParticleBackground />
 
       {/* Header */}
