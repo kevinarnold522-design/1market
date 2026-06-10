@@ -68,7 +68,7 @@ export default function ConnectedAccounts() {
     const all = await base44.entities.User.list('-created_date', 500);
     // Filter to show only accounts created by admin (ghost accounts)
     // Ghost accounts have internal email domain
-    setAccounts(all.filter(u => u.email?.includes('@ghost.1marketph.internal') || u.is_ghost_account || u.is_connected_account));
+    setAccounts(all.filter(u => u.email?.includes('@1marketph-ghost.internal') || u.is_ghost_account || u.is_connected_account));
     setLoading(false);
   };
 
@@ -91,7 +91,11 @@ export default function ConnectedAccounts() {
         });
       }, 150);
       
-      const ghostId = `ghost_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const timestamp = Date.now();
+      const randomStr = Math.random().toString(36).substring(2, 8);
+      const ghostId = `ghost_${timestamp}_${randomStr}`;
+      const ghostEmail = `${ghostId}@1marketph-ghost.internal`;
+      
       if (editingAccount) {
         await base44.entities.User.update(editingAccount.id, {
           full_name: form.full_name.trim(),
@@ -109,52 +113,92 @@ export default function ConnectedAccounts() {
         clearInterval(progressInterval);
         setSaveProgress(100);
         showToast('Account updated!');
+        setTimeout(() => {
+          setSaving(false);
+          setSaveProgress(0);
+          setShowForm(false);
+          setEditingAccount(null);
+          setForm(EMPTY_FORM);
+          loadAccounts();
+        }, 500);
       } else {
         const userData = {
+          // Core identity
           full_name: form.full_name.trim(),
           channel_name: form.channel_name.trim() || form.full_name.trim(),
-          email: `${ghostId}@ghost.1marketph.internal`,
+          email: ghostEmail,
+          role: 'user',
+          
+          // Account type
           user_type: form.user_type,
           is_seller: form.user_type === 'seller' || form.user_type === 'business',
+          account_type: form.user_type === 'business' ? 'business_owner' : 'customer',
+          member_type: form.user_type,
+          
+          // Business/seller info
           business_name: form.business_name.trim() || form.full_name.trim(),
-          seller_location: form.location,
-          seller_area: form.seller_area,
+          seller_location: form.location || 'Manila',
+          location: form.location || 'Manila',
+          seller_page_enabled: form.user_type !== 'customer',
+          
+          // Ghost markers
+          is_ghost_account: true,
+          is_connected_account: true,
+          ghost_id: ghostId,
+          ghost_linked: false,
+          
+          // Username
+          username: ghostId.toLowerCase().replace(/[^a-z0-9_]/g, ''),
+          username_set: false,
+          
+          // Profile
+          profile_picture: '',
+          cover_photo: '',
           bio: form.bio,
+          seller_bio: form.bio,
+          business_type: '',
+          seller_area: form.seller_area,
+          
+          // Social
           social_facebook: form.social_facebook,
           social_instagram: form.social_instagram,
           social_tiktok: form.social_tiktok,
-          seller_page_enabled: true,
-          role: 'user',
-          // Required fields with defaults
-          username: ghostId,
-          username_set: false,
-          verification_submitted: false,
-          member_type: form.user_type,
-          location: form.location || 'Manila',
-          profile_picture: '',
-          cover_photo: '',
-          seller_bio: form.bio,
-          business_type: '',
           social_youtube: '',
           social_viber: '',
           social_telegram: '',
+          
+          // Privacy
+          show_phone_public: false,
+          show_email_public: false,
+          
+          // Verification
+          is_verified_seller: false,
+          verification_submitted: false,
+          seller_pending: false,
+          business_pending: false,
+          
+          // Arrays
+          seller_products: [],
+          business_categories: [],
         };
-        if (form.user_type === 'business') {
-          userData.account_type = 'business_owner';
-        }
-        await base44.entities.User.create(userData);
+        
+        const result = await base44.entities.User.create(userData);
         clearInterval(progressInterval);
         setSaveProgress(100);
-        showToast('Account created!');
+        showToast('Account created! Redirecting...');
+        
+        // Redirect to the ghost account's profile page
+        setTimeout(() => {
+          setSaving(false);
+          setSaveProgress(0);
+          setShowForm(false);
+          setEditingAccount(null);
+          setForm(EMPTY_FORM);
+          loadAccounts();
+          // Navigate to the newly created ghost profile
+          navigate(`/seller/${userData.username}`);
+        }, 800);
       }
-      setTimeout(() => {
-        setSaving(false);
-        setSaveProgress(0);
-        setShowForm(false);
-        setEditingAccount(null);
-        setForm(EMPTY_FORM);
-        loadAccounts();
-      }, 500);
     } catch (err) {
       console.error('Failed to create account:', err);
       console.error('Error details:', err.message, err.stack);
@@ -256,18 +300,18 @@ export default function ConnectedAccounts() {
             <div className="h-5 w-px bg-white/20" />
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#a855f7,#7c3aed)' }}>
-                <User className="w-4 h-4 text-white" />
+                <Ghost className="w-4 h-4 text-white" />
               </div>
               <div>
-                <span className="font-heading font-bold text-white block text-sm">Connected Accounts</span>
-                <span className="font-body text-[10px] text-white/40">Manage user profiles</span>
+                <span className="font-heading font-bold text-white block text-sm">Manage Ghost Accounts</span>
+                <span className="font-body text-[10px] text-white/40">Create and manage test accounts</span>
               </div>
             </div>
           </div>
           <button onClick={() => { setShowForm(true); setEditingAccount(null); setForm(EMPTY_FORM); }}
             className="flex items-center gap-2 px-4 py-2 rounded-xl font-body font-bold text-sm text-white transition-colors"
             style={{ background: 'linear-gradient(135deg,#a855f7,#7c3aed)' }}>
-            <Plus className="w-4 h-4" /> New Account
+            <Plus className="w-4 h-4" /> New Ghost Account
           </button>
         </div>
       </div>

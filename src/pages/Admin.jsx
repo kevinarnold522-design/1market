@@ -293,6 +293,7 @@ export default function Admin() {
   const [businesses, setBusinesses] = useState([]);
   const [listings, setListings] = useState([]);
   const [users, setUsers] = useState([]);
+  const [totalUsers, setTotalUsers] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showBizForm, setShowBizForm] = useState(false);
   const [showListForm, setShowListForm] = useState(false);
@@ -363,6 +364,10 @@ export default function Admin() {
       });
       console.log('✓ Ghost users found:', ghosts.length, 'Total users:', userList.length);
       setGhostUsers(ghosts);
+      
+      // Update stats with total user count (ghosts count as regular users)
+      setTotalUsers(userList.length);
+      
       setLoading(false);
     }).catch(err => {
       console.error('✗ Failed to load users:', err);
@@ -600,7 +605,7 @@ export default function Admin() {
             <Link to="/connected-accounts"
               className="flex items-center gap-2 px-4 py-2 rounded-xl font-body font-bold text-sm text-white transition-colors"
               style={{ background: 'linear-gradient(135deg,#a855f7,#7c3aed)' }}>
-              <Ghost className="w-4 h-4" /> Connected Accounts
+              <Ghost className="w-4 h-4" /> Manage Ghost Accounts
             </Link>
             <button onClick={() => { setShowBizForm(true); setEditingBiz(null); setTab('businesses'); }}
               className="flex items-center gap-2 px-4 py-2 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-sm hover:bg-white transition-colors">
@@ -619,11 +624,11 @@ export default function Admin() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           {[
             { label: 'Total Businesses', value: businesses.length, color: '#00D4FF', border: 'rgba(0,212,255,0.25)' },
-            { label: 'Total Users', value: users.length, color: '#34d399', border: 'rgba(52,211,153,0.25)' },
+            { label: 'Total Users', value: totalUsers, color: '#34d399', border: 'rgba(52,211,153,0.25)' },
+            { label: 'Ghost Accounts', value: ghostUsers.length, color: '#a855f7', border: 'rgba(168,85,247,0.25)' },
             { label: 'All Listings', value: listings.length, color: '#c084fc', border: 'rgba(192,132,252,0.25)' },
             { label: 'Pending Approvals', value: pendingListings.length, color: '#fbbf24', border: 'rgba(251,191,36,0.35)' },
             { label: 'Pending Reports', value: reports.filter(r => r.status === 'pending').length, color: '#f87171', border: 'rgba(248,113,113,0.25)' },
-            { label: 'Pending Verifications', value: verifications.filter(v => v.status === 'pending').length, color: '#a78bfa', border: 'rgba(167,139,250,0.25)' },
           ].map(s => (
             <div key={s.label} className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${s.border}`, backdropFilter: 'blur(8px)' }}>
               <p className="font-heading font-bold text-2xl" style={{ color: s.color }}>{s.value}</p>
