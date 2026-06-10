@@ -82,14 +82,11 @@ export default function TopBanner() {
 
         {/* Links grid — 3 columns */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 mb-8">
-          {/* About Us - Merged */}
+          {/* About Us - Merged (Duplicate at top) */}
           <div className="space-y-4">
             <h4 className="font-heading font-bold text-sm uppercase tracking-widest text-white/50">About Us</h4>
             <div className="space-y-2.5">
-              <p className="font-body text-sm text-white/40">Founded by Kevin W. Roberto</p>
-              <p className="font-body text-sm text-white/40">Manila, Philippines</p>
-              <p className="font-body text-xs text-white/30 leading-relaxed">Born from a vision to bridge the gap between Filipino consumers and businesses that power our communities.</p>
-              <Link to="/about" className="block font-body text-xs text-[#00D4FF]/60 hover:text-[#00D4FF] transition-colors">About Us</Link>
+              <Link to="/about" className="block font-body text-xs text-[#00D4FF]/60 hover:text-[#00D4FF] transition-colors">About 1MarketPH</Link>
               <Link to="/privacy-policy" className="block font-body text-xs text-white/25 hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
             </div>
           </div>

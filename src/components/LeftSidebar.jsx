@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Plane, UtensilsCrossed, ShoppingBag, Car, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, ChevronLeft, ChevronRight, ShoppingCart, Package, BarChart2, Settings, LogOut, Shield, KeyRound, Ghost } from 'lucide-react';
+import { Home, Plane, UtensilsCrossed, ShoppingBag, Car, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, ChevronLeft, ChevronRight, ShoppingCart, Package, BarChart2, Settings, LogOut, Shield, KeyRound, Ghost, Search } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import PostListingMenu from './PostListingMenu';
 import NotificationsBell from './NotificationsBell';
@@ -18,6 +18,33 @@ const NAV_ITEMS = [
   { to: '/jobs',       icon: Briefcase,      label: 'Jobs',         color: '#f59e0b' },
   { to: '/community',  icon: Users,          label: 'Community',    color: '#a855f7' },
 ];
+
+// Philippines Cities Data
+const PHILIPPINES_CITIES = {
+  'Luzon (72 Cities)': {
+    'National Capital Region (Metro Manila)': ['Caloocan', 'Las Piñas', 'Makati', 'Malabon', 'Mandaluyong', 'Manila', 'Marikina', 'Muntinlupa', 'Navotas', 'Parañaque', 'Pasay', 'Pasig', 'Quezon City', 'San Juan', 'Taguig', 'Valenzuela'],
+    'Region I (Ilocos Region)': ['Alaminos', 'Batac', 'Candon', 'Dagupan', 'Laoag', 'San Fernando (La Union)', 'Urdaneta', 'Vigan'],
+    'Cordillera Administrative Region (CAR)': ['Baguio', 'Tabuk'],
+    'Region II (Cagayan Valley)': ['Cauayan', 'Ilagan', 'Santiago', 'Tuguegarao'],
+    'Region III (Central Luzon)': ['Angeles', 'Balanga', 'Baliwag', 'Cabanatuan', 'Gapan', 'Mabalacat', 'Malolos', 'Meycauayan', 'Muñoz', 'Olongapo', 'Palayan', 'San Fernando (Pampanga)', 'San Jose', 'San Jose del Monte', 'Tarlac City'],
+    'Region IV-A (Calabarzon)': ['Antipolo', 'Bacoor', 'Biñan', 'Cabuyao', 'Calamba', 'Carmona', 'Cavite City', 'Dasmariñas', 'General Trias', 'Imus', 'Lipa', 'San Pablo', 'San Pedro', 'Santa Rosa', 'Santo Tomas', 'Tagaytay', 'Tanauan', 'Trece Martires'],
+    'Region IV-B (Mimaropa)': ['Calapan', 'Puerto Princesa'],
+    'Region V (Bicol Region)': ['Iriga', 'Legazpi', 'Ligao', 'Masbate City', 'Naga', 'Sorsogon City', 'Tabaco'],
+  },
+  'Visayas (39 Cities)': {
+    'Region VI (Western Visayas)': ['Bacolod', 'Bago', 'Cadiz', 'Escalante', 'Himamaylan', 'Iloilo City', 'Kabankalan', 'La Carlota', 'Passi', 'Roxas City', 'Sagay', 'San Carlos (Negros Occidental)', 'Silay', 'Sipay', 'Talisay (Negros Occidental)', 'Victorias'],
+    'Region VII (Central Visayas)': ['Bais', 'Bayawan', 'Canlaon', 'Carcar', 'Cebu City', 'Danao', 'Dumaguete', 'Guihulngan', 'Lapu-Lapu', 'Mandaue', 'Naga (Cebu)', 'Tagbilaran', 'Talisay (Cebu)', 'Toledo', 'Tanjay'],
+    'Region VIII (Eastern Visayas)': ['Baybay', 'Borongan', 'Calbayog', 'Catbalogan', 'Maasin', 'Ormoc', 'Tacloban'],
+  },
+  'Mindanao (38 Cities)': {
+    'Region IX (Zamboanga Peninsula)': ['Dapitan', 'Dipolog', 'Isabela (Basilan)', 'Pagadian', 'Zamboanga City'],
+    'Region X (Northern Mindanao)': ['Cagayan de Oro', 'El Salvador', 'Gingoog', 'Iligan', 'Malaybalay', 'Oroquieta', 'Ozamiz', 'Tangub', 'Valencia'],
+    'Region XI (Davao Region)': ['Davao City', 'Digos', 'Mati', 'Panabo', 'Samal', 'Tagum'],
+    'Region XII (Soccsksargen)': ['General Santos', 'Kidapawan', 'Koronadal', 'Tacurong'],
+    'Region XIII (Caraga)': ['Bayugan', 'Butuan', 'Cabadbaran', 'Surigao City', 'Tandag'],
+    'Bangsamoro Autonomous Region in Muslim Mindanao (BARMM)': ['Cotabato City', 'Lamitan', 'Marawi'],
+  }
+};
 
 export default function LeftSidebar({ isMobileHidden = false }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -165,6 +192,12 @@ export default function LeftSidebar({ isMobileHidden = false }) {
               <Shield className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span className="font-body text-xs font-semibold truncate">Admin Panel</span>}
             </Link>
+            <Link to="/connected-accounts"
+              className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-purple-400/70 hover:text-purple-400 hover:bg-purple-400/10"
+              title={collapsed ? 'Connected Accounts' : undefined}>
+              <Users className="w-4 h-4 flex-shrink-0" />
+              {!collapsed && <span className="font-body text-xs font-semibold truncate">Connected Accounts</span>}
+            </Link>
           </>
         )}
       </nav>
@@ -208,15 +241,6 @@ export default function LeftSidebar({ isMobileHidden = false }) {
                 </div>
               )}
             </Link>
-            {/* Admin-only: Connected Accounts below profile */}
-            {isAdmin && !isGhostSession && (
-              <Link to="/connected-accounts"
-                className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-purple-400/70 hover:text-purple-400 hover:bg-purple-400/10 mt-1"
-                title={collapsed ? 'Connected Accounts' : undefined}>
-                <Users className="w-4 h-4 flex-shrink-0" />
-                {!collapsed && <span className="font-body text-xs font-semibold truncate">Connected Accounts</span>}
-              </Link>
-            )}
             {/* Ghost sign out */}
             {isGhostSession && (
               <button onClick={() => { 

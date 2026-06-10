@@ -129,7 +129,7 @@ export default function Footer() {
           <p className="font-heading font-bold text-white text-base sm:text-lg mb-1">
             Connecting Filipinos to <span style={{ color: '#FFD700' }}>Products</span>, <span style={{ color: '#00D4FF' }}>Services</span> & <span style={{ color: '#a855f7' }}>Opportunities</span>
           </p>
-          <p className="font-body text-xs text-white/35">Proudly Made in the Philippines — Since 2026</p>
+          <p className="font-body text-xs text-white/35">The Premiere Marketplace — Since 2026</p>
         </div>
 
         {/* Bottom bar */}

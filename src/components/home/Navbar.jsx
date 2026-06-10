@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { redirectToLogin } from '@/lib/loginRedirect';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Building2, Users, Bell, Facebook, Instagram, Youtube, Ghost } from 'lucide-react';
+import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Building2, Users, Bell, Facebook, Instagram, Youtube, Ghost, ShoppingBag } from 'lucide-react';
 import GhostAccountBanner from '../GhostAccountBanner';
 import BecomeSellerModal from '../BecomeSellerModal';
 import BecomeBusinessModal from '../BecomeBusinessModal';
@@ -298,7 +298,13 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-4">
               {isAuthenticated && activeUser ? (
                 <>
-                  {/* Categories link for signed-in users */}
+                  {/* Categories dropdown for signed-in users */}
+                  <div className="relative">
+                    <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 border border-white/10 hover:border-[#00D4FF]/40 transition-all text-white font-body text-xs font-bold">
+                      <ShoppingBag className="w-4 h-4" /> Categories
+                    </button>
+                  </div>
+                  {/* Account dropdown */}
                   <div className="relative" ref={dropdownRef}>
                   <div className="flex items-center gap-1">
                     <Link to="/profile" className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-white/10 transition-all"
@@ -560,8 +566,7 @@ export default function Navbar() {
                     )}
                   </AnimatePresence>
                 </div>
-                  {/* More categories dropdown trigger could go here */}
-                </>
+                </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <Link to="/login"
