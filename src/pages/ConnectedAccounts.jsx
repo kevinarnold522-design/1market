@@ -165,7 +165,7 @@ export default function ConnectedAccounts() {
         setSaveProgress(100);
         showToast('Account created! Redirecting...');
         
-        // Wait for database to persist then redirect
+        // Wait for database to persist then redirect using username for better compatibility
         setTimeout(() => {
           setSaving(false);
           setSaveProgress(0);
@@ -173,8 +173,9 @@ export default function ConnectedAccounts() {
           setEditingAccount(null);
           setForm(EMPTY_FORM);
           loadAccounts();
-          window.location.href = `/seller/${result.id}`;
-        }, 1000);
+          // Use username instead of ID for more reliable lookup
+          window.location.href = `/seller/${cleanUsername}`;
+        }, 1500);
       }
     } catch (err) {
       console.error('Ghost account creation error:', err);
