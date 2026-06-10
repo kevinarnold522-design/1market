@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TrendingUp, Users, ShoppingBag, Star } from 'lucide-react';
+import { TrendingUp, Users, ShoppingBag, Star, Facebook, Instagram } from 'lucide-react';
 
 const MESSAGES = [
   { title: '1MarketPH.com', sub: 'Your #1 Filipino Marketplace — Trusted by thousands' },
@@ -80,6 +80,21 @@ export default function MovingWelcomeBanner() {
             <span className="font-body text-[10px] font-semibold text-white/60 sm:hidden">{label.split(' ').slice(-1)[0]}</span>
           </div>
         ))}
+      </div>
+
+      {/* Social Media Bar */}
+      <div className="flex items-center justify-center gap-3 py-3 border-t border-white/10" style={{ background: 'rgba(0,0,0,0.2)' }}>
+        <span className="font-body text-[10px] text-white/50 font-semibold">Follow us:</span>
+        <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-body text-xs font-bold text-blue-300 hover:text-blue-100 transition-all hover:scale-105"
+          style={{ background: 'rgba(59,130,246,0.18)', border: '1px solid rgba(59,130,246,0.35)' }}>
+          <Facebook className="w-3.5 h-3.5" /><span className="hidden sm:inline">@1MarketPH</span>
+        </a>
+        <a href="https://www.instagram.com/1marketph/" target="_blank" rel="noopener noreferrer"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-body text-xs font-bold text-pink-300 hover:text-pink-100 transition-all hover:scale-105"
+          style={{ background: 'rgba(236,72,153,0.18)', border: '1px solid rgba(236,72,153,0.35)' }}>
+          <Instagram className="w-3.5 h-3.5" /><span className="hidden sm:inline">@1MarketPH</span>
+        </a>
       </div>
 
       {/* Marquee ticker */}

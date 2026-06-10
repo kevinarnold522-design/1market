@@ -9,6 +9,17 @@ const MESSAGES = [
   { main: '1Marketph.com', sub: 'Manila & Cavite\'s marketplace — growing nationwide.' },
 ];
 
+const ANIMATED_ITEMS = [
+  { emoji: '📱', label: 'Electronics', color: '#00D4FF' },
+  { emoji: '🏠', label: 'Real Estate', color: '#FFD700' },
+  { emoji: '🍜', label: 'Food', color: '#10b981' },
+  { emoji: '✈️', label: 'Travel', color: '#f472b6' },
+  { emoji: '👗', label: 'Fashion', color: '#a855f7' },
+  { emoji: '🔧', label: 'Services', color: '#3E97F1' },
+  { emoji: '💼', label: 'Jobs', color: '#fb7185' },
+  { emoji: '🚗', label: 'Vehicles', color: '#f59e0b' },
+];
+
 export default function BrandedHeroSection() {
   const [index, setIndex] = useState(0);
   const pillars = [
@@ -87,6 +98,30 @@ export default function BrandedHeroSection() {
             <p className="font-body text-xs sm:text-sm text-white/60 mt-1.5 max-w-lg mx-auto">{msg.sub}</p>
           </motion.div>
         </AnimatePresence>
+      </div>
+
+      {/* Animated items carousel */}
+      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-8 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+          {ANIMATED_ITEMS.map((item, idx) => (
+            <motion.div key={idx}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: idx * 0.05 }}
+              whileHover={{ scale: 1.05, y: -2 }}
+              className="flex flex-col items-center gap-2 p-3 rounded-xl backdrop-blur-sm"
+              style={{ background: `rgba(${item.color === '#00D4FF' ? '0,212,255' : item.color === '#FFD700' ? '255,215,0' : item.color === '#10b981' ? '16,185,129' : item.color === '#f472b6' ? '244,114,182' : item.color === '#a855f7' ? '168,85,247' : item.color === '#3E97F1' ? '62,151,241' : item.color === '#fb7185' ? '251,113,133' : '245,158,11'},0.1)`, border: `1px solid ${item.color}40` }}>
+              <motion.span
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                className="text-2xl sm:text-3xl"
+              >
+                {item.emoji}
+              </motion.span>
+              <p className="font-body text-[9px] sm:text-xs font-semibold text-white/80 text-center">{item.label}</p>
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       {/* Three pillars */}

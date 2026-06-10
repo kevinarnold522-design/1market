@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, RefreshCw } from 'lucide-react';
+import { X } from 'lucide-react';
 
 // Ad content pool - royal blue themed
 const AD_POOL = [
@@ -51,9 +51,7 @@ const AD_POOL = [
 
 export default function AdOverlay() {
   const [showAd, setShowAd] = useState(false);
-  const [currentAdIndex, setCurrentAdIndex] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [canClose, setCanClose] = useState(false);
 
   useEffect(() => {
     // Check if user is admin
@@ -64,7 +62,6 @@ export default function AdOverlay() {
     // Show ad after 2 minutes (120000ms)
     const timer = setTimeout(() => {
       setShowAd(true);
-      setCanClose(true);
     }, 120000);
 
     return () => {
@@ -78,7 +75,7 @@ export default function AdOverlay() {
 
   if (!showAd || isAdmin === null) return null;
 
-  const currentAd = AD_POOL[currentAdIndex];
+  const currentAd = AD_POOL[0];
 
   return (
     <AnimatePresence>
@@ -91,28 +88,24 @@ export default function AdOverlay() {
         {/* Backdrop */}
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto" />
         
-        {/* Ad Container */}
+        {/* Ad Container - HTML Ad Code */}
         <div className="absolute inset-0 flex items-center justify-center p-4 pointer-events-auto">
           <motion.div
-            key={currentAdIndex}
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
             transition={{ duration: 0.3 }}
             className="relative max-w-2xl w-full rounded-3xl overflow-hidden shadow-2xl"
             style={{ background: currentAd.gradient }}
           >
             {/* Close button */}
-            {canClose && (
-              <button
-                onClick={closeAd}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors z-10"
-              >
-                <X className="w-5 h-5 text-white" />
-              </button>
-            )}
+            <button
+              onClick={closeAd}
+              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors z-10"
+            >
+              <X className="w-5 h-5 text-white" />
+            </button>
 
-            {/* Content */}
+            {/* HTML Ad Content */}
             <div className="flex flex-col md:flex-row">
               {/* Image side */}
               <div className="md:w-1/2 h-48 md:h-auto relative">
