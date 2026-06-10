@@ -26,52 +26,57 @@ Deno.serve(async (req) => {
     const ghostEmail = `${ghostId}@1marketph-ghost.internal`;
     const cleanUsername = `ghost_${timestamp}_${randomStr}`.toLowerCase().replace(/[^a-z0-9_]/g, '');
 
-    // STEP 2: Create user record with ALL fields explicitly set
-    const userData = {
-      // Core identity (built-in fields)
+    // STEP 2: Invite user (REQUIRED - User.create() doesn't persist)
+    console.log('[GHOST CREATE] Inviting user:', ghostEmail);
+    const inviteResult = await base44.users.inviteUser(ghostEmail, 'user');
+    console.log('[GHOST CREATE] ✓ Invite sent:', inviteResult);
+
+    // STEP 3: Wait for user creation then fetch
+    console.log('[GHOST CREATE] Waiting for user creation...');
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // STEP 4: Fetch the created user
+    const users = await base44.entities.User.filter({ email: ghostEmail });
+    if (!users || users.length === 0) {
+      console.error('[GHOST CREATE] ✗ User not found after invite');
+      return Response.json({ 
+        error: 'User creation failed - not found after invite',
+        debug: { ghost_id: ghostId, email: ghostEmail }
+      }, { status: 500 });
+    }
+
+    const createdUser = users[0];
+    console.log('[GHOST CREATE] ✓ User created via invite:', createdUser.id);
+
+    // STEP 5: Update with ghost account metadata
+    const updateData = {
       full_name: full_name.trim(),
       channel_name: channel_name?.trim() || full_name.trim(),
-      email: ghostEmail,
-      role: 'user',
       username: cleanUsername,
-      
-      // Account classification
+      username_set: true,
       user_type: user_type || 'seller',
       is_seller: user_type !== 'customer',
       account_type: user_type === 'business' ? 'business_owner' : 'customer',
-      
-      // Business information
       business_name: business_name?.trim() || full_name.trim(),
       seller_location: location || 'Manila',
       location: location || 'Manila',
+      seller_area: seller_area || '',
       seller_page_enabled: user_type !== 'customer',
-      
-      // Ghost account markers
+      bio: bio || '',
+      seller_bio: bio || '',
       is_ghost_account: true,
       is_connected_account: true,
       ghost_id: ghostId,
       ghost_linked: false,
-      username_set: true,
-      
-      // Profile data
-      bio: bio || '',
-      seller_bio: bio || '',
-      seller_area: seller_area || '',
-      profile_picture: '',
-      cover_photo: '',
       is_verified_seller: false,
       verification_submitted: false,
       seller_pending: false,
       business_pending: false,
       seller_products: [],
       business_categories: [],
-      
-      // Facebook Live fields
       facebook_page_id: '',
       facebook_page_name: '',
       facebook_live_enabled: false,
-      
-      // Social media fields (explicitly set to empty strings)
       social_facebook: '',
       social_instagram: '',
       social_tiktok: '',
@@ -79,114 +84,47 @@ Deno.serve(async (req) => {
       social_youtube: '',
       social_viber: '',
       social_telegram: '',
-      
-      // Contact fields
       phone: '',
       show_phone_public: false,
       show_email_public: false,
+      profile_picture: '',
+      cover_photo: '',
     };
 
-    console.log('[GHOST CREATE] Creating user record...');
-    const result = await base44.entities.User.create(userData);
-    console.log('[GHOST CREATE] ✓ User created:', result.id);
+    console.log('[GHOST CREATE] Updating user with ghost metadata...');
+    const updated = await base44.entities.User.update(createdUser.id, updateData);
+    console.log('[GHOST CREATE] ✓ User updated:', updated.id);
 
-    // STEP 3: Verify creation with retries (database persistence delay)
-    console.log('[GHOST CREATE] Verifying creation with retries...');
-    
-    let verified = null;
-    const maxRetries = 10;
-    const retryDelayMs = 300;
-    
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      if (attempt > 1) {
-        console.log(`[GHOST VERIFY] Retry ${attempt}/${maxRetries} - waiting ${retryDelayMs}ms...`);
-        await new Promise(resolve => setTimeout(resolve, retryDelayMs));
-      }
-      
-      // Try filter by ID
-      const byId = await base44.entities.User.filter({ id: result.id });
-      if (byId && byId.length > 0) {
-        verified = byId[0];
-        console.log(`[GHOST VERIFY] ✓ Found by ID on attempt ${attempt}`);
-        break;
-      }
-      
-      // Try filter by username
-      const byUsername = await base44.entities.User.filter({ username: cleanUsername });
-      if (byUsername && byUsername.length > 0) {
-        verified = byUsername[0];
-        console.log(`[GHOST VERIFY] ✓ Found by username on attempt ${attempt}`);
-        break;
-      }
-      
-      // Try filter by email
-      const byEmail = await base44.entities.User.filter({ email: ghostEmail });
-      if (byEmail && byEmail.length > 0) {
-        verified = byEmail[0];
-        console.log(`[GHOST VERIFY] ✓ Found by email on attempt ${attempt}`);
-        break;
-      }
-    }
-    
-    if (!verified) {
-      console.error('[GHOST CREATE] ✗ Verification failed after', maxRetries, 'retries');
-      return Response.json({ 
-        error: 'User creation failed verification - database persistence delay',
-        debug: { attempted_id: result.id, ghost_id: ghostId, retries: maxRetries }
-      }, { status: 500 });
+    // STEP 6: Final verification
+    const verified = await base44.entities.User.filter({ id: updated.id });
+    if (!verified || verified.length === 0) {
+      console.error('[GHOST CREATE] ✗ Final verification failed');
+      return Response.json({ error: 'Final verification failed' }, { status: 500 });
     }
 
-    console.log('[GHOST CREATE] ✓ Verification successful:', {
-      id: verified.id,
-      name: verified.full_name,
-      email: verified.email,
-      ghost_id: verified.ghost_id,
-      username: verified.username
+    const finalUser = verified[0];
+    console.log('[GHOST CREATE] ✓ Final verification successful:', {
+      id: finalUser.id,
+      name: finalUser.full_name,
+      ghost_id: finalUser.ghost_id
     });
 
-    // STEP 4: Validate all critical fields exist
-    const validationErrors = [];
-    if (!verified.id) validationErrors.push('missing id');
-    if (!verified.full_name) validationErrors.push('missing full_name');
-    if (!verified.email) validationErrors.push('missing email');
-    if (!verified.ghost_id) validationErrors.push('missing ghost_id');
-    if (!verified.username) validationErrors.push('missing username');
-
-    if (validationErrors.length > 0) {
-      console.error('[GHOST CREATE] ✗ Validation errors:', validationErrors);
-      return Response.json({ 
-        error: 'User validation failed',
-        missing_fields: validationErrors
-      }, { status: 500 });
-    }
-
-    // STEP 5: Load additional data (listings, posts) to confirm relationships work
-    const [listings, posts] = await Promise.all([
-      base44.entities.Listing.filter({ created_by_id: result.id }),
-      base44.entities.CommunityPost.filter({ author_email: verified.email })
-    ]);
-
-    console.log('[GHOST CREATE] ✓ Relationships validated:', {
-      listings_count: listings.length,
-      posts_count: posts.length
-    });
-
-    // STEP 6: Return success with full data
+    // STEP 7: Return success
     return Response.json({
       success: true,
       user: {
-        id: verified.id,
-        full_name: verified.full_name,
-        channel_name: verified.channel_name,
-        email: verified.email,
-        username: verified.username,
-        ghost_id: verified.ghost_id,
-        user_type: verified.user_type,
-        is_ghost_account: verified.is_ghost_account,
-        seller_location: verified.seller_location,
-        created_date: verified.created_date
+        id: finalUser.id,
+        full_name: finalUser.full_name,
+        channel_name: finalUser.channel_name,
+        email: finalUser.email,
+        username: finalUser.username,
+        ghost_id: finalUser.ghost_id,
+        user_type: finalUser.user_type,
+        is_ghost_account: finalUser.is_ghost_account,
+        seller_location: finalUser.seller_location,
+        created_date: finalUser.created_date
       },
-      profile_url: `/seller/${verified.id}`,
+      profile_url: `/seller/${finalUser.id}`,
       message: 'Ghost account created and verified successfully'
     });
 
