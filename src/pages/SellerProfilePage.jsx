@@ -19,9 +19,14 @@ const SOCIAL_CONFIGS = {
 };
 
 function UserTypeBadge({ seller }) {
+  // Hide admin & ghost flags from public view - show as regular user
+  const isGhost = seller?.is_ghost_account || seller?.ghost_id;
+  if (isGhost) return null; // Ghost accounts appear as regular users
+  
   const isAdmin = seller?.role === 'admin';
   const isBusiness = seller?.account_type === 'business_owner' || seller?.user_type === 'business';
   const isSeller = seller?.user_type === 'seller' || seller?.is_seller;
+  
   if (isAdmin) return (
     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-body font-bold text-[10px] border"
       style={{ background: 'rgba(245,158,11,0.15)', borderColor: 'rgba(245,158,11,0.35)', color: '#fbbf24' }}>
@@ -259,23 +264,18 @@ export default function SellerProfilePage() {
         const allFollows = await base44.entities.Follow.filter({ following_user_id: sellerId });
         setFollowerCount(allFollows.length);
 
-        // Try multiple lookup methods for ghost accounts
+        // Try multiple lookup methods for all account types
         let users = [];
         
-        // First try by username (for ghost accounts)
-        if (sellerId.startsWith('ghost_')) {
-          console.log('Looking up ghost account by username:', sellerId);
-          users = await base44.entities.User.filter({ username: sellerId });
-          console.log('Found by username:', users?.length);
-        }
+        // Try by ID first (most reliable)
+        users = await base44.entities.User.filter({ id: sellerId });
         
-        // If not found, try by ID
+        // If not found, try by username
         if (!users || users.length === 0) {
-          users = await base44.entities.User.filter({ id: sellerId });
-          console.log('Found by ID:', users?.length);
+          users = await base44.entities.User.filter({ username: sellerId });
         }
         
-        // If still not found, try by channel_name or full_name as fallback
+        // If still not found, try by channel_name or other fields
         if (!users || users.length === 0) {
           const allUsers = await base44.entities.User.list('-created_date', 1000);
           users = allUsers.filter(u => 
@@ -283,7 +283,6 @@ export default function SellerProfilePage() {
             u.channel_name === sellerId ||
             (u.email && u.email.includes(sellerId))
           );
-          console.log('Found by fallback search:', users?.length);
         }
         
         if (users && users.length > 0) {
@@ -335,7 +334,7 @@ export default function SellerProfilePage() {
     </div>
   );
 
-  if (!seller) return (
+  if (!seller && !loading) return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: '#070F1A' }}>
       <p className="font-heading font-bold text-xl text-white">Profile Not Found</p>
       <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#00D4FF] font-body text-sm hover:underline">

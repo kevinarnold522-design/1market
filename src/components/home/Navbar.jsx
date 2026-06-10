@@ -45,7 +45,8 @@ export default function Navbar() {
   const [showSellerModal, setShowSellerModal] = useState(false);
   const [showBusinessModal, setShowBusinessModal] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
-  const isAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
+  const isAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
+  const isGhost = user?.is_ghost_account || user?.ghost_id;
   const isSeller = user?.user_type === 'seller' || user?.user_type === 'business' || user?.is_seller || user?.account_type === 'business_owner';
   const isBusiness = user?.user_type === 'business';
   const isCustomer = !isSeller && !isBusiness;
@@ -423,7 +424,7 @@ export default function Navbar() {
                                 <PostListingMenu user={user} compact={false} />
                               </div>
                               {/* Admin-only: Connected Accounts below Post an Ad */}
-                              {(isAdmin || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com') && (
+                              {isAdmin && !isGhost && (
                                 <Link to="/connected-accounts" onClick={() => setProfileOpen(false)}
                                   className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold mb-1"
                                   style={{ background: 'linear-gradient(135deg,rgba(168,85,247,0.15),rgba(124,58,237,0.1))', border: '1px solid rgba(168,85,247,0.3)' }}>
@@ -620,7 +621,7 @@ export default function Navbar() {
                         </button>
                       </>
                     )}
-                    {(user.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com') && (
+                    {isAdmin && !isGhost && (
                       <>
                         <Link to="/admin" onClick={() => setMenuOpen(false)}
                           className="block text-amber-400 font-body text-sm font-semibold py-2">

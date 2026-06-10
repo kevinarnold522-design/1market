@@ -40,7 +40,13 @@ const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c
 
 export default function Home() {
   return (
-    <div className="min-h-screen overflow-x-hidden relative" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001060 8%,#000d40 100%)' }}>
+    <div className="min-h-screen overflow-x-hidden relative" style={{ 
+      backgroundImage: 'url(https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/b4f7c5039_92525A52-5C4B-496A-B9DF-F84AECB255D1.png)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
+      backgroundColor: '#000d40'
+    }}>
       <Suspense fallback={<Spinner />}>
         <StarField />
         <ParticleBackground />

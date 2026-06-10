@@ -187,55 +187,21 @@ export default function ConnectedAccounts() {
         };
         
         const result = await base44.entities.User.create(userData);
-        console.log('✓ Ghost account created:', result);
+        console.log('✓ Ghost account created:', result.id);
         clearInterval(progressInterval);
         setSaveProgress(100);
-        showToast('Account created! Redirecting...');
         
-        // Wait for database to persist then redirect
-        setTimeout(async () => {
-          // Verify the account exists before redirecting
-          try {
-            const verifyUser = await base44.entities.User.filter({ username: cleanUsername });
-            console.log('Verification query result:', verifyUser);
-            if (verifyUser && verifyUser.length > 0) {
-              console.log('✓ Verified account exists, redirecting to:', `/seller/${cleanUsername}`);
-              setSaving(false);
-              setSaveProgress(0);
-              setShowForm(false);
-              setEditingAccount(null);
-              setForm(EMPTY_FORM);
-              loadAccounts();
-              navigate(`/seller/${cleanUsername}`);
-            } else {
-              console.warn('⚠ Account not found in verification, retrying...');
-              // Retry once more after another short delay
-              setTimeout(async () => {
-                const retryUser = await base44.entities.User.filter({ username: cleanUsername });
-                if (retryUser && retryUser.length > 0) {
-                  navigate(`/seller/${cleanUsername}`);
-                } else {
-                  showToast('Account created but profile not ready yet. Please refresh.');
-                  setSaving(false);
-                  setSaveProgress(0);
-                  setShowForm(false);
-                  setEditingAccount(null);
-                  setForm(EMPTY_FORM);
-                  loadAccounts();
-                }
-              }, 1000);
-            }
-          } catch (err) {
-            console.error('✗ Verification failed:', err);
-            showToast('Account created!');
-            setSaving(false);
-            setSaveProgress(0);
-            setShowForm(false);
-            setEditingAccount(null);
-            setForm(EMPTY_FORM);
-            loadAccounts();
-          }
-        }, 1000);
+        // Immediately redirect to ghost account profile page
+        setTimeout(() => {
+          setSaving(false);
+          setSaveProgress(0);
+          setShowForm(false);
+          setEditingAccount(null);
+          setForm(EMPTY_FORM);
+          showToast('Ghost account created! Redirecting...');
+          // Use direct navigation to profile using ID for guaranteed access
+          window.location.href = `/seller/${result.id}`;
+        }, 600);
       }
     } catch (err) {
       console.error('Failed to create account:', err);
