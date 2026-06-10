@@ -44,6 +44,8 @@ export default function Home() {
       <div className="relative z-10">
         <WelcomeSplash />
         
+        <TopBanner />
+        
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>
         <CategoryCards />
         <Suspense fallback={<Spinner />}><CompactOneStopDashboardLazy /></Suspense>
