@@ -201,6 +201,7 @@ export default function ListingDetail() {
   const [showReceipt, setShowReceipt] = useState(false);
   const [showVideoPreview, setShowVideoPreview] = useState(false);
   const [showSharePanel, setShowSharePanel] = useState(false);
+  const [sellerUser, setSellerUser] = useState(null);
 
   useEffect(() => {
     const init = async () => {
@@ -226,6 +227,13 @@ export default function ListingDetail() {
           setHearts(hts.length);
           // Track recently viewed
           recordView(found);
+          // Load seller's user profile for their social links
+          if (found.created_by_id) {
+            try {
+              const sellerUsers = await base44.entities.User.filter({ id: found.created_by_id });
+              if (sellerUsers[0]) setSellerUser(sellerUsers[0]);
+            } catch {}
+          }
         }
       } catch {}
       setLoading(false);
@@ -688,56 +696,76 @@ export default function ListingDetail() {
                 </div>
               )}
 
-              {/* Seller Social Media — prominent, above CTA */}
-              {(listing.social_facebook || listing.social_instagram || listing.social_tiktok || listing.social_twitter || listing.social_viber || listing.social_telegram) && (
-                <div className="mb-4 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  <p className="font-body text-[9px] text-white/30 uppercase tracking-wider mb-2">Connect with Seller</p>
-                  <div className="flex flex-wrap gap-2">
-                    {listing.social_facebook && (
-                      <a href={listing.social_facebook} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
-                        style={{ background: 'rgba(37,99,235,0.2)', border: '1px solid rgba(37,99,235,0.4)', color: '#60a5fa' }}>
-                        <Facebook className="w-3.5 h-3.5" /> Facebook
-                      </a>
-                    )}
-                    {listing.social_instagram && (
-                      <a href={listing.social_instagram} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
-                        style={{ background: 'rgba(236,72,153,0.2)', border: '1px solid rgba(236,72,153,0.4)', color: '#f472b6' }}>
-                        <Instagram className="w-3.5 h-3.5" /> Instagram
-                      </a>
-                    )}
-                    {listing.social_tiktok && (
-                      <a href={listing.social_tiktok} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
-                        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}>
-                        🎵 TikTok
-                      </a>
-                    )}
-                    {listing.social_viber && (
-                      <a href={`viber://chat?number=${listing.social_viber}`}
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
-                        style={{ background: 'rgba(139,92,246,0.2)', border: '1px solid rgba(139,92,246,0.4)', color: '#c084fc' }}>
-                        📲 Viber
-                      </a>
-                    )}
-                    {listing.social_telegram && (
-                      <a href={`https://t.me/${listing.social_telegram}`} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
-                        style={{ background: 'rgba(14,165,233,0.2)', border: '1px solid rgba(14,165,233,0.4)', color: '#38bdf8' }}>
-                        <Send className="w-3 h-3" /> Telegram
-                      </a>
-                    )}
-                    {listing.social_twitter && (
-                      <a href={listing.social_twitter} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
-                        style={{ background: 'rgba(14,165,233,0.15)', border: '1px solid rgba(14,165,233,0.3)', color: '#7dd3fc' }}>
-                        𝕏 Twitter
-                      </a>
-                    )}
+              {/* Seller Social Media — always shown, greyed out if not linked */}
+              {(() => {
+                const fbLink = listing.social_facebook || sellerUser?.social_facebook;
+                const igLink = listing.social_instagram || sellerUser?.social_instagram;
+                const ttLink = listing.social_tiktok || sellerUser?.social_tiktok;
+                const viberLink = listing.social_viber || sellerUser?.social_viber;
+                const tgLink = listing.social_telegram || sellerUser?.social_telegram;
+                return (
+                  <div className="mb-4 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <p className="font-body text-[9px] text-white/30 uppercase tracking-wider mb-2">Seller Socials</p>
+                    <div className="flex flex-wrap gap-2">
+                      {/* Facebook */}
+                      {fbLink ? (
+                        <a href={fbLink} target="_blank" rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
+                          style={{ background: 'rgba(37,99,235,0.2)', border: '1px solid rgba(37,99,235,0.4)', color: '#60a5fa' }}>
+                          <Facebook className="w-3.5 h-3.5" /> Facebook
+                        </a>
+                      ) : (
+                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold cursor-not-allowed"
+                          style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.2)' }}>
+                          <Facebook className="w-3.5 h-3.5 opacity-30" /> FB not linked
+                        </div>
+                      )}
+                      {/* Instagram */}
+                      {igLink ? (
+                        <a href={igLink} target="_blank" rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
+                          style={{ background: 'rgba(236,72,153,0.2)', border: '1px solid rgba(236,72,153,0.4)', color: '#f472b6' }}>
+                          <Instagram className="w-3.5 h-3.5" /> Instagram
+                        </a>
+                      ) : (
+                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold cursor-not-allowed"
+                          style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.2)' }}>
+                          <Instagram className="w-3.5 h-3.5 opacity-30" /> Insta not linked
+                        </div>
+                      )}
+                      {/* TikTok */}
+                      {ttLink ? (
+                        <a href={ttLink} target="_blank" rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
+                          style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}>
+                          <span className="text-sm leading-none">♪</span> TikTok
+                        </a>
+                      ) : (
+                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold cursor-not-allowed"
+                          style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.2)' }}>
+                          <span className="text-sm leading-none opacity-30">♪</span> TikTok not linked
+                        </div>
+                      )}
+                      {/* Viber — only show if linked */}
+                      {viberLink && (
+                        <a href={`viber://chat?number=${viberLink}`}
+                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
+                          style={{ background: 'rgba(139,92,246,0.2)', border: '1px solid rgba(139,92,246,0.4)', color: '#c084fc' }}>
+                          <Send className="w-3 h-3" /> Viber
+                        </a>
+                      )}
+                      {/* Telegram — only show if linked */}
+                      {tgLink && (
+                        <a href={`https://t.me/${tgLink}`} target="_blank" rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
+                          style={{ background: 'rgba(14,165,233,0.2)', border: '1px solid rgba(14,165,233,0.4)', color: '#38bdf8' }}>
+                          <Send className="w-3 h-3" /> Telegram
+                        </a>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Tailored CTA — based on category & subcategory */}
               {(() => {
