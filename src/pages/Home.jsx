@@ -7,6 +7,7 @@ import MovingWelcomeBanner from '../components/home/MovingWelcomeBanner';
 import CategoryCards from '../components/home/CategoryCards';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
+import AdOverlay from '../components/AdOverlay';
 
 
 // Lazy-load heavy/below-fold sections
@@ -35,12 +36,11 @@ const PhilippinesTravelBanner = lazy(() => import('../components/home/Philippine
 // LiveStatsBar removed
 
 const Spinner = () => null; // silent fallback — no layout shift
-
 const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/be5b76b23_generated_1fcae122.png';
 
 export default function Home() {
   return (
-    <div className="min-h-screen overflow-x-hidden relative" style={{ backgroundColor: '#002366' }}>
+    <div className="min-h-screen overflow-x-hidden relative">
       <Suspense fallback={<Spinner />}>
         <StarField />
         <ParticleBackground />
@@ -74,6 +74,7 @@ export default function Home() {
       {/* AdminQuickAddFAB removed — use PostListingMenu in navbar */}
       <Suspense fallback={<Spinner />}><AdManager /></Suspense>
       <Suspense fallback={<Spinner />}><GetStartedButton /></Suspense>
+      <AdOverlay />
       <MascotDog page="home" />
       <ScrollToTop />
       <CookieBanner />
