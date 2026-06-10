@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Plane, UtensilsCrossed, ShoppingBag, Car, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, ChevronLeft, ChevronRight, ShoppingCart, Package, BarChart2, Settings, LogOut, Shield, KeyRound } from 'lucide-react';
+import { Home, Plane, UtensilsCrossed, ShoppingBag, Car, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, ChevronLeft, ChevronRight, ShoppingCart, Package, BarChart2, Settings, LogOut, Shield, KeyRound, Ghost } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import PostListingMenu from './PostListingMenu';
 import NotificationsBell from './NotificationsBell';
 import MetaVerifiedBadge from './MetaVerifiedBadge';
+import { getImpersonatedUser } from '@/pages/ConnectedAccounts';
 
 const NAV_ITEMS = [
   { to: '/',           icon: Home,           label: 'Home',         color: '#00D4FF' },
@@ -22,10 +23,19 @@ export default function LeftSidebar({ isMobileHidden = false }) {
   const [collapsed, setCollapsed] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const location = useLocation();
+  const [ghostUser, setGhostUser] = useState(null);
 
-  const isAdmin = user?.role === 'admin';
-  const isSeller = user?.user_type === 'seller' || user?.is_seller || user?.account_type === 'business_owner';
-  const initials = user ? (user.full_name || user.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
+  useEffect(() => {
+    const ghost = getImpersonatedUser();
+    if (ghost) setGhostUser(ghost);
+  }, []);
+
+  // Use ghost user if in ghost session, otherwise use regular user
+  const activeUser = ghostUser || user;
+  const isAdmin = activeUser?.role === 'admin';
+  const isSeller = activeUser?.user_type === 'seller' || activeUser?.is_seller || activeUser?.account_type === 'business_owner';
+  const isGhostSession = !!ghostUser;
+  const initials = activeUser ? (activeUser.full_name || activeUser.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
 
   if (isMobileHidden) return null;
 
@@ -101,7 +111,7 @@ export default function LeftSidebar({ isMobileHidden = false }) {
         <div className="my-2 border-t border-white/8 mx-1" />
 
         {/* Authenticated user links */}
-        {isAuthenticated && user && (
+        {isAuthenticated && activeUser && (
           <>
             <Link to="/favourites"
               className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-white/50 hover:text-pink-400 hover:bg-pink-500/10"
@@ -124,8 +134,8 @@ export default function LeftSidebar({ isMobileHidden = false }) {
           </>
         )}
 
-        {/* Seller tools */}
-        {(isSeller || isAdmin) && isAuthenticated && (
+        {/* Seller tools - for both regular and ghost sellers */}
+        {((isSeller && !isGhostSession) || (isGhostSession && ghostUser?.user_type === 'seller') || isAdmin) && isAuthenticated && (
           <>
             <div className="my-2 border-t border-white/8 mx-1" />
             {!collapsed && <p className="px-2 py-1 font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold">Seller</p>}
@@ -159,48 +169,62 @@ export default function LeftSidebar({ isMobileHidden = false }) {
         )}
       </nav>
 
-      {/* Post & Add — seller/admin only */}
-      {(isSeller || isAdmin) && isAuthenticated && (
+      {/* Post & Add — seller/admin only (including ghost sellers) */}
+      {((isSeller && !isGhostSession) || (isGhostSession && ghostUser?.user_type === 'seller') || isAdmin) && isAuthenticated && (
         <div className="px-2 pb-2 flex-shrink-0 border-t border-white/8 pt-2">
           {collapsed ? (
             <div className="flex justify-center">
-              <PostListingMenu user={user} compact iconOnly />
+              <PostListingMenu user={activeUser} compact iconOnly />
             </div>
           ) : (
-            <PostListingMenu user={user} compact />
+            <PostListingMenu user={activeUser} compact />
           )}
         </div>
       )}
 
       {/* User profile footer */}
       <div className="px-2 pb-3 flex-shrink-0 border-t border-white/8 pt-2">
-        {isAuthenticated && user ? (
+        {isAuthenticated && activeUser ? (
           <>
             <Link to="/profile" className="flex items-center gap-2 px-2 py-2 rounded-xl hover:bg-white/8 transition-colors group">
               <div className="w-7 h-7 rounded-lg overflow-hidden flex-shrink-0">
-                {user?.profile_picture ? (
-                  <img src={user.profile_picture} alt="" className="w-full h-full object-cover" />
+                {activeUser?.profile_picture ? (
+                  <img src={activeUser.profile_picture} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-[10px]">
+                  <div className={`w-full h-full rounded-lg flex items-center justify-center text-white font-heading font-bold text-[10px] ${isGhostSession ? 'bg-gradient-to-br from-purple-500 to-cyan-500' : 'bg-gradient-to-br from-[#2563EB] to-[#00D4FF]'}`}>
                     {initials}
                   </div>
                 )}
               </div>
               {!collapsed && (
                 <div className="flex-1 min-w-0">
-                  <p className="font-body text-[11px] font-bold text-white truncate">{user.full_name?.split(' ')[0] || 'Account'}</p>
-                  <p className="font-body text-[9px] text-[#00D4FF]/70 truncate">{user.email}</p>
+                  <div className="flex items-center gap-1">
+                    <p className="font-body text-[11px] font-bold text-white truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
+                    {isGhostSession && <Ghost className="w-3 h-3 text-purple-400 flex-shrink-0" />}
+                  </div>
+                  <p className={`font-body text-[9px] truncate ${isGhostSession ? 'text-purple-400' : 'text-[#00D4FF]/70'}`}>
+                    {isGhostSession ? 'Ghost Account' : activeUser.email}
+                  </p>
                 </div>
               )}
             </Link>
             {/* Admin-only: Connected Accounts below profile */}
-            {isAdmin && (
+            {isAdmin && !isGhostSession && (
               <Link to="/connected-accounts"
                 className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-purple-400/70 hover:text-purple-400 hover:bg-purple-400/10 mt-1"
                 title={collapsed ? 'Connected Accounts' : undefined}>
                 <Users className="w-4 h-4 flex-shrink-0" />
                 {!collapsed && <span className="font-body text-xs font-semibold truncate">Connected Accounts</span>}
               </Link>
+            )}
+            {/* Ghost sign out */}
+            {isGhostSession && (
+              <button onClick={() => { localStorage.removeItem('1m_ghost_session'); window.location.href = '/connected-accounts'; }}
+                className="w-full flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-red-400/70 hover:text-red-400 hover:bg-red-400/10 mt-1"
+                title={collapsed ? 'Sign Out Ghost' : undefined}>
+                <LogOut className="w-4 h-4 flex-shrink-0" />
+                {!collapsed && <span className="font-body text-xs font-semibold truncate">Sign Out Ghost</span>}
+              </button>
             )}
           </>
         ) : (
