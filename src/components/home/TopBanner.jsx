@@ -13,48 +13,50 @@ const TRUST_BADGES = [
 export default function TopBanner() {
   return (
     <div className="relative" style={{ background: 'linear-gradient(180deg, #001060 0%, #0033CC 40%, #001a80 100%)', borderBottom: '1px solid rgba(0,212,255,0.15)' }}>
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-2.5 sm:py-3">
-        {/* Ultra compact vertical layout */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-2">
+        {/* Horizontal compact layout */}
+        <div className="flex flex-row items-center justify-center gap-3 flex-wrap">
           {/* Logo */}
           <div className="flex items-center gap-1.5">
             <img src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
-              alt="1Market PH" className="w-7 h-7 rounded-md object-cover" />
-            <div className="text-left">
-              <p className="font-heading font-bold text-white text-xs tracking-tight">
-                1Market<span style={{ color: '#FFD700' }}>PH</span><span className="text-white/40">.com</span>
-              </p>
-            </div>
+              alt="1Market PH" className="w-6 h-6 rounded-md object-cover" />
+            <p className="font-heading font-bold text-white text-xs tracking-tight">
+              1Market<span style={{ color: '#FFD700' }}>PH</span><span className="text-white/40">.com</span>
+            </p>
           </div>
           
-          {/* Vertical divider */}
-          <div className="hidden sm:block w-px h-6 bg-white/10" />
+          {/* Divider */}
+          <div className="w-px h-4 bg-white/10" />
           
-          {/* About Us & Privacy - Vertical stack */}
-          <div className="flex flex-col gap-0.5">
+          {/* Links - Horizontal */}
+          <div className="flex items-center gap-2">
             <Link to="/about" className="font-body text-[9px] text-[#00D4FF]/80 hover:text-[#00D4FF] transition-colors font-semibold">About Us</Link>
-            <Link to="/privacy-policy" className="font-body text-[9px] text-white/40 hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
+            <div className="w-px h-3 bg-white/10" />
+            <Link to="/privacy-policy" className="font-body text-[9px] text-white/40 hover:text-[#00D4FF] transition-colors">Privacy</Link>
           </div>
           
-          {/* Vertical divider */}
-          <div className="hidden sm:block w-px h-6 bg-white/10" />
+          {/* Divider */}
+          <div className="w-px h-4 bg-white/10" />
           
-          {/* Socials - Ultra compact Vertical */}
-          <div className="flex flex-col gap-0.5">
+          {/* Socials - Horizontal with @1MarketPH below */}
+          <div className="flex items-center gap-1.5">
             <a href="https://www.facebook.com/share/18Neew76Yo/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2 py-0.5 rounded-sm font-body text-[9px] font-bold text-blue-400 hover:text-blue-300 transition-colors"
+              className="flex flex-col items-center px-1.5 py-0.5 rounded-sm font-body text-[9px] font-bold text-blue-400 hover:text-blue-300 transition-colors"
               style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
-              <Facebook className="w-2.5 h-2.5" /> FB
+              <div className="flex items-center gap-1"><Facebook className="w-2.5 h-2.5" /><span>FB</span></div>
+              <span className="text-[8px] text-blue-300/60 mt-0.5">@1MarketPH</span>
             </a>
             <a href="https://instagram.com/1marketph" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2 py-0.5 rounded-sm font-body text-[9px] font-bold text-pink-400 hover:text-pink-300 transition-colors"
+              className="flex flex-col items-center px-1.5 py-0.5 rounded-sm font-body text-[9px] font-bold text-pink-400 hover:text-pink-300 transition-colors"
               style={{ background: 'rgba(236,72,153,0.1)', border: '1px solid rgba(236,72,153,0.2)' }}>
-              <Instagram className="w-2.5 h-2.5" /> IG
+              <div className="flex items-center gap-1"><Instagram className="w-2.5 h-2.5" /><span>IG</span></div>
+              <span className="text-[8px] text-pink-300/60 mt-0.5">@1MarketPH</span>
             </a>
             <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2 py-0.5 rounded-sm font-body text-[9px] font-bold text-white/70 hover:text-white transition-colors"
+              className="flex flex-col items-center px-1.5 py-0.5 rounded-sm font-body text-[9px] font-bold text-white/70 hover:text-white transition-colors"
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)' }}>
-              TikTok
+              <span>TikTok</span>
+              <span className="text-[8px] text-white/40 mt-0.5">@1MarketPH</span>
             </a>
             <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1 px-2 py-0.5 rounded-sm font-body text-[9px] font-bold text-red-400 hover:text-red-300 transition-colors"
