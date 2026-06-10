@@ -422,6 +422,14 @@ export default function Navbar() {
                               <div className="px-3 py-1.5">
                                 <PostListingMenu user={user} compact={false} />
                               </div>
+                              {/* Admin-only: Connected Accounts below Post an Ad */}
+                              {isAdmin && (
+                                <Link to="/connected-accounts" onClick={() => setProfileOpen(false)}
+                                  className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold mb-1"
+                                  style={{ background: 'linear-gradient(135deg,rgba(168,85,247,0.15),rgba(124,58,237,0.1))', border: '1px solid rgba(168,85,247,0.3)' }}>
+                                  <Ghost className="w-3.5 h-3.5 text-purple-400" /> <span className="text-purple-300">Connected Accounts</span>
+                                </Link>
+                              )}
                               <Link to="/profile?tab=listings" onClick={() => setProfileOpen(false)}
                                 className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
                                 <Package className="w-3.5 h-3.5 text-[#00D4FF]" /> My Listings
