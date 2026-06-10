@@ -329,24 +329,26 @@ export default function Admin() {
 
   const loadAll = async () => {
     setLoading(true);
-    const [bizs, lists, userList, rpts, verifs, jobs] = await Promise.all([
+    const [bizs, lists, rpts, verifs, jobs] = await Promise.all([
       base44.entities.Business.list('-created_date', 200),
       base44.entities.Listing.list('-created_date', 200),
-      base44.entities.User.list('-created_date', 200),
       base44.entities.Report.list('-created_date', 200),
       base44.entities.VerificationApplication.list('-created_date', 200),
       base44.entities.Listing.filter({ type: 'jobs' }, '-created_date', 200),
     ]);
     setBusinesses(bizs);
     setListings(lists);
-    setUsers(userList);
     setReports(rpts);
     setVerifications(verifs);
-    setGhostUsers(userList.filter(u => u.is_ghost_account));
+    // Load ghost accounts separately to avoid blocking
+    base44.entities.User.list('-created_date', 500).then(userList => {
+      setUsers(userList);
+      setGhostUsers(userList.filter(u => u.email?.includes('@ghost.1marketph.internal') || u.is_ghost_account));
+      setLoading(false);
+    }).catch(() => setLoading(false));
     const allPending = lists.filter(j => !j.approval_status || j.approval_status === 'pending').sort((a,b) => new Date(b.created_date) - new Date(a.created_date));
     setPendingListings(allPending);
     setPendingJobs(allPending.filter(j => j.type === 'jobs'));
-    setLoading(false);
   };
 
   const toggleVerified = async (u) => {
@@ -419,23 +421,29 @@ export default function Admin() {
   const createGhostAccount = async () => {
     if (!ghostForm.full_name.trim()) { showToast('Name is required'); return; }
     setGhostSaving(true);
-    const ghostId = `ghost_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    await base44.entities.User.create({
-      full_name: ghostForm.full_name.trim(),
-      email: `${ghostId}@ghost.1marketph.internal`,
-      user_type: ghostForm.user_type,
-      is_seller: ghostForm.user_type === 'seller' || ghostForm.user_type === 'business',
-      account_type: ghostForm.user_type === 'business' ? 'business_owner' : ghostForm.user_type,
-      business_name: ghostForm.business_name.trim() || ghostForm.full_name.trim(),
-      seller_location: ghostForm.location,
-      is_ghost_account: true,
-      ghost_id: ghostId,
-      role: 'user',
-    });
-    setGhostSaving(false);
-    setGhostForm({ full_name: '', user_type: 'seller', business_name: '', location: 'Manila' });
-    showToast('Ghost account created!');
-    loadAll();
+    try {
+      const ghostId = `ghost_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      await base44.entities.User.create({
+        full_name: ghostForm.full_name.trim(),
+        email: `${ghostId}@ghost.1marketph.internal`,
+        user_type: ghostForm.user_type,
+        is_seller: ghostForm.user_type === 'seller' || ghostForm.user_type === 'business',
+        account_type: ghostForm.user_type === 'business' ? 'business_owner' : ghostForm.user_type,
+        business_name: ghostForm.business_name.trim() || ghostForm.full_name.trim(),
+        seller_location: ghostForm.location,
+        is_ghost_account: true,
+        ghost_id: ghostId,
+        role: 'user',
+      });
+      setGhostSaving(false);
+      setGhostForm({ full_name: '', user_type: 'seller', business_name: '', location: 'Manila' });
+      showToast('Ghost account created!');
+      loadAll();
+    } catch (err) {
+      console.error('Ghost account creation failed:', err);
+      setGhostSaving(false);
+      showToast('Failed to create account. Please try again.');
+    }
   };
 
   const linkGhostToEmail = async (ghostUser) => {

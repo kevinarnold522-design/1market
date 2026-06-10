@@ -155,6 +155,12 @@ export default function LeftSidebar({ isMobileHidden = false }) {
               <Shield className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span className="font-body text-xs font-semibold truncate">Admin Panel</span>}
             </Link>
+            <Link to="/connected-accounts"
+              className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-purple-400/70 hover:text-purple-400 hover:bg-purple-400/10"
+              title={collapsed ? 'Connected Accounts' : undefined}>
+              <Users className="w-4 h-4 flex-shrink-0" />
+              {!collapsed && <span className="font-body text-xs font-semibold truncate">Connected Accounts</span>}
+            </Link>
           </>
         )}
       </nav>
