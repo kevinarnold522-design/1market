@@ -80,27 +80,12 @@ export default function ConnectedAccounts() {
     setSaveProgress(0);
     
     try {
-      // Simulate progress for better UX
       const progressInterval = setInterval(() => {
-        setSaveProgress(prev => {
-          if (prev >= 90) {
-            clearInterval(progressInterval);
-            return 90;
-          }
-          return prev + 10;
-        });
-      }, 150);
-      
-      const timestamp = Date.now();
-      const randomStr = Math.random().toString(36).substring(2, 8);
-      const ghostId = `ghost_${timestamp}_${randomStr}`;
-      const ghostEmail = `${ghostId}@1marketph-ghost.internal`;
-      // Create clean username without special characters
-      const cleanUsername = `ghost_${timestamp}_${randomStr}`.toLowerCase().replace(/[^a-z0-9_]/g, '');
-      
-      console.log('Creating ghost account:', { ghostId, ghostEmail, cleanUsername });
+        setSaveProgress(prev => Math.min(prev + 15, 90));
+      }, 100);
       
       if (editingAccount) {
+        // Edit existing account
         await base44.entities.User.update(editingAccount.id, {
           full_name: form.full_name.trim(),
           channel_name: form.channel_name.trim() || form.full_name.trim(),
@@ -126,107 +111,70 @@ export default function ConnectedAccounts() {
           loadAccounts();
         }, 500);
       } else {
+        // Create new ghost account
+        const timestamp = Date.now();
+        const randomStr = Math.random().toString(36).substring(2, 8);
+        const ghostId = `ghost_${timestamp}_${randomStr}`;
+        const ghostEmail = `${ghostId}@1marketph-ghost.internal`;
+        const cleanUsername = `ghost_${timestamp}_${randomStr}`.toLowerCase().replace(/[^a-z0-9_]/g, '');
+        
         const userData = {
-          // Core identity
           full_name: form.full_name.trim(),
           channel_name: form.channel_name.trim() || form.full_name.trim(),
           email: ghostEmail,
           role: 'user',
-          
-          // Account type
           user_type: form.user_type,
           is_seller: form.user_type === 'seller' || form.user_type === 'business',
           account_type: form.user_type === 'business' ? 'business_owner' : 'customer',
-          member_type: form.user_type,
-          
-          // Business/seller info
           business_name: form.business_name.trim() || form.full_name.trim(),
           seller_location: form.location || 'Manila',
           location: form.location || 'Manila',
           seller_page_enabled: form.user_type !== 'customer',
-          
-          // Ghost markers
           is_ghost_account: true,
           is_connected_account: true,
           ghost_id: ghostId,
           ghost_linked: false,
-          
-          // Username - clean and URL-safe
           username: cleanUsername,
           username_set: false,
-          
-          // Profile
           profile_picture: '',
           cover_photo: '',
           bio: form.bio,
           seller_bio: form.bio,
           business_type: '',
           seller_area: form.seller_area,
-          
-          // Social
           social_facebook: form.social_facebook,
           social_instagram: form.social_instagram,
           social_tiktok: form.social_tiktok,
           social_youtube: '',
           social_viber: '',
           social_telegram: '',
-          
-          // Privacy
           show_phone_public: false,
           show_email_public: false,
-          
-          // Verification
           is_verified_seller: false,
           verification_submitted: false,
           seller_pending: false,
           business_pending: false,
-          
-          // Arrays
           seller_products: [],
           business_categories: [],
         };
         
         const result = await base44.entities.User.create(userData);
-        console.log('✓ Ghost account created:', result.id);
         clearInterval(progressInterval);
         setSaveProgress(100);
+        showToast('Account created!');
         
-        // Wait for database to persist then redirect
-        setTimeout(async () => {
-          // Verify account exists before redirecting
-          try {
-            const verifyUser = await base44.entities.User.filter({ id: result.id });
-            if (verifyUser && verifyUser.length > 0) {
-              setSaving(false);
-              setSaveProgress(0);
-              setShowForm(false);
-              setEditingAccount(null);
-              setForm(EMPTY_FORM);
-              showToast('Account created! Redirecting...');
-              loadAccounts();
-              // Use ID directly for guaranteed routing
-              window.location.href = `/seller/${result.id}`;
-            } else {
-              throw new Error('Account not found after creation');
-            }
-          } catch (verifyErr) {
-            console.error('Verification failed:', verifyErr);
-            showToast('Account created but profile loading...');
-            setSaving(false);
-            setSaveProgress(0);
-            setShowForm(false);
-            setEditingAccount(null);
-            setForm(EMPTY_FORM);
-            loadAccounts();
-            setTimeout(() => {
-              window.location.href = `/seller/${result.id}`;
-            }, 1000);
-          }
-        }, 1000);
+        setTimeout(() => {
+          setSaving(false);
+          setSaveProgress(0);
+          setShowForm(false);
+          setEditingAccount(null);
+          setForm(EMPTY_FORM);
+          loadAccounts();
+          window.location.href = `/seller/${result.id}`;
+        }, 800);
       }
     } catch (err) {
-      console.error('Failed to create account:', err);
-      console.error('Error details:', err.message, err.stack);
+      console.error('Ghost account error:', err);
       setSaving(false);
       setSaveProgress(0);
       showToast('Failed: ' + (err.message || 'Please try again'));

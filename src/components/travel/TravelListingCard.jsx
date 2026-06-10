@@ -15,22 +15,13 @@ export default function TravelListingCard({ item, activeTab, index, onClick }) {
     <>
       <motion.div
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }}
-        whileHover={{ y: -4, boxShadow: '0 0 40px rgba(37,99,235,0.4)' }}
+        whileHover={{ y: -4, boxShadow: '0 0 25px rgba(37,99,235,0.3)' }}
         className="group relative bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border transition-all duration-300 cursor-pointer"
         style={{ 
-          border: '1px solid rgba(37,99,235,0.3)',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.3), 0 0 20px rgba(37,99,235,0.2), inset 0 0 20px rgba(37,99,235,0.05)'
+          border: '1px solid rgba(37,99,235,0.25)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
         }}
         onClick={() => onClick && onClick(item)}>
-      {/* Circulating glow bar */}
-      <div className="absolute inset-0 rounded-2xl pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 rounded-2xl" style={{
-          background: 'conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(37,99,235,0.4) 60deg, rgba(59,130,246,0.6) 120deg, rgba(37,99,235,0.4) 180deg, transparent 240deg, rgba(37,99,235,0.3) 300deg, transparent 360deg)',
-          animation: 'spin 3s linear infinite',
-          filter: 'blur(8px)',
-          opacity: 0.5
-        }} />
-      </div>
 
         {/* Image */}
         <div className="relative aspect-[16/10] overflow-hidden">

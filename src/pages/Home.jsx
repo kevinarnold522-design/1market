@@ -12,8 +12,6 @@ import WaveBackground from '../components/WaveBackground';
 
 
 // Lazy-load heavy/below-fold sections
-const StarField = lazy(() => import('../components/StarField'));
-const ParticleBackground = lazy(() => import('../components/ParticleBackground'));
 const HeroSection = lazy(() => import('../components/home/HeroSection'));
 const CategoryCards2 = CategoryCards; // already imported above
 const WhatMakesUsSpecial = lazy(() => import('../components/home/WhatMakesUsSpecial'));
@@ -41,12 +39,8 @@ const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c
 
 export default function Home() {
   return (
-    <div className="min-h-screen overflow-x-hidden relative wave-background">
+    <div className="min-h-screen overflow-x-hidden relative" style={{ background: 'linear-gradient(180deg, #001240 0%, #002366 50%, #001a5c 100%)' }}>
       <WaveBackground />
-      <Suspense fallback={<Spinner />}>
-        <StarField />
-        <ParticleBackground />
-      </Suspense>
 
       <div className="relative z-10">
         <WelcomeSplash />
