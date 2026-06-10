@@ -350,16 +350,22 @@ export default function Admin() {
       setPendingJobs(allPending.filter(j => j.type === 'jobs'));
     });
     
-    // Load users separately with smaller limit for speed
-    base44.entities.User.list('-created_date', 100).then(userList => {
-      console.log('Loaded users:', userList.length);
+    // Load users separately - increase limit to ensure we get all ghost accounts
+    base44.entities.User.list('-created_date', 500).then(userList => {
+      console.log('✓ Loaded users:', userList.length);
       setUsers(userList);
-      const ghosts = userList.filter(u => u.email?.includes('@ghost.1marketph.internal') || u.is_ghost_account);
-      console.log('Ghost users found:', ghosts.length);
+      // Filter for ghost accounts using multiple checks
+      const ghosts = userList.filter(u => {
+        const isGhostEmail = u.email?.includes('@1marketph-ghost.internal');
+        const isGhostFlag = u.is_ghost_account === true;
+        const isGhostId = u.ghost_id?.startsWith('ghost_');
+        return isGhostEmail || isGhostFlag || isGhostId;
+      });
+      console.log('✓ Ghost users found:', ghosts.length, 'Total users:', userList.length);
       setGhostUsers(ghosts);
       setLoading(false);
     }).catch(err => {
-      console.error('Failed to load users:', err);
+      console.error('✗ Failed to load users:', err);
       setLoading(false);
     });
   };
@@ -435,59 +441,95 @@ export default function Admin() {
     if (!ghostForm.full_name.trim()) { showToast('Name is required'); return; }
     setGhostSaving(true);
     try {
-      const ghostId = `ghost_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      // Generate unique ghost ID with timestamp and random string
+      const timestamp = Date.now();
+      const randomStr = Math.random().toString(36).substring(2, 8);
+      const ghostId = `ghost_${timestamp}_${randomStr}`;
+      const ghostEmail = `${ghostId}@1marketph-ghost.internal`;
+      
+      console.log('Creating ghost account:', { ghostId, ghostEmail, ...ghostForm });
+      
       const userData = {
+        // Core identity fields
         full_name: ghostForm.full_name.trim(),
-        email: `${ghostId}@ghost.1marketph.internal`,
+        email: ghostEmail,
+        role: 'user',
+        
+        // Account type fields
         user_type: ghostForm.user_type,
         is_seller: ghostForm.user_type === 'seller' || ghostForm.user_type === 'business',
+        account_type: ghostForm.user_type === 'business' ? 'business_owner' : 'customer',
+        member_type: ghostForm.user_type,
+        
+        // Business/seller info
         business_name: ghostForm.business_name.trim() || ghostForm.full_name.trim(),
-        seller_location: ghostForm.location,
+        seller_location: ghostForm.location || 'Manila',
+        location: ghostForm.location || 'Manila',
+        seller_page_enabled: ghostForm.user_type !== 'customer',
+        
+        // Ghost account markers
         is_ghost_account: true,
         ghost_id: ghostId,
-        role: 'user',
-        // Required fields with defaults
-        username: ghostId,
+        ghost_linked: false,
+        
+        // Username (must be unique)
+        username: ghostId.toLowerCase().replace(/[^a-z0-9_]/g, ''),
         username_set: false,
-        verification_submitted: false,
-        member_type: ghostForm.user_type,
-        location: ghostForm.location || 'Manila',
+        
+        // Profile fields (empty defaults)
         profile_picture: '',
         cover_photo: '',
+        bio: '',
+        channel_name: ghostForm.full_name.trim(),
         seller_bio: '',
         business_type: '',
+        seller_area: '',
+        
+        // Social links (empty)
         social_facebook: '',
         social_instagram: '',
         social_youtube: '',
         social_viber: '',
         social_telegram: '',
         social_tiktok: '',
-        bio: '',
-        channel_name: ghostForm.full_name.trim(),
+        
+        // Privacy settings
         show_phone_public: false,
         show_email_public: false,
-        seller_page_enabled: false,
+        
+        // Verification status
         is_verified_seller: false,
-        seller_products: [],
-        seller_area: '',
-        business_pending: false,
+        verification_submitted: false,
         seller_pending: false,
+        business_pending: false,
+        
+        // Arrays
+        seller_products: [],
+        business_categories: [],
       };
-      if (ghostForm.user_type === 'business') {
-        userData.account_type = 'business_owner';
-      }
+      
+      console.log('Creating user with data:', JSON.stringify(userData, null, 2));
+      
       const result = await base44.entities.User.create(userData);
-      console.log('Ghost account created successfully:', result);
+      console.log('✓ Ghost account created successfully:', result);
+      
+      // Reset form
       setGhostSaving(false);
       setGhostForm({ full_name: '', user_type: 'seller', business_name: '', location: 'Manila' });
-      showToast('Ghost account created! Refreshing list...');
-      // Force reload immediately
-      await loadAll();
+      showToast('Ghost account created!');
+      
+      // Wait a moment then reload
+      setTimeout(async () => {
+        await loadAll();
+        console.log('User list refreshed after creation');
+      }, 500);
     } catch (err) {
-      console.error('Ghost account creation failed:', err);
-      console.error('Error details:', err.message, err.stack);
+      console.error('✗ Ghost account creation failed:', err);
+      console.error('Error name:', err.name);
+      console.error('Error message:', err.message);
+      console.error('Stack:', err.stack);
       setGhostSaving(false);
-      showToast('Failed: ' + (err.message || 'Please try again'));
+      showToast('Failed: ' + (err.message || 'Check console for details'));
     }
   };
 
