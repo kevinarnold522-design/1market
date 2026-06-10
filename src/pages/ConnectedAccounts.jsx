@@ -163,19 +163,39 @@ export default function ConnectedAccounts() {
         
         clearInterval(progressInterval);
         setSaveProgress(100);
-        showToast('Account created! Redirecting...');
+        showToast('Account created! Verifying...');
         
-        // Wait for database to persist then redirect using ID (most reliable)
-        setTimeout(() => {
-          setSaving(false);
-          setSaveProgress(0);
-          setShowForm(false);
-          setEditingAccount(null);
-          setForm(EMPTY_FORM);
-          loadAccounts();
-          // Use result.id for guaranteed lookup
-          window.location.href = `/seller/${result.id}`;
-        }, 1500);
+        // Verify account exists before redirect
+        const verifyAccount = async () => {
+          try {
+            const verify = await base44.entities.User.filter({ id: result.id });
+            console.log('Verification result:', verify?.length, 'Account ID:', result.id);
+            if (!verify || verify.length === 0) {
+              showToast('Account created but not found yet - please wait');
+              setSaving(false);
+              setSaveProgress(0);
+              return;
+            }
+            
+            // Account verified, now redirect
+            setSaving(false);
+            setSaveProgress(0);
+            setShowForm(false);
+            setEditingAccount(null);
+            setForm(EMPTY_FORM);
+            loadAccounts();
+            showToast('Redirecting to profile...');
+            window.location.href = `/seller/${result.id}`;
+          } catch (err) {
+            console.error('Verification error:', err);
+            showToast('Account created, manual navigation required');
+            setSaving(false);
+            setSaveProgress(0);
+          }
+        };
+        
+        // Wait 2 seconds for database persistence then verify and redirect
+        setTimeout(verifyAccount, 2000);
       }
     } catch (err) {
       console.error('Ghost account creation error:', err);

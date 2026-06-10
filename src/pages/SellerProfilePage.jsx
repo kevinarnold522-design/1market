@@ -265,37 +265,42 @@ export default function SellerProfilePage() {
         const allFollows = await base44.entities.Follow.filter({ following_user_id: sellerId });
         setFollowerCount(allFollows.length);
 
-        // Look up seller by ID (primary method - works for all account types)
-        let users = await base44.entities.User.filter({ id: sellerId });
+        // Look up seller - try multiple methods
+        console.log('🔍 Looking up seller:', sellerId);
+        let users = [];
         
-        // Fallback: try username if ID didn't work
-        if (!users || users.length === 0) {
+        // Method 1: Filter by ID
+        users = await base44.entities.User.filter({ id: sellerId });
+        console.log('Found by ID:', users?.length);
+        
+        // Method 2: Filter by username
+        if (users.length === 0) {
           users = await base44.entities.User.filter({ username: sellerId });
+          console.log('Found by username:', users?.length);
         }
         
-        // Final fallback: try email (for ghost accounts with internal email)
-        if (!users || users.length === 0) {
+        // Method 3: Filter by email (for ghost accounts)
+        if (users.length === 0) {
           users = await base44.entities.User.filter({ email: sellerId });
+          console.log('Found by email:', users?.length);
         }
         
-        // Fallback: try email (for ghost accounts with internal email format)
-        if (!users || users.length === 0) {
-          users = await base44.entities.User.filter({ email: sellerId });
-        }
-        
-        // Final fallback: search all users for matching ghost_id or channel_name
-        if (!users || users.length === 0) {
-          const allUsers = await base44.entities.User.list('-created_date', 1000);
+        // Method 4: List all and find matching
+        if (users.length === 0) {
+          const allUsers = await base44.entities.User.list('-created_date', 500);
           users = allUsers.filter(u => 
+            u.id === sellerId || 
+            u.username === sellerId || 
             u.ghost_id === sellerId ||
             u.channel_name === sellerId ||
             (u.email && u.email.includes(sellerId))
           );
+          console.log('Found by list search:', users?.length);
         }
         
-        if (users && users.length > 0) {
+        if (users.length > 0) {
           const s = users[0];
-          console.log('✓ Found seller profile:', s.full_name || s.username || s.ghost_id, 'Email:', s.email);
+          console.log('✓ SUCCESS - Found seller:', s.full_name || s.channel_name, 'ID:', s.id, 'Email:', s.email, 'Ghost:', s.is_ghost_account);
           setSeller(s);
           const [byEmail, byCreator, communityPosts] = await Promise.all([
             base44.entities.Listing.filter({ email_contact: s.email, approval_status: 'approved' }),
