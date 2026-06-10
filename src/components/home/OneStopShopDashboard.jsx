@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Target, ShoppingCart, Users, TrendingUp, Zap, Globe } from 'lucide-react';
+import { Target, ShoppingCart, Users, TrendingUp, Zap, Globe, CheckCircle } from 'lucide-react';
 
 const CUSTOMER_VISION = {
   icon: Target,
   title: '1 VISION FOR CUSTOMERS',
-  subtitle: 'Your One-Stop Filipino Marketplace',
-  points: ['Shop Local', 'Best Deals', 'Connect Nationwide'],
+  subtitle: 'Your One-Stop Filipino Marketplace - Shop Smart, Save Big',
+  points: [
+    'Browse 10,000+ Local Products',
+    'Compare Prices Across Sellers',
+    'Secure Payments & Buyer Protection',
+    'Free Nationwide Delivery Options',
+    '24/7 Customer Support'
+  ],
   color: '#00D4FF',
   bg: 'rgba(0,212,255,0.15)'
 };
@@ -14,8 +20,14 @@ const CUSTOMER_VISION = {
 const BUSINESS_VISION = {
   icon: ShoppingCart,
   title: '1 GOAL FOR BUSINESS',
-  subtitle: 'Grow Your Reach, Zero Fees',
-  points: ['Free Listings', '10K+ Daily Visitors', 'Active Community'],
+  subtitle: 'Grow Your Reach, Zero Commission Fees',
+  points: [
+    'Unlimited Free Product Listings',
+    'Access 10K+ Daily Active Buyers',
+    'Built-in Marketing Tools',
+    'Real-time Sales Analytics',
+    'Verified Business Badges'
+  ],
   color: '#FFD700',
   bg: 'rgba(255,215,0,0.15)'
 };
@@ -23,8 +35,14 @@ const BUSINESS_VISION = {
 const SELLER_VISION = {
   icon: Users,
   title: '1 PLATFORM FOR SELLERS',
-  subtitle: 'List Unlimited, Sell More',
-  points: ['Unlimited Posts', 'Seller Tools', 'Analytics Dashboard'],
+  subtitle: 'List Unlimited, Sell More, Earn Better',
+  points: [
+    'Zero Listing Fees Forever',
+    'Advanced Seller Dashboard',
+    'Inventory Management Tools',
+    'Direct Buyer Messaging',
+    'Performance Insights & Reports'
+  ],
   color: '#10b981',
   bg: 'rgba(16,185,129,0.15)'
 };
@@ -42,7 +60,7 @@ export default function CompactOneStopDashboard() {
         setCurrentIdx((prev) => (prev + 1) % VISIONS.length);
         setIsTransitioning(false);
       }, 600);
-    }, 4000);
+    }, 5000);
 
     return () => clearInterval(timer);
   }, []);
@@ -51,26 +69,31 @@ export default function CompactOneStopDashboard() {
   const Icon = current.icon;
 
   return (
-    <div className="relative overflow-hidden py-8 sm:py-10" style={{ background: 'linear-gradient(180deg, #0040D0 0%, #0033CC 50%, #001a80 100%)' }}>
+    <div className="relative overflow-hidden py-10 sm:py-14" style={{ background: 'linear-gradient(180deg, #0040D0 0%, #0033CC 50%, #001a80 100%)' }}>
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-64 h-64 bg-[#00D4FF]/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-[#FFD700]/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#a855f7]/3 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Header */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-6"
+          className="text-center mb-8"
         >
-          <p className="font-heading font-black text-2xl sm:text-3xl text-white tracking-tight mb-1">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-3" style={{ background: 'rgba(0,212,255,0.15)', border: '1px solid rgba(0,212,255,0.3)' }}>
+            <div className="w-2 h-2 rounded-full bg-[#00D4FF] animate-pulse" />
+            <span className="font-body text-[10px] font-bold text-[#00D4FF] tracking-wider">POWERING FILIPINO COMMERCE</span>
+          </div>
+          <p className="font-heading font-black text-3xl sm:text-4xl text-white tracking-tight mb-2">
             1MARKETPH<span className="text-[#00D4FF]">.COM</span>
           </p>
-          <p className="font-heading font-bold text-sm sm:text-base text-[#00D4FF] tracking-wide">
-            ALL-IN-ONE STOP SHOP
+          <p className="font-heading font-bold text-base sm:text-lg text-[#00D4FF] tracking-wide">
+            THE ALL-IN-ONE FILIPINO MARKETPLACE
           </p>
         </motion.div>
 
@@ -79,10 +102,14 @@ export default function CompactOneStopDashboard() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="rounded-2xl backdrop-blur-sm overflow-hidden"
-          style={{ background: 'rgba(0,26,128,0.8)', border: `2px solid ${current.color}40` }}
+          className="rounded-2xl backdrop-blur-md overflow-hidden shadow-2xl"
+          style={{ 
+            background: 'linear-gradient(135deg, rgba(0,26,128,0.95), rgba(0,51,204,0.85))',
+            border: `2px solid ${current.color}50`,
+            boxShadow: `0 0 40px ${current.color}20, inset 0 0 60px ${current.color}10`
+          }}
         >
-          <div className="p-5 sm:p-6">
+          <div className="p-6 sm:p-8">
             <AnimatePresence mode="wait">
               {!isTransitioning && (
                 <motion.div
@@ -91,30 +118,41 @@ export default function CompactOneStopDashboard() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.5 }}
-                  className="flex flex-col sm:flex-row items-center gap-4"
+                  className="flex flex-col lg:flex-row items-center gap-6"
                 >
                   {/* Icon */}
-                  <div className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: current.bg, border: `2px solid ${current.color}` }}>
-                    <Icon className="w-8 h-8" style={{ color: current.color }} />
+                  <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg" 
+                    style={{ 
+                      background: `linear-gradient(135deg, ${current.bg}, ${current.color}25)`,
+                      border: `2px solid ${current.color}`,
+                      boxShadow: `0 0 30px ${current.color}40`
+                    }}>
+                    <Icon className="w-10 h-10" style={{ color: current.color }} />
                   </div>
 
                   {/* Content */}
-                  <div className="flex-1 text-center sm:text-left">
-                    <h3 className="font-heading font-bold text-base sm:text-lg text-white mb-1">{current.title}</h3>
-                    <p className="font-body text-xs sm:text-sm text-white/80 mb-3">{current.subtitle}</p>
+                  <div className="flex-1 text-center lg:text-left">
+                    <h3 className="font-heading font-bold text-xl sm:text-2xl text-white mb-2">{current.title}</h3>
+                    <p className="font-body text-sm sm:text-base text-white/80 mb-4 leading-relaxed">{current.subtitle}</p>
                     
-                    {/* Points */}
-                    <div className="flex flex-wrap justify-center sm:justify-start gap-1.5">
+                    {/* Points Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {current.points.map((point, idx) => (
-                        <span key={idx} className="px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-bold" style={{ background: current.bg, border: `1px solid ${current.color}40`, color: current.color }}>
-                          ✓ {point}
-                        </span>
+                        <div key={idx} className="flex items-center gap-2 px-3 py-2 rounded-xl" 
+                          style={{ background: current.bg, border: `1px solid ${current.color}30` }}>
+                          <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: current.color }}>
+                            <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                          <span className="font-body text-xs sm:text-sm font-semibold" style={{ color: current.color }}>{point}</span>
+                        </div>
                       ))}
                     </div>
                   </div>
 
                   {/* Progress Indicator */}
-                  <div className="flex sm:flex-col gap-1.5">
+                  <div className="flex lg:flex-col gap-2">
                     {VISIONS.map((_, idx) => (
                       <button
                         key={idx}
@@ -125,8 +163,12 @@ export default function CompactOneStopDashboard() {
                             setIsTransitioning(false);
                           }, 100);
                         }}
-                        className={`w-2 h-2 rounded-full transition-all ${idx === currentIdx ? 'scale-125' : 'opacity-40 hover:opacity-70'}`}
-                        style={{ backgroundColor: idx === currentIdx ? current.color : '#ffffff' }}
+                        className={`w-3 h-3 rounded-full transition-all ${idx === currentIdx ? 'scale-125 shadow-lg' : 'opacity-40 hover:opacity-70'}`}
+                        style={{ 
+                          backgroundColor: idx === currentIdx ? current.color : '#ffffff',
+                          boxShadow: idx === currentIdx ? `0 0 12px ${current.color}` : 'none'
+                        }}
+                        aria-label={`Show vision ${idx + 1}`}
                       />
                     ))}
                   </div>
@@ -136,13 +178,13 @@ export default function CompactOneStopDashboard() {
           </div>
 
           {/* Bottom Progress Bar */}
-          <div className="h-1 bg-white/10">
+          <div className="h-1.5 bg-white/10">
             <motion.div
               key={currentIdx}
               initial={{ width: '0%' }}
               animate={{ width: '100%' }}
-              transition={{ duration: 4, ease: 'linear' }}
-              style={{ background: current.color }}
+              transition={{ duration: 5, ease: 'linear' }}
+              style={{ background: `linear-gradient(90deg, ${current.color}, ${current.color}80)` }}
             />
           </div>
         </motion.div>
@@ -152,16 +194,17 @@ export default function CompactOneStopDashboard() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-4 flex items-center justify-center gap-4 sm:gap-6"
+          className="mt-6 flex items-center justify-center gap-6 sm:gap-8 flex-wrap"
         >
           {[
-            { icon: Zap, label: 'Free to List', color: '#10b981' },
-            { icon: Globe, label: 'Nationwide', color: '#00D4FF' },
-            { icon: TrendingUp, label: 'Growing Daily', color: '#FFD700' },
+            { icon: Zap, label: '100% Free Listings', color: '#10b981' },
+            { icon: Globe, label: 'Nationwide Coverage', color: '#00D4FF' },
+            { icon: TrendingUp, label: '10K+ Daily Visitors', color: '#FFD700' },
+            { icon: CheckCircle, label: 'Verified Sellers', color: '#a855f7' },
           ].map(({ icon: Icon, label, color }, idx) => (
-            <div key={idx} className="flex items-center gap-1.5">
-              <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color }} />
-              <span className="font-body text-[10px] sm:text-xs font-semibold text-white/70">{label}</span>
+            <div key={idx} className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)', border: `1px solid ${color}30` }}>
+              <Icon className="w-4 h-4 flex-shrink-0" style={{ color }} />
+              <span className="font-body text-xs sm:text-sm font-semibold text-white/80">{label}</span>
             </div>
           ))}
         </motion.div>

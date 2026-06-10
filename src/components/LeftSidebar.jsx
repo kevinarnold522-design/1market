@@ -219,7 +219,10 @@ export default function LeftSidebar({ isMobileHidden = false }) {
             )}
             {/* Ghost sign out */}
             {isGhostSession && (
-              <button onClick={() => { localStorage.removeItem('1m_ghost_session'); window.location.href = '/connected-accounts'; }}
+              <button onClick={() => { 
+                sessionStorage.removeItem('1m_ghost_session');
+                window.location.href = '/connected-accounts';
+              }}
                 className="w-full flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-red-400/70 hover:text-red-400 hover:bg-red-400/10 mt-1"
                 title={collapsed ? 'Sign Out Ghost' : undefined}>
                 <LogOut className="w-4 h-4 flex-shrink-0" />

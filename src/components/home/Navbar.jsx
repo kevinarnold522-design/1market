@@ -533,7 +533,11 @@ export default function Navbar() {
 
                           <div className="border-t border-white/8 my-1" />
                           {isGhostSession ? (
-                            <button onClick={() => { clearImpersonation(); setProfileOpen(false); }}
+                            <button onClick={() => { 
+                              sessionStorage.removeItem('1m_ghost_session');
+                              setProfileOpen(false);
+                              window.location.href = '/connected-accounts';
+                            }}
                               className="w-full flex items-center gap-2 px-3 py-2 rounded-xl bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 transition-colors text-red-300 font-body text-xs font-bold">
                               <LogOut className="w-3.5 h-3.5" /> Sign Out of Ghost
                             </button>
@@ -666,10 +670,22 @@ export default function Navbar() {
                       Saved Favourites
                     </Link>
 
-                    <button onClick={() => { logout(true); setMenuOpen(false); }}
-                      className="w-full mt-2 py-2.5 border border-red-500/30 text-red-400 rounded-xl font-body font-bold text-sm hover:bg-red-500/10 transition-colors">
-                      Sign Out
-                    </button>
+                    {isGhostSession && (
+                      <button onClick={() => { 
+                        sessionStorage.removeItem('1m_ghost_session');
+                        setMenuOpen(false);
+                        window.location.href = '/connected-accounts';
+                      }}
+                        className="w-full mt-2 py-2.5 border border-red-500/30 text-red-400 rounded-xl font-body font-bold text-sm hover:bg-red-500/10 transition-colors">
+                        Sign Out Ghost
+                      </button>
+                    )}
+                    {!isGhostSession && (
+                      <button onClick={() => { logout(true); setMenuOpen(false); }}
+                        className="w-full mt-2 py-2.5 border border-red-500/30 text-red-400 rounded-xl font-body font-bold text-sm hover:bg-red-500/10 transition-colors">
+                        Sign Out
+                      </button>
+                    )}
                   </>
                 ) : (
                   <>

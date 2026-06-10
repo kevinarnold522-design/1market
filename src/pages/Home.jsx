@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 
 import MascotDog from '../components/MascotDog';
 import Footer from '../components/home/Footer';
+import TopBanner from '../components/home/TopBanner';
 import WelcomeSplash from '../components/home/WelcomeSplash';
 import CategoryCards from '../components/home/CategoryCards';
 import CompactOneStopDashboard from '../components/home/OneStopShopDashboard';
@@ -46,6 +47,9 @@ export default function Home() {
       
       <div className="relative z-10">
         <WelcomeSplash />
+        
+        {/* Top Banner - Duplicate of Footer */}
+        <Suspense fallback={<Spinner />}><TopBanner /></Suspense>
         
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>
         <Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense>
