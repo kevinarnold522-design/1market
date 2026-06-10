@@ -451,8 +451,9 @@ export default function Admin() {
       loadAll();
     } catch (err) {
       console.error('Ghost account creation failed:', err);
+      console.error('Error details:', err.message, err.stack);
       setGhostSaving(false);
-      showToast('Failed to create account. Please try again.');
+      showToast('Failed: ' + (err.message || 'Please try again'));
     }
   };
 

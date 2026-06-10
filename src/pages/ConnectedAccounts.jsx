@@ -144,9 +144,10 @@ export default function ConnectedAccounts() {
       }, 500);
     } catch (err) {
       console.error('Failed to create account:', err);
+      console.error('Error details:', err.message, err.stack);
       setSaving(false);
       setSaveProgress(0);
-      showToast('Failed to create account. Please try again.');
+      showToast('Failed: ' + (err.message || 'Please try again'));
     }
   };
 
