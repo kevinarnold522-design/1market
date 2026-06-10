@@ -138,6 +138,11 @@ export default function ConnectedAccounts() {
           ghost_linked: false,
           username_set: false,
           
+          // Facebook Live fields (required by schema)
+          facebook_page_id: '',
+          facebook_page_name: '',
+          facebook_live_enabled: false,
+          
           // Simple defaults
           bio: form.bio || '',
           seller_bio: form.bio || '',
