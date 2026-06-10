@@ -267,22 +267,34 @@ export default function SellerProfilePage() {
         // Try multiple lookup methods for all account types
         let users = [];
         
-        // Try by ID first (most reliable)
+        console.log('🔍 Looking up seller profile:', sellerId);
+        
+        // Try by ID first (most reliable for ghost accounts)
         users = await base44.entities.User.filter({ id: sellerId });
+        console.log('Found by ID:', users?.length);
         
         // If not found, try by username
         if (!users || users.length === 0) {
           users = await base44.entities.User.filter({ username: sellerId });
+          console.log('Found by username:', users?.length);
         }
         
-        // If still not found, try by channel_name or other fields
+        // If still not found, try by email (for ghost accounts with internal email)
+        if (!users || users.length === 0) {
+          users = await base44.entities.User.filter({ email: sellerId });
+          console.log('Found by email:', users?.length);
+        }
+        
+        // Final fallback: search all users
         if (!users || users.length === 0) {
           const allUsers = await base44.entities.User.list('-created_date', 1000);
           users = allUsers.filter(u => 
+            u.id === sellerId ||
             u.username === sellerId || 
             u.channel_name === sellerId ||
-            (u.email && u.email.includes(sellerId))
+            (u.email && (u.email.includes(sellerId) || u.email === sellerId))
           );
+          console.log('Found by fallback search:', users?.length);
         }
         
         if (users && users.length > 0) {

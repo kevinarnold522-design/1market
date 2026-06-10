@@ -191,17 +191,20 @@ export default function ConnectedAccounts() {
         clearInterval(progressInterval);
         setSaveProgress(100);
         
-        // Immediately redirect to ghost account profile page
+        // Wait for database to persist then redirect
         setTimeout(() => {
           setSaving(false);
           setSaveProgress(0);
           setShowForm(false);
           setEditingAccount(null);
           setForm(EMPTY_FORM);
-          showToast('Ghost account created! Redirecting...');
-          // Use direct navigation to profile using ID for guaranteed access
-          window.location.href = `/seller/${result.id}`;
-        }, 600);
+          showToast('Account created! Redirecting to profile...');
+          loadAccounts();
+          // Use window.location.href for hard refresh to ensure clean session
+          setTimeout(() => {
+            window.location.href = `/seller/${result.id}`;
+          }, 300);
+        }, 800);
       }
     } catch (err) {
       console.error('Failed to create account:', err);

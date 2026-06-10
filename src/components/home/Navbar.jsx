@@ -34,6 +34,8 @@ export function useAdminEditMode() {
   return editMode;
 }
 
+const OWNER_EMAIL = 'Kevinarnold522@gmail.com';
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
