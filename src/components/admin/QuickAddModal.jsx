@@ -30,7 +30,7 @@ const EMPTY_BIZ = {
 };
 const EMPTY_LISTING = {
   title: '', type: 'product', subcategory: '', location: 'Manila', area: '',
-  seller_name: '', phone: '', description: '', image_url: '',
+  seller_name: '', approved_channel_name: '', phone: '', description: '', image_url: '',
   extra_images: [], price: '', price_label: '', condition: 'Brand New',
   brand: '', model: '', size: '', warranty: '', specs: '', is_active: true,
 };
@@ -200,7 +200,14 @@ function ListingSubForm({ form, set }) {
         <Field label="Brand" value={form.brand} onChange={v => set('brand', v)} placeholder="e.g. Samsung" />
         <Field label="Model / Size" value={form.model} onChange={v => set('model', v)} placeholder="256GB" />
         <Field label="Contact #" value={form.phone} onChange={v => set('phone', v)} placeholder="+63 9xx" />
-        <Field label="Seller Name" value={form.seller_name} onChange={v => set('seller_name', v)} placeholder="Direct Owner" />
+        <Field label="Seller Name (internal)" value={form.seller_name} onChange={v => set('seller_name', v)} placeholder="Direct Owner" />
+        <div className="col-span-2">
+          <div className="rounded-xl p-3 space-y-2" style={{ background: 'rgba(0,212,255,0.05)', border: '1px solid rgba(0,212,255,0.2)' }}>
+            <p className="font-body text-[9px] text-[#00D4FF] font-bold uppercase tracking-wider">✅ Admin: Approved Channel Name</p>
+            <Field label="Approved Public Channel Name" value={form.approved_channel_name || ''} onChange={v => set('approved_channel_name', v)} placeholder="e.g. Juan's Store PH, CleanPro Services — approved by admin" />
+            <p className="font-body text-[9px] text-white/30">This name overrides the seller's self-entered name and is displayed publicly on all listings.</p>
+          </div>
+        </div>
       </div>
       {form.type === 'electronics' && (
         <div className="rounded-xl p-3 space-y-2" style={{ background: 'rgba(0,212,255,0.05)', border: '1px solid rgba(0,212,255,0.2)' }}>

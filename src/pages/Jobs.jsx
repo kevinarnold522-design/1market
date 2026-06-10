@@ -36,20 +36,7 @@ const JOB_SUBCATEGORIES = [
   { key: 'general',    label: 'General / Blue Collar',color: '#94a3b8' },
 ];
 
-const STATIC_JOBS = [
-  { id:1, type:'tech', title:'React Developer – Remote', company:'TechStart PH', location:'Manila', area:'Remote', pay:'₱50,000–₱80,000/mo', type_label:'Full-time', desc:'Build and maintain web applications using React, Node.js. Min 2 yrs experience.', image:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&q=80', contact:'hr@techstartph.com', urgent:true },
-  { id:2, type:'bpo', title:'Customer Service Rep – Ortigas', company:'Global BPO Inc.', location:'Manila', area:'Ortigas', pay:'₱18,000–₱22,000/mo', type_label:'Full-time', desc:'Handle inbound US-based customer calls. Night shift. HMO Day 1.', image:'https://images.unsplash.com/photo-1553775282-20af80779df7?w=500&q=80', contact:'recruitment@globalbpo.com', urgent:false },
-  { id:3, type:'food', title:'Restaurant Crew – Jollibee Bacoor', company:'Jollibee Foods Corp', location:'Cavite', area:'Bacoor', pay:'₱570/day', type_label:'Part-time', desc:'Counter crew for busy Bacoor branch. No experience needed. Training provided.', image:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80', contact:'09171234567', urgent:true },
-  { id:4, type:'drivers', title:'Delivery Rider – GrabFood Partner', company:'Grab PH', location:'Manila', area:'Nationwide', pay:'₱800–₱2,000/day', type_label:'Freelance', desc:'Be your own boss. Flexible hours. Bike or motorcycle required.', image:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80', contact:'partner.grab.com.ph', link:'https://partner.grab.com/ph', urgent:false },
-  { id:5, type:'domestic', title:'Household Helper – BGC', company:'Private Household', location:'Manila', area:'BGC', pay:'₱8,000–₱10,000/mo', type_label:'Live-in', desc:'Household chores, cooking. Single employer. With free board & lodging.', image:'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=500&q=80', contact:'09285551234', urgent:false },
-  { id:6, type:'healthcare', title:'Staff Nurse – Cavite Medical Center', company:'Cavite Medical Center', location:'Cavite', area:'Imus', pay:'₱25,000–₱35,000/mo', type_label:'Full-time', desc:'ICU/ward nurse needed. PRC license required. With HMO and 13th month.', image:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500&q=80', contact:'hr@cavitemedical.com.ph', urgent:true },
-  { id:7, type:'remote', title:'Virtual Assistant – US Client', company:'Remote PH Solutions', location:'Manila', area:'WFH', pay:'$4–$6/hr', type_label:'Part-time', desc:'Email management, scheduling, research. Good English. Must have laptop & internet.', image:'https://images.unsplash.com/photo-1484788984921-03950022c38b?w=500&q=80', contact:'jobs@remoteph.com', urgent:false },
-  { id:8, type:'tech', title:'UI/UX Designer – Hybrid Makati', company:'Creative Studio MNL', location:'Manila', area:'Makati', pay:'₱35,000–₱55,000/mo', type_label:'Full-time', desc:'Design web and mobile interfaces. Figma proficiency required. Portfolio needed.', image:'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=500&q=80', contact:'careers@creativestudio.ph', urgent:false },
-  { id:9, type:'sales', title:'Promodizer – SM Bacoor', company:'Consumer Goods Inc.', location:'Cavite', area:'Bacoor', pay:'₱600/day + commission', type_label:'Project-based', desc:'Promote personal care products inside SM Bacoor. 15 days assignment.', image:'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500&q=80', contact:'09181234987', urgent:true },
-  { id:10, type:'skilled', title:'Licensed Electrician – Dasmariñas', company:'PowerFix Cavite', location:'Cavite', area:'Dasmariñas', pay:'₱700–₱900/day', type_label:'Contract', desc:'Residential & commercial electrical works. PRC license preferred. Tools provided.', image:'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=500&q=80', contact:'09291112233', urgent:false },
-  { id:11, type:'events', title:'Event Hosts / Emcees – Manila', company:'EventsPro PH', location:'Manila', area:'Nationwide', pay:'₱3,000–₱8,000/event', type_label:'Freelance', desc:'Corporate and social events. Must be presentable, bilingual Filipino/English.', image:'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80', contact:'booking@eventspro.ph', urgent:false },
-  { id:12, type:'education', title:'Online Math Tutor – Grades 6–10', company:'TutorPH Online', location:'Manila', area:'Online', pay:'₱300–₱500/hr', type_label:'Freelance', desc:'Teach math to elementary & high school students online. Flexible schedule.', image:'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=500&q=80', contact:'tutors@tutorph.com', urgent:false },
-];
+// No static/fake jobs — only real DB listings shown
 
 function getCatColor(type) {
   return JOB_SUBCATEGORIES.find(s => s.key === type)?.color || '#3E97F1';
@@ -108,9 +95,11 @@ function JobCard({ job, onApply }) {
         {/* Category color bar */}
         <div className="w-8 h-1 rounded-full mb-2" style={{ background: catColor }} />
         <h3 className="font-heading font-bold text-sm text-white leading-tight mb-1 line-clamp-2">{job.title}</h3>
-        <p className="font-body text-[10px] font-semibold mb-1 flex items-center gap-1" style={{ color: catColor }}>
-          <Building2 className="w-2.5 h-2.5" />{job.company}
-        </p>
+        {job.company && job.company !== 'Posted on 1MarketPH' && (
+          <p className="font-body text-[10px] font-semibold mb-1 flex items-center gap-1" style={{ color: catColor }}>
+            <Building2 className="w-2.5 h-2.5" />{job.company}
+          </p>
+        )}
         <p className="font-body text-xs text-white/40 mb-3 line-clamp-2">{job.desc}</p>
         <div className="flex items-center justify-between">
           <span className="font-heading font-bold text-sm text-amber-400 flex items-center gap-1">
@@ -204,25 +193,22 @@ export default function Jobs() {
     general: ['general', 'utility', 'security'],
   };
 
-  const allJobs = [
-    ...STATIC_JOBS,
-    ...dbJobs.map(j => ({
-      id: j.id,
-      type: j.subcategory?.toLowerCase().replace(/\s+/g, '') || 'other',
-      title: j.title,
-      company: j.seller_name || 'Posted on 1MarketPH',
-      location: j.location,
-      area: j.area || j.location,
-      pay: j.price_label || (j.price ? `₱${Number(j.price).toLocaleString()}` : 'Negotiable'),
-      type_label: j.subcategory || 'Job',
-      desc: j.description || '',
-      image: j.image_url || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=500&q=80',
-      contact: j.email_contact || j.phone || '',
-      link: j.apply_link || null,
-      urgent: false,
-      isDb: true,
-    }))
-  ];
+  const allJobs = dbJobs.map(j => ({
+    id: j.id,
+    type: j.subcategory?.toLowerCase().replace(/\s+/g, '') || 'other',
+    title: j.title,
+    company: j.company_hiring || j.seller_name || 'Posted on 1MarketPH',
+    location: j.location,
+    area: j.area || j.location,
+    pay: j.price_label || (j.job_salary_min ? `₱${Number(j.job_salary_min).toLocaleString()}${j.job_salary_max ? '–₱' + Number(j.job_salary_max).toLocaleString() : '+'}` : 'Negotiable'),
+    type_label: j.job_employment_type || j.subcategory || 'Job',
+    desc: j.description || '',
+    image: j.image_url || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=500&q=80',
+    contact: j.email_contact || j.phone || '',
+    link: j.apply_link || null,
+    urgent: false,
+    isDb: true,
+  }));
 
   const filtered = allJobs.filter(j => {
     const mappedTypes = SECTOR_TYPE_MAP[activeType];
@@ -320,7 +306,16 @@ export default function Jobs() {
         ) : (
           <div className="text-center py-20">
             <Briefcase className="w-10 h-10 text-white/15 mx-auto mb-3" />
-            <p className="font-body text-white/30">No jobs found. Try different filters.</p>
+            <p className="font-body text-white/30 mb-2">
+              {allJobs.length === 0 ? 'No job listings yet. Be the first to post one!' : 'No jobs found. Try different filters.'}
+            </p>
+            {allJobs.length === 0 && currentUser && (
+              <Link to="/post-ad?category=jobs&type=jobs"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-body font-bold text-sm text-white mt-2"
+                style={{ background: 'linear-gradient(135deg,#f59e0b,#f97316)' }}>
+                <Plus className="w-4 h-4" /> Post a Job Now
+              </Link>
+            )}
           </div>
         )}
 

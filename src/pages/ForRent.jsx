@@ -33,41 +33,7 @@ const SUBCATEGORIES = [
 
 const SPACE_TYPES = ['All Types', 'Room', 'House', 'Bungalow', 'Dorm', 'Condo', '2 Stories', '3 Stories', 'Land', 'Lot for Lease', 'Commercial Lot'];
 
-const listings = [
-  // RESIDENTIAL
-  { id: 1, type: 'residential', title: '1BR Condo for Rent – Malate, Manila', sub: 'Condominium', price: '₱18,000/mo', location: 'Manila', area: 'Malate', desc: 'Furnished 1BR. High floor. Near LRT & hospitals. Pets allowed.', image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500&q=80', contact: '09171234567' },
-  { id: 2, type: 'residential', title: 'Bedspace for Rent – Near UST, Sampaloc', sub: 'Bedspace', price: '₱3,500/mo', location: 'Manila', area: 'Sampaloc', desc: 'AC room with WiFi. Inclusive of water & electricity. Female only.', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80', contact: '09185554321' },
-  { id: 3, type: 'residential', title: 'Studio Unit for Rent – BGC, Taguig', sub: 'Studio', price: '₱22,000/mo', location: 'Manila', area: 'BGC', desc: 'Fully furnished studio. 24hr security. Pool access. Pet friendly.', image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=500&q=80', contact: '09209998877' },
-  { id: 4, type: 'residential', title: '2BR Apartment – Imus, Cavite', sub: 'Apartment', price: '₱12,000/mo', location: 'Cavite', area: 'Imus', desc: '2 bedroom apartment, partly furnished, near Robinsons Imus.', image: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=500&q=80', contact: '09301112233' },
-  { id: 5, type: 'residential', title: 'House for Rent – Molino, Bacoor', sub: 'House', price: '₱15,000/mo', location: 'Cavite', area: 'Bacoor', desc: '3BR 2-storey house. With garage. Near SM Bacoor.', image: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=500&q=80', contact: '09154443322' },
-  { id: 6, type: 'residential', title: 'Airbnb Tagaytay Villa – Scenic View', sub: 'Vacation Home', price: '₱3,500/night', location: 'Cavite', area: 'Tagaytay', desc: 'Stunning Taal view villa. 4BR sleeps 10. Perfect for groups.', image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=500&q=80', contact: '09176667788', link: 'https://www.airbnb.com/s/Tagaytay' },
-  { id: 7, type: 'residential', title: 'Dormitory Rooms – Dasmariñas, Cavite', sub: 'Dormitory', price: '₱2,800/mo', location: 'Cavite', area: 'Dasmariñas', desc: 'Near DLSU-D. Air conditioned. 24hr security. All-inclusive.', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80', contact: '09271239876' },
-  { id: 8, type: 'residential', title: '3BR Beach House for Rent – Kawit', sub: 'Beach House', price: '₱8,000/night', location: 'Cavite', area: 'Kawit', desc: 'Private beach access. 3 bedrooms. Fully equipped kitchen.', image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=500&q=80', contact: '09198765432' },
-
-  // COMMERCIAL
-  { id: 9, type: 'commercial', title: 'Commercial Space – Taft Ave., Manila', sub: 'Retail Space', price: '₱55,000/mo', location: 'Manila', area: 'Malate', desc: '80 sqm ground floor. High foot traffic. Suitable for restaurant or store.', image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=500&q=80', contact: '09161122334' },
-  { id: 10, type: 'commercial', title: 'Office Space – Makati CBD', sub: 'Office Space', price: '₱120,000/mo', location: 'Manila', area: 'Makati', desc: '200 sqm fitted office. 2 parking slots. 24/7 building access.', image: 'https://images.unsplash.com/photo-1497366412874-3415097a27e7?w=500&q=80', contact: '09209988776' },
-  { id: 11, type: 'commercial', title: 'Warehouse for Lease – Carmona, Cavite', sub: 'Warehouse', price: '₱80,000/mo', location: 'Cavite', area: 'Carmona', desc: '500 sqm warehouse near SLEX. Loading bay. CCTV. Security.', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=500&q=80', contact: '09281234567' },
-  { id: 12, type: 'commercial', title: 'Kiosk Space – SM Bacoor', sub: 'Kiosk', price: '₱25,000/mo', location: 'Cavite', area: 'Bacoor', desc: 'Kiosk inside SM Bacoor. 6 sqm. Great for food, accessories, services.', image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500&q=80', contact: '09154433210' },
-
-  // VEHICLES
-  { id: 13, type: 'vehicles', title: 'Toyota Vios – Self Drive Rental', sub: 'Sedan', price: '₱1,800/day', location: 'Manila', area: 'Pasay', desc: 'Clean unit. Self-drive. Gas not included. Min. 1 day rental.', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=500&q=80', contact: '09177766554' },
-  { id: 14, type: 'vehicles', title: 'Toyota Hi-Ace Van – With Driver', sub: 'Van', price: '₱4,000/day', location: 'Cavite', area: 'Imus', desc: '15 seater with professional driver. Available nationwide.', image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500&q=80', contact: '09305559988' },
-  { id: 15, type: 'vehicles', title: 'Motorcycle Rental – Tagaytay', sub: 'Motorcycle', price: '₱500/day', location: 'Cavite', area: 'Tagaytay', desc: 'Honda Click 125i. Helmet included. Perfect for Tagaytay rides.', image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=500&q=80', contact: '09192223344' },
-  { id: 16, type: 'vehicles', title: 'Mitsubishi Montero SUV Rental', sub: 'SUV', price: '₱3,200/day', location: 'Manila', area: 'Parañaque', desc: 'Premium SUV. With driver available. Airport pickup possible.', image: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=500&q=80', contact: '09218899001' },
-
-  // EQUIPMENT
-  { id: 17, type: 'equipment', title: 'Sound System Rental – Manila', sub: 'Sound System', price: '₱5,000/event', location: 'Manila', area: 'Pasig', desc: '10,000W sound system. With operator. Setup included.', image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&q=80', contact: '09161122998' },
-  { id: 18, type: 'equipment', title: 'DSLR Camera Rental – Makati', sub: 'Camera', price: '₱800/day', location: 'Manila', area: 'Makati', desc: 'Canon 5D Mark IV with lens kit. Deposit required. ID check.', image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500&q=80', contact: '09174321987' },
-  { id: 19, type: 'equipment', title: 'Generator Rental – Bacoor, Cavite', sub: 'Generator', price: '₱1,500/day', location: 'Cavite', area: 'Bacoor', desc: '10KVA generator. Fuel not included. Delivery available.', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80', contact: '09295553344' },
-  { id: 20, type: 'equipment', title: 'Drone Rental – DJI Mavic 3', sub: 'Drone', price: '₱2,500/day', location: 'Manila', area: 'QC', desc: '4K footage. With licensed operator available. Min 4 hr rental.', image: 'https://images.unsplash.com/photo-1521405924368-64c5b84bec60?w=500&q=80', contact: '09181234556' },
-
-  // EVENTS
-  { id: 21, type: 'events', title: 'Function Hall – Dasmariñas, Cavite', sub: 'Function Hall', price: '₱15,000/event', location: 'Cavite', area: 'Dasmariñas', desc: '150 pax capacity. With tables, chairs & basic decor. AC.', image: 'https://images.unsplash.com/photo-1531058020387-3be344556be6?w=500&q=80', contact: '09307776655' },
-  { id: 22, type: 'events', title: 'Garden Event Venue – Tagaytay', sub: 'Garden Venue', price: '₱35,000/event', location: 'Cavite', area: 'Tagaytay', desc: 'Scenic outdoor venue. 200 pax. Perfect for weddings & debuts.', image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=500&q=80', contact: '09163334455' },
-  { id: 23, type: 'events', title: 'Conference Room – Makati', sub: 'Conference Room', price: '₱3,500/day', location: 'Manila', area: 'Makati', desc: '20 seater. Projector & whiteboard included. Catering optional.', image: 'https://images.unsplash.com/photo-1497366412874-3415097a27e7?w=500&q=80', contact: '09218811223' },
-  { id: 24, type: 'events', title: 'Event Tent Rental – Imus, Cavite', sub: 'Tent Rental', price: '₱8,000/event', location: 'Cavite', area: 'Imus', desc: 'Heavy-duty white wedding tent. 100 pax. With lights & fans.', image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=500&q=80', contact: '09264445566' },
-];
+// No static/fake listings — only real DB listings shown
 
 function AdminListingEditModal({ item, isAdmin, onClose, onSave, onDelete }) {
   const [title, setTitle] = useState(item.title || '');
@@ -231,10 +197,15 @@ export default function ForRent() {
     ]).then(([rentals, vehicles]) => setDbListings([...rentals, ...vehicles])).catch(() => {});
   }, []);
 
-  const allRentals = [
-    ...listings,
-    ...dbListings.map(l => ({ ...l, sub: l.subcategory || '', price: l.price_label || (l.price ? `₱${Number(l.price).toLocaleString()}` : ''), type: 'residential' })),
-  ];
+  const allRentals = dbListings.map(l => ({
+    ...l,
+    sub: l.subcategory || '',
+    price: l.price_label || (l.price ? `₱${Number(l.price).toLocaleString()}` : ''),
+    type: l.type === 'vehicle_rental' ? 'vehicles' : 'residential',
+    image: l.image_url || '',
+    desc: l.description || '',
+    contact: l.phone || l.email_contact || '',
+  }));
 
   const filtered = allRentals.filter(l => {
     const matchCat = !activeCategory || activeCategory === 'all' || l.type === activeCategory;
@@ -339,7 +310,15 @@ export default function ForRent() {
             {filtered.map(item => <RentalCard key={item.id} item={item} onContact={setContactItem} user={user} isAdmin={isAdmin} onEdit={setEditItem} />)}
           </div>
         ) : (
-          <div className="text-center py-24"><p className="font-body text-white/30">No rentals found. Try a different filter.</p></div>
+          <div className="text-center py-24">
+            <Home className="w-12 h-12 text-white/10 mx-auto mb-3" />
+            <p className="font-body text-white/30 text-lg mb-1">
+              {dbListings.length === 0 ? 'No rental listings yet.' : 'No rentals found.'}
+            </p>
+            <p className="font-body text-white/20 text-sm">
+              {dbListings.length === 0 ? 'Be the first to post a property, vehicle, or equipment for rent.' : 'Try adjusting your filters or search term.'}
+            </p>
+          </div>
         )}
 
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}

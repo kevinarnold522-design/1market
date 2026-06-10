@@ -114,6 +114,10 @@
     "seller_name": {
       "type": "string"
     },
+    "approved_channel_name": {
+      "type": "string",
+      "description": "Admin-approved public display name for the lister/channel"
+    },
     "phone": {
       "type": "string"
     },
@@ -441,6 +445,10 @@
     "meetup_details": {
       "type": "string",
       "description": "Meetup or pickup location details"
+    },
+    "company_hiring": {
+      "type": "string",
+      "description": "Company name that is hiring (for job listings)"
     },
     "job_employment_type": {
       "type": "string",

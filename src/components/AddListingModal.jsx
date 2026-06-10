@@ -308,7 +308,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       slideshow_animation: form.slideshow_animation || 'fade',
       ...(form.type === 'food' ? { food_serving: form.food_serving, food_dietary: form.food_dietary, food_spice_level: form.food_spice_level, food_allergens: form.food_allergens, food_business_type: form.food_business_type, food_type: form.food_type, delivery_options: form.delivery_options, meetup_details: form.meetup_details } : {}),
       ...(form.main_category === 'buysell' ? { delivery_options: form.delivery_options, meetup_details: form.meetup_details } : {}),
-      ...(form.type === 'jobs' ? { job_employment_type: form.job_employment_type, job_experience: form.job_experience, job_salary_min: Number(form.job_salary_min) || 0, job_salary_max: Number(form.job_salary_max) || 0, job_benefits: form.job_benefits } : {}),
+      ...(form.type === 'jobs' ? { company_hiring: form.company_hiring || '', job_employment_type: form.job_employment_type, job_experience: form.job_experience, job_salary_min: Number(form.job_salary_min) || 0, job_salary_max: Number(form.job_salary_max) || 0, job_benefits: form.job_benefits } : {}),
       ...(form.type === 'services' ? {
         service_duration: form.service_duration,
         service_rate_type: form.service_rate_type,
@@ -739,6 +739,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                   {form.type === 'jobs' && (
                     <div className="rounded-xl p-3 space-y-3" style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.2)' }}>
                       <p className="font-body text-[10px] font-bold text-amber-400 uppercase tracking-wider">Job Details</p>
+                      <div><label className={labelCls}>Company Hiring *</label><input value={form.company_hiring || ''} onChange={e => set('company_hiring', e.target.value)} placeholder="e.g. Jollibee, BDO, SM Retail, Private Company..." className={inputCls} /></div>
                       <div><label className={labelCls}>Application Link (optional)</label><input value={form.apply_link} onChange={e => set('apply_link', e.target.value)} placeholder="https://..." className={inputCls} /></div>
                       <div className="grid grid-cols-2 gap-2">
                         <div>

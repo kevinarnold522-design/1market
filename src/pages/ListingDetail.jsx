@@ -632,10 +632,11 @@ export default function ListingDetail() {
               )}
 
               {/* Job details */}
-              {listing.type === 'jobs' && (listing.job_employment_type || listing.job_experience || listing.job_salary_min || listing.job_benefits) && (
+              {listing.type === 'jobs' && (listing.company_hiring || listing.job_employment_type || listing.job_experience || listing.job_salary_min || listing.job_benefits) && (
                 <div className="mb-4 p-3 rounded-xl space-y-1.5" style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}>
                   <p className="font-body text-[10px] text-amber-400 uppercase tracking-wider font-bold mb-2">💼 Job Details</p>
                   <div className="grid grid-cols-2 gap-1.5">
+                    {listing.company_hiring && <div className="col-span-2 bg-amber-500/10 border border-amber-500/20 rounded-lg p-2"><p className="font-body text-[9px] text-amber-400/60">Company Hiring</p><p className="font-body text-sm text-amber-300 font-bold">{listing.company_hiring}</p></div>}
                     {listing.job_employment_type && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Type</p><p className="font-body text-xs text-white">{listing.job_employment_type}</p></div>}
                     {listing.job_experience && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Experience</p><p className="font-body text-xs text-white">{listing.job_experience}</p></div>}
                     {(listing.job_salary_min || listing.job_salary_max) && (
@@ -967,17 +968,27 @@ export default function ListingDetail() {
             <SimilarListings listing={listing} />
 
             {/* Seller Profile snippet */}
-            {listing.seller_name && (
+            {(listing.approved_channel_name || listing.seller_name) && (
               <div className="rounded-2xl p-4" style={{ background: 'rgba(13,31,60,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
                 <p className="font-body text-[10px] text-white/30 uppercase tracking-wider mb-2">Posted by</p>
+                {/* Show admin-approved channel name prominently if set */}
+                {listing.approved_channel_name && (
+                  <div className="flex items-center gap-1.5 mb-2 px-2.5 py-1 rounded-lg w-fit"
+                    style={{ background: 'rgba(0,212,255,0.08)', border: '1px solid rgba(0,212,255,0.2)' }}>
+                    <CheckCircle className="w-3 h-3 text-[#00D4FF]" />
+                    <span className="font-body text-[10px] text-[#00D4FF] font-bold">Verified Channel Name</span>
+                  </div>
+                )}
                 {listing.created_by_id ? (
                   <Link to={`/seller/${listing.created_by_id}`} className="flex items-center gap-3 group">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center font-heading font-bold text-white text-sm flex-shrink-0 group-hover:scale-105 transition-transform">
-                      {(listing.seller_name || 'S').charAt(0).toUpperCase()}
+                      {(listing.approved_channel_name || listing.seller_name || 'S').charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <p className="font-body font-bold text-sm text-white group-hover:text-[#00D4FF] transition-colors">{listing.seller_name}</p>
+                        <p className="font-body font-bold text-sm text-white group-hover:text-[#00D4FF] transition-colors">
+                          {listing.approved_channel_name || listing.seller_name}
+                        </p>
                         {listing.seller_is_verified && <MetaVerifiedBadge size="xs" label="" />}
                       </div>
                       <p className="font-body text-[10px] text-white/30">View Profile and More Listings</p>
@@ -986,10 +997,10 @@ export default function ListingDetail() {
                 ) : (
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center font-heading font-bold text-white text-sm flex-shrink-0">
-                      {(listing.seller_name || 'S').charAt(0).toUpperCase()}
+                      {(listing.approved_channel_name || listing.seller_name || 'S').charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p className="font-body font-bold text-sm text-white">{listing.seller_name}</p>
+                      <p className="font-body font-bold text-sm text-white">{listing.approved_channel_name || listing.seller_name}</p>
                       <p className="font-body text-[10px] text-white/30">Seller on 1MarketPH.com</p>
                     </div>
                   </div>
