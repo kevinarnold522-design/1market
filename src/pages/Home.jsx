@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 
 import MascotDog from '../components/MascotDog';
 import Footer from '../components/home/Footer';
+import TopBanner from '../components/home/TopBanner';
 import WelcomeSplash from '../components/home/WelcomeSplash';
 import CategoryCards from '../components/home/CategoryCards';
 import CompactOneStopDashboard from '../components/home/OneStopShopDashboard';
@@ -9,6 +10,7 @@ import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
 
 // Lazy-load heavy/below-fold sections
+const HeroSection = lazy(() => import('../components/home/HeroSection'));
 const CompactOneStopDashboardLazy = lazy(() => import('../components/home/OneStopShopDashboard'));
 const FlashDealsSection = lazy(() => import('../components/home/FlashDealsSection'));
 const PhFlightDeals = lazy(() => import('../components/home/PhFlightDeals'));
@@ -31,6 +33,7 @@ const PhilippinesTravelBanner = lazy(() => import('../components/home/Philippine
 // LiveStatsBar removed
 
 const Spinner = () => null; // silent fallback — no layout shift
+const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/be5b76b23_generated_1fcae122.png';
 
 export default function Home() {
   return (
@@ -41,6 +44,7 @@ export default function Home() {
       <div className="relative z-10">
         <WelcomeSplash />
         
+        <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>
         <CategoryCards />
         <Suspense fallback={<Spinner />}><CompactOneStopDashboardLazy /></Suspense>
         <Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense>

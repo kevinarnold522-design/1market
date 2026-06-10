@@ -41,8 +41,8 @@ export default function TopBanner() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
-        {/* Social bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-8 pb-8 border-b border-white/8">
+        {/* Logo and vertical links bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-8 mb-8 pb-8 border-b border-white/8">
           {/* Logo */}
           <div className="flex items-center gap-3">
             <img src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
@@ -55,68 +55,40 @@ export default function TopBanner() {
               <p className="font-body text-[10px] text-white/35">The Premiere Marketplace</p>
             </div>
           </div>
-          {/* Socials */}
-          <div className="flex items-center gap-3 flex-wrap justify-center">
-            <a href="https://www.facebook.com/share/18Neew76Yo/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-body text-xs font-bold text-blue-400 transition-all hover:scale-105"
-              style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.25)' }}>
-              <Facebook className="w-4 h-4" /> Facebook
-            </a>
-            <a href="https://instagram.com/1marketph" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-body text-xs font-bold text-pink-400 transition-all hover:scale-105"
-              style={{ background: 'rgba(236,72,153,0.12)', border: '1px solid rgba(236,72,153,0.25)' }}>
-              <Instagram className="w-4 h-4" /> Instagram
-            </a>
-            <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-body text-xs font-bold text-white/80 transition-all hover:scale-105"
-              style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)' }}>
-              TikTok
-            </a>
-            <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-body text-xs font-bold text-red-400 transition-all hover:scale-105"
-              style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)' }}>
-              <Youtube className="w-4 h-4" /> YouTube
-            </a>
-          </div>
-        </div>
-
-        {/* Links grid — 3 columns */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 mb-8">
-          {/* About Us - Merged (Duplicate at top) */}
-          <div className="space-y-4">
-            <h4 className="font-heading font-bold text-sm uppercase tracking-widest text-white/50">About Us</h4>
-            <div className="space-y-2.5">
-              <Link to="/about" className="block font-body text-xs text-[#00D4FF]/60 hover:text-[#00D4FF] transition-colors">About 1MarketPH</Link>
-              <Link to="/privacy-policy" className="block font-body text-xs text-white/25 hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
+          
+          {/* Vertical Links and Socials */}
+          <div className="flex items-center gap-6 flex-wrap justify-center">
+            {/* About Us - Vertical */}
+            <div className="flex flex-col gap-2">
+              <Link to="/about" className="font-body text-xs text-[#00D4FF]/70 hover:text-[#00D4FF] transition-colors font-semibold">About 1MarketPH</Link>
+              <Link to="/privacy-policy" className="font-body text-xs text-white/30 hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
             </div>
-          </div>
-
-          {/* Marketplace */}
-          <div className="space-y-4">
-            <h4 className="font-heading font-bold text-sm uppercase tracking-widest text-white/50">Marketplace</h4>
-            <div className="space-y-2.5">
-              {[
-                { label: 'Buy & Sell', href: '/buysell' },
-                { label: 'Food', href: '/food' },
-                { label: 'Travel', href: '/travel' },
-                { label: 'For Rent', href: '/rent' },
-              ].map(l => (
-                <Link key={l.label} to={l.href} className="block font-body text-sm text-white/40 hover:text-[#00D4FF] transition-colors">{l.label}</Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Services */}
-          <div className="space-y-4">
-            <h4 className="font-heading font-bold text-sm uppercase tracking-widest text-white/50">Services</h4>
-            <div className="space-y-2.5">
-              {[
-                { label: 'Services', href: '/services' },
-                { label: 'Jobs', href: '/jobs' },
-                { label: 'Explore', href: '/explore' },
-              ].map(l => (
-                <Link key={l.label} to={l.href} className="block font-body text-sm text-white/40 hover:text-[#00D4FF] transition-colors">{l.label}</Link>
-              ))}
+            
+            {/* Divider */}
+            <div className="hidden sm:block w-px h-8 bg-white/10" />
+            
+            {/* Socials - Vertical */}
+            <div className="flex flex-col gap-2">
+              <a href="https://www.facebook.com/share/18Neew76Yo/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-body text-xs font-bold text-blue-400 transition-all hover:scale-105"
+                style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.25)' }}>
+                <Facebook className="w-3.5 h-3.5" /> Facebook
+              </a>
+              <a href="https://instagram.com/1marketph" target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-body text-xs font-bold text-pink-400 transition-all hover:scale-105"
+                style={{ background: 'rgba(236,72,153,0.12)', border: '1px solid rgba(236,72,153,0.25)' }}>
+                <Instagram className="w-3.5 h-3.5" /> Instagram
+              </a>
+              <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-body text-xs font-bold text-white/80 transition-all hover:scale-105"
+                style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                TikTok
+              </a>
+              <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-body text-xs font-bold text-red-400 transition-all hover:scale-105"
+                style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)' }}>
+                <Youtube className="w-3.5 h-3.5" /> YouTube
+              </a>
             </div>
           </div>
         </div>
