@@ -16,9 +16,6 @@ const EMPTY_FORM = {
   location: 'Manila',
   bio: '',
   seller_area: '',
-  social_facebook: '',
-  social_instagram: '',
-  social_tiktok: '',
 };
 
 // Session key for impersonation
@@ -85,8 +82,8 @@ export default function ConnectedAccounts() {
       }, 100);
       
       if (editingAccount) {
-        // Edit existing account - only update provided fields
-        const updateData = {
+        // Edit existing account
+        await base44.entities.User.update(editingAccount.id, {
           full_name: form.full_name.trim(),
           channel_name: form.channel_name.trim() || form.full_name.trim(),
           user_type: form.user_type,
@@ -95,13 +92,7 @@ export default function ConnectedAccounts() {
           bio: form.bio || '',
           seller_area: form.seller_area || '',
           is_seller: form.user_type === 'seller' || form.user_type === 'business',
-        };
-        // Only include social fields if they have values
-        if (form.social_facebook) updateData.social_facebook = form.social_facebook;
-        if (form.social_instagram) updateData.social_instagram = form.social_instagram;
-        if (form.social_tiktok) updateData.social_tiktok = form.social_tiktok;
-        
-        await base44.entities.User.update(editingAccount.id, updateData);
+        });
         clearInterval(progressInterval);
         setSaveProgress(100);
         showToast('Account updated!');
@@ -147,33 +138,16 @@ export default function ConnectedAccounts() {
           ghost_linked: false,
           username_set: false,
           
-          // Optional fields with defaults
+          // Simple defaults
           bio: form.bio || '',
           seller_bio: form.bio || '',
           seller_area: form.seller_area || '',
-          business_type: '',
           profile_picture: '',
           cover_photo: '',
-          
-          // Social links - only if provided (empty strings by default)
-          social_facebook: form.social_facebook || '',
-          social_instagram: form.social_instagram || '',
-          social_tiktok: form.social_tiktok || '',
-          social_youtube: '',
-          social_viber: '',
-          social_telegram: '',
-          
-          // Privacy defaults
-          show_phone_public: false,
-          show_email_public: false,
-          
-          // Verification defaults
           is_verified_seller: false,
           verification_submitted: false,
           seller_pending: false,
           business_pending: false,
-          
-          // Empty arrays
           seller_products: [],
           business_categories: [],
         };
@@ -252,9 +226,6 @@ export default function ConnectedAccounts() {
       location: account.seller_location || 'Manila',
       bio: account.bio || '',
       seller_area: account.seller_area || '',
-      social_facebook: account.social_facebook || '',
-      social_instagram: account.social_instagram || '',
-      social_tiktok: account.social_tiktok || '',
     });
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -365,7 +336,7 @@ export default function ConnectedAccounts() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className={labelCls}>Display Name *</label>
-                  <input value={form.full_name} onChange={e => set('full_name', e.target.value)} placeholder="e.g. Maria Santos" className={inputCls} />
+                  <input value={form.full_name} onChange={e => set('full_name', e.target.value)} placeholder="e.g. Maria Santos" className={inputCls} autoFocus />
                 </div>
                 <div>
                   <label className={labelCls}>Channel Name (Public)</label>
@@ -394,26 +365,8 @@ export default function ConnectedAccounts() {
                   <input value={form.seller_area} onChange={e => set('seller_area', e.target.value)} placeholder="e.g. Bacoor, Cavite" className={inputCls} />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className={labelCls}>Bio / About</label>
+                  <label className={labelCls}>Bio / About (Optional)</label>
                   <textarea value={form.bio} onChange={e => set('bio', e.target.value)} rows={2} placeholder="Short bio..." className={`${inputCls} resize-none`} />
-                </div>
-              </div>
-
-              <div>
-                <p className="font-body text-[10px] font-bold text-white/40 uppercase tracking-wider mb-2">Social Links (optional)</p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div>
-                    <label className={labelCls}>Facebook URL</label>
-                    <input value={form.social_facebook} onChange={e => set('social_facebook', e.target.value)} placeholder="https://facebook.com/..." className={inputCls} />
-                  </div>
-                  <div>
-                    <label className={labelCls}>Instagram URL</label>
-                    <input value={form.social_instagram} onChange={e => set('social_instagram', e.target.value)} placeholder="https://instagram.com/..." className={inputCls} />
-                  </div>
-                  <div>
-                    <label className={labelCls}>TikTok URL</label>
-                    <input value={form.social_tiktok} onChange={e => set('social_tiktok', e.target.value)} placeholder="https://tiktok.com/@..." className={inputCls} />
-                  </div>
                 </div>
               </div>
 
