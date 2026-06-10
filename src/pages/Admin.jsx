@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, X, Save, ArrowLeft, Building2, ShoppingBag, Search, Upload, User, BadgeCheck, Shield, Flag, CheckCircle, XCircle, Ghost, Link2 } from 'lucide-react';
@@ -430,18 +430,21 @@ export default function Admin() {
     setGhostSaving(true);
     try {
       const ghostId = `ghost_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-      await base44.entities.User.create({
+      const userData = {
         full_name: ghostForm.full_name.trim(),
         email: `${ghostId}@ghost.1marketph.internal`,
         user_type: ghostForm.user_type,
         is_seller: ghostForm.user_type === 'seller' || ghostForm.user_type === 'business',
-        account_type: ghostForm.user_type === 'business' ? 'business_owner' : ghostForm.user_type,
         business_name: ghostForm.business_name.trim() || ghostForm.full_name.trim(),
         seller_location: ghostForm.location,
         is_ghost_account: true,
         ghost_id: ghostId,
         role: 'user',
-      });
+      };
+      if (ghostForm.user_type === 'business') {
+        userData.account_type = 'business_owner';
+      }
+      await base44.entities.User.create(userData);
       setGhostSaving(false);
       setGhostForm({ full_name: '', user_type: 'seller', business_name: '', location: 'Manila' });
       showToast('Ghost account created!');

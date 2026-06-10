@@ -110,7 +110,7 @@ export default function ConnectedAccounts() {
         setSaveProgress(100);
         showToast('Account updated!');
       } else {
-        await base44.entities.User.create({
+        const userData = {
           full_name: form.full_name.trim(),
           channel_name: form.channel_name.trim() || form.full_name.trim(),
           email: `${ghostId}@ghost.1marketph.internal`,
@@ -125,8 +125,11 @@ export default function ConnectedAccounts() {
           social_tiktok: form.social_tiktok,
           seller_page_enabled: true,
           role: 'user',
-          ...(form.user_type === 'business' ? { account_type: 'business_owner' } : {}),
-        });
+        };
+        if (form.user_type === 'business') {
+          userData.account_type = 'business_owner';
+        }
+        await base44.entities.User.create(userData);
         clearInterval(progressInterval);
         setSaveProgress(100);
         showToast('Account created!');
