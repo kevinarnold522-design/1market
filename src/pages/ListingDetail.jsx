@@ -3,8 +3,9 @@ import MascotDog from '../components/MascotDog';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock } from 'lucide-react';
+import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock, ShoppingCart } from 'lucide-react';
 import ReportModal from '../components/ReportModal';
+import ReceiptModal from '../components/ReceiptModal';
 import ScrollToTop from '../components/ScrollToTop';
 import { base44 } from '@/api/base44Client';
 import Navbar from '../components/home/Navbar';
@@ -197,6 +198,7 @@ export default function ListingDetail() {
   const [activeImage, setActiveImage] = useState(0);
   const [sellerProfile, setSellerProfile] = useState(null);
   const [showReport, setShowReport] = useState(false);
+  const [showReceipt, setShowReceipt] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -297,6 +299,9 @@ export default function ListingDetail() {
       <BlueHeartAnimation show={showHeartAnim} />
 
       {showReport && <ReportModal listing={listing} user={user} onClose={() => setShowReport(false)} />}
+      <AnimatePresence>
+        {showReceipt && <ReceiptModal listing={listing} user={user} onClose={() => setShowReceipt(false)} />}
+      </AnimatePresence>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-24 lg:py-28">
         <div className="flex items-center justify-between mb-6">
           <Link to={`/${listing.type === 'cars' || listing.type === 'shoes' || listing.type === 'electronics' ? 'buysell' : listing.type === 'hotel' ? 'travel' : 'buysell'}`}
@@ -602,6 +607,23 @@ export default function ListingDetail() {
                   {listing.mileage && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Mileage</p><p className="font-body text-xs text-white font-bold">{listing.mileage}</p></div>}
                   {listing.transmission && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Trans.</p><p className="font-body text-xs text-white font-bold">{listing.transmission}</p></div>}
                   {listing.car_ownership && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Owner</p><p className="font-body text-xs text-white font-bold">{listing.car_ownership}</p></div>}
+                </div>
+              )}
+
+              {/* Buy Now / Order button — hide for jobs/services/rent */}
+              {listing.type !== 'jobs' && listing.type !== 'rent_lease' && listing.quantity !== 0 && (
+                <button onClick={() => {
+                  if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
+                  setShowReceipt(true);
+                }}
+                  className="w-full mb-4 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-[1.01]"
+                  style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 20px rgba(0,212,255,0.3)' }}>
+                  <ShoppingCart className="w-4 h-4" /> Buy Now / Get Receipt
+                </button>
+              )}
+              {listing.quantity === 0 && (
+                <div className="w-full mb-4 py-3 rounded-xl text-center font-body font-bold text-sm text-red-400 border border-red-500/30 bg-red-500/5">
+                  Out of Stock
                 </div>
               )}
 
