@@ -6,11 +6,11 @@ import React from 'react';
  */
 export default function OneCheckmark({ size = 'md', label = 'Verified Partner' }) {
   const sizes = {
-    xs: { outer: 16, inner: 12, font: '7px' },
-    sm: { outer: 20, inner: 15, font: '8px' },
-    md: { outer: 26, inner: 19, font: '9px' },
-    lg: { outer: 34, inner: 25, font: '11px' },
-    xl: { outer: 44, inner: 32, font: '13px' },
+    xs: { outer: 18, inner: 13, font: '8px' },
+    sm: { outer: 24, inner: 18, font: '9px' },
+    md: { outer: 32, inner: 23, font: '10px' },
+    lg: { outer: 42, inner: 30, font: '12px' },
+    xl: { outer: 54, inner: 40, font: '14px' },
   };
   const s = sizes[size] || sizes.md;
 

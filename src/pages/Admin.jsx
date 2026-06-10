@@ -452,18 +452,19 @@ export default function Admin() {
   };
 
   if (!authChecked) return (
-    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-[#0A192F]/10 border-t-[#2563EB] rounded-full animate-spin" />
+    <div className="min-h-screen flex items-center justify-center" style={{ background: '#070F1A' }}>
+      <div className="w-8 h-8 border-4 border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" />
     </div>
   );
 
   if (!isOwner) return (
-    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-6">
+    <div className="min-h-screen flex items-center justify-center p-6" style={{ background: '#070F1A' }}>
       <div className="text-center max-w-sm">
-        <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-4 text-2xl">🔒</div>
-        <h2 className="font-heading font-bold text-xl text-[#0A192F] mb-2">Access Restricted</h2>
-        <p className="font-body text-sm text-[#0A192F]/50 mb-4">This dashboard is only accessible to the site owner.</p>
-        <Link to="/" className="inline-flex items-center gap-2 px-4 py-2 bg-[#0A192F] text-white rounded-xl font-body text-sm font-semibold hover:bg-[#2563EB] transition-colors">
+        <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl" style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)' }}>🔒</div>
+        <h2 className="font-heading font-bold text-xl text-white mb-2">Access Restricted</h2>
+        <p className="font-body text-sm text-white/50 mb-4">This dashboard is only accessible to the site owner.</p>
+        <Link to="/" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-body text-sm font-semibold text-[#0A192F] transition-colors"
+          style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}>
           <ArrowLeft className="w-4 h-4" /> Back to Home
         </Link>
       </div>
@@ -481,9 +482,9 @@ export default function Admin() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#070F1A 0%,#0a1940 100%)' }}>
       {/* Header */}
-      <div className="px-4 sm:px-6 lg:px-8 py-6" style={{ background: 'linear-gradient(135deg,#0A192F,#0D1F3C)', borderBottom: '1px solid rgba(0,212,255,0.15)' }}>
+      <div className="px-4 sm:px-6 lg:px-8 py-6" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)', borderBottom: '1px solid rgba(0,212,255,0.2)' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-body">
@@ -513,26 +514,26 @@ export default function Admin() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-white">
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           {[
-            { label: 'Total Businesses', value: businesses.length, color: 'text-[#2563EB]', bg: 'bg-blue-50' },
-            { label: 'Total Users', value: users.length, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-            { label: 'All Listings', value: listings.length, color: 'text-rose-600', bg: 'bg-rose-50' },
-            { label: 'Pending Approvals', value: pendingListings.length, color: 'text-amber-600', bg: 'bg-amber-50' },
-            { label: 'Pending Reports', value: reports.filter(r => r.status === 'pending').length, color: 'text-red-600', bg: 'bg-red-50' },
-            { label: 'Pending Verifications', value: verifications.filter(v => v.status === 'pending').length, color: 'text-purple-600', bg: 'bg-purple-50' },
+            { label: 'Total Businesses', value: businesses.length, color: '#00D4FF', border: 'rgba(0,212,255,0.25)' },
+            { label: 'Total Users', value: users.length, color: '#34d399', border: 'rgba(52,211,153,0.25)' },
+            { label: 'All Listings', value: listings.length, color: '#c084fc', border: 'rgba(192,132,252,0.25)' },
+            { label: 'Pending Approvals', value: pendingListings.length, color: '#fbbf24', border: 'rgba(251,191,36,0.35)' },
+            { label: 'Pending Reports', value: reports.filter(r => r.status === 'pending').length, color: '#f87171', border: 'rgba(248,113,113,0.25)' },
+            { label: 'Pending Verifications', value: verifications.filter(v => v.status === 'pending').length, color: '#a78bfa', border: 'rgba(167,139,250,0.25)' },
           ].map(s => (
-            <div key={s.label} className={`bg-white rounded-2xl p-4 border border-[#0A192F]/5 shadow-sm`}>
-              <p className={`font-heading font-bold text-2xl ${s.color}`}>{s.value}</p>
-              <p className="font-body text-xs text-[#0A192F]/50 mt-0.5">{s.label}</p>
+            <div key={s.label} className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${s.border}`, backdropFilter: 'blur(8px)' }}>
+              <p className="font-heading font-bold text-2xl" style={{ color: s.color }}>{s.value}</p>
+              <p className="font-body text-xs text-white/40 mt-0.5">{s.label}</p>
             </div>
           ))}
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6 border-b border-[#0A192F]/10 pb-4 flex-wrap">
+        <div className="flex gap-2 mb-6 border-b border-white/10 pb-4 flex-wrap">
           {[
             { key: 'approvals', label: `All Approvals (${pendingListings.length})`, icon: CheckCircle },
             { key: 'businesses', label: 'Businesses', icon: Building2 },
@@ -544,8 +545,9 @@ export default function Admin() {
             { key: 'ghost', label: `Ghost Accounts (${ghostUsers.length})`, icon: Ghost },
           ].map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-body font-semibold text-sm transition-all ${tab === t.key ? 'bg-[#0A192F] text-white' : 'bg-white border border-[#0A192F]/10 text-[#0A192F]/60 hover:border-[#0A192F]/20'}`}>
-              <t.icon className="w-4 h-4" /> {t.label}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl font-body font-semibold text-xs transition-all ${tab === t.key ? 'text-[#0A192F]' : 'text-white/50 hover:text-white border border-white/10 hover:border-white/25'}`}
+              style={tab === t.key ? { background: 'linear-gradient(135deg,#00D4FF,#2563EB)' } : { background: 'rgba(255,255,255,0.05)' }}>
+              <t.icon className="w-3.5 h-3.5" /> {t.label}
             </button>
           ))}
         </div>
@@ -553,15 +555,17 @@ export default function Admin() {
         {/* Controls */}
         <div className="flex flex-wrap gap-3 mb-6">
           <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#0A192F]/30" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search..."
-              className="w-full pl-9 pr-4 py-2.5 bg-white border border-[#0A192F]/10 rounded-xl font-body text-sm text-[#0A192F] focus:outline-none focus:border-[#2563EB]" />
+              className="w-full pl-9 pr-4 py-2.5 rounded-xl font-body text-sm text-white focus:outline-none focus:border-[#00D4FF]"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }} />
           </div>
           {tab === 'businesses' && (
             <div className="flex gap-2 flex-wrap">
               {['all', ...SECTIONS].map(s => (
                 <button key={s} onClick={() => setSectionFilter(s)}
-                  className={`px-4 py-2.5 rounded-xl font-body font-semibold text-sm transition-all capitalize ${sectionFilter === s ? 'bg-[#0A192F] text-white' : 'bg-white border border-[#0A192F]/10 text-[#0A192F]/60'}`}>
+                  className={`px-4 py-2.5 rounded-xl font-body font-semibold text-sm transition-all capitalize ${sectionFilter === s ? 'text-[#0A192F]' : 'text-white/50 hover:text-white'}`}
+                  style={sectionFilter === s ? { background: 'linear-gradient(135deg,#00D4FF,#2563EB)' } : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
                   {s}
                 </button>
               ))}
@@ -599,7 +603,7 @@ export default function Admin() {
             )}
             {filteredBiz.map(biz => (
               <motion.div key={biz.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                className="bg-white rounded-2xl border border-[#0A192F]/5 p-4 flex items-center gap-4 flex-wrap">
+                className="rounded-2xl p-4 flex items-center gap-4 flex-wrap" style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(0,212,255,0.1)' }}>
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   {biz.logo_url ? (
                     <img src={biz.logo_url} alt="logo" className="w-12 h-12 rounded-xl object-contain border border-[#0A192F]/10 bg-[#F8FAFC] flex-shrink-0"
@@ -614,13 +618,13 @@ export default function Admin() {
                   )}
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h4 className="font-heading font-bold text-sm text-[#0A192F] truncate">{biz.name}</h4>
+                      <h4 className="font-heading font-bold text-sm text-white truncate">{biz.name}</h4>
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold capitalize ${biz.section === 'food' ? 'bg-emerald-100 text-emerald-700' : biz.section === 'travel' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}`}>
                         {biz.section}
                       </span>
                       {!biz.is_active && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-600">Hidden</span>}
                     </div>
-                    <p className="font-body text-xs text-[#0A192F]/40 truncate">{biz.location} · {biz.area} · {biz.category}</p>
+                    <p className="font-body text-xs text-white/40 truncate">{biz.location} · {biz.area} · {biz.category}</p>
                   </div>
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
@@ -645,7 +649,7 @@ export default function Admin() {
             )}
             {filteredList.map(item => (
               <motion.div key={item.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                className="bg-white rounded-2xl border border-[#0A192F]/5 p-4 flex items-center gap-4 flex-wrap">
+                className="rounded-2xl p-4 flex items-center gap-4 flex-wrap" style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(0,212,255,0.1)' }}>
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   {item.image_url ? (
                     <img src={item.image_url} alt={item.title} className="w-12 h-12 rounded-xl object-cover flex-shrink-0"
@@ -657,11 +661,11 @@ export default function Admin() {
                   )}
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h4 className="font-heading font-bold text-sm text-[#0A192F] truncate">{item.title}</h4>
+                      <h4 className="font-heading font-bold text-sm text-white truncate">{item.title}</h4>
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-700 capitalize">{item.type}</span>
                       {!item.is_active && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-600">Hidden</span>}
                     </div>
-                    <p className="font-body text-xs text-[#0A192F]/40">{item.location} · {item.area} · {item.price_label || `₱${Number(item.price).toLocaleString()}`}</p>
+                    <p className="font-body text-xs text-white/40">{item.location} · {item.area} · {item.price_label || `₱${Number(item.price).toLocaleString()}`}</p>
                   </div>
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
@@ -685,13 +689,13 @@ export default function Admin() {
               u.email?.toLowerCase().includes(search.toLowerCase())
             ).map(u => (
               <motion.div key={u.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                className="bg-white rounded-2xl border border-[#0A192F]/5 p-4 flex items-center gap-4 flex-wrap">
+                className="rounded-2xl p-4 flex items-center gap-4 flex-wrap" style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(0,212,255,0.1)' }}>
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-sm flex-shrink-0">
                   {(u.full_name || u.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <p className="font-heading font-bold text-sm text-[#0A192F] truncate">{u.full_name || 'No Name'}</p>
+                    <p className="font-heading font-bold text-sm text-white truncate">{u.full_name || 'No Name'}</p>
                     {u.is_verified_seller && <BadgeCheck className="w-4 h-4 text-[#2563EB]" title="Verified Seller" />}
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold capitalize ${u.role === 'admin' ? 'bg-amber-100 text-amber-700' : u.role === 'moderator' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
                       {u.role || 'user'}
@@ -702,7 +706,7 @@ export default function Admin() {
                       </span>
                     )}
                   </div>
-                  <p className="font-body text-xs text-[#0A192F]/40 truncate">{u.email}</p>
+                  <p className="font-body text-xs text-white/40 truncate">{u.email}</p>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
                  <select value={u.role || 'user'} onChange={e => setUserRole(u, e.target.value)}
@@ -752,7 +756,7 @@ export default function Admin() {
               r.reporter_email?.toLowerCase().includes(search.toLowerCase())
             ).map(r => (
               <motion.div key={r.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                className="bg-white rounded-2xl border border-[#0A192F]/5 p-4 flex items-start gap-4 flex-wrap">
+                className="rounded-2xl p-4 flex items-start gap-4 flex-wrap" style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(239,68,68,0.15)' }}>
                 <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Flag className="w-5 h-5 text-red-400" />
                 </div>
@@ -810,7 +814,7 @@ export default function Admin() {
               v.user_email?.toLowerCase().includes(search.toLowerCase())
             ).map(v => (
               <motion.div key={v.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                className="bg-white rounded-2xl border border-[#0A192F]/5 p-4 flex items-start gap-4 flex-wrap">
+                className="rounded-2xl p-4 flex items-start gap-4 flex-wrap" style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(37,99,235,0.2)' }}>
                 <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <BadgeCheck className="w-5 h-5 text-[#2563EB]" />
                 </div>
@@ -906,7 +910,7 @@ export default function Admin() {
               j.email_contact?.toLowerCase().includes(search.toLowerCase())
             ).map(listing => (
               <motion.div key={listing.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                className="bg-white rounded-2xl border border-[#0A192F]/5 p-4 flex items-start gap-4 flex-wrap">
+                className="rounded-2xl p-4 flex items-start gap-4 flex-wrap" style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(245,158,11,0.2)' }}>
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   {listing.image_url ? (
                     <img src={listing.image_url} alt={listing.title} className="w-14 h-14 rounded-xl object-cover flex-shrink-0" onError={e => e.target.style.display='none'} />
@@ -969,12 +973,12 @@ export default function Admin() {
                 <div className="text-center py-12 text-[#0A192F]/30 font-body text-sm">Enter a user email and click View Messages, or click All Recent.</div>
               )}
               {adminMessages.map(m => (
-                <div key={m.id} className="bg-white rounded-xl border border-[#0A192F]/5 p-3">
+                <div key={m.id} className="rounded-xl p-3" style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(0,212,255,0.1)' }}>
                   <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${m.chat_type === 'business' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>{m.chat_type || 'listing'}</span>
-                      <span className="font-body text-xs font-bold text-[#0A192F]">{m.sender_name || m.sender_email}</span>
-                      <span className="font-body text-[9px] text-[#0A192F]/40">to {m.buyer_email === m.sender_email ? m.seller_email : m.buyer_email}</span>
+                      <span className="font-body text-xs font-bold text-white">{m.sender_name || m.sender_email}</span>
+                      <span className="font-body text-[9px] text-white/40">to {m.buyer_email === m.sender_email ? m.seller_email : m.buyer_email}</span>
                     </div>
                     <span className="font-body text-[9px] text-[#0A192F]/30">{new Date(m.created_date).toLocaleString('en-PH')}</span>
                   </div>
@@ -988,7 +992,7 @@ export default function Admin() {
           /* GHOST ACCOUNTS TAB */
           <div className="space-y-6">
             {/* Create ghost account form */}
-            <div className="bg-white rounded-2xl border border-[#0A192F]/5 p-5">
+            <div className="rounded-2xl p-5" style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(168,85,247,0.2)' }}>
               <div className="flex items-center gap-2 mb-4">
                 <Ghost className="w-4 h-4 text-purple-500" />
                 <h3 className="font-heading font-bold text-sm text-[#0A192F]">Create Ghost Account</h3>
@@ -1038,7 +1042,7 @@ export default function Admin() {
               <div className="space-y-3">
                 {ghostUsers.map(u => (
                   <motion.div key={u.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                    className="bg-white rounded-2xl border border-[#0A192F]/5 p-4 flex items-center gap-4 flex-wrap">
+                  className="rounded-2xl p-4 flex items-center gap-4 flex-wrap" style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(168,85,247,0.15)' }}>
                     <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
                       <Ghost className="w-5 h-5 text-purple-500" />
                     </div>

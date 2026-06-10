@@ -473,9 +473,9 @@ export default function UserProfile() {
     const imgs = form.extra_images || [];
     const mainImage = form.image_url || imgs[0] || '';
     const extras = mainImage && imgs[0] === mainImage ? imgs.slice(1) : imgs;
-    const data = { ...form, price: Number(form.price) || 0, image_url: mainImage, extra_images: extras, seller_name: user?.full_name || form.seller_name };
-    if (editing) { await base44.entities.Listing.update(editing.id, data); showToast('Updated!'); }
-    else { await base44.entities.Listing.create(data); showToast('Published!'); }
+    const data = { ...form, price: Number(form.price) || 0, image_url: mainImage, extra_images: extras, seller_name: user?.full_name || form.seller_name, approval_status: 'pending' };
+    if (editing) { await base44.entities.Listing.update(editing.id, data); showToast('Updated! Pending re-review.'); }
+    else { await base44.entities.Listing.create(data); showToast('Submitted for review!'); }
     setShowForm(false); setEditing(null);
     const items = await base44.entities.Listing.filter({ created_by_id: user.id });
     setListings(items);
