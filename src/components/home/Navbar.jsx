@@ -565,8 +565,9 @@ export default function Navbar() {
                       </motion.div>
                     )}
                   </AnimatePresence>
+                  </div>
                 </div>
-                </div>
+              </>
               ) : (
                 <div className="flex items-center gap-2">
                   <Link to="/login"
