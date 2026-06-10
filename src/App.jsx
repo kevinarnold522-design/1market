@@ -28,6 +28,7 @@ import BusinessCommunity from './pages/BusinessCommunity';
 import Notifications from './pages/Notifications';
 import SellerOnboarding from './pages/SellerOnboarding';
 import PostAdLanding from './pages/PostAdLanding';
+import CategoryTransitionPage from './pages/CategoryTransitionPage';
 import ConnectedAccounts from './pages/ConnectedAccounts';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -84,6 +85,7 @@ const AuthenticatedApp = () => {
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/onboarding" element={<SellerOnboarding />} />
         <Route path="/post-ad" element={<PostAdLanding />} />
+        <Route path="/category/:category" element={<CategoryTransitionPage />} />
         <Route path="/connected-accounts" element={<ConnectedAccounts />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>

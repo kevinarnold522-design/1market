@@ -84,18 +84,12 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
     setOpen(false);
     setExpandedCat(null);
     if (!user) { setShowSignup(true); return; }
-    navigate(`/post-ad?category=${cat.key}&type=${subtype.type}`);
+    navigate(`/category/${cat.key}`);
   };
 
   const handleSelectCat = (cat) => {
     if (!user) { setOpen(false); setShowSignup(true); return; }
-    if (cat.subtypes.length === 1) {
-      setOpen(false);
-      setExpandedCat(null);
-      navigate(`/post-ad?category=${cat.key}&type=${cat.subtypes[0].type}`);
-    } else {
-      setExpandedCat(expandedCat === cat.key ? null : cat.key);
-    }
+    navigate(`/category/${cat.key}`);
   };
 
   const btnLabel = iconOnly ? null : compact ? '+ Post an Ad' : 'Post an Ad';
