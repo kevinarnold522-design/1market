@@ -192,19 +192,37 @@ export default function ConnectedAccounts() {
         setSaveProgress(100);
         
         // Wait for database to persist then redirect
-        setTimeout(() => {
-          setSaving(false);
-          setSaveProgress(0);
-          setShowForm(false);
-          setEditingAccount(null);
-          setForm(EMPTY_FORM);
-          showToast('Account created! Redirecting to profile...');
-          loadAccounts();
-          // Use window.location.href for hard refresh to ensure clean session
-          setTimeout(() => {
-            window.location.href = `/seller/${result.id}`;
-          }, 300);
-        }, 800);
+        setTimeout(async () => {
+          // Verify account exists before redirecting
+          try {
+            const verifyUser = await base44.entities.User.filter({ id: result.id });
+            if (verifyUser && verifyUser.length > 0) {
+              setSaving(false);
+              setSaveProgress(0);
+              setShowForm(false);
+              setEditingAccount(null);
+              setForm(EMPTY_FORM);
+              showToast('Account created! Redirecting...');
+              loadAccounts();
+              // Use ID directly for guaranteed routing
+              window.location.href = `/seller/${result.id}`;
+            } else {
+              throw new Error('Account not found after creation');
+            }
+          } catch (verifyErr) {
+            console.error('Verification failed:', verifyErr);
+            showToast('Account created but profile loading...');
+            setSaving(false);
+            setSaveProgress(0);
+            setShowForm(false);
+            setEditingAccount(null);
+            setForm(EMPTY_FORM);
+            loadAccounts();
+            setTimeout(() => {
+              window.location.href = `/seller/${result.id}`;
+            }, 1000);
+          }
+        }, 1000);
       }
     } catch (err) {
       console.error('Failed to create account:', err);

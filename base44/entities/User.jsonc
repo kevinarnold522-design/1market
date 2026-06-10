@@ -2,151 +2,18 @@
   "name": "User",
   "type": "object",
   "properties": {
-    "role": {
+    "facebook_page_id": {
       "type": "string",
-      "enum": [
-        "admin",
-        "user",
-        "moderator"
-      ],
-      "default": "user"
+      "description": "Connected Facebook Page ID for live streaming"
     },
-    "bio": {
-      "type": "string"
-    },
-    "channel_name": {
+    "facebook_page_name": {
       "type": "string",
-      "description": "Public display name shown on seller/business profile instead of real name"
+      "description": "Facebook Page name"
     },
-    "profile_picture": {
-      "type": "string"
-    },
-    "cover_photo": {
-      "type": "string"
-    },
-    "show_phone_public": {
+    "facebook_live_enabled": {
       "type": "boolean",
       "default": false,
-      "description": "If true, phone is visible on public profile"
-    },
-    "show_email_public": {
-      "type": "boolean",
-      "default": false,
-      "description": "If true, email is visible on public profile"
-    },
-    "social_facebook": {
-      "type": "string"
-    },
-    "social_instagram": {
-      "type": "string"
-    },
-    "social_youtube": {
-      "type": "string"
-    },
-    "social_tiktok": {
-      "type": "string"
-    },
-    "social_viber": {
-      "type": "string"
-    },
-    "social_telegram": {
-      "type": "string"
-    },
-    "user_type": {
-      "type": "string",
-      "enum": [
-        "customer",
-        "seller",
-        "business"
-      ],
-      "default": "customer",
-      "description": "customer=browse only, seller=can list, business=listed under business name"
-    },
-    "account_type": {
-      "type": "string",
-      "enum": [
-        "customer",
-        "business_owner"
-      ],
-      "description": "Legacy field \u2014 use user_type instead"
-    },
-    "is_seller": {
-      "type": "boolean",
-      "default": false
-    },
-    "is_verified_seller": {
-      "type": "boolean",
-      "default": false
-    },
-    "seller_bio": {
-      "type": "string"
-    },
-    "seller_location": {
-      "type": "string"
-    },
-    "seller_area": {
-      "type": "string"
-    },
-    "seller_page_enabled": {
-      "type": "boolean",
-      "default": false
-    },
-    "seller_products": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Product/service categories this seller sells"
-    },
-    "location": {
-      "type": "string"
-    },
-    "username": {
-      "type": "string"
-    },
-    "username_set": {
-      "type": "boolean",
-      "default": false
-    },
-    "verification_submitted": {
-      "type": "boolean",
-      "default": false
-    },
-    "member_type": {
-      "type": "string"
-    },
-    "business_name": {
-      "type": "string",
-      "description": "Business name shown publicly instead of personal name"
-    },
-    "business_type": {
-      "type": "string"
-    },
-    "business_categories": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "business_pending": {
-      "type": "boolean",
-      "default": false
-    },
-    "seller_pending": {
-      "type": "boolean",
-      "default": false
-    },
-    "is_ghost_account": {
-      "type": "boolean",
-      "default": false
-    },
-    "ghost_id": {
-      "type": "string"
-    },
-    "ghost_linked": {
-      "type": "boolean",
-      "default": false
+      "description": "Whether Facebook Live is connected"
     }
-  },
-  "required": []
+  }
 }

@@ -6,7 +6,7 @@ import {
   Heart, Settings, Store, MapPin, Bell, ShoppingCart, CheckCircle,
   History, Edit2, Check, X, AlertCircle, BadgeCheck, Truck, FileText,
   Plus, Pencil, Trash2, Save, Upload, Eye, Globe, Search, BarChart2,
-  Youtube, Instagram, Facebook, Camera, UserPlus, UserCheck, Building2
+  Youtube, Instagram, Facebook, Camera, UserPlus, UserCheck, Building2, Gift
 } from 'lucide-react';
 import SellerAnalytics from '../components/seller/SellerAnalytics';
 import { base44 } from '@/api/base44Client';
@@ -19,6 +19,8 @@ import OneCheckmark from '../components/OneCheckmark';
 import PaymentSettings from '../components/settings/PaymentSettings';
 import BecomeSellerModal from '../components/BecomeSellerModal';
 import BecomeBusinessModal from '../components/BecomeBusinessModal';
+import DailyRewardsTracker from '../components/DailyRewardsTracker';
+import FacebookLiveConnector from '../components/FacebookLiveConnector';
 
 // ─── Shared helpers ───────────────────────────────────────────────────────────
 const LISTING_TYPES = ['product','shoes','cars','houses','electronics','clothing','furniture','food','services','other'];
@@ -299,6 +301,8 @@ export default function UserProfile() {
   const [showVerifiedBanner, setShowVerifiedBanner] = useState(false);
   const [showSellerModal, setShowSellerModal] = useState(false);
   const [showBusinessModal, setShowBusinessModal] = useState(false);
+  const [showRewards, setShowRewards] = useState(false);
+  const [showFBLive, setShowFBLive] = useState(false);
   const [orders, setOrders] = useState([]);
   const [sellerOrders, setSellerOrders] = useState([]);
   const [cart, setCart] = useState([]);
@@ -1111,6 +1115,33 @@ export default function UserProfile() {
             {activeTab === 'sellerpage' && isSeller && (
               <div className="space-y-4">
                 <h3 className="font-heading font-bold text-white text-sm">Your Public Seller Page</h3>
+                
+                {/* Seller Tools - Daily Rewards & Facebook Live */}
+                <div className="grid grid-cols-2 gap-3">
+                  <button onClick={() => setShowRewards(true)}
+                    className="rounded-2xl p-4 text-left transition-all hover:scale-[1.02]"
+                    style={{ background: 'linear-gradient(135deg,rgba(168,85,247,0.15),rgba(124,58,237,0.1))', border: '1px solid rgba(168,85,247,0.3)' }}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                        <Gift className="w-4 h-4 text-purple-400" />
+                      </div>
+                      <span className="font-heading font-bold text-white text-xs">Daily Rewards</span>
+                    </div>
+                    <p className="font-body text-[9px] text-white/40">Earn points & rewards</p>
+                  </button>
+                  
+                  <button onClick={() => setShowFBLive(true)}
+                    className="rounded-2xl p-4 text-left transition-all hover:scale-[1.02]"
+                    style={{ background: 'linear-gradient(135deg,rgba(24,119,242,0.15),rgba(66,103,178,0.1))', border: '1px solid rgba(24,119,242,0.3)' }}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                        <Facebook className="w-4 h-4 text-blue-400" />
+                      </div>
+                      <span className="font-heading font-bold text-white text-xs">Facebook Live</span>
+                    </div>
+                    <p className="font-body text-[9px] text-white/40">Connect to sell via live</p>
+                  </button>
+                </div>
                 <div className="rounded-2xl p-4 space-y-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
                   {isVerified
                     ? <span className="flex items-center gap-1 w-fit"><OneCheckmark size="sm" label="Verified Partner" /></span>
@@ -1232,6 +1263,12 @@ export default function UserProfile() {
         )}
         {showBusinessModal && user && (
           <BecomeBusinessModal user={user} onClose={() => setShowBusinessModal(false)} onSuccess={async () => { await reloadUser(); showToast('Business application submitted! 📋'); }} />
+        )}
+        {showRewards && user && (
+          <DailyRewardsTracker onClose={() => setShowRewards(false)} />
+        )}
+        {showFBLive && user && (
+          <FacebookLiveConnector onClose={() => setShowFBLive(false)} />
         )}
       </AnimatePresence>
     </div>
