@@ -116,19 +116,16 @@ export default function ConnectedAccounts() {
           email: `${ghostId}@ghost.1marketph.internal`,
           user_type: form.user_type,
           is_seller: form.user_type === 'seller' || form.user_type === 'business',
-          account_type: form.user_type === 'business' ? 'business_owner' : form.user_type,
+          account_type: form.user_type === 'business' ? 'business_owner' : undefined,
           business_name: form.business_name.trim() || form.full_name.trim(),
           seller_location: form.location,
-          bio: form.bio,
           seller_area: form.seller_area,
+          bio: form.bio,
           social_facebook: form.social_facebook,
           social_instagram: form.social_instagram,
           social_tiktok: form.social_tiktok,
-          is_ghost_account: true,
-          is_connected_account: true,
-          ghost_id: ghostId,
-          role: 'user',
           seller_page_enabled: true,
+          role: 'user',
         });
         clearInterval(progressInterval);
         setSaveProgress(100);
