@@ -42,13 +42,13 @@ export default function TopBanner() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
         {/* Logo and vertical links bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-8 mb-8 pb-8 border-b border-white/8">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mb-8 pb-8 border-b border-white/8">
           {/* Logo */}
           <div className="flex items-center gap-3">
             <img src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
               alt="1Market PH" className="w-12 h-12 rounded-2xl object-cover shadow-lg"
               style={{ boxShadow: '0 0 20px rgba(0,212,255,0.3)' }} />
-            <div>
+            <div className="text-center sm:text-left">
               <p className="font-heading font-bold text-white text-xl tracking-tight">
                 1Market<span style={{ color: '#FFD700' }}>PH</span><span className="text-white/40">.com</span>
               </p>
@@ -59,13 +59,10 @@ export default function TopBanner() {
           {/* Vertical Links and Socials */}
           <div className="flex items-center gap-6 flex-wrap justify-center">
             {/* About Us - Vertical */}
-            <div className="flex flex-col gap-2">
-              <Link to="/about" className="font-body text-xs text-[#00D4FF]/70 hover:text-[#00D4FF] transition-colors font-semibold">About 1MarketPH</Link>
-              <Link to="/privacy-policy" className="font-body text-xs text-white/30 hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
+            <div className="flex flex-col gap-2 border-r border-white/10 pr-6">
+              <Link to="/about" className="font-body text-xs text-[#00D4FF]/80 hover:text-[#00D4FF] transition-colors font-semibold">About 1MarketPH</Link>
+              <Link to="/privacy-policy" className="font-body text-xs text-white/40 hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
             </div>
-            
-            {/* Divider */}
-            <div className="hidden sm:block w-px h-8 bg-white/10" />
             
             {/* Socials - Vertical */}
             <div className="flex flex-col gap-2">
