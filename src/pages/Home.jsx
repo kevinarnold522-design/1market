@@ -12,6 +12,7 @@ import WaveBackground from '../components/WaveBackground';
 
 
 // Lazy-load heavy/below-fold sections
+const BrandedHeroSection = lazy(() => import('../components/home/BrandedHeroSection'));
 const HeroSection = lazy(() => import('../components/home/HeroSection'));
 const CategoryCards2 = CategoryCards; // already imported above
 const WhatMakesUsSpecial = lazy(() => import('../components/home/WhatMakesUsSpecial'));
@@ -47,7 +48,7 @@ export default function Home() {
       <div className="relative z-10">
         <WelcomeSplash />
         
-        <MovingWelcomeBanner />
+        <Suspense fallback={<Spinner />}><BrandedHeroSection /></Suspense>
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>
         <Suspense fallback={<Spinner />}><WhatMakesUsSpecial /></Suspense>
         <Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense>
