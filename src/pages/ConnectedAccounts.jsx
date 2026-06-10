@@ -127,7 +127,6 @@ export default function ConnectedAccounts() {
           role: 'user',
           ...(form.user_type === 'business' ? { account_type: 'business_owner' } : {}),
         });
-        });
         clearInterval(progressInterval);
         setSaveProgress(100);
         showToast('Account created!');
