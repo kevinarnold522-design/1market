@@ -504,10 +504,6 @@ export default function Navbar() {
                                 <Settings className="w-3.5 h-3.5" /> CEO Dashboard
                                 <MetaVerifiedBadge size="xs" label="" />
                               </Link>
-                              <Link to="/connected-accounts" onClick={() => setProfileOpen(false)}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-purple-500/10 transition-colors text-purple-400 font-body text-xs">
-                                <Ghost className="w-3.5 h-3.5" /> Connected Accounts
-                              </Link>
                               <button
                                 onClick={() => { toggleEditMode(); setProfileOpen(false); }}
                                 className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold ${editMode ? 'bg-[#00D4FF]/15 text-[#00D4FF]' : 'hover:bg-white/10 text-amber-300'}`}>
