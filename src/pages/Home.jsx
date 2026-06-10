@@ -19,7 +19,7 @@ const FlashDealsSection = lazy(() => import('../components/home/FlashDealsSectio
 const PhFlightDeals = lazy(() => import('../components/home/PhFlightDeals'));
 const PhHotelDeals = lazy(() => import('../components/home/PhHotelDeals'));
 const FeaturedListings = lazy(() => import('../components/home/FeaturedListings'));
-const ServicesDashboard = lazy(() => import('../components/home/ServicesDashboard'));
+
 
 const HowItWorksSection = lazy(() => import('../components/home/HowItWorksSection'));
 const ReviewHighlights = lazy(() => import('../components/home/ReviewHighlights'));
@@ -53,7 +53,6 @@ export default function Home() {
         <Suspense fallback={<Spinner />}><WhatMakesUsSpecial /></Suspense>
         <Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense>
         <CategoryCards />
-        <Suspense fallback={<Spinner />}><ServicesDashboard /></Suspense>
         <Suspense fallback={<Spinner />}><PhFlightDeals /></Suspense>
         <Suspense fallback={<Spinner />}><PhHotelDeals /></Suspense>
         <Suspense fallback={<Spinner />}><FeaturedListings /></Suspense>
