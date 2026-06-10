@@ -304,10 +304,20 @@ export default function ListingDetail() {
       </AnimatePresence>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-24 lg:py-28">
         <div className="flex items-center justify-between mb-6">
-          <Link to={`/${listing.type === 'cars' || listing.type === 'shoes' || listing.type === 'electronics' ? 'buysell' : listing.type === 'hotel' ? 'travel' : 'buysell'}`}
-            className="inline-flex items-center gap-2 text-white/50 hover:text-white font-body text-sm transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back to listings
-          </Link>
+          {(() => {
+            const cat = listing.main_category || 'buysell';
+            const catPath = cat === 'buysell' ? 'buysell' : cat === 'rent' ? 'rent' : cat === 'travel' ? 'travel' : cat === 'food' ? 'food' : cat === 'services' ? 'services' : cat === 'jobs' ? 'jobs' : 'buysell';
+            const sub = listing.subcategory ? `?sub=${encodeURIComponent(listing.subcategory)}` : '';
+            const typeParam = listing.type ? `${sub ? '&' : '?'}type=${listing.type}` : '';
+            return (
+              <Link to={`/${catPath}${sub}${typeParam}`}
+                className="inline-flex items-center gap-2 text-white/50 hover:text-white font-body text-sm transition-colors">
+                <ArrowLeft className="w-4 h-4" />
+                Back to {listing.main_category ? (listing.main_category === 'buysell' ? 'Buy & Sell' : listing.main_category.charAt(0).toUpperCase() + listing.main_category.slice(1)) : 'Listings'}
+                {listing.subcategory ? ` › ${listing.subcategory}` : ''}
+              </Link>
+            );
+          })()}
           {/* Approval Status Badge */}
           {listing.approval_status === 'pending' && (
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-body font-bold text-xs" style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', color: '#fbbf24' }}>
@@ -634,22 +644,27 @@ export default function ListingDetail() {
                 </div>
               )}
 
-              {/* Buy Now (buysell only) OR Contact Seller/Business (all others) */}
+              {/* Avail / Contact CTA */}
               {(() => {
                 const BUYSELL_TYPES = ['product','electronics','shoes','clothing','furniture','homeappliances','cars','houses','mods','other'];
                 const isBuySell = listing.main_category === 'buysell' || BUYSELL_TYPES.includes(listing.type);
                 const isBusiness = listing.main_category === 'food' || listing.business_id;
+                const isOutOfStock = isBuySell && listing.quantity === 0;
+
+                if (isOutOfStock) {
+                  return <div className="w-full mb-4 py-3 rounded-xl text-center font-body font-bold text-sm text-red-400 border border-red-500/30 bg-red-500/5">Out of Stock</div>;
+                }
+
                 if (isBuySell) {
-                  return listing.quantity === 0 ? (
-                    <div className="w-full mb-4 py-3 rounded-xl text-center font-body font-bold text-sm text-red-400 border border-red-500/30 bg-red-500/5">Out of Stock</div>
-                  ) : (
+                  return (
                     <button onClick={() => { if (!user) { base44.auth.redirectToLogin(window.location.href); return; } setShowReceipt(true); }}
                       className="w-full mb-4 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-[1.01]"
                       style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 20px rgba(0,212,255,0.3)' }}>
-                      <ShoppingCart className="w-4 h-4" /> Buy Now / Get Receipt
+                      <ShoppingCart className="w-4 h-4" /> Avail
                     </button>
                   );
                 }
+
                 return (
                   <button onClick={async () => {
                     if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
