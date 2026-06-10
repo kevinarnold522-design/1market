@@ -16,71 +16,64 @@ export default function HeroSection({ heroImage }) {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
+    <section className="relative min-h-[80vh] flex items-center overflow-hidden">
       {/* Background gradient — royal blue brand */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#000d40] via-[#0033CC] to-[#001a80]" />
 
-      {/* Kinetic line decoration — hidden on mobile */}
-      <motion.div
-        className="absolute left-12 top-0 w-[1px] bg-gradient-to-b from-transparent via-[#00D4FF] to-transparent hidden lg:block"
-        initial={{ height: 0 }}
-        animate={{ height: '100%' }}
-        transition={{ duration: 2, ease: 'easeOut' }} />
-
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-screen py-24 lg:py-28">
+        <div className="grid lg:grid-cols-2 gap-4 lg:gap-8 items-center py-12 lg:py-16">
           {/* Left: Typography */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}>
 
-            <div className="space-y-5">
+            <div className="space-y-3">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full"
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full"
                 style={{ background: 'rgba(0,64,208,0.3)', border: '1px solid rgba(62,151,241,0.3)' }}>
                 <div className="w-1.5 h-1.5 rounded-full bg-[#3E97F1] animate-pulse" />
-                <span className="font-body text-xs font-medium tracking-widest uppercase text-[#3E97F1]">1Marketph.com · Est. 2026</span>
+                <span className="font-body text-[10px] font-medium tracking-widest uppercase text-[#3E97F1]">1Marketph.com · Est. 2026</span>
               </motion.div>
 
               {/* Brand Logo */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <img
                   src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
                   alt="1Market Philippines"
-                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shadow-2xl"
-                  style={{ boxShadow: '0 0 32px rgba(255,215,0,0.4)' }}
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover shadow-2xl"
+                  style={{ boxShadow: '0 0 24px rgba(255,215,0,0.35)' }}
                 />
                 <h1 className="font-heading font-bold leading-[0.95] tracking-tight">
-                  <span className="block text-3xl sm:text-4xl lg:text-5xl" style={{ color: '#3E97F1' }}>Welcome to</span>
-                  <span className="block text-3xl sm:text-4xl lg:text-5xl mt-1" style={{ background: 'linear-gradient(135deg,#0040D0,#3E97F1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>1Market PH™</span>
+                  <span className="block text-2xl sm:text-3xl lg:text-4xl" style={{ color: '#3E97F1' }}>Welcome to</span>
+                  <span className="block text-2xl sm:text-3xl lg:text-4xl mt-0.5" style={{ background: 'linear-gradient(135deg,#0040D0,#3E97F1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>1Market PH™</span>
                 </h1>
               </div>
 
-              <p className="font-body text-sm sm:text-base lg:text-lg text-white/70 max-w-md leading-relaxed font-semibold">
+              <p className="font-body text-xs sm:text-sm text-white/70 max-w-md leading-relaxed font-semibold">
                 The Premiere Marketplace — Buy, Sell &amp; Connect Nationwide.
               </p>
 
-              <div className="h-[1px] w-16 bg-[#00D4FF]" />
+              <div className="h-[1px] w-12 bg-[#00D4FF]" />
 
               {/* Trust badges */}
-              <div className="flex flex-wrap gap-2 mt-1">
+              <div className="flex flex-wrap gap-1.5">
                 {[
                   { label: 'Free to List', color: 'rgba(16,185,129,0.15)', border: 'rgba(16,185,129,0.3)', text: '#10b981' },
                   { label: 'Verified Sellers', color: 'rgba(37,99,235,0.15)', border: 'rgba(37,99,235,0.3)', text: '#60a5fa' },
                   { label: 'Proudly Filipino', color: 'rgba(255,215,0,0.1)', border: 'rgba(255,215,0,0.25)', text: '#FFD700' },
                 ].map(badge => (
-                  <span key={badge.label} className="px-3 py-1 rounded-full font-body text-[10px] font-bold"
+                  <span key={badge.label} className="px-2.5 py-0.5 rounded-full font-body text-[9px] font-bold"
                     style={{ background: badge.color, border: `1px solid ${badge.border}`, color: badge.text }}>
                     {badge.label}
                   </span>
                 ))}
               </div>
 
-              <div className="flex items-center gap-3 mt-4 flex-wrap">
+              <div className="flex items-center gap-2.5 mt-2 flex-wrap">
                 {!isAuth ? (
                   <>
                     <motion.button

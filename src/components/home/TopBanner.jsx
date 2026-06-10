@@ -12,90 +12,56 @@ const TRUST_BADGES = [
 
 export default function TopBanner() {
   return (
-    <div className="relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #001060 0%, #0033CC 40%, #001a80 100%)' }}>
-      {/* Top border glow */}
-      <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, #00D4FF40, #2563EB60, #00D4FF40, transparent)' }} />
-
-      {/* Background watermark */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
-        <span className="font-heading font-bold text-[8rem] sm:text-[12rem] lg:text-[16rem] whitespace-nowrap"
-          style={{ color: 'rgba(0,212,255,0.025)' }}>
-          1MarketPH
-        </span>
-      </div>
-
-      {/* Decorative particles */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className="absolute rounded-full animate-pulse"
-            style={{
-              width: Math.random() * 4 + 2,
-              height: Math.random() * 4 + 2,
-              left: `${10 + i * 11}%`,
-              top: `${20 + (i % 3) * 25}%`,
-              background: i % 2 === 0 ? '#00D4FF' : '#2563EB',
-              opacity: 0.3,
-              animationDelay: `${i * 0.4}s`,
-            }} />
-        ))}
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
-        {/* Logo and vertical links bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mb-8 pb-8 border-b border-white/8">
+    <div className="relative" style={{ background: 'linear-gradient(180deg, #001060 0%, #0033CC 40%, #001a80 100%)', borderBottom: '1px solid rgba(0,212,255,0.15)' }}>
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-2.5 sm:py-3">
+        {/* Ultra compact vertical layout */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
           {/* Logo */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
             <img src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
-              alt="1Market PH" className="w-12 h-12 rounded-2xl object-cover shadow-lg"
-              style={{ boxShadow: '0 0 20px rgba(0,212,255,0.3)' }} />
-            <div className="text-center sm:text-left">
-              <p className="font-heading font-bold text-white text-xl tracking-tight">
+              alt="1Market PH" className="w-7 h-7 rounded-md object-cover" />
+            <div className="text-left">
+              <p className="font-heading font-bold text-white text-xs tracking-tight">
                 1Market<span style={{ color: '#FFD700' }}>PH</span><span className="text-white/40">.com</span>
               </p>
-              <p className="font-body text-[10px] text-white/35">The Premiere Marketplace</p>
             </div>
           </div>
           
-          {/* Vertical Links and Socials */}
-          <div className="flex items-center gap-6 flex-wrap justify-center">
-            {/* About Us - Vertical */}
-            <div className="flex flex-col gap-2 border-r border-white/10 pr-6">
-              <Link to="/about" className="font-body text-xs text-[#00D4FF]/80 hover:text-[#00D4FF] transition-colors font-semibold">About 1MarketPH</Link>
-              <Link to="/privacy-policy" className="font-body text-xs text-white/40 hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
-            </div>
-            
-            {/* Socials - Vertical */}
-            <div className="flex flex-col gap-2">
-              <a href="https://www.facebook.com/share/18Neew76Yo/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-body text-xs font-bold text-blue-400 transition-all hover:scale-105"
-                style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.25)' }}>
-                <Facebook className="w-3.5 h-3.5" /> Facebook
-              </a>
-              <a href="https://instagram.com/1marketph" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-body text-xs font-bold text-pink-400 transition-all hover:scale-105"
-                style={{ background: 'rgba(236,72,153,0.12)', border: '1px solid rgba(236,72,153,0.25)' }}>
-                <Instagram className="w-3.5 h-3.5" /> Instagram
-              </a>
-              <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-body text-xs font-bold text-white/80 transition-all hover:scale-105"
-                style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)' }}>
-                TikTok
-              </a>
-              <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-body text-xs font-bold text-red-400 transition-all hover:scale-105"
-                style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)' }}>
-                <Youtube className="w-3.5 h-3.5" /> YouTube
-              </a>
-            </div>
+          {/* Vertical divider */}
+          <div className="hidden sm:block w-px h-6 bg-white/10" />
+          
+          {/* About Us & Privacy - Vertical stack */}
+          <div className="flex flex-col gap-0.5">
+            <Link to="/about" className="font-body text-[9px] text-[#00D4FF]/80 hover:text-[#00D4FF] transition-colors font-semibold">About Us</Link>
+            <Link to="/privacy-policy" className="font-body text-[9px] text-white/40 hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
           </div>
-        </div>
-
-        {/* Tagline banner */}
-        <div className="rounded-2xl p-5 text-center" style={{ background: 'linear-gradient(135deg,rgba(0,51,204,0.2),rgba(0,212,255,0.08))', border: '1px solid rgba(0,212,255,0.12)' }}>
-          <p className="font-heading font-bold text-white text-base sm:text-lg mb-1">
-            Connecting Filipinos to <span style={{ color: '#FFD700' }}>Products</span>, <span style={{ color: '#00D4FF' }}>Services</span> & <span style={{ color: '#a855f7' }}>Opportunities</span>
-          </p>
-          <p className="font-body text-xs text-white/35">Proudly Made in the Philippines — Since 2026</p>
+          
+          {/* Vertical divider */}
+          <div className="hidden sm:block w-px h-6 bg-white/10" />
+          
+          {/* Socials - Ultra compact Vertical */}
+          <div className="flex flex-col gap-0.5">
+            <a href="https://www.facebook.com/share/18Neew76Yo/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-sm font-body text-[9px] font-bold text-blue-400 hover:text-blue-300 transition-colors"
+              style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
+              <Facebook className="w-2.5 h-2.5" /> FB
+            </a>
+            <a href="https://instagram.com/1marketph" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-sm font-body text-[9px] font-bold text-pink-400 hover:text-pink-300 transition-colors"
+              style={{ background: 'rgba(236,72,153,0.1)', border: '1px solid rgba(236,72,153,0.2)' }}>
+              <Instagram className="w-2.5 h-2.5" /> IG
+            </a>
+            <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-sm font-body text-[9px] font-bold text-white/70 hover:text-white transition-colors"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)' }}>
+              TikTok
+            </a>
+            <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-sm font-body text-[9px] font-bold text-red-400 hover:text-red-300 transition-colors"
+              style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
+              <Youtube className="w-2.5 h-2.5" /> YT
+            </a>
+          </div>
         </div>
       </div>
     </div>

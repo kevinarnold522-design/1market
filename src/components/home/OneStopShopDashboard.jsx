@@ -69,30 +69,23 @@ export default function CompactOneStopDashboard() {
   const Icon = current.icon;
 
   return (
-    <div className="relative overflow-hidden py-10 sm:py-14" style={{ background: 'linear-gradient(180deg, #0040D0 0%, #0033CC 50%, #001a80 100%)' }}>
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-64 h-64 bg-[#00D4FF]/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-[#FFD700]/5 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#a855f7]/3 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="relative overflow-hidden py-6 sm:py-8" style={{ background: 'linear-gradient(180deg, #0040D0 0%, #0033CC 50%, #001a80 100%)' }}>
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6">
         {/* Main Header */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-8"
+          className="text-center mb-4"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-3" style={{ background: 'rgba(0,212,255,0.15)', border: '1px solid rgba(0,212,255,0.3)' }}>
-            <div className="w-2 h-2 rounded-full bg-[#00D4FF] animate-pulse" />
-            <span className="font-body text-[10px] font-bold text-[#00D4FF] tracking-wider">POWERING FILIPINO COMMERCE</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-2" style={{ background: 'rgba(0,212,255,0.15)', border: '1px solid rgba(0,212,255,0.3)' }}>
+            <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
+            <span className="font-body text-[9px] font-bold text-[#00D4FF] tracking-wider">POWERING FILIPINO COMMERCE</span>
           </div>
-          <p className="font-heading font-black text-3xl sm:text-4xl text-white tracking-tight mb-2">
+          <p className="font-heading font-black text-2xl sm:text-3xl text-white tracking-tight mb-1">
             1MARKETPH<span className="text-[#00D4FF]">.COM</span>
           </p>
-          <p className="font-heading font-bold text-base sm:text-lg text-[#00D4FF] tracking-wide">
+          <p className="font-heading font-bold text-sm sm:text-base text-[#00D4FF] tracking-wide">
             THE ALL-IN-ONE FILIPINO MARKETPLACE
           </p>
         </motion.div>
@@ -102,14 +95,14 @@ export default function CompactOneStopDashboard() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="rounded-2xl backdrop-blur-md overflow-hidden shadow-2xl"
+          className="rounded-xl backdrop-blur-md overflow-hidden shadow-2xl"
           style={{ 
             background: 'linear-gradient(135deg, rgba(0,26,128,0.95), rgba(0,51,204,0.85))',
             border: `2px solid ${current.color}50`,
             boxShadow: `0 0 40px ${current.color}20, inset 0 0 60px ${current.color}10`
           }}
         >
-          <div className="p-6 sm:p-8">
+          <div className="p-4 sm:p-5">
             <AnimatePresence mode="wait">
               {!isTransitioning && (
                 <motion.div
@@ -121,22 +114,22 @@ export default function CompactOneStopDashboard() {
                   className="flex flex-col lg:flex-row items-center gap-6"
                 >
                   {/* Icon */}
-                  <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg" 
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg" 
                     style={{ 
                       background: `linear-gradient(135deg, ${current.bg}, ${current.color}25)`,
                       border: `2px solid ${current.color}`,
                       boxShadow: `0 0 30px ${current.color}40`
                     }}>
-                    <Icon className="w-10 h-10" style={{ color: current.color }} />
+                    <Icon className="w-7 h-7" style={{ color: current.color }} />
                   </div>
 
                   {/* Content */}
                   <div className="flex-1 text-center lg:text-left">
-                    <h3 className="font-heading font-bold text-xl sm:text-2xl text-white mb-2">{current.title}</h3>
-                    <p className="font-body text-sm sm:text-base text-white/80 mb-4 leading-relaxed">{current.subtitle}</p>
+                    <h3 className="font-heading font-bold text-lg sm:text-xl text-white mb-1">{current.title}</h3>
+                    <p className="font-body text-xs sm:text-sm text-white/80 mb-3 leading-relaxed">{current.subtitle}</p>
                     
                     {/* Points Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                       {current.points.map((point, idx) => (
                         <div key={idx} className="flex items-center gap-2 px-3 py-2 rounded-xl" 
                           style={{ background: current.bg, border: `1px solid ${current.color}30` }}>

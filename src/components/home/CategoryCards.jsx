@@ -437,13 +437,13 @@ export default function CategoryCards() {
         )}
       </AnimatePresence>
 
-      <section className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
-        <div className="mb-8 text-center">
-          <span className="font-body text-xs tracking-[0.2em] uppercase text-[#00D4FF]">Explore 1Marketph.com</span>
-          <h2 className="font-heading font-bold text-3xl text-white mt-1">Browse by Category</h2>
-          <p className="font-body text-xs text-white/40 mt-1">Hover to flip • Click to explore</p>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+        <div className="mb-6 text-center">
+          <span className="font-body text-[10px] tracking-[0.2em] uppercase text-[#00D4FF]">Explore 1Marketph.com</span>
+          <h2 className="font-heading font-bold text-2xl sm:text-3xl text-white mt-0.5">Browse by Category</h2>
+          <p className="font-body text-[10px] text-white/40 mt-0.5">Hover to flip • Click to explore</p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           {CATEGORIES.map((cat, i) => (
             <CasinoCategoryCard key={cat.label} cat={cat} index={i} onClick={handleCategoryClick} />
           ))}
