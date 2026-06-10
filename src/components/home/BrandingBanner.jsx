@@ -19,13 +19,13 @@ export default function BrandingBanner() {
   const msg = MESSAGES[index];
 
   return (
-    <div className="relative overflow-hidden bg-[#0A192F] py-5 sm:py-7">
+    <div className="relative overflow-hidden py-5 sm:py-7" style={{ background: 'linear-gradient(135deg, #0033CC 0%, #001a80 100%)' }}>
       {/* Animated background lines */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(5)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute h-px bg-gradient-to-r from-transparent via-[#00D4FF]/20 to-transparent"
+            className="absolute h-px bg-gradient-to-r from-transparent via-[#00D4FF]/30 to-transparent"
             style={{ top: `${15 + i * 18}%`, left: 0, right: 0 }}
             animate={{ x: ['-100%', '100%'] }}
             transition={{ duration: 6 + i * 1.5, repeat: Infinity, ease: 'linear', delay: i * 0.8 }}
@@ -35,12 +35,12 @@ export default function BrandingBanner() {
 
       {/* Glowing orbs */}
       <motion.div
-        className="absolute -left-16 top-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-[#00D4FF]/10 blur-2xl"
+        className="absolute -left-16 top-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-[#00D4FF]/15 blur-2xl"
         animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0.8, 0.5] }}
         transition={{ duration: 4, repeat: Infinity }}
       />
       <motion.div
-        className="absolute -right-16 top-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-[#2563EB]/10 blur-2xl"
+        className="absolute -right-16 top-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-[#2563EB]/15 blur-2xl"
         animate={{ scale: [1.2, 1, 1.2], opacity: [0.4, 0.7, 0.4] }}
         transition={{ duration: 4, repeat: Infinity, delay: 1 }}
       />
@@ -78,7 +78,7 @@ export default function BrandingBanner() {
                 </span>
               ))}
             </p>
-            <p className="font-body text-xs sm:text-sm text-white/50 mt-1.5 max-w-lg mx-auto">{msg.sub}</p>
+            <p className="font-body text-xs sm:text-sm text-white/60 mt-1.5 max-w-lg mx-auto">{msg.sub}</p>
           </motion.div>
         </AnimatePresence>
       </div>

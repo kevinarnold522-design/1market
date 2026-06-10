@@ -3,48 +3,48 @@ import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, RefreshCw } from 'lucide-react';
 
-// Ad content pool - reshuffle every 30 seconds
+// Ad content pool - royal blue themed
 const AD_POOL = [
   {
     title: 'Flash Sale Alert!',
     subtitle: 'Up to 70% OFF on Electronics',
     cta: 'Shop Now',
-    gradient: 'linear-gradient(135deg,#ff6b6b,#feca57)',
+    gradient: 'linear-gradient(135deg,#0033CC,#001a80)',
     image: 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=600&h=400&fit=crop',
   },
   {
     title: 'Travel Deals',
-    subtitle: 'Book Your Dream Vacation',
+    subtitle: 'Hotels & Flights at Best Prices',
     cta: 'Explore',
-    gradient: 'linear-gradient(135deg,#4facfe,#00f2fe)',
+    gradient: 'linear-gradient(135deg,#0033CC,#000d40)',
     image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&h=400&fit=crop',
   },
   {
     title: 'Food Delivery',
-    subtitle: 'Free Delivery on First Order',
+    subtitle: 'Local Restaurants Near You',
     cta: 'Order Now',
-    gradient: 'linear-gradient(135deg,#ff9a9e,#fecfef)',
+    gradient: 'linear-gradient(135deg,#0033CC,#001a80)',
     image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop',
   },
   {
     title: 'New Listings Daily',
-    subtitle: 'Find Amazing Deals Near You',
+    subtitle: 'Buy, Sell & Connect',
     cta: 'Browse',
-    gradient: 'linear-gradient(135deg,#a8edea,#fed6e3)',
+    gradient: 'linear-gradient(135deg,#001a80,#000d40)',
     image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop',
   },
   {
     title: 'Sell with Us',
-    subtitle: 'Start Your Business Today',
+    subtitle: 'List Your Products for Free',
     cta: 'Get Started',
-    gradient: 'linear-gradient(135deg,#667eea,#764ba2)',
+    gradient: 'linear-gradient(135deg,#0033CC,#001a80)',
     image: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=600&h=400&fit=crop',
   },
   {
     title: 'Premium Services',
-    subtitle: 'Book Trusted Professionals',
+    subtitle: 'Trusted Professionals in Manila & Cavite',
     cta: 'View Services',
-    gradient: 'linear-gradient(135deg,#f093fb,#f5576c)',
+    gradient: 'linear-gradient(135deg,#001a80,#000d40)',
     image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=400&fit=crop',
   },
 ];
@@ -64,28 +64,16 @@ export default function AdOverlay() {
     // Show ad after 2 minutes (120000ms)
     const timer = setTimeout(() => {
       setShowAd(true);
-      setCanClose(true); // Only admin can actually close
+      setCanClose(true);
     }, 120000);
-
-    // Reshuffle ad every 30 seconds
-    const reshuffleInterval = setInterval(() => {
-      setCurrentAdIndex(prev => {
-        const newIndex = Math.floor(Math.random() * AD_POOL.length);
-        return newIndex;
-      });
-    }, 30000);
 
     return () => {
       clearTimeout(timer);
-      clearInterval(reshuffleInterval);
     };
   }, []);
 
   const closeAd = () => {
-    if (isAdmin) {
-      setShowAd(false);
-    }
-    // Non-admin users cannot close - ad will reshuffle but stay visible
+    setShowAd(false);
   };
 
   if (!showAd || isAdmin === null) return null;
@@ -114,8 +102,8 @@ export default function AdOverlay() {
             className="relative max-w-2xl w-full rounded-3xl overflow-hidden shadow-2xl"
             style={{ background: currentAd.gradient }}
           >
-            {/* Close button - only visible to admin */}
-            {isAdmin && canClose && (
+            {/* Close button */}
+            {canClose && (
               <button
                 onClick={closeAd}
                 className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors z-10"
@@ -147,12 +135,6 @@ export default function AdOverlay() {
                 <button className="px-6 py-3 bg-white text-gray-900 rounded-xl font-body font-bold text-sm hover:bg-white/90 transition-colors self-start">
                   {currentAd.cta}
                 </button>
-
-                {/* Reshuffle indicator */}
-                <div className="flex items-center gap-2 mt-4 text-white/70">
-                  <RefreshCw className="w-3 h-3 animate-spin" />
-                  <span className="font-body text-[10px]">Ad reshuffles every 30s</span>
-                </div>
               </div>
             </div>
           </motion.div>

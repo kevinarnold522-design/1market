@@ -48,7 +48,6 @@ export default function Home() {
         <WelcomeSplash />
         
         <MovingWelcomeBanner />
-        <Suspense fallback={<Spinner />}><BrandingBanner /></Suspense>
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>
         <Suspense fallback={<Spinner />}><WhatMakesUsSpecial /></Suspense>
         <Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense>

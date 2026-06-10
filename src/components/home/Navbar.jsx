@@ -64,7 +64,7 @@ export default function Navbar() {
   
   // Use ghost user if in ghost session, otherwise use regular user
   const activeUser = ghostUser || user;
-  const isAdmin = activeUser?.role === 'admin' || activeUser?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
+  const isAdmin = !ghostUser && (activeUser?.role === 'admin' || activeUser?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase());
   const isGhost = activeUser?.is_ghost_account || activeUser?.ghost_id;
   const isGhostSession = !!ghostUser;
   const isSeller = activeUser?.user_type === 'seller' || activeUser?.user_type === 'business' || activeUser?.is_seller || activeUser?.account_type === 'business_owner';
