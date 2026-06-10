@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import Navbar from '../components/home/Navbar';
+
 import MascotDog from '../components/MascotDog';
 import Footer from '../components/home/Footer';
 import WelcomeSplash from '../components/home/WelcomeSplash';
@@ -45,9 +45,7 @@ export default function Home() {
       
       <div className="relative z-10">
         <WelcomeSplash />
-        <Navbar />
-        {/* Spacer for dual fixed navbar */}
-        <div style={{ height: 116 }} />
+        
         <MovingWelcomeBanner />
         <Suspense fallback={<Spinner />}><BrandingBanner /></Suspense>
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import LeftSidebar from './LeftSidebar';
+import Navbar from './home/Navbar';
 import WaveTransition from './WaveTransition';
 import UserTasks from './UserTasks';
 import { subscribeWave, isWaveActive, triggerWave } from '@/lib/waveTransition';
@@ -45,7 +46,11 @@ export default function AppLayout() {
         className="flex-1 min-w-0 overflow-x-hidden"
         style={{ marginLeft: isMobile ? 0 : (220) }}
       >
-        <Outlet />
+        <>
+          <Navbar />
+          <div style={{ height: 116 }} />
+          <Outlet />
+        </>
       </main>
 
       {/* Wave overlay */}
