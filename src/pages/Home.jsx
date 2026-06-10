@@ -3,7 +3,6 @@ import React, { lazy, Suspense } from 'react';
 import MascotDog from '../components/MascotDog';
 import Footer from '../components/home/Footer';
 import WelcomeSplash from '../components/home/WelcomeSplash';
-import MovingWelcomeBanner from '../components/home/MovingWelcomeBanner';
 import CategoryCards from '../components/home/CategoryCards';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
@@ -12,7 +11,6 @@ import WaveBackground from '../components/WaveBackground';
 
 
 // Lazy-load heavy/below-fold sections
-const BrandedHeroSection = lazy(() => import('../components/home/BrandedHeroSection'));
 const HeroSection = lazy(() => import('../components/home/HeroSection'));
 const CategoryCards2 = CategoryCards; // already imported above
 const WhatMakesUsSpecial = lazy(() => import('../components/home/WhatMakesUsSpecial'));
@@ -48,8 +46,8 @@ export default function Home() {
       <div className="relative z-10">
         <WelcomeSplash />
         
-        <Suspense fallback={<Spinner />}><BrandedHeroSection /></Suspense>
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>
+        <Suspense fallback={<Spinner />}><WhatMakesUsSpecial /></Suspense>
         <Suspense fallback={<Spinner />}><WhatMakesUsSpecial /></Suspense>
         <Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense>
         <CategoryCards />

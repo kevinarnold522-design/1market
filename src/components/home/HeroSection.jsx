@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
-import HeroAnimation3D from './HeroAnimation3D';
 import AccountTypeModal from '../AccountTypeModal';
 import LoginModal from '@/components/LoginModal';
 import PostListingButton from '../PostListingButton';
@@ -125,21 +124,18 @@ export default function HeroSection({ heroImage }) {
             </div>
           </motion.div>
 
-          {/* Right: 3D Animated Hero */}
+          {/* Right: Mascot Car Image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.5 }}
-            className="relative order-first lg:order-last">
-            <HeroAnimation3D />
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.4 }}
-              className="absolute -bottom-4 -left-4 sm:-bottom-5 sm:-left-5 bg-[#0D1F3C]/90 backdrop-blur-xl rounded-xl shadow-xl shadow-black/30 px-4 py-3 border border-white/10">
-              <p className="font-heading font-bold text-base sm:text-lg text-white">We bring you!</p>
-              <p className="font-body text-[10px] text-[#00D4FF]/70 tracking-wide">Local businesses, real connections</p>
-            </motion.div>
+            className="relative order-first lg:order-last flex items-center justify-center">
+            <img 
+              src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/b00d7d6ed_92525A52-5C4B-496A-B9DF-F84AECB255D1.png"
+              alt="1Market Philippines mascot"
+              className="w-full max-w-md drop-shadow-2xl"
+              style={{ filter: 'drop-shadow(0 20px 40px rgba(0,212,255,0.2))' }}
+            />
           </motion.div>
         </div>
       </div>
