@@ -52,7 +52,7 @@ export default function TopBanner() {
               <p className="font-heading font-bold text-white text-xl tracking-tight">
                 1Market<span style={{ color: '#FFD700' }}>PH</span><span className="text-white/40">.com</span>
               </p>
-              <p className="font-body text-[10px] text-white/35">Philippines' Premier Marketplace</p>
+              <p className="font-body text-[10px] text-white/35">The Premiere Marketplace</p>
             </div>
           </div>
           {/* Socials */}
@@ -82,14 +82,14 @@ export default function TopBanner() {
 
         {/* Links grid — 3 columns */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 mb-8">
-          {/* About 1MarketPH */}
+          {/* About Us - Merged */}
           <div className="space-y-4">
-            <h4 className="font-heading font-bold text-sm uppercase tracking-widest text-white/50">About 1MarketPH</h4>
+            <h4 className="font-heading font-bold text-sm uppercase tracking-widest text-white/50">About Us</h4>
             <div className="space-y-2.5">
               <p className="font-body text-sm text-white/40">Founded by Kevin W. Roberto</p>
               <p className="font-body text-sm text-white/40">Manila, Philippines</p>
               <p className="font-body text-xs text-white/30 leading-relaxed">Born from a vision to bridge the gap between Filipino consumers and businesses that power our communities.</p>
-              <Link to="/about" className="block font-body text-xs text-[#00D4FF]/60 hover:text-[#00D4FF] transition-colors">Read Our Story</Link>
+              <Link to="/about" className="block font-body text-xs text-[#00D4FF]/60 hover:text-[#00D4FF] transition-colors">About Us</Link>
               <Link to="/privacy-policy" className="block font-body text-xs text-white/25 hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
             </div>
           </div>

@@ -8,7 +8,6 @@ import CategoryCards from '../components/home/CategoryCards';
 import CompactOneStopDashboard from '../components/home/OneStopShopDashboard';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
-import AdOverlay from '../components/AdOverlay';
 import WaveBackground from '../components/WaveBackground';
 
 
@@ -70,7 +69,6 @@ export default function Home() {
       <Suspense fallback={<Spinner />}><CustomerSupportButton /></Suspense>
       <Suspense fallback={<Spinner />}><AdManager /></Suspense>
       <Suspense fallback={<Spinner />}><GetStartedButton /></Suspense>
-      <AdOverlay />
       <MascotDog page="home" />
       <ScrollToTop />
       <CookieBanner />

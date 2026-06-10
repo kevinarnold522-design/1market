@@ -231,10 +231,16 @@ export default function LeftSidebar({ isMobileHidden = false }) {
             )}
           </>
         ) : (
-          <Link to="/login" className="flex items-center gap-2 px-2 py-2 rounded-xl bg-[#2563EB]/20 hover:bg-[#2563EB]/30 transition-colors">
-            <User className="w-4 h-4 text-[#00D4FF] flex-shrink-0" />
-            {!collapsed && <span className="font-body text-xs font-semibold text-[#00D4FF]">Login / Sign up</span>}
-          </Link>
+          <>
+            <Link to="/login" className="flex items-center gap-2 px-2 py-2 rounded-xl bg-[#2563EB]/20 hover:bg-[#2563EB]/30 transition-colors">
+              <User className="w-4 h-4 text-[#00D4FF] flex-shrink-0" />
+              {!collapsed && <span className="font-body text-xs font-semibold text-[#00D4FF]">Login</span>}
+            </Link>
+            <Link to="/register" className="flex items-center gap-2 px-2 py-2 rounded-xl bg-[#00D4FF]/20 hover:bg-[#00D4FF]/30 transition-colors mt-1">
+              <User className="w-4 h-4 text-[#00D4FF] flex-shrink-0" />
+              {!collapsed && <span className="font-body text-xs font-semibold text-[#00D4FF]">Sign Up</span>}
+            </Link>
+          </>
         )}
       </div>
     </motion.aside>
