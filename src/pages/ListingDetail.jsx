@@ -3,7 +3,7 @@ import MascotDog from '../components/MascotDog';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock, ShoppingCart, Play, X, ExternalLink, Send, Briefcase, Utensils, Home, Car, Wrench, Plane } from 'lucide-react';
 import ReportModal from '../components/ReportModal';
 import ReceiptModal from '../components/ReceiptModal';
 import ScrollToTop from '../components/ScrollToTop';
@@ -199,6 +199,8 @@ export default function ListingDetail() {
   const [sellerProfile, setSellerProfile] = useState(null);
   const [showReport, setShowReport] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
+  const [showVideoPreview, setShowVideoPreview] = useState(false);
+  const [showSharePanel, setShowSharePanel] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -304,20 +306,13 @@ export default function ListingDetail() {
       </AnimatePresence>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-24 lg:py-28">
         <div className="flex items-center justify-between mb-6">
-          {(() => {
-            const cat = listing.main_category || 'buysell';
-            const catPath = cat === 'buysell' ? 'buysell' : cat === 'rent' ? 'rent' : cat === 'travel' ? 'travel' : cat === 'food' ? 'food' : cat === 'services' ? 'services' : cat === 'jobs' ? 'jobs' : 'buysell';
-            const sub = listing.subcategory ? `?sub=${encodeURIComponent(listing.subcategory)}` : '';
-            const typeParam = listing.type ? `${sub ? '&' : '?'}type=${listing.type}` : '';
-            return (
-              <Link to={`/${catPath}${sub}${typeParam}`}
-                className="inline-flex items-center gap-2 text-white/50 hover:text-white font-body text-sm transition-colors">
-                <ArrowLeft className="w-4 h-4" />
-                Back to {listing.main_category ? (listing.main_category === 'buysell' ? 'Buy & Sell' : listing.main_category.charAt(0).toUpperCase() + listing.main_category.slice(1)) : 'Listings'}
-                {listing.subcategory ? ` › ${listing.subcategory}` : ''}
-              </Link>
-            );
-          })()}
+          <button onClick={() => window.history.back()}
+            className="inline-flex items-center gap-2 text-white/50 hover:text-white font-body text-sm transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            Back
+            {listing.main_category ? ` to ${listing.main_category === 'buysell' ? 'Buy & Sell' : listing.main_category.charAt(0).toUpperCase() + listing.main_category.slice(1)}` : ''}
+            {listing.subcategory ? ` › ${listing.subcategory}` : ''}
+          </button>
           {/* Approval Status Badge */}
           {listing.approval_status === 'pending' && (
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-body font-bold text-xs" style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', color: '#fbbf24' }}>
@@ -399,6 +394,30 @@ export default function ListingDetail() {
                     <img src={img} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
+              </div>
+            )}
+
+            {/* Video Preview */}
+            {listing.video_url && (
+              <div className="mt-3">
+                {showVideoPreview ? (
+                  <div className="rounded-2xl overflow-hidden relative" style={{ border: '1px solid rgba(0,212,255,0.25)' }}>
+                    <button onClick={() => setShowVideoPreview(false)}
+                      className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-black/70 flex items-center justify-center">
+                      <X className="w-3.5 h-3.5 text-white" />
+                    </button>
+                    <video src={listing.video_url} controls autoPlay className="w-full rounded-2xl" style={{ maxHeight: 320 }} />
+                  </div>
+                ) : (
+                  <button onClick={() => setShowVideoPreview(true)}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-body font-bold text-sm text-white transition-all hover:scale-[1.01]"
+                    style={{ background: 'linear-gradient(135deg,rgba(239,68,68,0.2),rgba(239,68,68,0.1))', border: '1px solid rgba(239,68,68,0.35)' }}>
+                    <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0">
+                      <Play className="w-4 h-4 text-white fill-white" />
+                    </div>
+                    <span className="text-red-300">▶ Watch Video Preview</span>
+                  </button>
+                )}
               </div>
             )}
 
@@ -667,59 +686,204 @@ export default function ListingDetail() {
                 </div>
               )}
 
-              {/* Avail / Contact CTA */}
+              {/* Seller Social Media — prominent, above CTA */}
+              {(listing.social_facebook || listing.social_instagram || listing.social_tiktok || listing.social_twitter || listing.social_viber || listing.social_telegram) && (
+                <div className="mb-4 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  <p className="font-body text-[9px] text-white/30 uppercase tracking-wider mb-2">Connect with Seller</p>
+                  <div className="flex flex-wrap gap-2">
+                    {listing.social_facebook && (
+                      <a href={listing.social_facebook} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
+                        style={{ background: 'rgba(37,99,235,0.2)', border: '1px solid rgba(37,99,235,0.4)', color: '#60a5fa' }}>
+                        <Facebook className="w-3.5 h-3.5" /> Facebook
+                      </a>
+                    )}
+                    {listing.social_instagram && (
+                      <a href={listing.social_instagram} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
+                        style={{ background: 'rgba(236,72,153,0.2)', border: '1px solid rgba(236,72,153,0.4)', color: '#f472b6' }}>
+                        <Instagram className="w-3.5 h-3.5" /> Instagram
+                      </a>
+                    )}
+                    {listing.social_tiktok && (
+                      <a href={listing.social_tiktok} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
+                        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}>
+                        🎵 TikTok
+                      </a>
+                    )}
+                    {listing.social_viber && (
+                      <a href={`viber://chat?number=${listing.social_viber}`}
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
+                        style={{ background: 'rgba(139,92,246,0.2)', border: '1px solid rgba(139,92,246,0.4)', color: '#c084fc' }}>
+                        📲 Viber
+                      </a>
+                    )}
+                    {listing.social_telegram && (
+                      <a href={`https://t.me/${listing.social_telegram}`} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
+                        style={{ background: 'rgba(14,165,233,0.2)', border: '1px solid rgba(14,165,233,0.4)', color: '#38bdf8' }}>
+                        <Send className="w-3 h-3" /> Telegram
+                      </a>
+                    )}
+                    {listing.social_twitter && (
+                      <a href={listing.social_twitter} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
+                        style={{ background: 'rgba(14,165,233,0.15)', border: '1px solid rgba(14,165,233,0.3)', color: '#7dd3fc' }}>
+                        𝕏 Twitter
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Tailored CTA — based on category & subcategory */}
               {(() => {
                 const BUYSELL_TYPES = ['product','electronics','shoes','clothing','furniture','homeappliances','cars','houses','mods','other'];
                 const isBuySell = listing.main_category === 'buysell' || BUYSELL_TYPES.includes(listing.type);
-                const isBusiness = listing.main_category === 'food' || listing.business_id;
+                const isFood = listing.main_category === 'food' || listing.type === 'food';
+                const isRent = listing.type === 'rent_lease';
+                const isTravel = listing.main_category === 'travel' || listing.type === 'hotel' || listing.type === 'flights' || listing.type === 'vehicle_rental';
+                const isService = listing.type === 'services';
+                const isJob = listing.type === 'jobs';
+                const isCar = listing.type === 'cars';
+                const isHouse = listing.type === 'houses';
                 const isOutOfStock = isBuySell && listing.quantity === 0;
 
                 if (isOutOfStock) {
-                  return <div className="w-full mb-4 py-3 rounded-xl text-center font-body font-bold text-sm text-red-400 border border-red-500/30 bg-red-500/5">Out of Stock</div>;
+                  return <div className="w-full mb-3 py-3 rounded-xl text-center font-body font-bold text-sm text-red-400 border border-red-500/30 bg-red-500/5">Out of Stock</div>;
                 }
 
-                const isJobListing = listing.type === 'jobs';
-
-                if (isJobListing) {
+                // Jobs → Apply Now
+                if (isJob) {
                   return (
                     <a href={listing.apply_link || (listing.email_contact ? `mailto:${listing.email_contact}` : '#')}
-                      target={listing.apply_link ? '_blank' : undefined}
-                      rel="noopener noreferrer"
-                      className="w-full mb-4 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-[1.01]"
+                      target={listing.apply_link ? '_blank' : undefined} rel="noopener noreferrer"
+                      className="w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-[1.01]"
                       style={{ background: 'linear-gradient(135deg,#f59e0b,#f97316)', boxShadow: '0 0 20px rgba(245,158,11,0.3)' }}>
-                      💼 Apply Now
+                      <Briefcase className="w-4 h-4" /> Apply Now
                     </a>
                   );
                 }
 
-                if (isBuySell) {
+                // Food → Order Now
+                if (isFood) {
                   return (
-                    <button onClick={() => { if (!user) { base44.auth.redirectToLogin(window.location.href); return; } setShowReceipt(true); }}
-                      className="w-full mb-4 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-[1.01]"
-                      style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 20px rgba(0,212,255,0.3)' }}>
-                      <ShoppingCart className="w-4 h-4" /> Avail
+                    <button onClick={async () => {
+                      if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
+                      if (listing.email_contact) {
+                        await base44.entities.ChatMessage.create({ listing_id: listing.id, listing_title: listing.title, seller_email: listing.email_contact, buyer_email: user.email, sender_email: user.email, sender_name: user.full_name || user.email, message: `Hi! I'd like to order: ${listing.title}`, chat_type: 'listing' });
+                        window.location.href = '/messages';
+                      }
+                    }} className="w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-[1.01]"
+                      style={{ background: 'linear-gradient(135deg,#f97316,#ef4444)', boxShadow: '0 0 20px rgba(249,115,22,0.3)' }}>
+                      <Utensils className="w-4 h-4" /> Order Now
                     </button>
                   );
                 }
 
+                // Hotel → Book Now
+                if (listing.type === 'hotel') {
+                  return (
+                    <button onClick={() => { if (!user) { base44.auth.redirectToLogin(window.location.href); return; } document.getElementById('hotel-room-selector')?.scrollIntoView({ behavior: 'smooth' }); }}
+                      className="w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-[1.01]"
+                      style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', boxShadow: '0 0 20px rgba(99,102,241,0.3)' }}>
+                      <BedDouble className="w-4 h-4 text-white" /> <span className="text-white">Book a Room</span>
+                    </button>
+                  );
+                }
+
+                // Travel / flights → Book / Inquire
+                if (isTravel) {
+                  return (
+                    <button onClick={async () => {
+                      if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
+                      if (listing.email_contact) {
+                        await base44.entities.ChatMessage.create({ listing_id: listing.id, listing_title: listing.title, seller_email: listing.email_contact, buyer_email: user.email, sender_email: user.email, sender_name: user.full_name || user.email, message: `Hi! I'd like to book: ${listing.title}`, chat_type: 'listing' });
+                        window.location.href = '/messages';
+                      }
+                    }} className="w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-[1.01]"
+                      style={{ background: 'linear-gradient(135deg,#0ea5e9,#6366f1)', boxShadow: '0 0 20px rgba(14,165,233,0.3)' }}>
+                      <Plane className="w-4 h-4" /> Book / Inquire
+                    </button>
+                  );
+                }
+
+                // Rent / Lease → Schedule Visit / Inquire
+                if (isRent || isHouse) {
+                  return (
+                    <button onClick={async () => {
+                      if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
+                      if (listing.email_contact) {
+                        await base44.entities.ChatMessage.create({ listing_id: listing.id, listing_title: listing.title, seller_email: listing.email_contact, buyer_email: user.email, sender_email: user.email, sender_name: user.full_name || user.email, message: `Hi! I'd like to schedule a visit for: ${listing.title}`, chat_type: 'listing' });
+                        window.location.href = '/messages';
+                      }
+                    }} className="w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-[1.01]"
+                      style={{ background: 'linear-gradient(135deg,#10b981,#0ea5e9)', boxShadow: '0 0 20px rgba(16,185,129,0.3)' }}>
+                      <Home className="w-4 h-4" /> Schedule a Visit
+                    </button>
+                  );
+                }
+
+                // Car → Inquire / Test Drive
+                if (isCar) {
+                  return (
+                    <button onClick={async () => {
+                      if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
+                      if (listing.email_contact) {
+                        await base44.entities.ChatMessage.create({ listing_id: listing.id, listing_title: listing.title, seller_email: listing.email_contact, buyer_email: user.email, sender_email: user.email, sender_name: user.full_name || user.email, message: `Hi! I'm interested in a test drive for: ${listing.title}`, chat_type: 'listing' });
+                        window.location.href = '/messages';
+                      }
+                    }} className="w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-[1.01]"
+                      style={{ background: 'linear-gradient(135deg,#8b5cf6,#6366f1)', boxShadow: '0 0 20px rgba(139,92,246,0.3)' }}>
+                      <Car className="w-4 h-4" /> Inquire / Test Drive
+                    </button>
+                  );
+                }
+
+                // Services → Get a Quote
+                if (isService) {
+                  return (
+                    <button onClick={async () => {
+                      if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
+                      if (listing.email_contact) {
+                        await base44.entities.ChatMessage.create({ listing_id: listing.id, listing_title: listing.title, seller_email: listing.email_contact, buyer_email: user.email, sender_email: user.email, sender_name: user.full_name || user.email, message: `Hi! I'd like to get a quote for: ${listing.title}`, chat_type: 'listing' });
+                        window.location.href = '/messages';
+                      }
+                    }} className="w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-[1.01]"
+                      style={{ background: 'linear-gradient(135deg,#3b82f6,#0ea5e9)', boxShadow: '0 0 20px rgba(59,130,246,0.3)' }}>
+                      <Wrench className="w-4 h-4" /> Get a Quote
+                    </button>
+                  );
+                }
+
+                // Buy & Sell → Buy Now / Avail
+                if (isBuySell) {
+                  const btnLabel = listing.subcategory?.toLowerCase().includes('electronics') || listing.type === 'electronics' ? 'Buy Now'
+                    : listing.subcategory?.toLowerCase().includes('shoes') || listing.type === 'shoes' ? 'Buy Now'
+                    : listing.subcategory?.toLowerCase().includes('clothing') || listing.type === 'clothing' ? 'Shop Now'
+                    : 'Avail / Buy Now';
+                  return (
+                    <button onClick={() => { if (!user) { base44.auth.redirectToLogin(window.location.href); return; } setShowReceipt(true); }}
+                      className="w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-[1.01]"
+                      style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 20px rgba(0,212,255,0.3)' }}>
+                      <ShoppingCart className="w-4 h-4" /> {btnLabel}
+                    </button>
+                  );
+                }
+
+                // Fallback
                 return (
                   <button onClick={async () => {
                     if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
                     if (listing.email_contact) {
-                      await base44.entities.ChatMessage.create({
-                        listing_id: listing.id, listing_title: listing.title,
-                        seller_email: listing.email_contact, buyer_email: user.email,
-                        sender_email: user.email, sender_name: user.full_name || user.email,
-                        message: 'Hi! I am interested in your listing: ' + listing.title,
-                        chat_type: 'listing',
-                      });
+                      await base44.entities.ChatMessage.create({ listing_id: listing.id, listing_title: listing.title, seller_email: listing.email_contact, buyer_email: user.email, sender_email: user.email, sender_name: user.full_name || user.email, message: `Hi! I am interested in: ${listing.title}`, chat_type: 'listing' });
                       window.location.href = '/messages';
                     }
-                  }}
-                    className="w-full mb-4 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-[1.01] border border-[#00D4FF]/40"
+                  }} className="w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-[1.01] border border-[#00D4FF]/40"
                     style={{ background: 'rgba(0,212,255,0.12)', boxShadow: '0 0 16px rgba(0,212,255,0.15)' }}>
                     <MessageSquare className="w-4 h-4 text-[#00D4FF]" />
-                    <span className="text-[#00D4FF]">{isBusiness ? 'Contact Business' : 'Contact Seller'}</span>
+                    <span className="text-[#00D4FF]">Contact Seller</span>
                   </button>
                 );
               })()}
@@ -741,33 +905,59 @@ export default function ListingDetail() {
 
               {/* Hotel Room Selector */}
               {listing.type === 'hotel' && listing.hotel_rooms && listing.hotel_rooms.length > 0 && (
-                <HotelRoomSelector listing={listing} user={user} />
-              )}
-
-              {/* Social media */}
-              {(listing.social_facebook || listing.social_instagram || listing.social_tiktok || listing.social_twitter) && (
-                <div className="border-t border-white/8 pt-4">
-                  <p className="font-body text-[10px] text-white/30 uppercase tracking-wider mb-2">Seller's Social Media</p>
-                  <div className="flex flex-wrap gap-2">
-                    {listing.social_facebook && <a href={listing.social_facebook} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-lg bg-blue-600/20 text-blue-400 font-body text-[11px] font-bold hover:bg-blue-600/30 transition-colors">Facebook</a>}
-                    {listing.social_instagram && <a href={listing.social_instagram} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-lg bg-pink-500/20 text-pink-400 font-body text-[11px] font-bold hover:bg-pink-500/30 transition-colors">Instagram</a>}
-                    {listing.social_tiktok && <a href={listing.social_tiktok} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-lg bg-white/10 text-white font-body text-[11px] font-bold hover:bg-white/20 transition-colors">TikTok</a>}
-                    {listing.social_twitter && <a href={listing.social_twitter} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-lg bg-sky-500/20 text-sky-400 font-body text-[11px] font-bold hover:bg-sky-500/30 transition-colors">X/Twitter</a>}
-                    {listing.social_viber && <a href={`viber://chat?number=${listing.social_viber}`} className="px-3 py-1.5 rounded-lg bg-purple-500/20 text-purple-400 font-body text-[11px] font-bold hover:bg-purple-500/30 transition-colors">Viber</a>}
-                  </div>
+                <div id="hotel-room-selector">
+                  <HotelRoomSelector listing={listing} user={user} />
                 </div>
               )}
 
+              {/* Share panel */}
+              <AnimatePresence>
+                {showSharePanel && (
+                  <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                    className="mb-3 p-3 rounded-xl" style={{ background: 'rgba(13,31,60,0.95)', border: '1px solid rgba(0,212,255,0.2)' }}>
+                    <p className="font-body text-[9px] text-white/30 uppercase tracking-wider mb-2">Share this listing</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg font-body text-xs font-bold"
+                        style={{ background: 'rgba(37,99,235,0.2)', border: '1px solid rgba(37,99,235,0.3)', color: '#60a5fa' }}>
+                        <Facebook className="w-3.5 h-3.5" /> Share on FB
+                      </a>
+                      <a href={`https://www.facebook.com/marketplace/create/item/?description=${encodeURIComponent(listing.title + '\n' + window.location.href)}`} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg font-body text-xs font-bold"
+                        style={{ background: 'rgba(24,119,242,0.2)', border: '1px solid rgba(24,119,242,0.4)', color: '#93c5fd' }}>
+                        🏪 FB Marketplace
+                      </a>
+                      <a href={`https://wa.me/?text=${encodeURIComponent(listing.title + ' ' + window.location.href)}`} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg font-body text-xs font-bold"
+                        style={{ background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)', color: '#4ade80' }}>
+                        💬 WhatsApp
+                      </a>
+                      <button onClick={() => { navigator.clipboard.writeText(window.location.href); setShowSharePanel(false); }}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg font-body text-xs font-bold"
+                        style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.6)' }}>
+                        🔗 Copy Link
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               {/* Share + Report row */}
               <div className="flex gap-2 mt-3">
-                <button onClick={() => { if (navigator.share) { navigator.share({ title: listing.title, url: window.location.href }); } else { navigator.clipboard.writeText(window.location.href); }}}
+                <button onClick={() => setShowSharePanel(s => !s)}
                   className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl bg-white/5 border border-white/10 text-white/40 font-body text-xs hover:border-white/25 hover:text-white/70 transition-all">
                   <Share2 className="w-3.5 h-3.5" /> Share
                 </button>
+                <a href={`https://www.facebook.com/marketplace/create/item/?description=${encodeURIComponent(listing.title + '\n' + window.location.href)}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl font-body text-xs font-bold transition-all hover:scale-[1.02]"
+                  style={{ background: 'rgba(24,119,242,0.15)', border: '1px solid rgba(24,119,242,0.35)', color: '#60a5fa' }}>
+                  🏪 FB Marketplace
+                </a>
                 {user && (
                   <button onClick={() => setShowReport(true)}
-                    className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl bg-red-500/5 border border-red-500/20 text-red-400/70 font-body text-xs hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/40 transition-all">
-                    <Flag className="w-3.5 h-3.5" /> Report
+                    className="flex items-center justify-center gap-1 px-3 py-2 rounded-xl bg-red-500/5 border border-red-500/20 text-red-400/70 font-body text-xs hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/40 transition-all">
+                    <Flag className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
