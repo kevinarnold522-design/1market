@@ -105,7 +105,7 @@ const SUBS_BY_TYPE = {
   rent_lease:     ['Room for Rent', 'Bedspace / Dormitory', 'Apartment / Condo', 'House', 'Townhouse', 'Commercial Space', 'Office Space', 'Bodega / Warehouse', 'Land / Vacant Lot', 'Lot for Lease', 'Commercial Lot', 'Venue / Events Space', 'Stall / Kiosk'],
   vehicle_rental: ['Car Rental', 'Van Rental', 'Motorcycle Rental', 'Truck Rental', 'Bus / Shuttle'],
   hotel:          ['Budget Hotel', 'Boutique Hotel', 'Resort', 'Pension House', 'Airbnb / Homestay', 'Suite / Villa'],
-  flights:        ['Domestic Flight', 'International Flight', 'Tour Package', 'Bus / Ferry Package'],
+  flights:        ['Domestic Flight Package', 'International Flight Package', 'Charter Flight', 'Tour Package (Air + Hotel)', 'Budget Promo Fare', 'Other / Type Manually'],
   mods:           ['Car Modifications', 'Motorcycle Mods', 'PC Builds / Upgrades', 'Console Mods', 'Custom Accessories'],
   other:          ['Miscellaneous', 'Collectibles', 'Art & Crafts', 'Musical Instruments', 'Plants & Garden'],
 };
@@ -191,6 +191,7 @@ const EMPTY_FORM = {
   rent_deposit: '', rent_utilities: '', rent_furnished: 'Semi-Furnished', rent_pet_policy: 'No Pets',
   property_listing_type: 'For Rent', property_sale_type: '', property_turnover_months: '', property_lease_months: 12, property_developer: '',
   car_ownership: '1st Owner', car_sale_type: 'Cash', car_owner_name: '',
+  flight_departure_date: '', flight_departure_time: '', flight_return_date: '',
 };
 
 const TYPE_TO_MAIN = {
@@ -334,12 +335,15 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
         ...(isPropertyForLease ? { property_lease_months: Number(form.property_lease_months) } : {}),
       } : {}),
       ...(isCar ? { car_ownership: form.car_ownership, car_sale_type: form.car_sale_type, car_owner_name: form.car_owner_name } : {}),
+      ...(isFlights ? { flight_departure_date: form.flight_departure_date, flight_departure_time: form.flight_departure_time, flight_return_date: form.flight_return_date } : {}),
     });
     setSubmitting(false); setDone(true);
     setTimeout(() => onClose(), 2000);
   };
 
-  const canSubmit = form.title && dpaAccepted && termsAccepted && (isCar ? legalAccepted : true);
+  const isFlights = form.type === 'flights';
+  const totalImages = (form.image_url ? 1 : 0) + (form.extra_images?.length || 0);
+  const canSubmit = form.title && form.description && dpaAccepted && termsAccepted && (isCar ? legalAccepted : true) && totalImages >= 3;
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -472,6 +476,13 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                     </label>
                   </div>
 
+                  {/* IMAGE COUNT WARNING */}
+                  {totalImages < 3 && (
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-amber-500/30 bg-amber-500/5">
+                      <span className="font-body text-[11px] text-amber-400">⚠️ At least 3 photos required ({totalImages}/3 uploaded)</span>
+                    </div>
+                  )}
+
                   {/* TITLE */}
                   <div>
                     <label className={labelCls}>Title *</label>
@@ -515,6 +526,27 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                           {currentSubs.map(s => <option key={s} value={s} className="bg-[#0D1F3C]">{s}</option>)}
                         </select>
                       )}
+                    </div>
+                  )}
+
+                  {/* FLIGHT DATE/TIME FIELDS */}
+                  {isFlights && (
+                    <div className="rounded-xl p-3 space-y-3" style={{ background: 'rgba(14,165,233,0.07)', border: '1px solid rgba(14,165,233,0.25)' }}>
+                      <p className="font-body text-[10px] font-bold text-sky-400 uppercase tracking-wider">Flight / Tour Schedule</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className={labelCls}>Departure Date</label>
+                          <input type="date" value={form.flight_departure_date} onChange={e => set('flight_departure_date', e.target.value)} className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls}>Departure Time</label>
+                          <input type="time" value={form.flight_departure_time} onChange={e => set('flight_departure_time', e.target.value)} className={inputCls} />
+                        </div>
+                      </div>
+                      <div>
+                        <label className={labelCls}>Return Date (optional)</label>
+                        <input type="date" value={form.flight_return_date} onChange={e => set('flight_return_date', e.target.value)} className={inputCls} />
+                      </div>
                     </div>
                   )}
 
@@ -949,7 +981,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
 
                   {/* DESCRIPTION */}
                   <div>
-                    <label className={labelCls}>Description</label>
+                    <label className={labelCls}>Description * (Required)</label>
                     <textarea value={form.description} onChange={e => set('description', e.target.value)} rows={4}
                       placeholder={
                         isVehicleListing ? "Describe the vehicle: year, make, model, mileage, color, condition, features, accident history, reason for selling..." :
@@ -1049,6 +1081,12 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
 
                   {isCar && !legalAccepted && (
                     <p className="font-body text-[10px] text-orange-400 text-center">Please acknowledge the legal liability checkbox above.</p>
+                  )}
+                  {!form.description && (
+                    <p className="font-body text-[10px] text-red-400 text-center">Description is required.</p>
+                  )}
+                  {totalImages < 3 && (
+                    <p className="font-body text-[10px] text-amber-400 text-center">Minimum 3 photos required ({totalImages}/3).</p>
                   )}
                   <p className="font-body text-[10px] text-white/25 text-center">All listings are reviewed by our team before going live. You will be notified by email once approved.</p>
 

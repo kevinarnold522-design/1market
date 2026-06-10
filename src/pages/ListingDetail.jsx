@@ -298,10 +298,28 @@ export default function ListingDetail() {
 
       {showReport && <ReportModal listing={listing} user={user} onClose={() => setShowReport(false)} />}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-24 lg:py-28">
-        <Link to={`/${listing.type === 'cars' || listing.type === 'shoes' || listing.type === 'electronics' ? 'buysell' : listing.type === 'hotel' ? 'travel' : 'buysell'}`}
-          className="inline-flex items-center gap-2 text-white/50 hover:text-white font-body text-sm mb-6 transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Back to listings
-        </Link>
+        <div className="flex items-center justify-between mb-6">
+          <Link to={`/${listing.type === 'cars' || listing.type === 'shoes' || listing.type === 'electronics' ? 'buysell' : listing.type === 'hotel' ? 'travel' : 'buysell'}`}
+            className="inline-flex items-center gap-2 text-white/50 hover:text-white font-body text-sm transition-colors">
+            <ArrowLeft className="w-4 h-4" /> Back to listings
+          </Link>
+          {/* Approval Status Badge */}
+          {listing.approval_status === 'pending' && (
+            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-body font-bold text-xs" style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', color: '#fbbf24' }}>
+              ⏳ Pending Approval
+            </span>
+          )}
+          {listing.approval_status === 'approved' && (
+            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-body font-bold text-xs" style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.35)', color: '#34d399' }}>
+              <CheckCircle className="w-3 h-3" /> Approved & Live
+            </span>
+          )}
+          {listing.approval_status === 'rejected' && (
+            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-body font-bold text-xs" style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.35)', color: '#f87171' }}>
+              ✕ Rejected
+            </span>
+          )}
+        </div>
 
         <div className="grid lg:grid-cols-5 gap-8">
           {/* Left: Images */}
@@ -465,6 +483,20 @@ export default function ListingDetail() {
                 <div className="mb-4">
                   <p className="font-body text-xs text-white/50 mb-1 uppercase tracking-wider">Description</p>
                   <p className="font-body text-sm text-white/75 leading-relaxed whitespace-pre-line">{listing.description}</p>
+                </div>
+              )}
+
+              {/* Flight details */}
+              {listing.type === 'flights' && (listing.flight_departure_date || listing.flight_departure_time || listing.flight_return_date) && (
+                <div className="mb-4 p-3 rounded-xl space-y-1.5" style={{ background: 'rgba(14,165,233,0.06)', border: '1px solid rgba(14,165,233,0.25)' }}>
+                  <p className="font-body text-[10px] text-sky-400 uppercase tracking-wider font-bold mb-2 flex items-center gap-1">
+                    <Calendar className="w-3 h-3" /> Flight / Tour Schedule
+                  </p>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {listing.flight_departure_date && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Departure Date</p><p className="font-body text-xs text-white font-bold">{listing.flight_departure_date}</p></div>}
+                    {listing.flight_departure_time && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Departure Time</p><p className="font-body text-xs text-white font-bold flex items-center gap-1"><Clock className="w-3 h-3 text-sky-400" />{listing.flight_departure_time}</p></div>}
+                    {listing.flight_return_date && <div className="col-span-2 bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Return Date</p><p className="font-body text-xs text-white font-bold">{listing.flight_return_date}</p></div>}
+                  </div>
                 </div>
               )}
 
