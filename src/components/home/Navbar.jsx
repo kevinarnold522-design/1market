@@ -154,14 +154,10 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Ghost Account Banner - shown when in ghost session */}
-      {isGhostSession && ghostUser && (
-        <GhostAccountBanner ghostUser={ghostUser} onSignOut={() => setGhostUser(null)} />
-      )}
-
-      {/* Top Banner */}
-      <div className={`fixed top-0 left-0 right-0 z-[60] text-white py-2 px-4 transition-all ${isGhostSession ? 'top-12' : 'top-0'}`}
-        style={{ background: 'linear-gradient(90deg,#0033CC,#1a3de8,#0033CC)', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
+      {/* Top Banner - hide when in ghost session */}
+      {!isGhostSession && (
+        <div className={`fixed top-0 left-0 right-0 z-[60] text-white py-2 px-4 transition-all`}
+          style={{ background: 'linear-gradient(90deg,#0033CC,#1a3de8,#0033CC)', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           {/* Left: welcome or tagline */}
           <div className="flex-1 min-w-0">
@@ -213,8 +209,9 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+      )}
 
-      <nav className={`fixed top-10 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'backdrop-blur-2xl shadow-lg shadow-[#0033CC]/30' : 'backdrop-blur-xl'}`} style={{ background: scrolled ? 'rgba(0,26,128,0.75)' : 'rgba(0,10,64,0.55)', borderBottom: '1px solid rgba(255,255,255,0.08)', WebkitBackdropFilter: 'blur(24px)' }}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'backdrop-blur-2xl shadow-lg shadow-[#0033CC]/30' : 'backdrop-blur-xl'}`} style={{ background: scrolled ? 'rgba(0,26,128,0.75)' : 'rgba(0,10,64,0.55)', borderBottom: '1px solid rgba(255,255,255,0.08)', WebkitBackdropFilter: 'blur(24px)' }}>
         {/* Category Bar — LEFT aligned */}
         <div className="hidden md:block border-b border-white/8 bg-[#000d40]/80 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-6 lg:px-8" style={{ paddingLeft: 240 }}>
@@ -252,7 +249,7 @@ export default function Navbar() {
             <div className="flex-1" />
 
             {/* Messages button — signed-in only */}
-            {isAuthenticated && user && (
+            {isAuthenticated && activeUser && (
               <Link to="/messages" className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl transition-all group"
                 style={{ background: 'rgba(0,212,255,0.08)', border: '1px solid rgba(0,212,255,0.2)' }}>
                 <div className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(0,212,255,0.18)' }}>
@@ -263,7 +260,7 @@ export default function Navbar() {
             )}
 
             {/* Favourites */}
-            {isAuthenticated && user && (
+            {isAuthenticated && activeUser && (
               <Link to="/favourites" className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl transition-all group"
                 style={{ background: 'rgba(236,72,153,0.08)', border: '1px solid rgba(236,72,153,0.2)' }}>
                 <div className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(236,72,153,0.18)' }}>
@@ -283,9 +280,9 @@ export default function Navbar() {
             </Link>
 
             {/* Notifications */}
-            {isAuthenticated && user ? (
+            {isAuthenticated && activeUser ? (
               <div className="hidden md:flex items-center gap-1">
-                <NotificationsBell user={user} />
+                <NotificationsBell user={activeUser} />
                 <Link to="/notifications" className="hidden md:flex items-center gap-1 px-2 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-[#00D4FF]/40 transition-all text-white/50 hover:text-[#00D4FF] font-body text-[10px] font-semibold">
                   All
                 </Link>
@@ -301,26 +298,27 @@ export default function Navbar() {
 
             {/* Desktop Right */}
             <div className="hidden md:flex items-center gap-4">
-              {isAuthenticated && user && !isGhostSession ? (
+              {isAuthenticated && activeUser ? (
                 <div className="relative" ref={dropdownRef}>
                   <div className="flex items-center gap-1">
                     <Link to="/profile" className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-white/10 transition-all"
                       title="Go to my profile">
                       <div className="w-7 h-7 rounded-lg overflow-hidden flex-shrink-0">
-                        {user?.profile_picture ? (
-                          <img src={user.profile_picture} alt="pfp" className="w-full h-full object-cover" />
+                        {activeUser?.profile_picture ? (
+                          <img src={activeUser.profile_picture} alt="pfp" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-xs">
+                          <div className={`w-full h-full rounded-lg flex items-center justify-center text-white font-heading font-bold text-xs ${isGhostSession ? 'bg-gradient-to-br from-purple-500 to-cyan-500' : 'bg-gradient-to-br from-[#2563EB] to-[#00D4FF]'}`}>
                             {initials}
                           </div>
                         )}
                       </div>
                       <div className="text-left hidden sm:block">
                         <div className="flex items-center gap-1">
-                          <p className="font-body text-xs text-white font-semibold leading-tight max-w-[80px] truncate">{user.full_name?.split(' ')[0] || 'Account'}</p>
-                          {(isAdmin || isVerified) && isSeller && <MetaVerifiedBadge size="xs" label="" />}
+                          <p className="font-body text-xs text-white font-semibold leading-tight max-w-[80px] truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
+                          {(isAdmin || isVerified) && isSeller && !isGhostSession && <MetaVerifiedBadge size="xs" label="" />}
+                          {isGhostSession && <Ghost className="w-3 h-3 text-purple-400" />}
                         </div>
-                        <p className="font-body text-[9px] text-[#00D4FF] leading-tight">{adminLabel}</p>
+                        <p className={`font-body text-[9px] leading-tight ${isGhostSession ? 'text-purple-400' : 'text-[#00D4FF]'}`}>{adminLabel}</p>
                       </div>
                     </Link>
                     <button
@@ -589,19 +587,20 @@ export default function Navbar() {
               exit={{ opacity: 0, height: 0 }}
               className="md:hidden bg-[#0A192F]/95 backdrop-blur-xl border-t border-white/10">
               <div className="px-6 py-4 space-y-3">
-                {isAuthenticated && user && (
+                {isAuthenticated && activeUser && (
                   <div className="p-3 rounded-xl bg-white/5 border border-white/10 mb-2">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-sm">
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white font-heading font-bold text-sm ${isGhostSession ? 'bg-gradient-to-br from-purple-500 to-cyan-500' : 'bg-gradient-to-br from-[#2563EB] to-[#00D4FF]'}`}>
                         {initials}
                       </div>
                       <div className="min-w-0">
-                        <div className="flex items-center gap-1 mb-0.5">
+                        <div className="flex items-center gap-1 mb-0.5 flex-wrap">
                           <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>{adminLabel}</span>
-                          {(isAdmin || (isVerified && isSeller)) && <MetaVerifiedBadge size="xs" label="" />}
+                          {isGhostSession && <span className="inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border bg-purple-500/20 text-purple-300 border-purple-500/30">Ghost</span>}
+                          {(isAdmin || (isVerified && isSeller)) && !isGhostSession && <MetaVerifiedBadge size="xs" label="" />}
                         </div>
-                        <p className="font-body text-xs font-bold text-white truncate">{user.full_name || 'Account'}</p>
-                        <p className="font-body text-[10px] text-white/40 truncate">{user.email}</p>
+                        <p className="font-body text-xs font-bold text-white truncate">{activeUser.full_name || 'Account'}</p>
+                        <p className={`font-body text-[10px] truncate ${isGhostSession ? 'text-purple-400/70' : 'text-white/40'}`}>{isGhostSession ? 'Ghost Account' : activeUser.email}</p>
                       </div>
                     </div>
                   </div>
