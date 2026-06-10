@@ -116,7 +116,6 @@ export default function ConnectedAccounts() {
           email: `${ghostId}@ghost.1marketph.internal`,
           user_type: form.user_type,
           is_seller: form.user_type === 'seller' || form.user_type === 'business',
-          account_type: form.user_type === 'business' ? 'business_owner' : undefined,
           business_name: form.business_name.trim() || form.full_name.trim(),
           seller_location: form.location,
           seller_area: form.seller_area,
@@ -126,6 +125,8 @@ export default function ConnectedAccounts() {
           social_tiktok: form.social_tiktok,
           seller_page_enabled: true,
           role: 'user',
+          ...(form.user_type === 'business' ? { account_type: 'business_owner' } : {}),
+        });
         });
         clearInterval(progressInterval);
         setSaveProgress(100);
