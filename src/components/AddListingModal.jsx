@@ -451,8 +451,8 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       <label className="flex flex-col items-center justify-center w-full h-24 rounded-xl border-2 border-dashed border-white/15 cursor-pointer hover:border-[#00D4FF]/40 transition-colors mb-2">
                         {uploading
                           ? <div className="w-5 h-5 border-2 border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" />
-                          : <><Upload className="w-5 h-5 text-white/25 mb-1" /><span className="font-body text-xs text-white/25">Upload Main Photo (camera or gallery)</span></>}
-                        <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handleImageUpload} disabled={uploading} />
+                          : <><Upload className="w-5 h-5 text-white/25 mb-1" /><span className="font-body text-xs text-white/25">Upload Main Photo from device</span></>}
+                        <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploading} />
                       </label>
                     )}
 
@@ -472,8 +472,8 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                     <label className="flex items-center gap-2 px-3 py-2 rounded-xl border border-dashed border-white/10 cursor-pointer hover:border-[#00D4FF]/30 transition-colors">
                       {uploadingExtra
                         ? <div className="w-4 h-4 border-2 border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" />
-                        : <><Image className="w-4 h-4 text-white/30" /><span className="font-body text-xs text-white/30">Add More Photos from device</span></>}
-                      <input type="file" accept="image/*" multiple capture="environment" className="hidden" onChange={handleExtraImageUpload} disabled={uploadingExtra} />
+                        : <><Image className="w-4 h-4 text-white/30" /><span className="font-body text-xs text-white/30">Add More Photos</span></>}
+                      <input type="file" accept="image/*" multiple className="hidden" onChange={handleExtraImageUpload} disabled={uploadingExtra} />
                     </label>
                   </div>
 
