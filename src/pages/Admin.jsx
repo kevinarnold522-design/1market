@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, X, Save, ArrowLeft, Building2, ShoppingBag, Search, Upload, User, BadgeCheck, Shield, Flag, CheckCircle, XCircle, Ghost, Link2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const OWNER_EMAIL = 'Kevinarnold522@gmail.com';
 const ROLES = ['user', 'moderator', 'admin'];
@@ -501,7 +501,12 @@ export default function Admin() {
               </div>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <Link to="/connected-accounts"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl font-body font-bold text-sm text-white transition-colors"
+              style={{ background: 'linear-gradient(135deg,#a855f7,#7c3aed)' }}>
+              <Ghost className="w-4 h-4" /> Connected Accounts
+            </Link>
             <button onClick={() => { setShowBizForm(true); setEditingBiz(null); setTab('businesses'); }}
               className="flex items-center gap-2 px-4 py-2 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-sm hover:bg-white transition-colors">
               <Plus className="w-4 h-4" /> Add Business
