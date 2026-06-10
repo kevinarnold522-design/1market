@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { redirectToLogin } from '@/lib/loginRedirect';
 import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Building2, Users, Bell, Facebook, Instagram, Youtube, Ghost } from 'lucide-react';
+import GhostAccountBanner from '../GhostAccountBanner';
 import BecomeSellerModal from '../BecomeSellerModal';
 import BecomeBusinessModal from '../BecomeBusinessModal';
 import NotificationsBell from '../NotificationsBell';
@@ -15,6 +16,7 @@ import NavUserBadge from './NavUserBadge';
 import NavCategoryBar from './NavCategoryBar';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
+import { getImpersonatedUser, clearImpersonation } from '@/pages/ConnectedAccounts';
 
 // Global edit mode state
 let _editModeListeners = [];
@@ -47,8 +49,19 @@ export default function Navbar() {
   const [showSellerModal, setShowSellerModal] = useState(false);
   const [showBusinessModal, setShowBusinessModal] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
+  const [ghostUser, setGhostUser] = useState(null);
+  
+  // Check for ghost session on mount
+  useEffect(() => {
+    const ghost = getImpersonatedUser();
+    if (ghost) {
+      setGhostUser(ghost);
+    }
+  }, []);
+  
   const isAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
   const isGhost = user?.is_ghost_account || user?.ghost_id;
+  const isGhostSession = !!ghostUser;
   const isSeller = user?.user_type === 'seller' || user?.user_type === 'business' || user?.is_seller || user?.account_type === 'business_owner';
   const isBusiness = user?.user_type === 'business';
   const isCustomer = !isSeller && !isBusiness;
@@ -136,13 +149,25 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Ghost Account Banner - shown when in ghost session */}
+      {isGhostSession && ghostUser && (
+        <GhostAccountBanner ghostUser={ghostUser} onSignOut={() => setGhostUser(null)} />
+      )}
+
       {/* Top Banner */}
-      <div className="fixed top-0 left-0 right-0 z-[60] text-white py-2 px-4"
+      <div className={`fixed top-0 left-0 right-0 z-[60] text-white py-2 px-4 transition-all ${isGhostSession ? 'top-12' : 'top-0'}`}
         style={{ background: 'linear-gradient(90deg,#0033CC,#1a3de8,#0033CC)', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           {/* Left: welcome or tagline */}
           <div className="flex-1 min-w-0">
-            {isAuthenticated && user ? (
+            {isGhostSession ? (
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-body text-xs font-semibold truncate">
+                  Ghost: <strong>{ghostUser.full_name?.split(' ')[0] || 'Account'}</strong>
+                </span>
+                <span className="px-2 py-0.5 bg-purple-500/20 rounded-full text-[10px] font-bold border border-purple-500/30 text-purple-300 hidden sm:inline">Ghost Mode</span>
+              </div>
+            ) : isAuthenticated && user ? (
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-body text-xs font-semibold truncate">
                   Welcome, <strong>{user.full_name?.split(' ')[0] || 'Member'}</strong>!
@@ -271,7 +296,7 @@ export default function Navbar() {
 
             {/* Desktop Right */}
             <div className="hidden md:flex items-center gap-4">
-              {isAuthenticated && user ? (
+              {isAuthenticated && user && !isGhostSession ? (
                 <div className="relative" ref={dropdownRef}>
                   <div className="flex items-center gap-1">
                     <Link to="/profile" className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-white/10 transition-all"
@@ -308,7 +333,7 @@ export default function Navbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 8, scale: 0.95 }}
                         className="absolute left-0 top-full mt-2 w-72 rounded-2xl overflow-hidden shadow-2xl z-50"
-                        style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)' }}>
+                        style={{ background: '#0D1F3C', border: '1px solid rgba(168,85,247,0.3)' }}>
 
                         {/* Profile Header */}
                         <div className="p-4 border-b border-white/10">
@@ -334,7 +359,7 @@ export default function Navbar() {
                                 {isAdmin && (
                                   <MetaVerifiedBadge size="sm" label="CEO" />
                                 )}
-                              {isVerified && !isAdmin && isSeller && (
+                                {isVerified && !isAdmin && isSeller && (
                                   <MetaVerifiedBadge size="sm" label="Verified Partner" />
                                 )}
                               </div>
@@ -516,14 +541,23 @@ export default function Navbar() {
                           )}
 
                           <div className="border-t border-white/8 my-1" />
-                          <Link to="/profile" onClick={() => setProfileOpen(false)}
-                            className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
-                            <User className="w-3.5 h-3.5 text-[#00D4FF]" /> My Profile
-                          </Link>
-                          <button onClick={() => { logout(true); setProfileOpen(false); }}
-                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 transition-colors text-red-400 font-body text-xs">
-                            <LogOut className="w-3.5 h-3.5" /> Sign Out
-                          </button>
+                          {isGhostSession ? (
+                            <button onClick={() => { clearImpersonation(); setProfileOpen(false); }}
+                              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 transition-colors text-red-300 font-body text-xs font-bold">
+                              <LogOut className="w-3.5 h-3.5" /> Sign Out of Ghost
+                            </button>
+                          ) : (
+                            <>
+                              <Link to="/profile" onClick={() => setProfileOpen(false)}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
+                                <User className="w-3.5 h-3.5 text-[#00D4FF]" /> My Profile
+                              </Link>
+                              <button onClick={() => { logout(true); setProfileOpen(false); }}
+                                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 transition-colors text-red-400 font-body text-xs">
+                                <LogOut className="w-3.5 h-3.5" /> Sign Out
+                              </button>
+                            </>
+                          )}
                         </div>
                       </motion.div>
                     )}
