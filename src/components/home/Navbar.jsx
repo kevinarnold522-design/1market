@@ -75,13 +75,14 @@ export default function Navbar() {
   const [uploadingPfp, setUploadingPfp] = useState(false);
 
   const handleNavPfpUpload = async (e) => {
+    if (isGhostSession) { showToast('Cannot upload to ghost account'); return; }
     const file = e.target.files[0]; if (!file) return;
     setUploadingPfp(true);
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       await base44.auth.updateMe({ profile_picture: file_url });
       window.location.reload();
-    } catch (err) {}
+    } catch (err) { showToast('Upload failed'); }
     setUploadingPfp(false);
     e.target.value = '';
   };
@@ -129,7 +130,7 @@ export default function Navbar() {
     setNameError('');
     try {
       const existing = await base44.entities.User.filter({ username: clean });
-      const conflict = existing.find(u => u.id !== activeUser.id);
+      const conflict = existing.find(u => u.id !== user?.id);
       if (conflict) { setNameError('This username is already taken.'); setNameSaving(false); return; }
       await base44.auth.updateMe({ username: clean, username_set: true });
       setNameSaved(true);
@@ -349,8 +350,8 @@ export default function Navbar() {
                           <div className="flex items-center gap-3 mb-3">
                             {!isGhostSession && (
                               <label className="relative w-12 h-12 rounded-xl flex-shrink-0 cursor-pointer group">
-                                {user?.profile_picture ? (
-                                  <img src={user.profile_picture} alt="pfp" className="w-full h-full rounded-xl object-cover border border-white/20" />
+                                {activeUser?.profile_picture ? (
+                                  <img src={activeUser.profile_picture} alt="pfp" className="w-full h-full rounded-xl object-cover border border-white/20" />
                                 ) : (
                                   <div className="w-full h-full rounded-xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-lg">
                                     {initials}
@@ -405,7 +406,7 @@ export default function Navbar() {
                                     </div>
                                   ) : (
                                     <div className="flex items-center gap-1.5">
-                                      <p className="font-body font-bold text-sm text-white truncate">{user.full_name || 'Set Username'}</p>
+                                      <p className="font-body font-bold text-sm text-white truncate">{activeUser.full_name || 'Set Username'}</p>
                                       <button onClick={() => setEditingName(true)}
                                         className="w-5 h-5 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center flex-shrink-0 transition-colors">
                                         <Edit2 className="w-2.5 h-2.5 text-white/50" />
@@ -438,18 +439,18 @@ export default function Navbar() {
                               <>
                                 <div className="flex items-center gap-2 text-white/50">
                                   <Mail className="w-3 h-3 text-[#00D4FF] flex-shrink-0" />
-                                  <span className="truncate">{user.email}</span>
+                                  <span className="truncate">{activeUser.email}</span>
                                 </div>
-                                {user.seller_location && (
+                                {activeUser.seller_location && (
                                   <div className="flex items-center gap-2 text-white/50">
                                     <MapPin className="w-3 h-3 text-green-400 flex-shrink-0" />
-                                    <span>{user.seller_location}{user.seller_area ? ` · ${user.seller_area}` : ''}</span>
+                                    <span>{activeUser.seller_location}{activeUser.seller_area ? ` · ${activeUser.seller_area}` : ''}</span>
                                   </div>
                                 )}
                                 <div className="flex items-center gap-2 text-white/40">
                                   <User className="w-3 h-3 flex-shrink-0" />
                                   <span>Member since {memberSince}</span>
-                                  {user.role === 'admin' && (
+                                  {activeUser.role === 'admin' && (
                                     <span className="ml-1 px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[9px] border border-amber-500/25">
                                       <Shield className="w-2.5 h-2.5 inline mr-0.5" />Admin
                                     </span>
