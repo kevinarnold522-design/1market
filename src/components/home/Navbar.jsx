@@ -294,10 +294,12 @@ export default function Navbar() {
               </Link>
             )}
 
-            {/* Desktop Right */}
+            {/* Desktop Right - Categories for signed-in, Login/Get Started for guests */}
             <div className="hidden md:flex items-center gap-4">
               {isAuthenticated && activeUser ? (
-                <div className="relative" ref={dropdownRef}>
+                <>
+                  {/* Categories link for signed-in users */}
+                  <div className="relative" ref={dropdownRef}>
                   <div className="flex items-center gap-1">
                     <Link to="/profile" className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-white/10 transition-all"
                       title="Go to my profile">
@@ -558,6 +560,8 @@ export default function Navbar() {
                     )}
                   </AnimatePresence>
                 </div>
+                  {/* More categories dropdown trigger could go here */}
+                </>
               ) : (
                 <div className="flex items-center gap-2">
                   <Link to="/login"

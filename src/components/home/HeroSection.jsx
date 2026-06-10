@@ -61,7 +61,7 @@ export default function HeroSection({ heroImage }) {
               </div>
 
               <p className="font-body text-sm sm:text-base lg:text-lg text-white/70 max-w-md leading-relaxed font-semibold">
-                The #1 Filipino Marketplace — Buy, Sell &amp; Connect Nationwide.
+                The Premiere Marketplace — Buy, Sell &amp; Connect Nationwide.
               </p>
 
               <div className="h-[1px] w-16 bg-[#00D4FF]" />
