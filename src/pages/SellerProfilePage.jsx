@@ -262,22 +262,30 @@ export default function SellerProfilePage() {
         
         console.log('[PROFILE LOAD] Starting lookup for:', sellerId);
         
-        // Auth setup
-        const authed = await base44.auth.isAuthenticated();
-        if (authed) {
-          const me = await base44.auth.me();
-          setUser(me);
-          const follows = await base44.entities.Follow.filter({ follower_email: me.email, following_user_id: sellerId });
-          setFollowing(follows.length > 0);
+        // STEP 0: Check if this is a ghost account (localStorage)
+        const ghostKey = `1marketph_ghost_${sellerId}`;
+        const ghostData = localStorage.getItem(ghostKey);
+        
+        if (ghostData) {
+          console.log('[PROFILE LOAD] ✓ Found ghost account in localStorage');
+          const ghost = JSON.parse(ghostData);
+          setSeller(ghost);
+          
+          // Load ghost's listings (created by ghost_id)
+          const listings = await base44.entities.Listing.filter({ created_by_id: sellerId, approval_status: 'approved' });
+          const posts = await base44.entities.CommunityPost.filter({ author_email: ghost.email });
+          
+          setListings(listings);
+          setPosts(posts);
+          setLoading(false);
+          return;
         }
-        const allFollows = await base44.entities.Follow.filter({ following_user_id: sellerId });
-        setFollowerCount(allFollows.length);
-
-        // STEP 1: Look up seller with multiple methods
+        
+        // STEP 1: Look up real user
         let users = [];
         let lookupMethod = '';
         
-        // Method 1: Filter by ID (primary)
+        // Method 1: Filter by ID
         users = await base44.entities.User.filter({ id: sellerId });
         if (users.length > 0) lookupMethod = 'ID';
         
@@ -293,7 +301,7 @@ export default function SellerProfilePage() {
           if (users.length > 0) lookupMethod = 'email';
         }
         
-        // Method 4: List all and search (fallback)
+        // Method 4: List all and search
         if (users.length === 0) {
           console.log('[PROFILE LOAD] Primary lookups failed, trying list search...');
           const allUsers = await base44.entities.User.list('-created_date', 500);
@@ -301,14 +309,13 @@ export default function SellerProfilePage() {
             u.id === sellerId || 
             u.username === sellerId || 
             u.ghost_id === sellerId ||
-            u.channel_name === sellerId ||
-            (u.email && u.email.includes(sellerId))
+            u.channel_name === sellerId
           );
           users = matched;
           if (users.length > 0) lookupMethod = 'list_search';
         }
         
-        // STEP 2: Handle not found - check if this is a ghost account that needs healing
+        // STEP 2: Handle not found
         if (users.length === 0) {
           console.error('[PROFILE LOAD] ✗ FAILED - No user found for:', sellerId);
           setError('Profile not found. This account may not exist or was deleted.');
@@ -316,39 +323,17 @@ export default function SellerProfilePage() {
           return;
         }
         
-        // STEP 3: Validate user data
         const seller = users[0];
-        console.log('[PROFILE LOAD] ✓ Found via', lookupMethod + ':', {
-          id: seller.id,
-          name: seller.full_name || seller.channel_name,
-          email: seller.email,
-          is_ghost: seller.is_ghost_account,
-          has_username: !!seller.username,
-          has_channel: !!seller.channel_name
-        });
-        
-        // Auto-healing: Check for missing critical fields
-        const missingFields = [];
-        if (!seller.full_name && !seller.channel_name) missingFields.push('name');
-        if (!seller.email) missingFields.push('email');
-        if (!seller.username) missingFields.push('username');
-        
-        if (missingFields.length > 0) {
-          console.warn('[PROFILE LOAD] ⚠ Profile has missing fields:', missingFields);
-          // Note: In a real auto-heal system, we'd update the record here
-          // For now, we proceed with available data
-        }
-        
+        console.log('[PROFILE LOAD] ✓ Found via', lookupMethod + ':', seller.full_name);
         setSeller(seller);
         
-        // STEP 4: Load related data
+        // STEP 3: Load listings and posts
         const [byEmail, byCreator, communityPosts] = await Promise.all([
           base44.entities.Listing.filter({ email_contact: seller.email, approval_status: 'approved' }),
           base44.entities.Listing.filter({ created_by_id: seller.id, approval_status: 'approved' }),
           base44.entities.CommunityPost.filter({ author_email: seller.email }),
         ]);
         
-        // Merge and deduplicate listings
         const seen = new Set();
         const items = [...byEmail, ...byCreator].filter(l => {
           if (seen.has(l.id)) return false;

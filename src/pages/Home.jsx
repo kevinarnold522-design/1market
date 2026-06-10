@@ -40,12 +40,13 @@ const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c
 export default function Home() {
   return (
     <div className="min-h-screen overflow-x-hidden relative" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
-      <WaveBackground />
-
+      {/* Permanent royal blue background */}
+      <div className="fixed inset-0 -z-10" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }} />
+      
       <div className="relative z-10">
         <WelcomeSplash />
         <Navbar />
-        {/* Spacer for dual fixed navbar (top banner 40px + nav 40px + category bar 36px) */}
+        {/* Spacer for dual fixed navbar */}
         <div style={{ height: 116 }} />
         <MovingWelcomeBanner />
         <Suspense fallback={<Spinner />}><BrandingBanner /></Suspense>
@@ -56,7 +57,6 @@ export default function Home() {
         <Suspense fallback={<Spinner />}><PhFlightDeals /></Suspense>
         <Suspense fallback={<Spinner />}><PhHotelDeals /></Suspense>
         <Suspense fallback={<Spinner />}><FeaturedListings /></Suspense>
-
         <Suspense fallback={<Spinner />}><HowItWorksSection /></Suspense>
         <Suspense fallback={<Spinner />}><ReviewHighlights /></Suspense>
         <Suspense fallback={<Spinner />}><CommunityAnimation /></Suspense>
@@ -67,7 +67,6 @@ export default function Home() {
 
       <Suspense fallback={<Spinner />}><PhilippinesTravelBanner /></Suspense>
       <Suspense fallback={<Spinner />}><CustomerSupportButton /></Suspense>
-      {/* AdminQuickAddFAB removed — use PostListingMenu in navbar */}
       <Suspense fallback={<Spinner />}><AdManager /></Suspense>
       <Suspense fallback={<Spinner />}><GetStartedButton /></Suspense>
       <AdOverlay />

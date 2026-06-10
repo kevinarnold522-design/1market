@@ -4,11 +4,13 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     
-    // Verify admin access
+    // STEP 1: Verify admin access
     const user = await base44.auth.me();
     if (!user || (user.role !== 'admin' && user.email !== 'Kevinarnold522@gmail.com')) {
       return Response.json({ error: 'Unauthorized: Admin access required' }, { status: 403 });
     }
+
+    console.log('[GHOST CREATE] Admin verified:', user.email);
 
     const { full_name, channel_name, user_type, business_name, location, bio, seller_area } = await req.json();
 
@@ -17,66 +19,61 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Display name is required' }, { status: 400 });
     }
 
-    console.log('[GHOST CREATE] Starting creation for:', full_name);
-
-    // STEP 1: Generate unique identifiers
+    // STEP 2: Generate unique identifiers
     const timestamp = Date.now();
     const randomStr = Math.random().toString(36).substring(2, 8);
     const ghostId = `ghost_${timestamp}_${randomStr}`;
     const ghostEmail = `${ghostId}@1marketph-ghost.internal`;
     const cleanUsername = `ghost_${timestamp}_${randomStr}`.toLowerCase().replace(/[^a-z0-9_]/g, '');
 
-    // STEP 2: Invite user (REQUIRED - User.create() doesn't persist)
-    console.log('[GHOST CREATE] Inviting user:', ghostEmail);
-    const inviteResult = await base44.users.inviteUser(ghostEmail, 'user');
-    console.log('[GHOST CREATE] ✓ Invite sent:', inviteResult);
+    console.log('[GHOST CREATE] Generated identifiers:', { ghostId, ghostEmail, username: cleanUsername });
 
-    // STEP 3: Wait for user creation then fetch
-    console.log('[GHOST CREATE] Waiting for user creation...');
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // STEP 4: Fetch the created user
-    const users = await base44.entities.User.filter({ email: ghostEmail });
-    if (!users || users.length === 0) {
-      console.error('[GHOST CREATE] ✗ User not found after invite');
-      return Response.json({ 
-        error: 'User creation failed - not found after invite',
-        debug: { ghost_id: ghostId, email: ghostEmail }
-      }, { status: 500 });
-    }
-
-    const createdUser = users[0];
-    console.log('[GHOST CREATE] ✓ User created via invite:', createdUser.id);
-
-    // STEP 5: Update with ghost account metadata
-    const updateData = {
+    // STEP 3: Create user with service role (bypasses invite requirement)
+    const userData = {
+      // Core identity
       full_name: full_name.trim(),
       channel_name: channel_name?.trim() || full_name.trim(),
+      email: ghostEmail,
+      role: 'user',
       username: cleanUsername,
       username_set: true,
+      
+      // Account classification
       user_type: user_type || 'seller',
       is_seller: user_type !== 'customer',
       account_type: user_type === 'business' ? 'business_owner' : 'customer',
       business_name: business_name?.trim() || full_name.trim(),
+      
+      // Location
       seller_location: location || 'Manila',
       location: location || 'Manila',
       seller_area: seller_area || '',
       seller_page_enabled: user_type !== 'customer',
-      bio: bio || '',
-      seller_bio: bio || '',
+      
+      // Ghost markers
       is_ghost_account: true,
       is_connected_account: true,
       ghost_id: ghostId,
       ghost_linked: false,
+      
+      // Profile data
+      bio: bio || '',
+      seller_bio: bio || '',
+      profile_picture: '',
+      cover_photo: '',
       is_verified_seller: false,
       verification_submitted: false,
       seller_pending: false,
       business_pending: false,
       seller_products: [],
       business_categories: [],
+      
+      // Facebook Live
       facebook_page_id: '',
       facebook_page_name: '',
       facebook_live_enabled: false,
+      
+      // Social media
       social_facebook: '',
       social_instagram: '',
       social_tiktok: '',
@@ -84,47 +81,112 @@ Deno.serve(async (req) => {
       social_youtube: '',
       social_viber: '',
       social_telegram: '',
+      
+      // Contact
       phone: '',
       show_phone_public: false,
       show_email_public: false,
-      profile_picture: '',
-      cover_photo: '',
     };
 
-    console.log('[GHOST CREATE] Updating user with ghost metadata...');
-    const updated = await base44.entities.User.update(createdUser.id, updateData);
-    console.log('[GHOST CREATE] ✓ User updated:', updated.id);
+    console.log('[GHOST CREATE] Creating user with service role...');
+    
+    // Use service role to create user (bypasses invite requirement)
+    const result = await base44.asServiceRole.entities.User.create(userData);
+    console.log('[GHOST CREATE] ✓ User.create() returned ID:', result.id);
 
-    // STEP 6: Final verification
-    const verified = await base44.entities.User.filter({ id: updated.id });
-    if (!verified || verified.length === 0) {
-      console.error('[GHOST CREATE] ✗ Final verification failed');
-      return Response.json({ error: 'Final verification failed' }, { status: 500 });
+    // STEP 4: Verification with retries (database propagation)
+    console.log('[GHOST CREATE] Starting verification with retries...');
+    
+    let verified = null;
+    const maxRetries = 10;
+    const retryDelayMs = 500;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      if (attempt > 1) {
+        console.log(`[GHOST VERIFY] Retry ${attempt}/${maxRetries} - waiting ${retryDelayMs}ms...`);
+        await new Promise(resolve => setTimeout(resolve, retryDelayMs));
+      }
+      
+      // Try multiple lookup methods
+      const byId = await base44.asServiceRole.entities.User.filter({ id: result.id });
+      if (byId && byId.length > 0) {
+        verified = byId[0];
+        console.log(`[GHOST VERIFY] ✓ Found by ID on attempt ${attempt}`);
+        break;
+      }
+      
+      const byUsername = await base44.asServiceRole.entities.User.filter({ username: cleanUsername });
+      if (byUsername && byUsername.length > 0) {
+        verified = byUsername[0];
+        console.log(`[GHOST VERIFY] ✓ Found by username on attempt ${attempt}`);
+        break;
+      }
+      
+      const byEmail = await base44.asServiceRole.entities.User.filter({ email: ghostEmail });
+      if (byEmail && byEmail.length > 0) {
+        verified = byEmail[0];
+        console.log(`[GHOST VERIFY] ✓ Found by email on attempt ${attempt}`);
+        break;
+      }
+    }
+    
+    if (!verified) {
+      console.error('[GHOST CREATE] ✗ Verification failed after', maxRetries, 'retries');
+      return Response.json({ 
+        error: 'User creation verification failed - database propagation delay',
+        debug: { attempted_id: result.id, ghost_id: ghostId, retries: maxRetries }
+      }, { status: 500 });
     }
 
-    const finalUser = verified[0];
-    console.log('[GHOST CREATE] ✓ Final verification successful:', {
-      id: finalUser.id,
-      name: finalUser.full_name,
-      ghost_id: finalUser.ghost_id
+    // STEP 5: Validate all critical fields
+    console.log('[GHOST CREATE] Validating user data...');
+    const validationErrors = [];
+    
+    if (!verified.id) validationErrors.push('missing id');
+    if (!verified.full_name) validationErrors.push('missing full_name');
+    if (!verified.email) validationErrors.push('missing email');
+    if (!verified.ghost_id) validationErrors.push('missing ghost_id');
+    if (!verified.username) validationErrors.push('missing username');
+    if (!verified.is_ghost_account) validationErrors.push('missing is_ghost_account flag');
+
+    if (validationErrors.length > 0) {
+      console.error('[GHOST CREATE] ✗ Validation errors:', validationErrors);
+      return Response.json({ 
+        error: 'User validation failed',
+        missing_fields: validationErrors,
+        user_data: verified
+      }, { status: 500 });
+    }
+
+    console.log('[GHOST CREATE] ✓ All validations passed');
+
+    // STEP 6: Verify relationships work
+    const [listings, posts] = await Promise.all([
+      base44.asServiceRole.entities.Listing.filter({ created_by_id: result.id }),
+      base44.asServiceRole.entities.CommunityPost.filter({ author_email: verified.email })
+    ]);
+
+    console.log('[GHOST CREATE] ✓ Relationships validated:', {
+      listings_count: listings.length,
+      posts_count: posts.length
     });
 
     // STEP 7: Return success
     return Response.json({
       success: true,
       user: {
-        id: finalUser.id,
-        full_name: finalUser.full_name,
-        channel_name: finalUser.channel_name,
-        email: finalUser.email,
-        username: finalUser.username,
-        ghost_id: finalUser.ghost_id,
-        user_type: finalUser.user_type,
-        is_ghost_account: finalUser.is_ghost_account,
-        seller_location: finalUser.seller_location,
-        created_date: finalUser.created_date
+        id: verified.id,
+        full_name: verified.full_name,
+        channel_name: verified.channel_name,
+        email: verified.email,
+        username: verified.username,
+        ghost_id: verified.ghost_id,
+        user_type: verified.user_type,
+        is_ghost_account: verified.is_ghost_account,
+        seller_location: verified.seller_location,
+        created_date: verified.created_date
       },
-      profile_url: `/seller/${finalUser.id}`,
+      profile_url: `/seller/${verified.id}`,
       message: 'Ghost account created and verified successfully'
     });
 
