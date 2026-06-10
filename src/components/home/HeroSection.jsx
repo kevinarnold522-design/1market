@@ -117,7 +117,7 @@ export default function HeroSection({ heroImage }) {
             </div>
           </motion.div>
 
-          {/* Right: Mascot Car Image - Half Bigger */}
+          {/* Right: Mascot Car Image - 4x Bigger */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -126,7 +126,7 @@ export default function HeroSection({ heroImage }) {
             <img 
               src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/5ff8f71e7_11B06DC9-6DB1-4C2D-8FD7-9334440CEFF0.png"
               alt="1Market Philippines mascot car"
-              className="w-full max-w-[4.5rem] sm:max-w-[9rem] lg:max-w-[11rem] drop-shadow-2xl"
+              className="w-full max-w-[18rem] sm:max-w-[36rem] lg:max-w-[44rem] drop-shadow-2xl"
               style={{ filter: 'drop-shadow(0 18px 36px rgba(0,212,255,0.25))' }}
             />
           </motion.div>
