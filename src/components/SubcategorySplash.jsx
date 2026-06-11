@@ -97,7 +97,9 @@ function CasinoCard({ sc, index, isActive, onClick }) {
           {/* Shine */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none rounded-2xl" />
           <div className="relative z-10 flex flex-col items-center justify-center h-full p-2">
-            <div className="text-2xl sm:text-3xl mb-1.5 drop-shadow-lg">{sc.icon}</div>
+            <div className="text-2xl sm:text-3xl mb-1.5 drop-shadow-lg text-white">
+              {typeof sc.icon === 'string' ? sc.icon : sc.icon}
+            </div>
             <p className="font-heading font-bold text-xs sm:text-sm text-white leading-tight text-center">{sc.label}</p>
             {sc.desc && <p className="font-body text-[9px] mt-0.5 text-white/60 leading-snug hidden sm:block text-center">{sc.desc}</p>}
           </div>

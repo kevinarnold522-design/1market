@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Search, Star, Heart, Share2, ChevronRight, MapPin } from 'lucide-react';
+import { ArrowLeft, Search, Star, Heart, Share2, ChevronRight, MapPin, Hotel, Palmtree, Plane, Ship, Car, Tent, Waves, Mountain, Anchor, Bus } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import ParticleBackground from '../components/ParticleBackground';
 import { AnimatePresence } from 'framer-motion';
@@ -12,17 +12,17 @@ import MascotDog from '../components/MascotDog';
 import { Plus } from 'lucide-react';
 
 const TRAVEL_CATEGORIES = [
-  { key: 'hotel',       label: 'Hotels',         icon: '🏨', color: '#6366f1' },
-  { key: 'resort',      label: 'Resorts',         icon: '🌴', color: '#10b981' },
-  { key: 'flights',     label: 'Flights & Tours', icon: '✈️', color: '#3b82f6' },
-  { key: 'ferry',       label: 'Ferry & Bus',      icon: '⛴️', color: '#0891b2' },
-  { key: 'car_rental',  label: 'Car Rentals',      icon: '🚗', color: '#f59e0b' },
-  { key: 'van_rental',  label: 'Van Rentals',      icon: '🚐', color: '#f97316' },
-  { key: 'island',      label: 'Island Hopping',   icon: '🏝️', color: '#06b6d4' },
-  { key: 'camping',     label: 'Camping',          icon: '⛺', color: '#84cc16' },
-  { key: 'hiking',      label: 'Hiking',           icon: '🥾', color: '#78716c' },
-  { key: 'diving',      label: 'Diving',           icon: '🤿', color: '#0284c7' },
-  { key: 'surfing',     label: 'Surfing',          icon: '🏄', color: '#0d9488' },
+  { key: 'hotel',       label: 'Hotels',         icon: <Hotel className="w-4 h-4" />, color: '#6366f1' },
+  { key: 'resort',      label: 'Resorts',         icon: <Palmtree className="w-4 h-4" />, color: '#10b981' },
+  { key: 'flights',     label: 'Flights & Tours', icon: <Plane className="w-4 h-4" />, color: '#3b82f6' },
+  { key: 'ferry',       label: 'Ferry & Bus',      icon: <Ship className="w-4 h-4" />, color: '#0891b2' },
+  { key: 'car_rental',  label: 'Car Rentals',      icon: <Car className="w-4 h-4" />, color: '#f59e0b' },
+  { key: 'van_rental',  label: 'Van Rentals',      icon: <Bus className="w-4 h-4" />, color: '#f97316' },
+  { key: 'island',      label: 'Island Hopping',   icon: <Waves className="w-4 h-4" />, color: '#06b6d4' },
+  { key: 'camping',     label: 'Camping',          icon: <Tent className="w-4 h-4" />, color: '#84cc16' },
+  { key: 'hiking',      label: 'Hiking',           icon: <Mountain className="w-4 h-4" />, color: '#78716c' },
+  { key: 'diving',      label: 'Diving',           icon: <Anchor className="w-4 h-4" />, color: '#0284c7' },
+  { key: 'surfing',     label: 'Surfing',          icon: <Waves className="w-4 h-4" />, color: '#0d9488' },
 ];
 
 const STATIC_LISTINGS = [
@@ -113,7 +113,7 @@ function HorizontalRow({ category, listings, onShare }) {
     <div className="mb-10">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">{category.icon}</span>
+          <span className="text-white">{category.icon}</span>
           <h2 className="font-heading font-bold text-lg text-white">{category.label}</h2>
           <span className="px-2 py-0.5 rounded-full font-body text-[10px] font-bold text-white/60"
             style={{ background: `${category.color}22`, border: `1px solid ${category.color}33` }}>
@@ -300,7 +300,7 @@ export default function Travel() {
               <a key={cat.key} href={`#${cat.key}`}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-body text-xs font-semibold whitespace-nowrap transition-all border flex-shrink-0 hover:scale-105"
                 style={{ background: `${cat.color}18`, color: cat.color, borderColor: `${cat.color}44` }}>
-                <span>{cat.icon}</span> {cat.label}
+                <span className="text-white">{cat.icon}</span> {cat.label}
               </a>
             ))}
           </div>
