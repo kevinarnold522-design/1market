@@ -58,7 +58,10 @@ export default function SuggestionBox() {
             >
               <div className="px-5 py-4 flex items-center justify-between border-b border-white/10">
                 <div>
-                  <p className="font-heading font-bold text-white text-sm">💬 Send a Suggestion</p>
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-[#00D4FF]" />
+                    <p className="font-heading font-bold text-white text-sm">Send a Suggestion</p>
+                  </div>
                   <p className="font-body text-[10px] text-white/40 mt-0.5">Help us improve 1Marketph.com</p>
                 </div>
                 <button onClick={() => setOpen(false)} className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">

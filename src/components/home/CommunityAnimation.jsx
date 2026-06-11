@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { Users } from 'lucide-react';
+import { Users, ShoppingBag, Building2 } from 'lucide-react';
 
 export default function CommunityAnimation() {
   const [memberCount, setMemberCount] = useState(null);
@@ -31,16 +31,18 @@ export default function CommunityAnimation() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10 mb-10">
             {[
-              { icon: '🛍️', title: 'Buy & Sell', desc: 'Find real listings from verified sellers nationwide' },
-              { icon: '🏢', title: 'For Businesses', desc: 'Grow your business reach across Manila & beyond' },
-              { icon: '🤝', title: 'Trusted Network', desc: 'Verified partners with transparent seller profiles' },
+              { Icon: ShoppingBag, color: '#3E97F1', title: 'Buy & Sell', desc: 'Find real listings from verified sellers nationwide' },
+              { Icon: Building2,   color: '#a855f7', title: 'For Businesses', desc: 'Grow your business reach across Manila & beyond' },
+              { Icon: Users,       color: '#10b981', title: 'Trusted Network', desc: 'Verified partners with transparent seller profiles' },
             ].map((item, i) => (
               <motion.div key={i}
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                 className="rounded-2xl p-5 text-center"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                <span className="text-3xl">{item.icon}</span>
-                <p className="font-heading font-bold text-white text-sm mt-2">{item.title}</p>
+                <div className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style={{ background: `${item.color}22` }}>
+                  <item.Icon className="w-6 h-6" style={{ color: item.color }} />
+                </div>
+                <p className="font-heading font-bold text-white text-sm">{item.title}</p>
                 <p className="font-body text-xs text-white/50 mt-1">{item.desc}</p>
               </motion.div>
             ))}

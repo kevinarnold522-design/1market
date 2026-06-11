@@ -147,7 +147,7 @@ function CreateFlashDealModal({ user, onClose, onCreated }) {
           <button onClick={handleSave} disabled={!form.title || !form.price || !form.original_price || saving}
             className="w-full py-3 rounded-xl font-body font-bold text-sm text-white transition-all disabled:opacity-40"
             style={{ background: 'linear-gradient(135deg,#f97316,#ef4444)', boxShadow: '0 0 20px rgba(249,115,22,0.4)' }}>
-            {saving ? 'Creating...' : '⚡ Launch Flash Deal'}
+            {saving ? 'Creating...' : <span className="flex items-center gap-1.5 justify-center"><Zap className="w-4 h-4" /> Launch Flash Deal</span>}
           </button>
         </div>
       </motion.div>
@@ -227,7 +227,7 @@ export default function FlashDealsSection() {
               <button onClick={() => setShowCreate(true)}
                 className="mt-3 px-4 py-2 rounded-xl font-body font-bold text-xs text-white"
                 style={{ background: 'linear-gradient(135deg,#f97316,#ef4444)' }}>
-                ⚡ Be the first — Create a Flash Deal
+                <span className="flex items-center gap-1.5 justify-center"><Zap className="w-3.5 h-3.5" /> Be the first — Create a Flash Deal</span>
               </button>
             )}
           </div>

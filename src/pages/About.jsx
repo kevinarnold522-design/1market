@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Globe, Heart, Users, ShoppingBag, Home, Briefcase, Star } from 'lucide-react';
+import { ArrowLeft, Globe, Heart, Users, ShoppingBag, Home, Briefcase, Star, Flag, Lock, Sprout } from 'lucide-react';
 import Navbar from '../components/home/Navbar';
 
 const MILESTONES = [
@@ -12,10 +12,10 @@ const MILESTONES = [
 ];
 
 const VALUES = [
-  { icon: '🇵🇭', title: 'Proudly Filipino', desc: 'Built for Filipinos, by a Filipino. Every feature is designed with the local community in mind.' },
-  { icon: '🤝', title: 'Community First', desc: 'We connect people — buyers and sellers, travelers and hosts, customers and local businesses.' },
-  { icon: '🔒', title: 'Trust & Safety', desc: 'We verify partners and protect user data under the Philippine Data Privacy Act (RA 10173).' },
-  { icon: '🌱', title: 'Growth Together', desc: 'When local businesses thrive, communities grow. We empower every Filipino entrepreneur.' },
+  { Icon: Flag,      color: '#3E97F1', title: 'Proudly Filipino', desc: 'Built for Filipinos, by a Filipino. Every feature is designed with the local community in mind.' },
+  { Icon: Users,     color: '#10b981', title: 'Community First', desc: 'We connect people — buyers and sellers, travelers and hosts, customers and local businesses.' },
+  { Icon: Lock,      color: '#a855f7', title: 'Trust & Safety', desc: 'We verify partners and protect user data under the Philippine Data Privacy Act (RA 10173).' },
+  { Icon: Sprout,    color: '#34d399', title: 'Growth Together', desc: 'When local businesses thrive, communities grow. We empower every Filipino entrepreneur.' },
 ];
 
 export default function About() {
@@ -82,7 +82,9 @@ export default function About() {
                 <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                   className="rounded-2xl p-6"
                   style={{ background: 'rgba(0,51,204,0.2)', border: '1px solid rgba(0,212,255,0.15)' }}>
-                  <div className="text-3xl mb-3">{v.icon}</div>
+                  <div className="w-12 h-12 rounded-xl mb-3 flex items-center justify-center" style={{ background: `${v.color}22` }}>
+                    <v.Icon className="w-6 h-6" style={{ color: v.color }} />
+                  </div>
                   <h3 className="font-heading font-bold text-white mb-2">{v.title}</h3>
                   <p className="font-body text-sm text-white/50 leading-relaxed">{v.desc}</p>
                 </motion.div>
