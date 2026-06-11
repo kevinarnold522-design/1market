@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HelpCircle, X, MessageCircle, Mail, Phone, FileText, ExternalLink, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -13,6 +13,12 @@ const FAQ_ITEMS = [
 export default function CustomerSupportButton() {
   const [open, setOpen] = useState(false);
   const [showFaq, setShowFaq] = useState(null);
+
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener('open-support', handler);
+    return () => window.removeEventListener('open-support', handler);
+  }, []);
 
   return (
     <>

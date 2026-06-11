@@ -12,7 +12,7 @@ const TRUST_BADGES = [
 
 export default function TopBanner() {
   return (
-    <div className="relative" style={{ background: 'linear-gradient(180deg, #001060 0%, #0033CC 40%, #001a80 100%)', borderBottom: '1px solid rgba(0,212,255,0.15)' }}>
+    <div className="relative" style={{ background: 'linear-gradient(180deg, #001060 0%, #0033CC 40%, #001a80 100%)', borderBottom: '1px solid rgba(0,212,255,0.15)', paddingTop: 108 }}>
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-2">
         {/* Horizontal compact layout */}
         <div className="flex flex-row items-center justify-center gap-3 flex-wrap">

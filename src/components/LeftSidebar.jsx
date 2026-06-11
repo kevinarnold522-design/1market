@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Plane, UtensilsCrossed, ShoppingBag, Car, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, ChevronLeft, ChevronRight, ShoppingCart, Package, BarChart2, Settings, LogOut, Shield, KeyRound, Ghost, Search } from 'lucide-react';
+import { Home, Plane, UtensilsCrossed, ShoppingBag, Car, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, ChevronLeft, ChevronRight, ShoppingCart, Package, BarChart2, Settings, LogOut, Shield, KeyRound, Ghost, Search, HelpCircle, Info, FileText } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import PostListingMenu from './PostListingMenu';
 import NotificationsBell from './NotificationsBell';
@@ -178,6 +178,33 @@ export default function LeftSidebar({ isMobileHidden = false }) {
               <BarChart2 className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span className="font-body text-xs font-semibold truncate">Analytics</span>}
             </Link>
+          </>
+        )}
+
+        {/* Support & Info — signed in users only */}
+        {isAuthenticated && activeUser && (
+          <>
+            <div className="my-2 border-t border-white/8 mx-1" />
+            {!collapsed && <p className="px-2 py-1 font-body text-[9px] text-white/30 uppercase tracking-wider font-bold">Help & Info</p>}
+            <Link to="/about"
+              className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-white/50 hover:text-[#00D4FF] hover:bg-[#00D4FF]/10"
+              title={collapsed ? 'About Us' : undefined}>
+              <Info className="w-4 h-4 flex-shrink-0" />
+              {!collapsed && <span className="font-body text-xs font-semibold truncate">About Us</span>}
+            </Link>
+            <Link to="/privacy-policy"
+              className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-white/50 hover:text-[#00D4FF] hover:bg-[#00D4FF]/10"
+              title={collapsed ? 'Privacy Policy' : undefined}>
+              <FileText className="w-4 h-4 flex-shrink-0" />
+              {!collapsed && <span className="font-body text-xs font-semibold truncate">Privacy Policy</span>}
+            </Link>
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('open-support'))}
+              className="w-full flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-white/50 hover:text-emerald-400 hover:bg-emerald-400/10"
+              title={collapsed ? 'Support' : undefined}>
+              <HelpCircle className="w-4 h-4 flex-shrink-0" />
+              {!collapsed && <span className="font-body text-xs font-semibold truncate">Support</span>}
+            </button>
           </>
         )}
 

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+// scrollRef removed — bar is now always fully visible
 import { ChevronDown, ShoppingBag, UtensilsCrossed, Plane, Home, Wrench, Briefcase, Compass } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SUBCATEGORIES } from '../../lib/listingCategories';
@@ -74,16 +75,6 @@ function CategoryDropdown({ cat, onClose }) {
 export default function NavCategoryBar() {
   const [open, setOpen] = useState(null);
   const ref = useRef(null);
-  const scrollRef = useRef(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  const checkScroll = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 4);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-  };
 
   useEffect(() => {
     const handler = (e) => {
@@ -93,73 +84,41 @@ export default function NavCategoryBar() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    checkScroll();
-    el.addEventListener('scroll', checkScroll, { passive: true });
-    window.addEventListener('resize', checkScroll);
-    return () => {
-      el.removeEventListener('scroll', checkScroll);
-      window.removeEventListener('resize', checkScroll);
-    };
-  }, []);
-
   return (
-    <div ref={ref} className="relative flex items-center w-full">
-      {/* Left fade indicator */}
-      {canScrollLeft && (
-        <div className="absolute left-0 top-0 bottom-0 w-6 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(90deg, rgba(0,13,64,0.95), transparent)' }} />
-      )}
-
-      <div
-        ref={scrollRef}
-        className="flex items-center gap-1 overflow-x-auto w-full"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        {NAV_CATEGORIES.map(cat => {
-          const Icon = cat.icon;
-          const isOpen = open === cat.label;
-          return (
-            <div key={cat.label} className="relative flex-shrink-0">
-              {cat.types.length === 0 ? (
-                <Link to={cat.href}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl font-body text-xs font-semibold transition-all whitespace-nowrap border"
-                  style={{ color: 'rgba(226,232,240,0.85)', background: 'rgba(71,85,105,0.35)', borderColor: 'rgba(100,116,139,0.45)' }}>
-                  <Icon className="w-3 h-3" />
+    <div ref={ref} className="flex items-center gap-1.5 flex-wrap">
+      {NAV_CATEGORIES.map(cat => {
+        const Icon = cat.icon;
+        const isOpen = open === cat.label;
+        return (
+          <div key={cat.label} className="relative flex-shrink-0">
+            {cat.types.length === 0 ? (
+              <Link to={cat.href}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-body text-sm font-semibold transition-all whitespace-nowrap border"
+                style={{ color: 'rgba(226,232,240,0.9)', background: 'rgba(71,85,105,0.5)', borderColor: 'rgba(100,116,139,0.55)' }}>
+                <Icon className="w-4 h-4" />
+                {cat.label}
+              </Link>
+            ) : (
+              <>
+                <button
+                  onMouseEnter={() => setOpen(cat.label)}
+                  onClick={() => setOpen(isOpen ? null : cat.label)}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-body text-sm font-semibold transition-all whitespace-nowrap border"
+                  style={isOpen
+                    ? { color: '#fff', background: 'rgba(100,116,139,0.6)', borderColor: 'rgba(148,163,184,0.8)' }
+                    : { color: 'rgba(226,232,240,0.9)', background: 'rgba(71,85,105,0.5)', borderColor: 'rgba(100,116,139,0.55)' }}>
+                  <Icon className="w-4 h-4" style={{ color: isOpen ? '#fff' : 'rgba(203,213,225,0.8)' }} />
                   {cat.label}
-                </Link>
-              ) : (
-                <>
-                  <button
-                    onMouseEnter={() => setOpen(cat.label)}
-                    onClick={() => setOpen(isOpen ? null : cat.label)}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl font-body text-xs font-semibold transition-all whitespace-nowrap border"
-                    style={isOpen
-                      ? { color: '#fff', background: `rgba(100,116,139,0.45)`, borderColor: `rgba(148,163,184,0.7)` }
-                      : { color: 'rgba(226,232,240,0.85)', background: 'rgba(71,85,105,0.35)', borderColor: 'rgba(100,116,139,0.45)' }}>
-                    <Icon className="w-3.5 h-3.5" style={{ color: isOpen ? '#fff' : 'rgba(203,213,225,0.7)' }} />
-                    {cat.label}
-                    <ChevronDown className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-                  </button>
-                  {isOpen && (
-                    <CategoryDropdown cat={cat} onClose={() => setOpen(null)} />
-                  )}
-                </>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Right fade + chevron indicator */}
-      {canScrollRight && (
-        <div className="absolute right-0 top-0 bottom-0 w-8 z-10 pointer-events-none flex items-center justify-end pr-1"
-          style={{ background: 'linear-gradient(270deg, rgba(0,13,64,0.95), transparent)' }}>
-          <ChevronDown className="w-3 h-3 text-white/40 -rotate-90" />
-        </div>
-      )}
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {isOpen && (
+                  <CategoryDropdown cat={cat} onClose={() => setOpen(null)} />
+                )}
+              </>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
