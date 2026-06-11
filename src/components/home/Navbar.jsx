@@ -54,17 +54,26 @@ export default function Navbar() {
   
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2000); };
   
-  // Check for ghost session on mount and whenever user changes
+  // Check for ghost session on mount — re-read on every render by checking sessionStorage directly
   useEffect(() => {
     const ghost = getImpersonatedUser();
-    if (ghost) {
-      setGhostUser(ghost);
-    }
+    setGhostUser(ghost || null);
+  }, []);
+
+  // Also re-read ghost session whenever the window gains focus (after refresh)
+  useEffect(() => {
+    const handler = () => {
+      const ghost = getImpersonatedUser();
+      setGhostUser(ghost || null);
+    };
+    window.addEventListener('focus', handler);
+    return () => window.removeEventListener('focus', handler);
   }, []);
   
   // Use ghost user if in ghost session, otherwise use regular user
   const activeUser = ghostUser || user;
-  const isAdmin = !ghostUser && (activeUser?.role === 'admin' || activeUser?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase());
+  // In ghost session: force non-admin regardless of real user
+  const isAdmin = !ghostUser && !getImpersonatedUser() && (user?.role === 'admin' || user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase());
   const isGhost = activeUser?.is_ghost_account || activeUser?.ghost_id;
   const isGhostSession = !!ghostUser;
   const isSeller = activeUser?.user_type === 'seller' || activeUser?.user_type === 'business' || activeUser?.is_seller || activeUser?.account_type === 'business_owner';

@@ -125,8 +125,8 @@ export default function NavCategoryBar() {
             <div key={cat.label} className="relative flex-shrink-0">
               {cat.types.length === 0 ? (
                 <Link to={cat.href}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl font-body text-xs font-semibold transition-all whitespace-nowrap border"
-                  style={{ color: cat.color, background: `${cat.color}12`, borderColor: `${cat.color}30` }}>
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl font-body text-xs font-semibold transition-all whitespace-nowrap border"
+                  style={{ color: 'rgba(226,232,240,0.85)', background: 'rgba(71,85,105,0.35)', borderColor: 'rgba(100,116,139,0.45)' }}>
                   <Icon className="w-3 h-3" />
                   {cat.label}
                 </Link>
@@ -135,11 +135,11 @@ export default function NavCategoryBar() {
                   <button
                     onMouseEnter={() => setOpen(cat.label)}
                     onClick={() => setOpen(isOpen ? null : cat.label)}
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl font-body text-xs font-semibold transition-all whitespace-nowrap border"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl font-body text-xs font-semibold transition-all whitespace-nowrap border"
                     style={isOpen
-                      ? { color: cat.color, background: `${cat.color}22`, borderColor: `${cat.color}55` }
-                      : { color: 'rgba(255,255,255,0.7)', background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.1)' }}>
-                    <Icon className="w-3 h-3" style={{ color: isOpen ? cat.color : undefined }} />
+                      ? { color: '#fff', background: `rgba(100,116,139,0.45)`, borderColor: `rgba(148,163,184,0.7)` }
+                      : { color: 'rgba(226,232,240,0.85)', background: 'rgba(71,85,105,0.35)', borderColor: 'rgba(100,116,139,0.45)' }}>
+                    <Icon className="w-3.5 h-3.5" style={{ color: isOpen ? '#fff' : 'rgba(203,213,225,0.7)' }} />
                     {cat.label}
                     <ChevronDown className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                   </button>

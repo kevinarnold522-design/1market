@@ -50,7 +50,78 @@ const SUBS_BY_TYPE = {
   homeappliances: ['Refrigerator / Freezer', 'Washing Machine', 'Air Conditioner', 'Microwave / Oven', 'Rice Cooker', 'TV / Smart TV', 'Other Appliance'],
   cars:           ['Sedan', 'SUV', 'Van', 'Pickup', 'Hatchback', 'Motorcycle', 'Truck', 'AUV / MPV'],
   houses:         ['House & Lot', 'Condominium', 'Townhouse', 'Apartment', 'Vacant Lot / Land', 'Commercial Lot', 'Commercial Property'],
-  food:           ['Baked Goods', 'Ready-to-Eat Meals', 'Beverages', 'Snacks', 'Ingredients / Grocery', 'Desserts', 'Health Food', 'Restaurant / Carinderia', 'Home Kitchen', 'Food Stall'],
+  food: [
+    // Restaurants
+    'Filipino Restaurant','Chinese Restaurant','Japanese Restaurant','Korean Restaurant','Thai Restaurant','Vietnamese Restaurant','Indian Restaurant','Italian Restaurant','French Restaurant','Mexican Restaurant','Spanish Restaurant','Greek Restaurant','Turkish Restaurant','Mediterranean Restaurant','American Restaurant','German Restaurant','Brazilian Restaurant','Middle Eastern Restaurant','African Restaurant','Fusion Restaurant','Fine Dining','Casual Dining','Family Restaurant','Buffet Restaurant','All-Day Breakfast Restaurant',
+    // Fast Food
+    'Burger Shop','Fried Chicken','Hotdog Stand','Sandwich Shop','Wraps','Rice Meals','Value Meals','Drive-Thru','Takeaway Food','Quick Service Restaurant',
+    // Filipino Food
+    'Lechon','Sisig','Adobo','Kare-Kare','Sinigang','Bulalo','Pancit','Lumpia','BBQ','Inasal','Bicol Express','Dinuguan','Tinola','Tapsilog','Longsilog','Tocilog','Bangsilog','Lugaw','Arroz Caldo','Halo-Halo',
+    // Chinese Food
+    'Dim Sum','Noodles','Dumplings','Peking Duck','Congee','Fried Rice','Hot Pot','Roast Meats','Chinese BBQ','Wonton',
+    // Japanese Food
+    'Sushi','Sashimi','Ramen','Udon','Tempura','Yakitori','Bento','Curry Rice','Takoyaki','Okonomiyaki',
+    // Korean Food
+    'Korean BBQ','Bibimbap','Kimchi','Tteokbokki','Korean Fried Chicken','Samgyeopsal','Japchae','Kimbap','Korean Stew','Korean Street Food',
+    // Seafood
+    'Fresh Fish','Shrimp','Crab','Lobster','Squid','Octopus','Mussels','Oysters','Clams','Scallops','Tuna','Salmon','Seafood Boil','Grilled Seafood','Dried Seafood',
+    // Meat & Poultry
+    'Beef','Pork','Chicken','Duck','Turkey','Lamb','Goat','Wagyu','Steak','BBQ Meats','Smoked Meats','Roasted Meats',
+    // BBQ & Grilled
+    'Pork BBQ','Chicken BBQ','Beef BBQ','Seafood BBQ','Grilled Fish','Grilled Squid','Grilled Chicken','Grilled Vegetables','Texas BBQ',
+    // Pizza
+    'Classic Pizza','Thin Crust Pizza','Deep Dish Pizza','Stuffed Crust Pizza','New York Style Pizza','Sicilian Pizza','Hawaiian Pizza','Pepperoni Pizza','Seafood Pizza','Vegetarian Pizza',
+    // Burgers
+    'Beef Burger','Chicken Burger','Fish Burger','Cheeseburger','Double Patty Burger','Gourmet Burger','Vegan Burger','Sliders','Bacon Burger','Mushroom Burger',
+    // Sandwiches
+    'Club Sandwich','BLT','Sub Sandwich','Panini','Grilled Cheese','Tuna Sandwich','Chicken Sandwich','Egg Sandwich','Steak Sandwich','Deli Sandwich',
+    // Noodles & Pasta
+    'Spaghetti','Carbonara','Lasagna','Alfredo','Mac & Cheese','Baked Mac','Linguine','Penne','Noodle Soup','Stir-Fried Noodles',
+    // Rice Meals
+    'Fried Rice','Garlic Rice','Chicken Rice','Beef Rice','Pork Rice','Seafood Rice','Rice Bowls','Bento Meals',
+    // Street Food
+    'Fish Balls','Kikiam','Squid Balls','Isaw','Betamax','Kwek-Kwek','Tokneneng','Banana Cue','Camote Cue','Turon','Shawarma','Corn Dog',
+    // Snacks
+    'Chips','Crackers','Popcorn','Nachos','Pretzels','Nuts','Trail Mix','Rice Crackers','Seaweed Snacks','Jerky',
+    // Bakery
+    'Bread','Pandesal','Croissant','Baguette','Brioche','Donuts','Muffins','Bagels','Cinnamon Rolls',
+    // Cakes
+    'Chocolate Cake','Vanilla Cake','Cheesecake','Red Velvet Cake','Carrot Cake','Tiramisu','Mango Cake','Ube Cake','Wedding Cake','Birthday Cake',
+    // Pastries
+    'Danish','Eclair','Puff Pastry','Tart','Pie','Turnover','Cream Puff','Cannoli','Macarons','Palmier',
+    // Desserts
+    'Ice Cream','Gelato','Frozen Yogurt','Leche Flan','Pudding','Brownies','Cookies','Mochi','Waffles',
+    // Ice Cream & Frozen
+    'Soft Serve','Sorbet','Sundaes','Ice Cream Cakes','Popsicles','Milkshakes','Ice Cream Sandwiches','Shaved Ice',
+    // Coffee & Cafes
+    'Espresso','Americano','Latte','Cappuccino','Mocha','Cold Brew','Iced Coffee','Specialty Coffee','Coffee Beans',
+    // Tea & Milk Tea
+    'Milk Tea','Bubble Tea','Fruit Tea','Green Tea','Black Tea','Matcha','Herbal Tea','Oolong Tea','Thai Tea','Iced Tea',
+    // Juice & Smoothies
+    'Fresh Juice','Fruit Shake','Smoothies','Protein Shakes','Vegetable Juice','Detox Drinks','Coconut Drinks','Lemonade','Energy Drinks','Health Drinks',
+    // Healthy Food
+    'Vegan Meals','Vegetarian Meals','Organic Food','Keto Meals','Paleo Meals','Gluten-Free Food','Low-Carb Meals','High-Protein Meals','Diet Meals','Fitness Meals',
+    // Fruits
+    'Tropical Fruits','Citrus Fruits','Berries','Apples','Bananas','Mangoes','Pineapples','Watermelons','Grapes','Avocados',
+    // Vegetables
+    'Leafy Greens','Root Vegetables','Cruciferous Vegetables','Mushrooms','Herbs','Organic Vegetables','Frozen Vegetables','Salad Mixes','Hydroponic Produce',
+    // Catering
+    'Wedding Catering','Corporate Catering','Birthday Catering','Party Catering','Event Catering','Buffet Catering','Packed Meals','Food Trays','Mobile Catering',
+    // Food Packages
+    'Family Meals','Party Packages','Fiesta Packages','Corporate Meal Packages','Bento Packages','Holiday Packages','Celebration Packages','Group Meals','Bulk Orders','Subscription Meals',
+    // Home-Based
+    'Homemade Cakes','Homemade Bread','Homemade Meals','Frozen Food','Ready-To-Cook Food','Ready-To-Eat Food','Home Bakery','Specialty Desserts','Food Gifts','Party Food',
+    // Frozen Food
+    'Frozen Meat','Frozen Seafood','Frozen Vegetables','Frozen Dumplings','Frozen Pizza','Frozen Meals','Frozen Desserts','Frozen Snacks','Frozen Fruits',
+    // International
+    'Asian Cuisine','European Cuisine','American Cuisine','Latin American Cuisine','Middle Eastern Cuisine','African Cuisine','Caribbean Cuisine','Fusion Cuisine','Specialty Ethnic Food',
+    // Ingredients
+    'Spices','Herbs','Sauces','Condiments','Cooking Oils','Baking Ingredients','Marinades','Seasonings','Stocks & Broths','Flavorings',
+    // Wholesale
+    'Restaurant Supply','Meat Wholesale','Seafood Wholesale','Produce Wholesale','Beverage Wholesale','Bakery Wholesale','Frozen Food Wholesale','Catering Supply',
+    // Other
+    'Other / Type Manually',
+  ],
   services: [
     // 🏠 Home Services
     'House Cleaning', 'Plumbing', 'Electrical Repair', 'Carpentry', 'Roofing', 'Flooring',
@@ -105,7 +176,7 @@ const SUBS_BY_TYPE = {
   rent_lease:     ['Room for Rent', 'Bedspace / Dormitory', 'Apartment / Condo', 'House', 'Townhouse', 'Commercial Space', 'Office Space', 'Bodega / Warehouse', 'Land / Vacant Lot', 'Lot for Lease', 'Commercial Lot', 'Venue / Events Space', 'Stall / Kiosk'],
   vehicle_rental: ['Car Rental', 'Van Rental', 'Motorcycle Rental', 'Truck Rental', 'Bus / Shuttle'],
   hotel:          ['Budget Hotel', 'Boutique Hotel', 'Resort', 'Pension House', 'Airbnb / Homestay', 'Suite / Villa'],
-  flights:        ['Domestic Flight Package', 'International Flight Package', 'Charter Flight', 'Tour Package (Air + Hotel)', 'Budget Promo Fare', 'Other / Type Manually'],
+  flights:        ['Domestic Flights','International Flights','Promo Flights','Group Flights','Charter Flights','Corporate Travel','Tour Packages','Airport Transfers','Visa Assistance','Other / Type Manually'],
   mods:           ['Car Modifications', 'Motorcycle Mods', 'PC Builds / Upgrades', 'Console Mods', 'Custom Accessories'],
   other:          ['Miscellaneous', 'Collectibles', 'Art & Crafts', 'Musical Instruments', 'Plants & Garden'],
 };
@@ -167,16 +238,24 @@ const PROPERTY_SALE_TYPES = ['Pre-Selling', 'Ready for Occupancy (RFO)', 'Pasalo
 const PRESELLING_TURNOVER = ['12-18 months', '18-24 months', '24-30 months', '30-36 months', '36-42 months', '42-48 months', '48-60 months', '5+ years'];
 const LEASE_MONTHS = [1, 2, 3, 6, 12, 18, 24, 36, 60];
 
+const PRICE_RATE_TYPES = ['Per Item','Per Hour','Per Day','Per Week','Per Month','Per Year','Fixed Rate','Negotiable'];
+const FLIGHT_TYPES = ['One Way','Round Trip','Multi-City'];
+const AIRLINES = ['Philippine Airlines','Cebu Pacific','AirAsia','SEAIR','SkyJet','Charter Flight','Private Jet','Other Airline'];
+const TICKET_TYPES = ['Confirmed Ticket','Promo Ticket','Open Ticket','Group Booking','Corporate Booking','Charter Flight'];
+const TRAVEL_CLASSES = ['Economy','Premium Economy','Business','First Class'];
+const BAGGAGE_OPTIONS = ['Hand Carry Only','Hand Carry + 1 Checked Bag','Hand Carry + 2 Checked Bags','Extra Baggage Available','Baggage Not Included'];
+
 const EMPTY_FORM = {
   main_category: '', type: '', subcategory: '', title: '', description: '',
   city: '', state_region: '', zip: '', area: '',
-  price: '', original_price: '', price_label: '', quantity: 1,
+  price: '', original_price: '', price_label: '', price_rate_type: 'Per Item', quantity: 1,
   seller_name: '', phone: '', email_contact: '', apply_link: '',
   condition: 'Brand New', image_url: '', extra_images: [], is_active: true,
   slideshow_animation: 'fade',
   tags: '',
   custom_product_name: '',
   custom_service_name: '',
+  manual_type_name: '',
   food_serving: '', food_dietary: '', food_spice_level: 'N/A', food_allergens: '',
   food_business_type: '', food_type: '',
   delivery_options: [], meetup_details: '',
@@ -192,6 +271,11 @@ const EMPTY_FORM = {
   property_listing_type: 'For Rent', property_sale_type: '', property_turnover_months: '', property_lease_months: 12, property_developer: '',
   car_ownership: '1st Owner', car_sale_type: 'Cash', car_owner_name: '',
   flight_departure_date: '', flight_departure_time: '', flight_return_date: '',
+  flight_type: 'One Way', flight_airline: '', flight_ticket_type: 'Confirmed Ticket',
+  flight_travel_class: 'Economy', flight_origin: '', flight_destination: '',
+  flight_seats: '', flight_price_per_passenger: '', flight_child_price: '',
+  flight_baggage: 'Hand Carry Only', flight_refundable: false, flight_rebookable: false,
+  flight_booking_deadline: '', flight_group_allowed: false, flight_min_pax: 1, flight_max_pax: '',
 };
 
 const TYPE_TO_MAIN = {
@@ -258,6 +342,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   const isVehicleListing = form.type === 'cars' || form.type === 'vehicle_rental';
   const isGadget = form.type === 'electronics' || form.type === 'homeappliances';
   const hidePrice = isJob;
+  const isVehicleRental = form.type === 'vehicle_rental';
   const currentSubs = SUBS_BY_TYPE[form.type] || [];
   const isPropertyForSale = isPropertyRent && form.property_listing_type === 'For Sale';
   const isPropertyForLease = isPropertyRent && form.property_listing_type === 'For Lease';
@@ -336,7 +421,22 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
         ...(isPropertyForLease ? { property_lease_months: Number(form.property_lease_months) } : {}),
       } : {}),
       ...(isCar ? { car_ownership: form.car_ownership, car_sale_type: form.car_sale_type, car_owner_name: form.car_owner_name } : {}),
-      ...(isFlights ? { flight_departure_date: form.flight_departure_date, flight_departure_time: form.flight_departure_time, flight_return_date: form.flight_return_date } : {}),
+      price_label: hidePrice ? '' : (form.price_label || (form.price ? `₱${Number(form.price).toLocaleString()} ${form.price_rate_type !== 'Per Item' ? form.price_rate_type : ''}`.trim() : '')),
+      ...(isFlights ? {
+        flight_departure_date: form.flight_departure_date,
+        flight_departure_time: form.flight_departure_time,
+        flight_return_date: form.flight_return_date,
+        flight_origin: form.flight_origin,
+        flight_destination: form.flight_destination,
+        flight_seats: Number(form.flight_seats) || 0,
+        specs: [
+          form.flight_type, form.flight_airline, form.flight_travel_class, form.flight_ticket_type,
+          form.flight_baggage, form.flight_refundable ? 'Refundable' : 'Non-Refundable',
+          form.flight_rebookable ? 'Rebookable' : '',
+          form.flight_booking_deadline ? `Deadline: ${form.flight_booking_deadline}` : '',
+          form.flight_max_pax ? `Max ${form.flight_max_pax} pax` : '',
+        ].filter(Boolean).join(' | '),
+      } : {}),
     });
     setSubmitting(false); setDone(true);
     setTimeout(() => onClose(), 2000);
@@ -344,7 +444,8 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
 
   const isFlights = form.type === 'flights';
   const totalImages = (form.image_url ? 1 : 0) + (form.extra_images?.length || 0);
-  const canSubmit = form.title && form.description && dpaAccepted && termsAccepted && (isCar ? legalAccepted : true) && totalImages >= 3;
+  const photosRequired = !isJob;
+  const canSubmit = form.title && form.description && dpaAccepted && termsAccepted && (isCar ? legalAccepted : true) && (!photosRequired || totalImages >= 3);
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -477,10 +578,10 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                     </label>
                   </div>
 
-                  {/* IMAGE COUNT WARNING */}
-                  {totalImages < 3 && (
+                  {/* IMAGE COUNT WARNING — not for jobs */}
+                  {photosRequired && totalImages < 3 && (
                     <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-amber-500/30 bg-amber-500/5">
-                      <span className="font-body text-[11px] text-amber-400">⚠️ At least 3 photos required ({totalImages}/3 uploaded)</span>
+                      <span className="font-body text-[11px] text-amber-400">At least 3 photos required ({totalImages}/3 uploaded)</span>
                     </div>
                   )}
 
@@ -490,63 +591,97 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                     <input value={form.title} onChange={e => set('title', e.target.value)} placeholder="Listing title..." className={inputCls} />
                   </div>
 
-                  {/* SUBCATEGORY — Jobs gets special manual-entry fallback */}
+                  {/* SUBCATEGORY — all types get manual entry */}
                   {currentSubs.length > 0 && (
                     <div>
                       <label className={labelCls}>{isJob ? 'Job Position / Role' : 'Subcategory'}</label>
-                      {isJob ? (
-                        <div className="space-y-2">
-                          <div className="flex flex-wrap gap-1.5">
-                            {currentSubs.filter(s => s !== 'Other / Not Listed').map(s => (
-                              <button key={s} type="button" onClick={() => set('subcategory', s)}
-                                className="px-2.5 py-1 rounded-full border font-body text-[11px] transition-all"
-                                style={{
-                                  borderColor: form.subcategory === s ? '#f59e0b' : 'rgba(255,255,255,0.12)',
-                                  background: form.subcategory === s ? 'rgba(245,158,11,0.18)' : 'rgba(255,255,255,0.04)',
-                                  color: form.subcategory === s ? '#fbbf24' : 'rgba(255,255,255,0.5)',
-                                }}>
-                                {s}
-                              </button>
-                            ))}
-                          </div>
-                          <div className="flex items-center gap-2 mt-2">
-                            <input
-                              value={!currentSubs.filter(s => s !== 'Other / Not Listed').includes(form.subcategory) ? form.subcategory : ''}
-                              onChange={e => set('subcategory', e.target.value)}
-                              placeholder="Or type your own job title / position..."
-                              className={inputCls}
-                            />
-                          </div>
-                          {form.subcategory && (
-                            <p className="font-body text-[10px] text-amber-400">Selected: {form.subcategory}</p>
-                          )}
-                        </div>
-                      ) : (
-                        <select value={form.subcategory} onChange={e => set('subcategory', e.target.value)} className={inputCls}>
-                          <option value="" className="bg-[#0D1F3C]">Select subcategory</option>
+                      <div className="space-y-2">
+                        <select value={currentSubs.includes(form.subcategory) ? form.subcategory : ''} onChange={e => set('subcategory', e.target.value)} className={inputCls}>
+                          <option value="" className="bg-[#0D1F3C]">Select from list...</option>
                           {currentSubs.map(s => <option key={s} value={s} className="bg-[#0D1F3C]">{s}</option>)}
                         </select>
-                      )}
+                        <div>
+                          <label className="block font-body text-[9px] text-white/30 mb-1">Or type manually (overrides selection above)</label>
+                          <input
+                            value={form.manual_type_name}
+                            onChange={e => { set('manual_type_name', e.target.value); if (e.target.value) set('subcategory', e.target.value); }}
+                            placeholder={isJob ? "e.g. Brand Strategist, Barista..." : "Type your own subcategory..."}
+                            className={inputCls}
+                          />
+                        </div>
+                        {form.subcategory && <p className="font-body text-[10px] text-[#00D4FF]/70">Selected: {form.subcategory}</p>}
+                      </div>
                     </div>
                   )}
 
-                  {/* FLIGHT DATE/TIME FIELDS */}
+                  {/* FLIGHT DETAILS */}
                   {isFlights && (
                     <div className="rounded-xl p-3 space-y-3" style={{ background: 'rgba(14,165,233,0.07)', border: '1px solid rgba(14,165,233,0.25)' }}>
-                      <p className="font-body text-[10px] font-bold text-sky-400 uppercase tracking-wider">Flight / Tour Schedule</p>
+                      <p className="font-body text-[10px] font-bold text-sky-400 uppercase tracking-wider">Flight Details</p>
+                      {/* Flight Type */}
+                      <div>
+                        <label className={labelCls}>Flight Type</label>
+                        <PillSelect options={FLIGHT_TYPES} value={form.flight_type} onChange={v => set('flight_type', v)} color="#0ea5e9" />
+                      </div>
+                      {/* Airline */}
+                      <div>
+                        <label className={labelCls}>Airline</label>
+                        <select value={AIRLINES.includes(form.flight_airline) ? form.flight_airline : ''} onChange={e => set('flight_airline', e.target.value)} className={inputCls}>
+                          <option value="" className="bg-[#0D1F3C]">Select airline...</option>
+                          {AIRLINES.map(a => <option key={a} value={a} className="bg-[#0D1F3C]">{a}</option>)}
+                        </select>
+                        <input value={!AIRLINES.includes(form.flight_airline) ? form.flight_airline : ''} onChange={e => set('flight_airline', e.target.value)} placeholder="Or type airline name..." className={`${inputCls} mt-1`} />
+                      </div>
+                      {/* Route */}
                       <div className="grid grid-cols-2 gap-2">
-                        <div>
-                          <label className={labelCls}>Departure Date</label>
-                          <input type="date" value={form.flight_departure_date} onChange={e => set('flight_departure_date', e.target.value)} className={inputCls} />
-                        </div>
-                        <div>
-                          <label className={labelCls}>Departure Time</label>
-                          <input type="time" value={form.flight_departure_time} onChange={e => set('flight_departure_time', e.target.value)} className={inputCls} />
-                        </div>
+                        <div><label className={labelCls}>Departure Airport / City</label><input value={form.flight_origin} onChange={e => set('flight_origin', e.target.value)} placeholder="e.g. NAIA - Manila" className={inputCls} /></div>
+                        <div><label className={labelCls}>Arrival Airport / City</label><input value={form.flight_destination} onChange={e => set('flight_destination', e.target.value)} placeholder="e.g. KLIA - Kuala Lumpur" className={inputCls} /></div>
+                        <div><label className={labelCls}>Travel Date</label><input type="date" value={form.flight_departure_date} onChange={e => set('flight_departure_date', e.target.value)} className={inputCls} /></div>
+                        <div><label className={labelCls}>Departure Time</label><input type="time" value={form.flight_departure_time} onChange={e => set('flight_departure_time', e.target.value)} className={inputCls} /></div>
+                        {form.flight_type !== 'One Way' && <div className="col-span-2"><label className={labelCls}>Return Date</label><input type="date" value={form.flight_return_date} onChange={e => set('flight_return_date', e.target.value)} className={inputCls} /></div>}
+                        <div><label className={labelCls}>Booking Deadline</label><input type="date" value={form.flight_booking_deadline} onChange={e => set('flight_booking_deadline', e.target.value)} className={inputCls} /></div>
+                        <div><label className={labelCls}>Available Seats</label><input type="number" value={form.flight_seats} onChange={e => set('flight_seats', e.target.value)} placeholder="e.g. 50" className={inputCls} /></div>
+                      </div>
+                      {/* Travel Class & Ticket Type */}
+                      <div>
+                        <label className={labelCls}>Travel Class</label>
+                        <PillSelect options={TRAVEL_CLASSES} value={form.flight_travel_class} onChange={v => set('flight_travel_class', v)} color="#0ea5e9" />
                       </div>
                       <div>
-                        <label className={labelCls}>Return Date (optional)</label>
-                        <input type="date" value={form.flight_return_date} onChange={e => set('flight_return_date', e.target.value)} className={inputCls} />
+                        <label className={labelCls}>Ticket Type</label>
+                        <PillSelect options={TICKET_TYPES} value={form.flight_ticket_type} onChange={v => set('flight_ticket_type', v)} color="#0ea5e9" />
+                      </div>
+                      {/* Pricing */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <div><label className={labelCls}>Price Per Passenger (₱)</label><input type="number" value={form.flight_price_per_passenger} onChange={e => set('flight_price_per_passenger', e.target.value)} placeholder="e.g. 3500" className={inputCls} /></div>
+                        <div><label className={labelCls}>Child Price (₱)</label><input type="number" value={form.flight_child_price} onChange={e => set('flight_child_price', e.target.value)} placeholder="optional" className={inputCls} /></div>
+                      </div>
+                      {/* Baggage */}
+                      <div>
+                        <label className={labelCls}>Baggage Inclusion</label>
+                        <select value={form.flight_baggage} onChange={e => set('flight_baggage', e.target.value)} className={inputCls}>
+                          {BAGGAGE_OPTIONS.map(b => <option key={b} value={b} className="bg-[#0D1F3C]">{b}</option>)}
+                        </select>
+                      </div>
+                      {/* Refund / Rebook */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <button type="button" onClick={() => set('flight_refundable', !form.flight_refundable)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-xl border transition-all"
+                          style={{ borderColor: form.flight_refundable ? '#0ea5e9' : 'rgba(255,255,255,0.1)', background: form.flight_refundable ? 'rgba(14,165,233,0.15)' : 'rgba(255,255,255,0.04)' }}>
+                          <div className={`w-3 h-3 rounded-full ${form.flight_refundable ? 'bg-sky-400' : 'bg-white/20'}`} />
+                          <span className="font-body text-xs text-white/70">Refundable</span>
+                        </button>
+                        <button type="button" onClick={() => set('flight_rebookable', !form.flight_rebookable)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-xl border transition-all"
+                          style={{ borderColor: form.flight_rebookable ? '#0ea5e9' : 'rgba(255,255,255,0.1)', background: form.flight_rebookable ? 'rgba(14,165,233,0.15)' : 'rgba(255,255,255,0.04)' }}>
+                          <div className={`w-3 h-3 rounded-full ${form.flight_rebookable ? 'bg-sky-400' : 'bg-white/20'}`} />
+                          <span className="font-body text-xs text-white/70">Rebookable</span>
+                        </button>
+                      </div>
+                      {/* Passenger Limits */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <div><label className={labelCls}>Min Passengers</label><input type="number" value={form.flight_min_pax} onChange={e => set('flight_min_pax', e.target.value)} placeholder="1" className={inputCls} /></div>
+                        <div><label className={labelCls}>Max Passengers</label><input type="number" value={form.flight_max_pax} onChange={e => set('flight_max_pax', e.target.value)} placeholder="optional" className={inputCls} /></div>
                       </div>
                     </div>
                   )}
@@ -926,6 +1061,21 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                   {/* PRICING */}
                   {!hidePrice && (
                     <div className="space-y-2">
+                      {/* Rate Type — not for jobs */}
+                      <div>
+                        <label className={labelCls}>Price Rate Type</label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {PRICE_RATE_TYPES.map(rt => (
+                            <button key={rt} type="button" onClick={() => set('price_rate_type', rt)}
+                              className="px-2.5 py-1 rounded-full border font-body text-[11px] transition-all"
+                              style={{
+                                borderColor: form.price_rate_type === rt ? '#00D4FF' : 'rgba(255,255,255,0.12)',
+                                background: form.price_rate_type === rt ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.04)',
+                                color: form.price_rate_type === rt ? '#00D4FF' : 'rgba(255,255,255,0.5)',
+                              }}>{rt}</button>
+                          ))}
+                        </div>
+                      </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
                           <label className={labelCls}>Price (PHP)</label>
@@ -935,17 +1085,17 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                           <label className={labelCls}>Compare-at Price (optional)</label>
                           <input type="number" value={form.original_price} onChange={e => set('original_price', e.target.value)} placeholder="Higher original" className={inputCls} />
                         </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
                         <div>
                           <label className={labelCls}>Price Display Label</label>
-                          <input value={form.price_label} onChange={e => set('price_label', e.target.value)} placeholder={isRent ? '18,000/mo' : '3,500 neg'} className={inputCls} />
+                          <input value={form.price_label} onChange={e => set('price_label', e.target.value)} placeholder={isRent ? '18,000/mo' : isVehicleRental ? '2,500/day' : '3,500 neg'} className={inputCls} />
                         </div>
                         <div>
                           <label className={labelCls}>Quantity / Stock</label>
                           <input type="number" min="1" value={form.quantity} onChange={e => set('quantity', Math.max(1, parseInt(e.target.value) || 1))} className={inputCls} />
                         </div>
-                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -1104,7 +1254,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                   {!form.description && (
                     <p className="font-body text-[10px] text-red-400 text-center">Description is required.</p>
                   )}
-                  {totalImages < 3 && (
+                  {photosRequired && totalImages < 3 && (
                     <p className="font-body text-[10px] text-amber-400 text-center">Minimum 3 photos required ({totalImages}/3).</p>
                   )}
                   <p className="font-body text-[10px] text-white/25 text-center">All listings are reviewed by our team before going live. You will be notified by email once approved.</p>

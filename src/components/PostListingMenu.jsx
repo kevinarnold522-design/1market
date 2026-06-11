@@ -84,12 +84,16 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
     setOpen(false);
     setExpandedCat(null);
     if (!user) { setShowSignup(true); return; }
-    navigate(`/category/${cat.key}`);
+    navigate(`/category/${cat.key}?type=${subtype.type}`);
   };
 
   const handleSelectCat = (cat) => {
     if (!user) { setOpen(false); setShowSignup(true); return; }
-    navigate(`/category/${cat.key}`);
+    if (cat.subtypes.length === 1) {
+      navigate(`/category/${cat.key}?type=${cat.subtypes[0].type}`);
+    } else {
+      setExpandedCat(expandedCat === cat.key ? null : cat.key);
+    }
   };
 
   const btnLabel = iconOnly ? null : compact ? '+ Post an Ad' : 'Post an Ad';
@@ -128,6 +132,7 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
                         <CategoryIcon name={cat.iconKey} size={12} color={cat.color} />
                       </div>
                       <span className="font-body font-semibold text-[10px] text-white leading-tight">{cat.label}</span>
+                      {cat.subtypes.length > 1 && <ChevronDown className={`w-3 h-3 ml-auto flex-shrink-0 transition-transform text-white/30 ${expandedCat === cat.key ? 'rotate-180' : ''}`} />}
                     </button>
                   ))}
                 </div>

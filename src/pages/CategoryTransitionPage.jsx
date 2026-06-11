@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, CheckCircle, ShoppingBag, Briefcase, UtensilsCrossed, Home, Wrench, Plane, Package, Smartphone, Shirt, Footprints, Building2, Zap, Settings, MoreHorizontal, Hotel, Car, Building, BedDouble } from 'lucide-react';
 import Navbar from '../components/home/Navbar';
 import MemberSignupModal from '../components/MemberSignupModal';
+import AddListingModal from '../components/AddListingModal';
 import { base44 } from '@/api/base44Client';
 
 const CATEGORY_CONFIG = {
@@ -81,6 +82,12 @@ export default function CategoryTransitionPage() {
   const [user, setUser] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState('');
+
+  // Read ?type= param to auto-open a specific type
+  const urlParams = new URLSearchParams(window.location.search);
+  const preselectedType = urlParams.get('type');
 
   const catConfig = CATEGORY_CONFIG[category];
 
@@ -90,6 +97,11 @@ export default function CategoryTransitionPage() {
         base44.auth.me().then(u => {
           setUser(u);
           setLoading(false);
+          // Auto-open modal if type is preselected
+          if (preselectedType) {
+            setModalType(preselectedType);
+            setShowModal(true);
+          }
         }).catch(() => setLoading(false));
       } else {
         setLoading(false);
@@ -102,7 +114,8 @@ export default function CategoryTransitionPage() {
       setShowSignup(true);
       return;
     }
-    navigate(`/post-ad?category=${category}&type=${type}`);
+    setModalType(type);
+    setShowModal(true);
   };
 
   if (!catConfig) {
@@ -198,6 +211,13 @@ export default function CategoryTransitionPage() {
 
       <AnimatePresence>
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
+        {showModal && user && (
+          <AddListingModal
+            user={user}
+            defaultType={modalType}
+            onClose={() => setShowModal(false)}
+          />
+        )}
       </AnimatePresence>
     </div>
   );
