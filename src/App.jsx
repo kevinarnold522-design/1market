@@ -30,6 +30,7 @@ import SellerOnboarding from './pages/SellerOnboarding';
 import PostAdLanding from './pages/PostAdLanding';
 import CategoryTransitionPage from './pages/CategoryTransitionPage';
 import ConnectedAccounts from './pages/ConnectedAccounts';
+import Groups from './pages/Groups';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
@@ -87,6 +88,7 @@ const AuthenticatedApp = () => {
         <Route path="/post-ad" element={<PostAdLanding />} />
         <Route path="/category/:category" element={<CategoryTransitionPage />} />
         <Route path="/connected-accounts" element={<ConnectedAccounts />} />
+        <Route path="/groups" element={<Groups />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
       {/* Auth pages - outside AppLayout */}

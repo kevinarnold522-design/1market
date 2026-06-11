@@ -1,0 +1,51 @@
+{
+  "name": "GroupPost",
+  "type": "object",
+  "properties": {
+    "group_id": {
+      "type": "string"
+    },
+    "author_email": {
+      "type": "string"
+    },
+    "author_name": {
+      "type": "string"
+    },
+    "author_picture": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "post_type": {
+      "type": "string",
+      "enum": [
+        "post",
+        "listing"
+      ],
+      "default": "post"
+    },
+    "listing_id": {
+      "type": "string"
+    },
+    "listing_data": {
+      "type": "object"
+    },
+    "likes": {
+      "type": "integer",
+      "default": 0
+    },
+    "comment_count": {
+      "type": "integer",
+      "default": 0
+    }
+  },
+  "required": [
+    "group_id",
+    "author_email",
+    "content"
+  ]
+}

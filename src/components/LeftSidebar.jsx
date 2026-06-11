@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Plane, UtensilsCrossed, ShoppingBag, Car, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, ChevronLeft, ChevronRight, ShoppingCart, Package, BarChart2, Settings, LogOut, Shield, KeyRound, Ghost, Search, HelpCircle, Info, FileText } from 'lucide-react';
+import { Home, Plane, UtensilsCrossed, ShoppingBag, Car, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, ChevronLeft, ChevronRight, ShoppingCart, Package, BarChart2, Settings, LogOut, Shield, KeyRound, Ghost, Search, HelpCircle, Info, FileText, Layers } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import PostListingMenu from './PostListingMenu';
 import NotificationsBell from './NotificationsBell';
@@ -17,6 +17,7 @@ const NAV_ITEMS = [
   { to: '/services',   icon: Wrench,         label: 'Services',     color: '#3b82f6' },
   { to: '/jobs',       icon: Briefcase,      label: 'Jobs',         color: '#f59e0b' },
   { to: '/community',  icon: Users,          label: 'Community',    color: '#a855f7' },
+  { to: '/groups',     icon: Layers,         label: 'Groups',       color: '#ec4899' },
 ];
 
 // Philippines Cities Data
@@ -105,7 +106,13 @@ export default function LeftSidebar({ isMobileHidden = false }) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-2 space-y-0.5 px-2">
+      <nav className="flex-1 overflow-y-auto py-2 space-y-0.5 px-2" style={{ scrollbarWidth: 'thick', scrollbarColor: 'rgba(255,255,255,0.7) transparent' }}
+        ref={el => {
+          if (el) {
+            el.style.setProperty('--scrollbar-width', '10px');
+          }
+        }}
+      >
         {NAV_ITEMS.map(item => {
           const active = location.pathname === item.to || (item.to !== '/' && location.pathname.startsWith(item.to));
           return (

@@ -117,8 +117,8 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
               initial={{ opacity: 0, y: 8, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.95 }}
-              className="absolute left-0 top-full mt-2 rounded-2xl overflow-hidden shadow-2xl z-[200]"
-              style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)', width: 'min(300px, 96vw)' }}>
+              className="absolute left-0 top-full mt-2 rounded-2xl shadow-2xl z-[200]"
+              style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)', width: 'min(320px, 96vw)', maxHeight: '80vh', overflowY: 'auto' }}>
               <div className="p-3">
                 <p className="font-body text-[9px] text-white/30 uppercase tracking-wider font-bold px-1 pb-2">Post an Ad — Choose Category</p>
                 {/* Categories in 2-col grid */}
