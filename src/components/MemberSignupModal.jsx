@@ -167,20 +167,23 @@ export default function MemberSignupModal({ onClose }) {
             </div>
             <div className="space-y-4">
               {[
-                { icon: '🛍️', title: 'Browse & Buy Deals', desc: 'Access exclusive deals on electronics, food, travel, and more.' },
-                { icon: '🏪', title: 'Sell Anything', desc: 'List products, services, or businesses — reach buyers nationwide.' },
-                { icon: '🔒', title: 'Secure & Private', desc: 'Your data is encrypted. DPA 2012 compliant. No spam ever.' },
-                { icon: '🇵🇭', title: 'Built for Filipinos', desc: 'Serving Manila, Cavite, and the entire Philippines.' },
+                { IconComp: ShoppingBag, iconColor: '#2563EB', title: 'Browse & Buy Deals', desc: 'Access exclusive deals on electronics, food, travel, and more.' },
+                { IconComp: Star, iconColor: '#f59e0b', title: 'Sell Anything', desc: 'List products, services, or businesses — reach buyers nationwide.' },
+                { IconComp: Shield, iconColor: '#10b981', title: 'Secure & Private', desc: 'Your data is encrypted. DPA 2012 compliant. No spam ever.' },
+                { IconComp: User, iconColor: '#a855f7', title: 'Built for Filipinos', desc: 'Serving Manila, Cavite, and the entire Philippines.' },
               ].map((item, i) => (
                 <motion.div key={i} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 + i * 0.08 }}
                   className="flex items-start gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-lg flex-shrink-0">{item.icon}</div>
+                  <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center flex-shrink-0">
+                    <item.IconComp className="w-4 h-4" style={{ color: item.iconColor }} />
+                  </div>
                   <div>
                     <p className="font-heading font-bold text-xs text-[#0A192F]">{item.title}</p>
                     <p className="font-body text-[10px] text-[#0A192F]/50 leading-relaxed mt-0.5">{item.desc}</p>
                   </div>
                 </motion.div>
               ))}
+
             </div>
           </div>
         </div>

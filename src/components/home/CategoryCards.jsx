@@ -3,88 +3,88 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useFireTransition, FireOverlay } from './FireTransition';
 import CategoryTransitionOverlay, { getTransitionTypeForHref } from '../transitions/CategoryTransitionOverlay';
 import { useNavigate } from 'react-router-dom';
-import { Plane, UtensilsCrossed, ShoppingBag, Home, Wrench, Briefcase, ArrowLeft, X } from 'lucide-react';
+import { Plane, UtensilsCrossed, ShoppingBag, Home, Wrench, Briefcase, ArrowLeft, X, Hotel, Palmtree, Ship, Car, Bus, Waves, Tent, Mountain, Anchor, Headphones, Laptop, Heart, DollarSign, FolderOpen, HardHat, Palette, ChefHat, Settings, BookOpen, Wifi, ClipboardList, Croissant, Coffee, Candy, ShoppingCart, Salad, Smartphone, CarFront, Shirt, Footprints, Sofa, Building2, Package, MoreHorizontal, BedDouble, Building, TreePine, Warehouse, Sparkles, Zap, CalendarCheck, Camera, GraduationCap, Truck, Search } from 'lucide-react';
 
 // ── Subcategory definitions for each main category ──────────────────────────
 
 const TRAVEL_SUBS = [
-  { key: 'hotel',       label: 'Hotels',          icon: '🏨', desc: 'Budget to Luxury', href: '/travel' },
-  { key: 'resort',      label: 'Resorts',          icon: '🌴', desc: 'Beach & Mountain', href: '/travel' },
-  { key: 'flights',     label: 'Flights & Tours',  icon: '✈️', desc: 'Packages & Promos', href: '/travel' },
-  { key: 'island',      label: 'Island Hopping',   icon: '🏝️', desc: 'El Nido, Coron…', href: '/travel' },
-  { key: 'car_rental',  label: 'Car Rentals',      icon: '🚗', desc: 'With/Without Driver', href: '/travel' },
-  { key: 'van_rental',  label: 'Van Rentals',      icon: '🚐', desc: 'Group Trips', href: '/travel' },
-  { key: 'ferry',       label: 'Ferry & Bus',       icon: '⛴️', desc: 'Inter-island', href: '/travel' },
-  { key: 'diving',      label: 'Diving',            icon: '🤿', desc: 'Scuba & Freedive', href: '/travel' },
-  { key: 'surfing',     label: 'Surfing',           icon: '🏄', desc: 'Lessons & Camps', href: '/travel' },
-  { key: 'hiking',      label: 'Hiking',            icon: '🥾', desc: 'Treks & Expeditions', href: '/travel' },
-  { key: 'camping',     label: 'Camping',           icon: '⛺', desc: 'Beach & Mountain', href: '/travel' },
+  { key: 'hotel',       label: 'Hotels',          Icon: Hotel,    desc: 'Budget to Luxury', href: '/travel' },
+  { key: 'resort',      label: 'Resorts',          Icon: Palmtree, desc: 'Beach & Mountain', href: '/travel' },
+  { key: 'flights',     label: 'Flights & Tours',  Icon: Plane,    desc: 'Packages & Promos', href: '/travel' },
+  { key: 'island',      label: 'Island Hopping',   Icon: Waves,    desc: 'El Nido, Coron…', href: '/travel' },
+  { key: 'car_rental',  label: 'Car Rentals',      Icon: Car,      desc: 'With/Without Driver', href: '/travel' },
+  { key: 'van_rental',  label: 'Van Rentals',      Icon: Bus,      desc: 'Group Trips', href: '/travel' },
+  { key: 'ferry',       label: 'Ferry & Bus',       Icon: Ship,     desc: 'Inter-island', href: '/travel' },
+  { key: 'diving',      label: 'Diving',            Icon: Anchor,   desc: 'Scuba & Freedive', href: '/travel' },
+  { key: 'surfing',     label: 'Surfing',           Icon: Waves,    desc: 'Lessons & Camps', href: '/travel' },
+  { key: 'hiking',      label: 'Hiking',            Icon: Mountain, desc: 'Treks & Expeditions', href: '/travel' },
+  { key: 'camping',     label: 'Camping',           Icon: Tent,     desc: 'Beach & Mountain', href: '/travel' },
 ];
 
 const JOBS_SUBS = [
-  { key: 'bpo',         label: 'BPO / Call Center', icon: '🎧', desc: 'CSR, TSR, Ops', href: '/jobs' },
-  { key: 'tech',        label: 'IT & Tech',          icon: '💻', desc: 'Dev, QA, IT Support', href: '/jobs' },
-  { key: 'healthcare',  label: 'Healthcare',         icon: '🏥', desc: 'Nurses, MedTech', href: '/jobs' },
-  { key: 'finance',     label: 'Finance & Acctg',    icon: '💰', desc: 'CPA, Audit, Banking', href: '/jobs' },
-  { key: 'hr',          label: 'HR & Admin',          icon: '🗂️', desc: 'Recruitment, Payroll', href: '/jobs' },
-  { key: 'engineering', label: 'Engineering',        icon: '🏗️', desc: 'Civil, Safety, Logistics', href: '/jobs' },
-  { key: 'creative',    label: 'Creative & Marketing',icon: '🎨', desc: 'Design, Social Media', href: '/jobs' },
-  { key: 'food',        label: 'Food & Restaurant',  icon: '🍜', desc: 'Chef, Server, Barista', href: '/jobs' },
-  { key: 'bluecolar',   label: 'Blue Collar',         icon: '🔧', desc: 'Janitor, Guard, Driver', href: '/jobs' },
-  { key: 'education',   label: 'Education',           icon: '📚', desc: 'Teacher, Tutor', href: '/jobs' },
-  { key: 'wfh',         label: 'WFH / Remote',        icon: '🏠', desc: 'Virtual, Online', href: '/jobs' },
-  { key: 'other',       label: 'Other / Not Listed',  icon: '📋', desc: 'All other roles', href: '/jobs' },
+  { key: 'bpo',         label: 'BPO / Call Center', Icon: Headphones,    desc: 'CSR, TSR, Ops', href: '/jobs' },
+  { key: 'tech',        label: 'IT & Tech',          Icon: Laptop,        desc: 'Dev, QA, IT Support', href: '/jobs' },
+  { key: 'healthcare',  label: 'Healthcare',         Icon: Heart,         desc: 'Nurses, MedTech', href: '/jobs' },
+  { key: 'finance',     label: 'Finance & Acctg',    Icon: DollarSign,    desc: 'CPA, Audit, Banking', href: '/jobs' },
+  { key: 'hr',          label: 'HR & Admin',          Icon: FolderOpen,    desc: 'Recruitment, Payroll', href: '/jobs' },
+  { key: 'engineering', label: 'Engineering',        Icon: HardHat,       desc: 'Civil, Safety, Logistics', href: '/jobs' },
+  { key: 'creative',    label: 'Creative & Marketing',Icon: Palette,      desc: 'Design, Social Media', href: '/jobs' },
+  { key: 'food',        label: 'Food & Restaurant',  Icon: ChefHat,       desc: 'Chef, Server, Barista', href: '/jobs' },
+  { key: 'bluecolar',   label: 'Blue Collar',         Icon: Settings,      desc: 'Janitor, Guard, Driver', href: '/jobs' },
+  { key: 'education',   label: 'Education',           Icon: BookOpen,      desc: 'Teacher, Tutor', href: '/jobs' },
+  { key: 'wfh',         label: 'WFH / Remote',        Icon: Wifi,          desc: 'Virtual, Online', href: '/jobs' },
+  { key: 'other',       label: 'Other / Not Listed',  Icon: ClipboardList, desc: 'All other roles', href: '/jobs' },
 ];
 
 const FOOD_SUBS = [
-  { key: 'Baked Goods',            label: 'Baked Goods',        icon: '🥖', href: '/food' },
-  { key: 'Ready-to-Eat Meals',     label: 'Lutong Bahay',       icon: '🍱', href: '/food' },
-  { key: 'Beverages',              label: 'Beverages',          icon: '🥤', href: '/food' },
-  { key: 'Snacks',                 label: 'Snacks',             icon: '🍿', href: '/food' },
-  { key: 'Desserts',               label: 'Desserts',           icon: '🍰', href: '/food' },
-  { key: 'Karinderya / Turo-turo', label: 'Karinderya',         icon: '🍽️', href: '/food' },
-  { key: 'Health Food',            label: 'Health Food',        icon: '🥗', href: '/food' },
-  { key: 'Ingredients / Grocery',  label: 'Grocery Items',      icon: '🛒', href: '/food' },
+  { key: 'Baked Goods',            label: 'Baked Goods',  Icon: Croissant,    href: '/food' },
+  { key: 'Ready-to-Eat Meals',     label: 'Lutong Bahay', Icon: ChefHat,      href: '/food' },
+  { key: 'Beverages',              label: 'Beverages',    Icon: Coffee,       href: '/food' },
+  { key: 'Snacks',                 label: 'Snacks',       Icon: Package,      href: '/food' },
+  { key: 'Desserts',               label: 'Desserts',     Icon: Candy,        href: '/food' },
+  { key: 'Karinderya / Turo-turo', label: 'Karinderya',   Icon: UtensilsCrossed, href: '/food' },
+  { key: 'Health Food',            label: 'Health Food',  Icon: Salad,        href: '/food' },
+  { key: 'Ingredients / Grocery',  label: 'Grocery Items',Icon: ShoppingCart, href: '/food' },
 ];
 
 const BUYSELL_SUBS = [
-  { key: 'electronics', label: 'Electronics',    icon: '📱', href: '/buysell' },
-  { key: 'cars',        label: 'Cars & Vehicles', icon: '🚗', href: '/buysell' },
-  { key: 'clothing',    label: 'Clothing',        icon: '👕', href: '/buysell' },
-  { key: 'shoes',       label: 'Shoes',           icon: '👟', href: '/buysell' },
-  { key: 'furniture',   label: 'Furniture',       icon: '🪑', href: '/buysell' },
-  { key: 'houses',      label: 'Real Estate',     icon: '🏠', href: '/buysell' },
-  { key: 'homeappliances', label: 'Appliances',   icon: '🏠', href: '/buysell' },
-  { key: 'mods',        label: 'Mods & Customs',  icon: '⚙️', href: '/buysell' },
-  { key: 'product',     label: 'General Products', icon: '📦', href: '/buysell' },
-  { key: 'other',       label: 'Other / Misc',    icon: '🗂️', href: '/buysell' },
+  { key: 'electronics',    label: 'Electronics',     Icon: Smartphone,   href: '/buysell' },
+  { key: 'cars',           label: 'Cars & Vehicles', Icon: CarFront,     href: '/buysell' },
+  { key: 'clothing',       label: 'Clothing',        Icon: Shirt,        href: '/buysell' },
+  { key: 'shoes',          label: 'Shoes',           Icon: Footprints,   href: '/buysell' },
+  { key: 'furniture',      label: 'Furniture',       Icon: Sofa,         href: '/buysell' },
+  { key: 'houses',         label: 'Real Estate',     Icon: Building2,    href: '/buysell' },
+  { key: 'homeappliances', label: 'Appliances',      Icon: Zap,          href: '/buysell' },
+  { key: 'mods',           label: 'Mods & Customs',  Icon: Settings,     href: '/buysell' },
+  { key: 'product',        label: 'General Products', Icon: Package,     href: '/buysell' },
+  { key: 'other',          label: 'Other / Misc',    Icon: MoreHorizontal, href: '/buysell' },
 ];
 
 const RENT_SUBS = [
-  { key: 'Room for Rent',       label: 'Room for Rent',     icon: '🛏️', href: '/rent' },
-  { key: 'Apartment / Condo',   label: 'Apartment / Condo', icon: '🏢', href: '/rent' },
-  { key: 'House for Rent',      label: 'House for Rent',    icon: '🏠', href: '/rent' },
-  { key: 'Bedspace / Dorm',     label: 'Bedspace / Dorm',   icon: '🪹', href: '/rent' },
-  { key: 'Commercial Space',    label: 'Commercial Space',  icon: '🏪', href: '/rent' },
-  { key: 'Office for Rent',     label: 'Office for Rent',   icon: '🏬', href: '/rent' },
-  { key: 'Venue / Events Space',label: 'Event Venue',       icon: '🎪', href: '/rent' },
-  { key: 'Land for Lease',      label: 'Land / Lot',        icon: '🌾', href: '/rent' },
-  { key: 'Warehouse / Storage', label: 'Warehouse',         icon: '🏭', href: '/rent' },
+  { key: 'Room for Rent',       label: 'Room for Rent',     Icon: BedDouble,   href: '/rent' },
+  { key: 'Apartment / Condo',   label: 'Apartment / Condo', Icon: Building,    href: '/rent' },
+  { key: 'House for Rent',      label: 'House for Rent',    Icon: Home,        href: '/rent' },
+  { key: 'Bedspace / Dorm',     label: 'Bedspace / Dorm',   Icon: BedDouble,   href: '/rent' },
+  { key: 'Commercial Space',    label: 'Commercial Space',  Icon: Building2,   href: '/rent' },
+  { key: 'Office for Rent',     label: 'Office for Rent',   Icon: Briefcase,   href: '/rent' },
+  { key: 'Venue / Events Space',label: 'Event Venue',       Icon: CalendarCheck, href: '/rent' },
+  { key: 'Land for Lease',      label: 'Land / Lot',        Icon: TreePine,    href: '/rent' },
+  { key: 'Warehouse / Storage', label: 'Warehouse',         Icon: Warehouse,   href: '/rent' },
 ];
 
 const SERVICES_SUBS = [
-  { key: 'Home Cleaning',      label: 'Cleaning',       icon: '🧹', href: '/services' },
-  { key: 'Plumbing',           label: 'Plumbing',       icon: '🔧', href: '/services' },
-  { key: 'Electrical',         label: 'Electrical',     icon: '⚡', href: '/services' },
-  { key: 'Aircon Services',    label: 'Aircon',         icon: '❄️', href: '/services' },
-  { key: 'Web Development',    label: 'Web Dev',        icon: '💻', href: '/services' },
-  { key: 'Graphic Design',     label: 'Design',         icon: '🎨', href: '/services' },
-  { key: 'Event Planning',     label: 'Events',         icon: '🎉', href: '/services' },
-  { key: 'Photography / Videography', label: 'Photo/Video', icon: '📸', href: '/services' },
-  { key: 'Tutoring',           label: 'Tutoring',       icon: '📚', href: '/services' },
-  { key: 'Massage / Spa',      label: 'Massage / Spa',  icon: '💆', href: '/services' },
-  { key: 'Trucking',           label: 'Trucking',       icon: '🚚', href: '/services' },
-  { key: 'Other / Type Manually', label: 'Other',       icon: '🗂️', href: '/services' },
+  { key: 'Home Cleaning',      label: 'Cleaning',       Icon: Sparkles,     href: '/services' },
+  { key: 'Plumbing',           label: 'Plumbing',       Icon: Wrench,       href: '/services' },
+  { key: 'Electrical',         label: 'Electrical',     Icon: Zap,          href: '/services' },
+  { key: 'Aircon Services',    label: 'Aircon',         Icon: Settings,     href: '/services' },
+  { key: 'Web Development',    label: 'Web Dev',        Icon: Laptop,       href: '/services' },
+  { key: 'Graphic Design',     label: 'Design',         Icon: Palette,      href: '/services' },
+  { key: 'Event Planning',     label: 'Events',         Icon: CalendarCheck, href: '/services' },
+  { key: 'Photography / Videography', label: 'Photo/Video', Icon: Camera,  href: '/services' },
+  { key: 'Tutoring',           label: 'Tutoring',       Icon: GraduationCap, href: '/services' },
+  { key: 'Massage / Spa',      label: 'Massage / Spa',  Icon: Heart,        href: '/services' },
+  { key: 'Trucking',           label: 'Trucking',       Icon: Truck,        href: '/services' },
+  { key: 'Other / Type Manually', label: 'Other',       Icon: MoreHorizontal, href: '/services' },
 ];
 
 const CATEGORY_SUBS = {
@@ -97,12 +97,12 @@ const CATEGORY_SUBS = {
 };
 
 const CATEGORY_TITLES = {
-  '/travel':   'Where are you going? ✈️',
-  '/food':     'What are you craving? 🍜',
-  '/buysell':  'What are you looking for? 🛍️',
-  '/rent':     'What do you need to rent? 🏠',
-  '/services': 'What service do you need? 🔧',
-  '/jobs':     'What kind of job? 💼',
+  '/travel':   'Where are you going?',
+  '/food':     'What are you craving?',
+  '/buysell':  'What are you looking for?',
+  '/rent':     'What do you need to rent?',
+  '/services': 'What service do you need?',
+  '/jobs':     'What kind of job?',
 };
 
 // ── Casino card for main categories ──────────────────────────────────────────
@@ -286,7 +286,9 @@ function SubCard({ sc, index, onClick }) {
           <div className="absolute top-1.5 left-2 text-[8px] font-black" style={{ color: accent }}><div>{VALS_SUB[vIdx]}</div><div>{suit}</div></div>
           <div className="absolute bottom-1.5 right-2 text-[8px] font-black rotate-180" style={{ color: accent }}><div>{VALS_SUB[vIdx]}</div><div>{suit}</div></div>
           <div className="relative z-10 flex flex-col items-center justify-center h-full p-2">
-            <div className="text-xl sm:text-2xl mb-1">{sc.icon}</div>
+            <div className="mb-1 p-1.5 rounded-xl" style={{ background: `${accent}22` }}>
+              {sc.Icon && <sc.Icon className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: accent }} />}
+            </div>
             <p className="font-heading font-bold text-[10px] sm:text-xs text-white leading-tight text-center">{sc.label}</p>
             {sc.desc && <p className="font-body text-[8px] text-white/50 mt-0.5 text-center hidden sm:block">{sc.desc}</p>}
           </div>
@@ -373,9 +375,10 @@ function SubcategoryPicker({ href, onClose, navigate }) {
 
         {/* Filter */}
         <div className="relative mb-4 z-10 flex-shrink-0">
-          <input value={filter} onChange={e => setFilter(e.target.value)}
-            placeholder="🔍 Filter..."
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+        <input value={filter} onChange={e => setFilter(e.target.value)}
+          placeholder="Search subcategory..."
+          className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50" />
         </div>
 
         {/* Grid */}

@@ -74,6 +74,16 @@ function CategoryDropdown({ cat, onClose }) {
 export default function NavCategoryBar() {
   const [open, setOpen] = useState(null);
   const ref = useRef(null);
+  const scrollRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  };
 
   useEffect(() => {
     const handler = (e) => {
@@ -83,41 +93,73 @@ export default function NavCategoryBar() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    checkScroll();
+    el.addEventListener('scroll', checkScroll, { passive: true });
+    window.addEventListener('resize', checkScroll);
+    return () => {
+      el.removeEventListener('scroll', checkScroll);
+      window.removeEventListener('resize', checkScroll);
+    };
+  }, []);
+
   return (
-    <div ref={ref} className="flex items-center gap-1 flex-wrap">
-      {NAV_CATEGORIES.map(cat => {
-        const Icon = cat.icon;
-        const isOpen = open === cat.label;
-        return (
-          <div key={cat.label} className="relative">
-            {cat.types.length === 0 ? (
-              <Link to={cat.href}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl font-body text-xs font-semibold transition-all whitespace-nowrap border"
-                style={{ color: cat.color, background: `${cat.color}12`, borderColor: `${cat.color}30` }}>
-                <Icon className="w-3 h-3" />
-                {cat.label}
-              </Link>
-            ) : (
-              <>
-                <button
-                  onMouseEnter={() => setOpen(cat.label)}
-                  onClick={() => setOpen(isOpen ? null : cat.label)}
+    <div ref={ref} className="relative flex items-center w-full">
+      {/* Left fade indicator */}
+      {canScrollLeft && (
+        <div className="absolute left-0 top-0 bottom-0 w-6 z-10 pointer-events-none"
+          style={{ background: 'linear-gradient(90deg, rgba(0,13,64,0.95), transparent)' }} />
+      )}
+
+      <div
+        ref={scrollRef}
+        className="flex items-center gap-1 overflow-x-auto w-full"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        {NAV_CATEGORIES.map(cat => {
+          const Icon = cat.icon;
+          const isOpen = open === cat.label;
+          return (
+            <div key={cat.label} className="relative flex-shrink-0">
+              {cat.types.length === 0 ? (
+                <Link to={cat.href}
                   className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl font-body text-xs font-semibold transition-all whitespace-nowrap border"
-                  style={isOpen
-                    ? { color: cat.color, background: `${cat.color}22`, borderColor: `${cat.color}55` }
-                    : { color: 'rgba(255,255,255,0.7)', background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.1)' }}>
-                  <Icon className="w-3 h-3" style={{ color: isOpen ? cat.color : undefined }} />
+                  style={{ color: cat.color, background: `${cat.color}12`, borderColor: `${cat.color}30` }}>
+                  <Icon className="w-3 h-3" />
                   {cat.label}
-                  <ChevronDown className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-                </button>
-                {isOpen && (
-                  <CategoryDropdown cat={cat} onClose={() => setOpen(null)} />
-                )}
-              </>
-            )}
-          </div>
-        );
-      })}
+                </Link>
+              ) : (
+                <>
+                  <button
+                    onMouseEnter={() => setOpen(cat.label)}
+                    onClick={() => setOpen(isOpen ? null : cat.label)}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl font-body text-xs font-semibold transition-all whitespace-nowrap border"
+                    style={isOpen
+                      ? { color: cat.color, background: `${cat.color}22`, borderColor: `${cat.color}55` }
+                      : { color: 'rgba(255,255,255,0.7)', background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.1)' }}>
+                    <Icon className="w-3 h-3" style={{ color: isOpen ? cat.color : undefined }} />
+                    {cat.label}
+                    <ChevronDown className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {isOpen && (
+                    <CategoryDropdown cat={cat} onClose={() => setOpen(null)} />
+                  )}
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Right fade + chevron indicator */}
+      {canScrollRight && (
+        <div className="absolute right-0 top-0 bottom-0 w-8 z-10 pointer-events-none flex items-center justify-end pr-1"
+          style={{ background: 'linear-gradient(270deg, rgba(0,13,64,0.95), transparent)' }}>
+          <ChevronDown className="w-3 h-3 text-white/40 -rotate-90" />
+        </div>
+      )}
     </div>
   );
 }

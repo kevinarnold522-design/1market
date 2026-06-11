@@ -95,9 +95,13 @@ export default function Footer() {
           <p className="font-body text-xs text-white/25 text-center sm:text-left">
             © 2026 1MarketPH.com — All rights reserved.
           </p>
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
-            <span className="font-body text-xs text-white/30">Live · Philippines</span>
+          <div className="flex items-center gap-4">
+            <Link to="/about" className="font-body text-xs text-white/40 hover:text-[#00D4FF] transition-colors">About Us</Link>
+            <Link to="/privacy-policy" className="font-body text-xs text-white/40 hover:text-[#00D4FF] transition-colors">Privacy Policy</Link>
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
+              <span className="font-body text-xs text-white/30">Live · Philippines</span>
+            </div>
           </div>
         </div>
       </div>
