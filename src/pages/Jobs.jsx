@@ -34,6 +34,7 @@ const JOB_SUBCATEGORIES = [
   { key: 'skilled',    label: 'Skilled Trades',      color: '#a78bfa' },
   { key: 'events',     label: 'Events & Promo',      color: '#fb923c' },
   { key: 'general',    label: 'General / Blue Collar',color: '#94a3b8' },
+  { key: 'freelance',  label: 'Freelance Projects',  color: '#a855f7' },
 ];
 
 // No static/fake jobs — only real DB listings shown
@@ -48,6 +49,7 @@ function getCatIcon(type) {
 function JobCard({ job, onApply }) {
   const catColor = getCatColor(job.type);
   const catIcon = getCatIcon(job.type);
+  const isFreelance = job.type === 'freelance' || job.is_freelance_job;
 
   return (
     <motion.div
@@ -71,7 +73,12 @@ function JobCard({ job, onApply }) {
           style={{ background: `${catColor}CC` }}>
           {job.type_label || job.type}
         </span>
-        {job.urgent && (
+        {isFreelance && (
+          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[9px] font-bold bg-purple-500 text-white flex items-center gap-1">
+            ⚡ Freelance
+          </span>
+        )}
+        {job.urgent && !isFreelance && (
           <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[9px] font-bold bg-red-500 text-white">
             🔥 Urgent
           </span>
@@ -106,6 +113,18 @@ function JobCard({ job, onApply }) {
             Posted by: {job.poster_role}
           </span>
         )}
+        {isFreelance && (
+          <div className="mb-2 flex items-center gap-1 flex-wrap">
+            <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+              🔒 Privacy Protected
+            </span>
+            {!job.candidate_contact_public && (
+              <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                Contact Hidden
+              </span>
+            )}
+          </div>
+        )}
         <p className="font-body text-xs text-white/40 mb-3 line-clamp-2">{job.desc}</p>
         <div className="flex items-center justify-between">
           <span className="font-heading font-bold text-sm text-amber-400 flex items-center gap-1">
@@ -116,7 +135,7 @@ function JobCard({ job, onApply }) {
             className="px-4 py-1.5 rounded-lg font-body text-xs font-bold text-white transition-all hover:scale-105"
             style={{ background: `linear-gradient(135deg, ${THEME.primary}, ${THEME.accent})` }}
           >
-            Apply
+            {isFreelance ? 'View Profile' : 'Apply'}
           </button>
         </div>
       </div>
@@ -126,42 +145,81 @@ function JobCard({ job, onApply }) {
 
 function ApplyModal({ job, onClose }) {
   const catColor = getCatColor(job.type);
+  const isFreelance = job.is_freelance_job || false;
+  
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
       style={{ background: 'rgba(1,22,64,0.9)' }}
       onClick={onClose}>
       <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} onClick={e => e.stopPropagation()}
-        className="w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl"
+        className="w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl"
         style={{ background: '#0D1F3C', border: `1px solid ${catColor}44` }}>
-        <div className="relative h-28 overflow-hidden">
+        <div className="relative h-32 overflow-hidden">
           <img src={job.image || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=500&q=80'} alt={job.title} className="w-full h-full object-cover" />
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #0D1F3C 20%, transparent)' }} />
-          <button onClick={onClose} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/15 flex items-center justify-center text-white">✕</button>
-          <p className="absolute bottom-2 left-4 font-heading font-bold text-white text-sm">{job.title}</p>
+          <button onClick={onClose} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/15 flex items-center justify-center text-white hover:bg-white/25 transition-colors">✕</button>
+          <p className="absolute bottom-3 left-4 font-heading font-bold text-white text-base">{job.title}</p>
         </div>
-        <div className="p-5 space-y-3">
+        <div className="p-5 space-y-4 max-h-[60vh] overflow-y-auto">
+          {/* Basic Info - Always shown */}
           <div>
-            <p className="font-body text-xs font-bold mb-0.5" style={{ color: catColor }}>{getCatIcon(job.type)} {job.company} · {job.area}</p>
-            <p className="font-body text-xs text-white/50">{job.desc}</p>
+            <div className="flex items-center gap-2 mb-1">
+              <Building2 className="w-3.5 h-3.5" style={{ color: catColor }} />
+              <p className="font-body text-xs font-bold" style={{ color: catColor }}>{job.company || 'Company'} · {job.area}</p>
+            </div>
+            <p className="font-body text-xs text-white/50 mt-1">{job.desc}</p>
           </div>
+          
+          {/* Pay Info */}
           <div className="p-3 rounded-xl" style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)' }}>
             <p className="font-body text-[10px] text-amber-400">Pay: <strong>{job.pay}</strong></p>
           </div>
+          
+          {/* Freelance Privacy Notice */}
+          {isFreelance && (
+            <div className="p-3 rounded-xl" style={{ background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.3)' }}>
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="w-3.5 h-3.5 text-purple-400" />
+                <p className="font-body text-xs font-bold text-purple-300">Freelance Position</p>
+              </div>
+              <p className="font-body text-[10px] text-white/60 mb-2">
+                This is a freelance position. The lister has chosen what candidate information to display publicly.
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold" style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)' }}>
+                  {job.candidate_contact_public || job.candidate_email_public ? '✓ Contact Visible' : '✗ Contact Hidden'}
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold" style={{ background: 'rgba(59,130,246,0.15)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.3)' }}>
+                  {job.candidate_location_public ? '✓ Location Visible' : '✗ Location Hidden'}
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold" style={{ background: 'rgba(236,72,153,0.15)', color: '#ec4899', border: '1px solid rgba(236,72,153,0.3)' }}>
+                  {job.candidate_portfolio_public ? '✓ Portfolio Visible' : '✗ Portfolio Hidden'}
+                </span>
+              </div>
+            </div>
+          )}
+          
+          {/* Contact / Apply Section */}
           <div className="space-y-2">
             <p className="font-body text-[10px] text-white/40 uppercase tracking-wider">Contact / Apply via:</p>
             {job.link ? (
               <a href={job.link} target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body text-xs font-bold text-white transition-all"
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body text-xs font-bold text-white transition-all hover:scale-[1.02]"
                 style={{ background: `linear-gradient(135deg,${THEME.primary},${THEME.accent})` }}>
                 <ExternalLink className="w-3.5 h-3.5" /> Open Application Page
               </a>
-            ) : (
+            ) : (job.candidate_email_public || job.candidate_contact_public) ? (
               <a href={`mailto:${job.contact}`}
-                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body text-xs font-bold text-white transition-all"
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body text-xs font-bold text-white transition-all hover:scale-[1.02]"
                 style={{ background: `linear-gradient(135deg,${THEME.primary},${THEME.accent})` }}>
                 {job.contact}
               </a>
+            ) : (
+              <div className="p-3 rounded-xl text-center" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <p className="font-body text-xs text-white/40 mb-2">Contact information is private</p>
+                <p className="font-body text-[10px] text-white/30">Apply through the platform to connect with the candidate</p>
+              </div>
             )}
           </div>
         </div>
@@ -201,7 +259,7 @@ export default function Jobs() {
 
   const allJobs = dbJobs.map(j => ({
     id: j.id,
-    type: j.subcategory?.toLowerCase().replace(/\s+/g, '') || 'other',
+    type: j.subcategory?.toLowerCase().replace(/\s+/g, '') || (j.type === 'jobs' ? 'general' : 'other'),
     title: j.title,
     company: j.company_hiring || '',
     poster_role: j.job_poster_role || '',
@@ -215,6 +273,14 @@ export default function Jobs() {
     link: j.apply_link || null,
     urgent: false,
     isDb: true,
+    is_freelance_job: j.is_freelance_job || false,
+    candidate_contact_public: j.candidate_contact_public || false,
+    candidate_email_public: j.candidate_email_public || false,
+    candidate_portfolio_public: j.candidate_portfolio_public || true,
+    candidate_location_public: j.candidate_location_public || true,
+    candidate_rate_public: j.candidate_rate_public || false,
+    candidate_experience_public: j.candidate_experience_public || true,
+    candidate_education_public: j.candidate_education_public || true,
   }));
 
   const filtered = allJobs.filter(j => {
@@ -244,17 +310,24 @@ export default function Jobs() {
             <div className="flex items-center gap-4 flex-wrap mb-2">
               <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Jobs in the Philippines</h1>
               {currentUser ? (
-                <Link to="/post-ad?category=jobs&type=jobs"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105 whitespace-nowrap"
-                  style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }}>
-                  <Plus className="w-3.5 h-3.5" /> Post a Job Ad
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link to="/post-ad?category=jobs&type=jobs"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105 whitespace-nowrap"
+                    style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }}>
+                    <Plus className="w-3.5 h-3.5" /> Post a Job
+                  </Link>
+                  <Link to="/post-ad?category=jobs&type=freelance"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105 whitespace-nowrap"
+                    style={{ background: 'linear-gradient(135deg,#a855f7,#c084fc)', boxShadow: '0 0 12px rgba(168,85,247,0.4)' }}>
+                    <Plus className="w-3.5 h-3.5" /> Post Freelance
+                  </Link>
+                </div>
               ) : (
                 <button
                   onClick={() => setShowSignup(true)}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105 whitespace-nowrap"
                   style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }}>
-                  <Plus className="w-3.5 h-3.5" /> Post a Job Ad
+                  <Plus className="w-3.5 h-3.5" /> Post a Job
                 </button>
               )}
             </div>

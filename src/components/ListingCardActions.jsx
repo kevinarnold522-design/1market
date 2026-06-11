@@ -42,7 +42,7 @@ export default function ListingCardActions({ item, user, isFav, onFavourite, onS
     setHeartAnim(true);
     setShowBigHeart(true);
     setTimeout(() => setHeartAnim(false), 450);
-    setTimeout(() => setShowBigHeart(false), 1100);
+    setTimeout(() => setShowBigHeart(false), 1600);
     if (onFavourite) onFavourite(item);
   };
 
@@ -78,11 +78,41 @@ export default function ListingCardActions({ item, user, isFav, onFavourite, onS
     <>
       <style>{STYLE}</style>
       <div className="flex items-center gap-1 relative">
-        {/* Big heart burst */}
+        {/* Big double heart burst - covers entire image area */}
         {showBigHeart && (
-          <div className="big-heart-rise absolute left-4 top-0 z-30 text-5xl" style={{ position: 'absolute' }}>
-            ❤️
-          </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.3 }}
+            animate={{ opacity: 1, scale: [0.3, 2.5, 1.8, 1.2] }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            transition={{ duration: 1.2, ease: 'easeOut' }}
+            className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none overflow-hidden"
+            style={{ background: 'rgba(0, 20, 80, 0.75)' }}
+          >
+            <div className="relative" style={{ filter: 'drop-shadow(0 0 40px rgba(0,150,255,1)) drop-shadow(0 0 100px rgba(100,220,255,0.8))' }}>
+              {/* Double hearts SVG */}
+              <svg viewBox="0 0 220 110" width="320" height="288">
+                <defs>
+                  <linearGradient id="modalDoubleHeart" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#00f0ff" />
+                    <stop offset="40%" stopColor="#00a8ff" />
+                    <stop offset="100%" stopColor="#4a69ff" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M110 100 C110 100 40 55 40 28 C40 8 58 0 85 0 C95 0 105 5 110 10 C115 5 125 0 135 0 C162 0 180 8 180 28 C180 55 110 100 110 100Z"
+                  fill="url(#modalDoubleHeart)"
+                  opacity="0.95"
+                />
+                <path
+                  d="M110 100 C110 100 40 55 40 28 C40 8 58 0 85 0 C95 0 105 5 110 10 C115 5 125 0 135 0 C162 0 180 8 180 28 C180 55 110 100 110 100Z"
+                  fill="url(#modalDoubleHeart)"
+                  opacity="0.85"
+                  transform="translate(25, 0)"
+                />
+                <path d="M105 25 L85 70 L108 63 L95 115 L135 55 L110 65 L118 25Z" fill="white" opacity="0.95" />
+              </svg>
+            </div>
+          </motion.div>
         )}
 
         {/* Big star burst */}
