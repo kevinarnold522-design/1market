@@ -1,0 +1,45 @@
+{
+  "name": "MenuItem",
+  "type": "object",
+  "properties": {
+    "listing_id": {
+      "type": "string",
+      "description": "ID of the parent listing (food, hotel, or travel)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Name of the menu item, room type, or package"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the item"
+    },
+    "price": {
+      "type": "number",
+      "default": 0
+    },
+    "price_label": {
+      "type": "string",
+      "description": "Formatted price display e.g. \u20b1120 / serving"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "description": "Sub-group within the menu e.g. Main Course, Drinks, Dessert"
+    },
+    "is_available": {
+      "type": "boolean",
+      "default": true
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes e.g. Halal, Spicy, Good for 2-3 pax"
+    }
+  },
+  "required": [
+    "listing_id",
+    "name"
+  ]
+}

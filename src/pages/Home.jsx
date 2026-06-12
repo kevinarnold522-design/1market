@@ -10,6 +10,7 @@ import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
 
 // Lazy-load heavy/below-fold sections
+const LiveCategoryDashboards = lazy(() => import('../components/home/LiveCategoryDashboards'));
 const HeroSection = lazy(() => import('../components/home/HeroSection'));
 const CompactOneStopDashboardLazy = lazy(() => import('../components/home/OneStopShopDashboard'));
 const FlashDealsSection = lazy(() => import('../components/home/FlashDealsSection'));
@@ -53,6 +54,7 @@ export default function Home() {
         <Suspense fallback={<Spinner />}><PhFlightDeals /></Suspense>
         <Suspense fallback={<Spinner />}><PhHotelDeals /></Suspense>
         <Suspense fallback={<Spinner />}><FeaturedListings /></Suspense>
+        <Suspense fallback={<Spinner />}><LiveCategoryDashboards /></Suspense>
         <Suspense fallback={<Spinner />}><HowItWorksSection /></Suspense>
         <Suspense fallback={<Spinner />}><ReviewHighlights /></Suspense>
         <Suspense fallback={<Spinner />}><CommunityAnimation /></Suspense>

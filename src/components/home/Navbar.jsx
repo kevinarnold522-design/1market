@@ -376,8 +376,8 @@ export default function Navbar() {
                             </label>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1 mb-1 flex-wrap">
-                                <span className="inline-flex items-center font-body font-bold uppercase tracking-wider text-white"
-                                  style={{ fontSize: '9px', padding: '2px 8px', borderRadius: '4px', background: isAdmin ? 'rgba(245,158,11,0.2)' : isBusiness ? 'rgba(37,99,235,0.2)' : isRider ? 'rgba(245,158,11,0.15)' : isSeller ? 'rgba(16,185,129,0.15)' : 'rgba(37,99,235,0.15)', border: `1px solid ${isAdmin ? 'rgba(245,158,11,0.45)' : isBusiness ? 'rgba(37,99,235,0.45)' : isRider ? 'rgba(245,158,11,0.4)' : isSeller ? 'rgba(16,185,129,0.4)' : 'rgba(37,99,235,0.35)'}`, color: isAdmin ? '#fbbf24' : isBusiness ? '#93c5fd' : isRider ? '#fde68a' : isSeller ? '#6ee7b7' : '#60a5fa' }}>
+                                <span className="inline-flex items-center font-body font-bold uppercase tracking-wider"
+                                  style={{ fontSize: '9px', padding: '3px 10px', borderRadius: '5px', background: isAdmin ? 'rgba(245,158,11,0.2)' : isBusiness ? 'rgba(37,99,235,0.2)' : isRider ? 'rgba(245,158,11,0.15)' : isSeller ? 'rgba(16,185,129,0.15)' : isGhostSession ? 'rgba(168,85,247,0.15)' : 'rgba(37,99,235,0.15)', border: `1px solid ${isAdmin ? 'rgba(245,158,11,0.5)' : isBusiness ? 'rgba(37,99,235,0.5)' : isRider ? 'rgba(245,158,11,0.45)' : isSeller ? 'rgba(16,185,129,0.45)' : isGhostSession ? 'rgba(168,85,247,0.4)' : 'rgba(37,99,235,0.4)'}`, color: isAdmin ? '#fbbf24' : isBusiness ? '#93c5fd' : isRider ? '#fde68a' : isSeller ? '#6ee7b7' : isGhostSession ? '#d8b4fe' : '#60a5fa' }}>
                                   {adminLabel}
                                 </span>
                                 {isAdmin && !isGhostSession && <MetaVerifiedBadge size="sm" label="CEO" />}

@@ -22,6 +22,7 @@ import BecomeSellerModal from '../components/BecomeSellerModal';
 import BecomeBusinessModal from '../components/BecomeBusinessModal';
 import DailyRewardsTracker from '../components/DailyRewardsTracker';
 import FacebookLiveConnector from '../components/FacebookLiveConnector';
+import MenuManager from '../components/seller/MenuManager';
 
 // ─── Shared helpers ───────────────────────────────────────────────────────────
 const LISTING_TYPES = ['product','shoes','cars','houses','electronics','clothing','furniture','food','services','other'];
@@ -687,8 +688,11 @@ export default function UserProfile() {
                 <UsernameEditor user={user} onSaved={async () => { await reloadUser(); }}/>
                 <div className="flex flex-wrap gap-1 mt-1">
                   <span className="inline-flex items-center font-body font-bold uppercase tracking-wider"
-                    style={{ fontSize: '9px', padding: '3px 10px', borderRadius: '5px', background: isAdmin ? 'rgba(245,158,11,0.15)' : isBusiness ? 'rgba(37,99,235,0.2)' : isSeller ? 'rgba(16,185,129,0.15)' : 'rgba(37,99,235,0.15)', border: `1px solid ${isAdmin ? 'rgba(245,158,11,0.4)' : isBusiness ? 'rgba(37,99,235,0.45)' : isSeller ? 'rgba(16,185,129,0.4)' : 'rgba(37,99,235,0.3)'}`, color: isAdmin ? '#fbbf24' : isBusiness ? '#93c5fd' : isSeller ? '#6ee7b7' : '#60a5fa' }}>
-                    {isAdmin ? 'Admin' : isBusiness ? (user.business_name || 'Business Account') : isSeller ? 'Sales Account' : 'Customer Account'}
+                    style={{ fontSize: '9px', padding: '3px 10px', borderRadius: '5px',
+                      background: isAdmin ? 'rgba(245,158,11,0.18)' : isBusiness ? 'rgba(37,99,235,0.18)' : user?.user_type === 'rider' ? 'rgba(245,158,11,0.13)' : isSeller ? 'rgba(16,185,129,0.15)' : isGhostMode ? 'rgba(168,85,247,0.13)' : 'rgba(37,99,235,0.13)',
+                      border: `1px solid ${isAdmin ? 'rgba(245,158,11,0.45)' : isBusiness ? 'rgba(37,99,235,0.45)' : user?.user_type === 'rider' ? 'rgba(245,158,11,0.4)' : isSeller ? 'rgba(16,185,129,0.42)' : isGhostMode ? 'rgba(168,85,247,0.35)' : 'rgba(37,99,235,0.35)'}`,
+                      color: isAdmin ? '#fbbf24' : isBusiness ? '#93c5fd' : user?.user_type === 'rider' ? '#fde68a' : isSeller ? '#6ee7b7' : isGhostMode ? '#d8b4fe' : '#60a5fa' }}>
+                    {isAdmin ? 'CEO & Founder' : isBusiness ? (user.business_name || 'Business Account') : user?.user_type === 'rider' ? 'Rider Delivery' : isSeller ? 'Sales Account' : isGhostMode ? 'Live Test Account' : 'Customer Account'}
                   </span>
                   {isVerified && isSeller && <MetaVerifiedBadge size="xs" label="" />}
                   {isPendingBusiness && !isBusiness && (
@@ -1092,37 +1096,50 @@ export default function UserProfile() {
                     <button onClick={openAdd} className="px-5 py-2 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-semibold text-xs hover:bg-white transition-colors mt-2">Add First Listing</button>
                   </div>
                 ) : (
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {listings.map(item => (
-                      <motion.div key={item.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-                        className="rounded-xl border border-white/8 p-3 flex items-center gap-3" style={{ background: 'rgba(255,255,255,0.03)' }}>
-                        <div className="relative flex-shrink-0 group">
-                          {item.image_url
-                            ? <img src={item.image_url} alt={item.title} className="w-11 h-11 rounded-xl object-cover border border-white/10" onError={e=>e.target.style.display='none'}/>
-                            : <div className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center"><Package className="w-4 h-4 text-white/20"/></div>
-                          }
-                          <QuickImageUpload itemId={item.id} onUploaded={(url) => setListings(prev => prev.map(l => l.id === item.id ? { ...l, image_url: url } : l))} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <h4 className="font-heading font-bold text-xs text-white">{item.title}</h4>
-                            <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-[#2563EB]/20 text-[#00D4FF] capitalize">{item.type}</span>
-                            {item.approval_status === 'pending' && <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-400">⏳ Pending Review</span>}
-                            {item.approval_status === 'approved' && <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-green-500/20 text-green-400">✅ Approved</span>}
-                            {item.approval_status === 'rejected' && <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-red-500/20 text-red-400">❌ Rejected</span>}
-                            {!item.is_active && item.approval_status !== 'pending' && <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-white/10 text-white/30">Hidden</span>}
+                      <div key={item.id}>
+                        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                          className="rounded-xl border border-white/8 p-3 flex items-center gap-3" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                          <div className="relative flex-shrink-0 group">
+                            {item.image_url
+                              ? <img src={item.image_url} alt={item.title} className="w-11 h-11 rounded-xl object-cover border border-white/10" onError={e=>e.target.style.display='none'}/>
+                              : <div className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center"><Package className="w-4 h-4 text-white/20"/></div>
+                            }
+                            <QuickImageUpload itemId={item.id} onUploaded={(url) => setListings(prev => prev.map(l => l.id === item.id ? { ...l, image_url: url } : l))} />
                           </div>
-                          <p className="font-body text-[9px] text-white/35 mt-0.5">{item.location}{item.area ? ` · ${item.area}` : ''} · {item.price_label || `₱${Number(item.price).toLocaleString()}`}</p>
-                        </div>
-                        <div className="flex gap-1.5">
-                          <button onClick={() => openEdit(item)} className="p-1.5 rounded-xl bg-white/5 hover:bg-[#2563EB]/20 border border-white/10 transition-colors">
-                            <Pencil className="w-3.5 h-3.5 text-[#00D4FF]"/>
-                          </button>
-                          <button onClick={() => removeListing(item.id)} className="p-1.5 rounded-xl bg-white/5 hover:bg-red-500/20 border border-white/10 transition-colors">
-                            <Trash2 className="w-3.5 h-3.5 text-red-400"/>
-                          </button>
-                        </div>
-                      </motion.div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <h4 className="font-heading font-bold text-xs text-white">{item.title}</h4>
+                              <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-[#2563EB]/20 text-[#00D4FF] capitalize">{item.type}</span>
+                              {item.approval_status === 'pending' && <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-400">⏳ Pending Review</span>}
+                              {item.approval_status === 'approved' && <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-green-500/20 text-green-400">✅ Approved</span>}
+                              {item.approval_status === 'rejected' && <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-red-500/20 text-red-400">❌ Rejected</span>}
+                              {!item.is_active && item.approval_status !== 'pending' && <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-white/10 text-white/30">Hidden</span>}
+                            </div>
+                            <p className="font-body text-[9px] text-white/35 mt-0.5">{item.location}{item.area ? ` · ${item.area}` : ''} · {item.price_label || `₱${Number(item.price).toLocaleString()}`}</p>
+                          </div>
+                          <div className="flex gap-1.5">
+                            <button onClick={() => openEdit(item)} className="p-1.5 rounded-xl bg-white/5 hover:bg-[#2563EB]/20 border border-white/10 transition-colors">
+                              <Pencil className="w-3.5 h-3.5 text-[#00D4FF]"/>
+                            </button>
+                            <button onClick={() => removeListing(item.id)} className="p-1.5 rounded-xl bg-white/5 hover:bg-red-500/20 border border-white/10 transition-colors">
+                              <Trash2 className="w-3.5 h-3.5 text-red-400"/>
+                            </button>
+                          </div>
+                        </motion.div>
+                        {/* Menu Manager for food, hotel, travel listings */}
+                        {['food','hotel','flights','vehicle_rental'].includes(item.type) && (
+                          <div className="mt-2">
+                            <MenuManager
+                              listingId={item.id}
+                              listingType={item.type === 'food' ? 'food' : item.type === 'hotel' ? 'hotel' : 'travel'}
+                              ownerId={user?.id}
+                              isAdmin={isAdmin}
+                            />
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 )}

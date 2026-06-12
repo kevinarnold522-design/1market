@@ -5,10 +5,11 @@ import {
   MapPin, MessageSquare, Send, X, UserCheck, UserPlus,
   Facebook, Instagram, Youtube, Globe, Phone,
   Grid, FileText, Heart, Share2, Flag, RotateCcw,
-  MessageCircle, ArrowLeft, Package, Camera, Image
+  MessageCircle, ArrowLeft, Package, Camera, Image, UtensilsCrossed
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
+import MenuManager from '../components/seller/MenuManager';
 // Ghost session helpers
 const getGhostSession = () => { try { return JSON.parse(sessionStorage.getItem('1m_ghost_session')); } catch { return null; } };
 
@@ -446,9 +447,14 @@ export default function SellerProfilePage() {
     ? new Date(seller.created_date).toLocaleDateString('en-PH', { year: 'numeric', month: 'long' })
     : '';
 
+  // Determine if this seller has food/hotel/travel listings for Menu tab
+  const menuListings = listings.filter(l => ['food','hotel','flights','vehicle_rental'].includes(l.type));
+  const hasMenuListings = menuListings.length > 0;
+
   const TABS = [
     { key: 'gallery', label: 'Gallery', icon: Camera, count: galleryImages.length },
     { key: 'listings', label: 'Listings', icon: Grid, count: listings.length },
+    ...(hasMenuListings ? [{ key: 'menu', label: 'Menu / Packages', icon: UtensilsCrossed, count: null }] : []),
     { key: 'posts', label: 'Posts', icon: FileText, count: posts.length },
     { key: 'about', label: 'About', icon: Globe, count: null },
   ];
@@ -691,6 +697,30 @@ export default function SellerProfilePage() {
                 ))}
               </div>
             )}
+          </motion.div>
+        )}
+
+        {/* Menu / Packages Tab */}
+        {activeTab === 'menu' && hasMenuListings && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+            <p className="font-body text-sm text-white/50 px-1">
+              {menuListings.some(l => l.type === 'food') ? 'Full menu from this seller.' : 'Packages & room types available.'}
+            </p>
+            {menuListings.map(listing => (
+              <div key={listing.id}>
+                <Link to={`/listing/${listing.id}`}
+                  className="flex items-center gap-2 mb-3 px-1 hover:opacity-80 transition-opacity">
+                  {listing.image_url && <img src={listing.image_url} alt={listing.title} className="w-8 h-8 rounded-lg object-cover" />}
+                  <p className="font-body font-bold text-sm text-white truncate">{listing.title}</p>
+                </Link>
+                <MenuManager
+                  listingId={listing.id}
+                  listingType={listing.type === 'food' ? 'food' : listing.type === 'hotel' ? 'hotel' : 'travel'}
+                  ownerId={seller?.id}
+                  isAdmin={false}
+                />
+              </div>
+            ))}
           </motion.div>
         )}
 

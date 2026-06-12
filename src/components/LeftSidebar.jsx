@@ -83,7 +83,7 @@ export default function LeftSidebar({ isMobileHidden = false }) {
       }}
     >
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-3 py-4 flex-shrink-0 border-b border-white/8">
+      <div className="flex items-center gap-2.5 px-3 py-3 flex-shrink-0 border-b border-white/8">
         <a href="/" className="flex items-center gap-2 min-w-0">
           <img
             src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
@@ -105,6 +105,38 @@ export default function LeftSidebar({ isMobileHidden = false }) {
           {collapsed ? <ChevronRight className="w-3.5 h-3.5 text-white/60" /> : <ChevronLeft className="w-3.5 h-3.5 text-white/60" />}
         </button>
       </div>
+
+      {/* Profile Details — ABOVE nav, visible when authenticated */}
+      {isAuthenticated && activeUser && (
+        <div className={`px-2 py-2.5 border-b border-white/8 flex-shrink-0 ${collapsed ? 'items-center justify-center flex flex-col' : ''}`}>
+          <Link to="/profile" className={`flex items-center gap-2 px-2 py-2 rounded-xl hover:bg-white/8 transition-colors ${collapsed ? 'justify-center' : ''}`}>
+            <div className="w-8 h-8 rounded-xl overflow-hidden flex-shrink-0">
+              {activeUser?.profile_picture ? (
+                <img src={activeUser.profile_picture} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full rounded-xl flex items-center justify-center text-white font-heading font-bold text-xs bg-gradient-to-br from-[#2563EB] to-[#00D4FF]">
+                  {(activeUser.full_name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
+                </div>
+              )}
+            </div>
+            {!collapsed && (
+              <div className="flex-1 min-w-0">
+                <p className="font-body text-[11px] font-bold text-white truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
+                {/* Standardized account type badge */}
+                <span className="inline-flex items-center font-body font-bold uppercase tracking-wider mt-0.5 flex-shrink-0"
+                  style={{
+                    fontSize: '8px', padding: '2px 7px', borderRadius: '4px',
+                    background: isAdmin ? 'rgba(245,158,11,0.18)' : activeUser?.user_type === 'business' ? 'rgba(37,99,235,0.18)' : activeUser?.user_type === 'rider' ? 'rgba(245,158,11,0.13)' : isSeller ? 'rgba(16,185,129,0.15)' : isGhostSession ? 'rgba(168,85,247,0.13)' : 'rgba(37,99,235,0.13)',
+                    border: `1px solid ${isAdmin ? 'rgba(245,158,11,0.4)' : activeUser?.user_type === 'business' ? 'rgba(37,99,235,0.4)' : activeUser?.user_type === 'rider' ? 'rgba(245,158,11,0.35)' : isSeller ? 'rgba(16,185,129,0.38)' : isGhostSession ? 'rgba(168,85,247,0.35)' : 'rgba(37,99,235,0.3)'}`,
+                    color: isAdmin ? '#fbbf24' : activeUser?.user_type === 'business' ? '#93c5fd' : activeUser?.user_type === 'rider' ? '#fde68a' : isSeller ? '#6ee7b7' : isGhostSession ? '#d8b4fe' : '#60a5fa',
+                  }}>
+                  {isAdmin ? 'CEO & Founder' : activeUser?.user_type === 'business' ? 'Business' : activeUser?.user_type === 'rider' ? 'Rider Delivery' : isSeller ? 'Sales Account' : isGhostSession ? 'Live Test' : 'Customer'}
+                </span>
+              </div>
+            )}
+          </Link>
+        </div>
+      )}
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-2 space-y-0.5 px-2" style={{ scrollbarWidth: 'thick', scrollbarColor: 'rgba(255,255,255,0.7) transparent' }}
