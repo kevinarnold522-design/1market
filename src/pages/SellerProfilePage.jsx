@@ -413,16 +413,18 @@ export default function SellerProfilePage() {
     </div>
   );
 
-  const isVerified = seller.is_verified_seller;
+  const isGhostAccount = seller.is_ghost_account || seller.ghost_id || seller.email?.includes('@1marketph-ghost.internal');
+  const isVerified = !isGhostAccount && seller.is_verified_seller;
   const ghostSess = getGhostSession();
   const isOwnProfile = ghostSess
     ? (ghostSess.id === sellerId || ghostSess.ghost_id === sellerId || ghostSess.id === seller.id || ghostSess.username === sellerId)
     : user?.email === seller.email || user?.id === seller.id || user?.username === sellerId;
   // Display name: prefer channel_name, then full_name, then username
   const displayName = seller.channel_name || seller.full_name || seller.username || 'Seller';
-  // Show contact info only if seller has set it public
-  const showPhone = seller.show_phone_public && seller.phone;
-  const showEmail = seller.show_email_public && seller.email;
+  // Ghost accounts: NEVER show internal email or ghost-specific flags publicly
+  // Show contact info only if seller has set it public AND not a ghost account
+  const showPhone = !isGhostAccount && seller.show_phone_public && seller.phone;
+  const showEmail = !isGhostAccount && seller.show_email_public && seller.email && !seller.email.includes('@1marketph-ghost.internal');
 
   const socials = [
     seller.social_facebook && { key: 'facebook', url: seller.social_facebook },
@@ -772,7 +774,7 @@ export default function SellerProfilePage() {
                 </p>
               </div>
             )}
-            {memberSince && (
+            {memberSince && !isGhostAccount && (
               <div>
                 <h3 className="font-heading font-bold text-sm text-white mb-1 uppercase tracking-wider">Member Since</h3>
                 <p className="font-body text-sm text-white/50">{memberSince}</p>

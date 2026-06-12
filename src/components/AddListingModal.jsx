@@ -310,17 +310,23 @@ function PillSelect({ options, value, onChange, color = '#00D4FF' }) {
   );
 }
 
+// Get ghost session helper (must not import from pages to avoid circular dep)
+const getGhostSessionLocal = () => { try { return JSON.parse(sessionStorage.getItem('1m_ghost_session')); } catch { return null; } };
+
 export default function AddListingModal({ onClose, defaultType = '', defaultSubcategory = '', user }) {
   const resolvedMain = defaultType ? (Object.entries(TYPE_TO_MAIN).find(([t]) => t === defaultType)?.[1] || '') : '';
+  // Detect ghost session — use ghost identity for listing, not real user
+  const ghostSession = getGhostSessionLocal();
+  const effectiveUser = ghostSession || user;
 
   const [form, setForm] = useState({
     ...EMPTY_FORM,
     main_category: resolvedMain,
     type: defaultType,
     subcategory: defaultSubcategory,
-    seller_name: user?.channel_name || user?.business_name || user?.full_name || '',
-    email_contact: user?.show_email_public ? (user?.email || '') : '',
-    channel_name: user?.channel_name || user?.business_name || '',
+    seller_name: effectiveUser?.channel_name || effectiveUser?.business_name || effectiveUser?.full_name || '',
+    email_contact: '', // never pre-fill ghost email
+    channel_name: effectiveUser?.channel_name || effectiveUser?.business_name || '',
   });
   const [step, setStep] = useState(resolvedMain ? (defaultType ? 2 : 1) : 0);
   const [uploading, setUploading] = useState(false);
@@ -375,6 +381,10 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
     if (!form.title) return;
     setSubmitting(true);
     const locationStr = [form.city, form.state_region].filter(Boolean).join(', ') || 'Nationwide';
+    // For ghost sessions: use ghost's display name, never expose internal ghost email
+    const ghostSess = getGhostSessionLocal();
+    const sellerDisplayName = form.seller_name || effectiveUser?.channel_name || effectiveUser?.business_name || effectiveUser?.full_name || '';
+    const contactEmail = ghostSess ? '' : (form.email_contact || '');
     await base44.entities.Listing.create({
       title: form.title, type: form.type, main_category: form.main_category, subcategory: form.subcategory,
       location: locationStr,
@@ -384,7 +394,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       original_price: (!hidePrice && form.original_price && Number(form.original_price) > Number(form.price)) ? Number(form.original_price) : null,
       price_label: hidePrice ? '' : form.price_label,
       description: form.description, image_url: form.image_url, extra_images: form.extra_images || [],
-      phone: form.phone, seller_name: form.seller_name, email_contact: form.email_contact, apply_link: form.apply_link,
+      phone: form.phone, seller_name: sellerDisplayName, email_contact: contactEmail, apply_link: form.apply_link,
       condition: form.condition, is_active: false,
       approval_status: 'pending',
       quantity: Number(form.quantity) || 1,

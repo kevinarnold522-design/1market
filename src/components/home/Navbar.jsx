@@ -71,17 +71,19 @@ export default function Navbar() {
   }, []);
   
   // Use ghost user if in ghost session, otherwise use regular user
+  // IMPORTANT: all role/type flags must use ghostUser data exclusively when in ghost session
   const activeUser = ghostUser || user;
-  // In ghost session: force non-admin regardless of real user
+  // isAdmin: NEVER true in ghost session
   const isAdmin = !ghostUser && user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
-  const isGhost = activeUser?.is_ghost_account || activeUser?.ghost_id;
   const isGhostSession = !!ghostUser;
+  // Type flags derived exclusively from activeUser (ghost data takes precedence)
   const isSeller = activeUser?.user_type === 'seller' || activeUser?.user_type === 'business' || activeUser?.is_seller || activeUser?.account_type === 'business_owner';
   const isBusiness = activeUser?.user_type === 'business';
-  const isCustomer = !isSeller && !isBusiness && !isGhostSession;
-  const isVerified = activeUser?.is_verified_seller;
   const isRider = activeUser?.user_type === 'rider';
-  const adminLabel = isAdmin ? 'CEO & Founder' : isBusiness ? (activeUser?.business_name || 'Business Account') : isRider ? 'Rider Delivery' : isSeller ? 'Sales Account' : isGhostSession ? 'Test Account' : 'Customer Account';
+  // isCustomer: ghost customer accounts should still be "customer"
+  const isCustomer = !isSeller && !isBusiness && !isRider;
+  const isVerified = !isGhostSession && activeUser?.is_verified_seller;
+  const adminLabel = isAdmin ? 'CEO & Founder' : isBusiness ? (ghostUser?.business_name || activeUser?.business_name || 'Business Account') : isRider ? 'Rider Delivery' : isSeller ? 'Sales Account' : isGhostSession ? 'Test Account' : 'Customer Account';
   const [uploadingPfp, setUploadingPfp] = useState(false);
 
   const handleNavPfpUpload = async (e) => {
@@ -412,12 +414,23 @@ export default function Navbar() {
                           <div className="space-y-1.5 text-[10px] font-body">
                             <div className="flex items-center gap-2 text-white/50">
                               <Mail className="w-3 h-3 text-[#00D4FF] flex-shrink-0" />
-                              <span className="truncate">{isGhostSession ? (activeUser.channel_name || activeUser.business_name || 'Member') : activeUser.email}</span>
+                              {/* Ghost: show channel/business name, never internal ghost email */}
+                              <span className="truncate">
+                                {isGhostSession
+                                  ? (ghostUser?.channel_name || ghostUser?.business_name || ghostUser?.full_name || 'Test Account')
+                                  : activeUser.email}
+                              </span>
                             </div>
                             {activeUser.seller_location && (
                               <div className="flex items-center gap-2 text-white/50">
                                 <MapPin className="w-3 h-3 text-green-400 flex-shrink-0" />
                                 <span>{activeUser.seller_location}{activeUser.seller_area ? ` · ${activeUser.seller_area}` : ''}</span>
+                              </div>
+                            )}
+                            {isGhostSession && ghostUser?.user_type && (
+                              <div className="flex items-center gap-2 text-white/40">
+                                <User className="w-3 h-3 flex-shrink-0" />
+                                <span>Ghost / Test Account · {ghostUser.user_type}</span>
                               </div>
                             )}
                             {!isGhostSession && (
@@ -594,7 +607,12 @@ export default function Navbar() {
                           {isAdmin && !isGhostSession && <MetaVerifiedBadge size="xs" label="" />}
                         </div>
                         <p className="font-body text-xs font-bold text-white truncate">{activeUser.full_name || activeUser.channel_name || 'Account'}</p>
-                        <p className="font-body text-[10px] truncate text-white/40">{isGhostSession ? (activeUser.channel_name || activeUser.business_name || '') : activeUser.email}</p>
+                        {/* Ghost: never show internal email */}
+                        <p className="font-body text-[10px] truncate text-white/40">
+                          {isGhostSession
+                            ? (ghostUser?.channel_name || ghostUser?.business_name || ghostUser?.full_name || 'Test Account')
+                            : activeUser.email}
+                        </p>
                       </div>
                     </div>
                   </div>
