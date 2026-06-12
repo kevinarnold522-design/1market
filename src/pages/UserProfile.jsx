@@ -11,6 +11,7 @@ import {
 import SellerAnalytics from '../components/seller/SellerAnalytics';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
+import { getImpersonatedUser } from '@/pages/ConnectedAccounts';
 import ParticleBackground from '../components/ParticleBackground';
 import OrdersTab from '../components/seller/OrdersTab';
 import VerifiedPartnerBanner from '../components/VerifiedPartnerBanner';
@@ -292,9 +293,32 @@ function UsernameEditor({ user, onSaved }) {
   );
 }
 
+// ─── Helpers to update ghost user data ───────────────────────────────────────
+const updateGhostUser = async (ghostId, data) => {
+  // Update in sessionStorage
+  const session = JSON.parse(sessionStorage.getItem('1m_ghost_session') || 'null');
+  if (session) {
+    const updated = { ...session, ...data };
+    sessionStorage.setItem('1m_ghost_session', JSON.stringify(updated));
+  }
+  // Update in DB if this ghost exists as a real User record
+  try {
+    const users = await base44.entities.User.filter({ ghost_id: ghostId });
+    if (users.length > 0) {
+      await base44.entities.User.update(users[0].id, data);
+    } else {
+      // Try by ID directly
+      const byId = await base44.entities.User.filter({ id: ghostId });
+      if (byId.length > 0) await base44.entities.User.update(byId[0].id, data);
+    }
+  } catch (e) {}
+};
+
 // ─── Main dashboard ───────────────────────────────────────────────────────────
 export default function UserProfile() {
   const { user: authUser, logout } = useAuth();
+  const ghostSession = getImpersonatedUser();
+  const isGhostMode = !!ghostSession;
   const [user, setUser] = useState(null);
   const urlTab = new URLSearchParams(window.location.search).get('tab') || 'profile';
   const [activeTab, setActiveTab] = useState(urlTab);
@@ -340,13 +364,14 @@ export default function UserProfile() {
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
 
   const refresh = async (me) => {
+    const listingId = me.id;
     const [o, so, c, f, items, draftItems] = await Promise.all([
       base44.entities.Order.filter({ buyer_email: me.email }),
       base44.entities.Order.filter({ seller_email: me.email }),
       base44.entities.Cart.filter({ user_email: me.email }),
       base44.entities.Favourite.filter({ user_email: me.email }),
-      base44.entities.Listing.filter({ created_by_id: me.id }),
-      base44.entities.DraftListing.filter({ created_by_id: me.id }),
+      base44.entities.Listing.filter({ created_by_id: listingId }),
+      base44.entities.DraftListing.filter({ created_by_id: listingId }),
     ]);
     setOrders(o); setSellerOrders(so); setCart(c); setFavourites(f);
     setListings(items); setDrafts(draftItems);
@@ -355,7 +380,19 @@ export default function UserProfile() {
   useEffect(() => {
     const init = async () => {
       try {
-        const me = await base44.auth.me();
+        let me;
+        if (isGhostMode) {
+          // Use ghost session data — try to load fresh from DB if available
+          const ghost = ghostSession;
+          try {
+            const dbUsers = await base44.entities.User.filter({ ghost_id: ghost.id || ghost.ghost_id });
+            me = dbUsers.length > 0 ? { ...ghost, ...dbUsers[0] } : ghost;
+          } catch {
+            me = ghost;
+          }
+        } else {
+          me = await base44.auth.me();
+        }
         setUser(me);
         setLocationVal(me.location || me.seller_location || 'Manila');
         setSellerBio(me.seller_bio || '');
@@ -376,6 +413,18 @@ export default function UserProfile() {
   }, []);
 
   const reloadUser = async () => {
+    if (isGhostMode) {
+      const ghost = getImpersonatedUser();
+      try {
+        const dbUsers = await base44.entities.User.filter({ ghost_id: ghost.id || ghost.ghost_id });
+        const me = dbUsers.length > 0 ? { ...ghost, ...dbUsers[0] } : ghost;
+        setUser(me);
+        return me;
+      } catch {
+        setUser(ghost);
+        return ghost;
+      }
+    }
     const me = await base44.auth.me();
     setUser(me);
     return me;
@@ -404,14 +453,22 @@ export default function UserProfile() {
   const isSellerOnly = user?.user_type === 'seller';
   const isCustomer = !isSeller && !isBusiness;
   const isPendingBusiness = user?.business_pending === true;
-  const isAdmin = user?.role === 'admin' || user?.email === 'Kevinarnold522@gmail.com';
+  const isAdmin = !isGhostMode && (user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
   const pendingSellerOrders = sellerOrders.filter(o => o.status !== 'completed' && o.status !== 'cancelled');
+
+  const updateUser = async (data) => {
+    if (isGhostMode) {
+      await updateGhostUser(ghostSession.id || ghostSession.ghost_id, data);
+    } else {
+      await base44.auth.updateMe(data);
+    }
+  };
 
   const uploadCover = async (e) => {
     const file = e.target.files[0]; if (!file) return;
     setUploadingCover(true);
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    await base44.auth.updateMe({ cover_photo: file_url });
+    await updateUser({ cover_photo: file_url });
     await reloadUser();
     setUploadingCover(false);
     showToast('Cover photo updated!');
@@ -422,7 +479,7 @@ export default function UserProfile() {
     const file = e.target.files[0]; if (!file) return;
     setUploadingPfp(true);
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    await base44.auth.updateMe({ profile_picture: file_url });
+    await updateUser({ profile_picture: file_url });
     await reloadUser();
     setUploadingPfp(false);
     showToast('Profile picture updated!');
@@ -431,7 +488,7 @@ export default function UserProfile() {
 
   const saveProfileInfo = async () => {
     setSaving(true);
-    await base44.auth.updateMe({
+    await updateUser({
       bio,
       channel_name: channelName,
       social_facebook: socialFb,
@@ -477,7 +534,10 @@ export default function UserProfile() {
     const imgs = form.extra_images || [];
     const mainImage = form.image_url || imgs[0] || '';
     const extras = mainImage && imgs[0] === mainImage ? imgs.slice(1) : imgs;
-    const data = { ...form, price: Number(form.price) || 0, image_url: mainImage, extra_images: extras, seller_name: user?.full_name || form.seller_name, approval_status: 'pending' };
+    const channelDisplayName = user?.channel_name || user?.full_name || form.seller_name;
+    const data = { ...form, price: Number(form.price) || 0, image_url: mainImage, extra_images: extras, seller_name: channelDisplayName, approval_status: 'pending' };
+    // For ghost accounts, explicitly set created_by_id so listings are tied to the ghost
+    if (isGhostMode && user?.id) data.created_by_id = user.id;
     if (editing) { await base44.entities.Listing.update(editing.id, data); showToast('Updated! Pending re-review.'); }
     else { await base44.entities.Listing.create(data); showToast('Submitted for review!'); }
     setShowForm(false); setEditing(null);
@@ -534,21 +594,13 @@ export default function UserProfile() {
 
   const saveSettings = async (data) => {
     setSaving(true);
-    const wasNotSeller = !user?.is_seller && !user?.account_type === 'business_owner';
-    await base44.auth.updateMe(data);
-    // Trigger seller welcome email if just became seller
-    if (wasNotSeller && (data.is_seller || data.account_type === 'business_owner')) {
-      try {
-        const me = await base44.auth.me();
-        await base44.functions.invoke('sendSellerWelcomeEmail', { email: me.email, name: me.full_name });
-      } catch (e) {}
-    }
+    await updateUser(data);
     await reloadUser();
     setSaving(false); showSaved('Saved!');
   };
 
   const saveSellerPage = async () => {
-    await base44.auth.updateMe({ seller_bio: sellerBio, seller_page_enabled: sellerPageEnabled });
+    await updateUser({ seller_bio: sellerBio, seller_page_enabled: sellerPageEnabled });
     await reloadUser(); showToast('Seller page updated!');
   };
 

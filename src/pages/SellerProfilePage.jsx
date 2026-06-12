@@ -267,16 +267,22 @@ export default function SellerProfilePage() {
         
         console.log('[PROFILE LOAD] Starting lookup for:', sellerId);
         
-        // STEP 0: Check if this is a ghost account (sessionStorage or localStorage)
+        // STEP 0: Check if this is a ghost account (sessionStorage)
         const session = getGhostSession();
-        if (session && (session.id === sellerId || session.ghost_id === sellerId)) {
+        if (session && (session.id === sellerId || session.ghost_id === sellerId || session.username === sellerId)) {
           console.log('[PROFILE LOAD] ✓ Found active ghost session');
-          setSeller(session);
-          
-          // Load ghost's listings (created by ghost_id)
-          const listings = await base44.entities.Listing.filter({ created_by_id: sellerId, approval_status: 'approved' });
-          const posts = await base44.entities.CommunityPost.filter({ author_email: session.email });
-          
+          // Try to load fresh DB data for this ghost
+          let ghostData = session;
+          try {
+            const dbUsers = await base44.entities.User.filter({ ghost_id: session.id || session.ghost_id });
+            if (dbUsers.length > 0) ghostData = { ...session, ...dbUsers[0] };
+          } catch {}
+          setSeller(ghostData);
+          const dbId = ghostData.id || sellerId;
+          const [listings, posts] = await Promise.all([
+            base44.entities.Listing.filter({ created_by_id: dbId, approval_status: 'approved' }),
+            base44.entities.CommunityPost.filter({ author_email: ghostData.email }),
+          ]);
           setListings(listings);
           setPosts(posts);
           setLoading(false);
@@ -285,17 +291,16 @@ export default function SellerProfilePage() {
         
         // STEP 1: Check localStorage for ghost
         const ghostKey = `1m_ghost_${sellerId}`;
-        const ghostData = localStorage.getItem(ghostKey);
+        const ghostRaw = localStorage.getItem(ghostKey);
         
-        if (ghostData) {
+        if (ghostRaw) {
           console.log('[PROFILE LOAD] ✓ Found ghost account in localStorage');
-          const ghost = JSON.parse(ghostData);
+          const ghost = JSON.parse(ghostRaw);
           setSeller(ghost);
-          
-          // Load ghost's listings (created by ghost_id)
-          const listings = await base44.entities.Listing.filter({ created_by_id: sellerId, approval_status: 'approved' });
-          const posts = await base44.entities.CommunityPost.filter({ author_email: ghost.email });
-          
+          const [listings, posts] = await Promise.all([
+            base44.entities.Listing.filter({ created_by_id: sellerId, approval_status: 'approved' }),
+            base44.entities.CommunityPost.filter({ author_email: ghost.email }),
+          ]);
           setListings(listings);
           setPosts(posts);
           setLoading(false);
@@ -409,7 +414,10 @@ export default function SellerProfilePage() {
   );
 
   const isVerified = seller.is_verified_seller;
-  const isOwnProfile = user?.email === seller.email;
+  const ghostSess = getGhostSession();
+  const isOwnProfile = ghostSess
+    ? (ghostSess.id === sellerId || ghostSess.ghost_id === sellerId || ghostSess.id === seller.id || ghostSess.username === sellerId)
+    : user?.email === seller.email || user?.id === seller.id || user?.username === sellerId;
   // Display name: prefer channel_name, then full_name, then username
   const displayName = seller.channel_name || seller.full_name || seller.username || 'Seller';
   // Show contact info only if seller has set it public
@@ -528,8 +536,9 @@ export default function SellerProfilePage() {
                     </button>
                   )}
                   {isOwnProfile && (
-                    <Link to="/profile" className="flex items-center gap-1.5 px-3 py-2 rounded-xl font-body font-bold text-xs border border-white/20 text-white/60 hover:bg-white/10 transition-all">
-                      Edit Profile
+                    <Link to="/profile"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl font-body font-bold text-xs border border-white/20 text-white/60 hover:bg-white/10 transition-all">
+                      Edit Profile {ghostSess ? '(Ghost)' : ''}
                     </Link>
                   )}
                 </div>
