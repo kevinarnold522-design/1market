@@ -83,7 +83,7 @@ export default function HeroSection({ heroImage }) {
                       Login
                     </motion.button>
                     <motion.button
-                      onClick={() => setShowSignup(true)}
+                      onClick={() => { window.dispatchEvent(new CustomEvent('alfie-get-started')); setShowSignup(true); }}
                       className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
                       style={{ background: 'linear-gradient(135deg,#FFD700,#FFA500)', boxShadow: '0 0 24px rgba(255,215,0,0.4)' }}
                       whileHover={{ scale: 1.05 }}>

@@ -6,6 +6,7 @@ import { ArrowLeft, Search, MapPin, Briefcase, ExternalLink, X, Building2, Dolla
 import { Link, useNavigate } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import PostListingMenu from '../components/PostListingMenu';
+import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import { base44 } from '@/api/base44Client';
 
 // Royal Blue theme colors
@@ -75,12 +76,12 @@ function JobCard({ job, onApply }) {
         </span>
         {isFreelance && (
           <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[9px] font-bold bg-purple-500 text-white flex items-center gap-1">
-            ⚡ Freelance
+            Freelance
           </span>
         )}
         {job.urgent && !isFreelance && (
           <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[9px] font-bold bg-red-500 text-white">
-            🔥 Urgent
+            Urgent
           </span>
         )}
         <div className="absolute bottom-2 left-2 flex items-center gap-1 flex-wrap">
@@ -398,6 +399,10 @@ export default function Jobs() {
             )}
           </div>
         )}
+
+        {!currentUser && <BecomeSellerBanner className="mt-8 mb-4" />}
+
+        {!currentUser && <BecomeSellerBanner className="mt-8 mb-4" />}
 
         {/* CTA */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}

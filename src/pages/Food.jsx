@@ -12,6 +12,7 @@ import BusinessBioModal from '../components/home/BusinessBioModal';
 import { getAdminEditMode } from '../components/home/Navbar';
 import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
 import MascotDog from '../components/MascotDog';
+import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 
 const KNOWN_LOGOS = {
   'Jollibee': 'https://upload.wikimedia.org/wikipedia/en/thumb/8/84/Jollibee_logo.svg/220px-Jollibee_logo.svg.png',
@@ -91,40 +92,30 @@ const businesses = [
 ];
 
 const categoryTypes = [
-  { key: 'chain', label: 'Fast Food', icon: '🍔' },
-  { key: 'carinderia', label: 'Local Eateries', icon: '🥘' },
-  { key: 'coffee', label: 'Coffee Shops', icon: '☕' },
-  { key: 'milktea', label: 'Milk Tea', icon: '🧋' },
-  { key: 'japanese', label: 'Japanese', icon: '🍱' },
-  { key: 'italian', label: 'Italian', icon: '🍝' },
-  { key: 'indian', label: 'Indian', icon: '🍛' },
-  { key: 'middle-eastern', label: 'Middle Eastern', icon: '🧆' },
-  { key: 'korean', label: 'Korean', icon: '🥩' },
-  { key: 'seafood', label: 'Seafood', icon: '🦞' },
-  { key: 'bakery', label: 'Bakeries', icon: '🥐' },
-  { key: 'dessert', label: 'Desserts', icon: '🍦' },
-  { key: 'home-kitchen', label: 'Home Kitchens', icon: '🍲' },
-  { key: 'home-baker', label: 'Home Bakers', icon: '🎂' },
-  { key: 'catering', label: 'Catering', icon: '🍽️' },
+  { key: 'chain', label: 'Fast Food' },
+  { key: 'carinderia', label: 'Local Eateries' },
+  { key: 'coffee', label: 'Coffee Shops' },
+  { key: 'milktea', label: 'Milk Tea' },
+  { key: 'japanese', label: 'Japanese' },
+  { key: 'italian', label: 'Italian' },
+  { key: 'indian', label: 'Indian' },
+  { key: 'middle-eastern', label: 'Middle Eastern' },
+  { key: 'korean', label: 'Korean' },
+  { key: 'seafood', label: 'Seafood' },
+  { key: 'bakery', label: 'Bakeries' },
+  { key: 'dessert', label: 'Desserts' },
+  { key: 'home-kitchen', label: 'Home Kitchens' },
+  { key: 'home-baker', label: 'Home Bakers' },
+  { key: 'catering', label: 'Catering' },
 ];
 
 function DeliveryBadges({ options = [] }) {
   if (!options || options.length === 0) return null;
-  const getIcon = (opt) => {
-    if (opt.includes('GrabFood') || opt.includes('Grab')) return '🟢';
-    if (opt.includes('Lalamove')) return '⚡';
-    if (opt.includes('Foodpanda') || opt.includes('panda')) return '🐼';
-    if (opt.includes('Pickup') || opt.includes('Store')) return '📍';
-    if (opt.includes('Free')) return '🎁';
-    if (opt.includes('COD')) return '💵';
-    if (opt.includes('Meetup')) return '🤝';
-    return '🚚';
-  };
   return (
     <div className="flex flex-wrap gap-1 mt-1.5">
       {options.slice(0, 3).map((opt, i) => (
         <span key={i} className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full font-body text-[9px] font-semibold bg-orange-50 text-orange-700 border border-orange-100">
-          {getIcon(opt)} {opt.length > 15 ? opt.slice(0, 14) + '…' : opt}
+          {opt.length > 15 ? opt.slice(0, 14) + '…' : opt}
         </span>
       ))}
       {options.length > 3 && <span className="px-1.5 py-0.5 rounded-full font-body text-[9px] text-[#0A192F]/40 bg-[#F8FAFC] border border-[#0A192F]/5">+{options.length - 3} more</span>}
@@ -151,7 +142,7 @@ function BusinessCard({ biz, onRate, onInfo }) {
         <img src={imgSrc} alt={biz.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/50 to-transparent" />
         <div className="absolute top-3 left-3 flex gap-2">
-          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${locationColor}`}>📍 {biz.location}</span>
+          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${locationColor}`}>{biz.location}</span>
         </div>
         <div className="absolute top-3 right-3">
           <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/90 text-[#0A192F]">{biz.tag}</span>
@@ -187,13 +178,13 @@ function BusinessCard({ biz, onRate, onInfo }) {
             onClick={() => onInfo(biz)}
             className="flex-1 py-2 rounded-xl bg-[#0A192F]/5 hover:bg-[#0A192F] hover:text-white text-[#0A192F]/60 font-body text-xs font-semibold transition-all duration-200"
           >
-            ℹ️ About
+            About
           </button>
           <button
             onClick={() => onRate(biz)}
             className="flex-1 py-2 rounded-xl bg-[#0A192F]/5 hover:bg-[#2563EB] hover:text-white text-[#0A192F]/60 font-body text-xs font-semibold transition-all duration-200"
           >
-            ⭐ Rate
+            Rate
           </button>
         </div>
       </div>
@@ -219,7 +210,7 @@ function RateModal({ biz, onClose }) {
         className="w-full max-w-sm bg-white rounded-2xl p-6 shadow-2xl">
         {submitted ? (
           <div className="text-center py-4">
-            <div className="text-4xl mb-3">🎉</div>
+            <div className="mb-3"></div>
             <h3 className="font-heading font-bold text-xl text-[#0A192F] mb-1">Thank you!</h3>
             <p className="font-body text-sm text-[#0A192F]/50 mb-4">Your rating has been submitted. Become a member to save your reviews!</p>
             <button onClick={onClose} className="w-full py-2.5 bg-[#0A192F] text-white rounded-xl font-body font-semibold text-sm">Close</button>
@@ -231,7 +222,7 @@ function RateModal({ biz, onClose }) {
             <div className="flex gap-2 mb-4 justify-center">
               {[1,2,3,4,5].map(s => (
                 <button key={s} onClick={() => setRating(s)}
-                  className={`text-3xl transition-transform hover:scale-110 ${s <= rating ? 'grayscale-0' : 'grayscale opacity-30'}`}>⭐</button>
+                  className={`text-3xl transition-transform hover:scale-110 ${s <= rating ? 'text-amber-400' : 'text-white/20'}`}>★</button>
               ))}
             </div>
             <textarea
@@ -265,7 +256,7 @@ const FOOD_SUBCATEGORIES = [
   { key: 'seafood', label: 'Seafood', icon: '🦞', desc: 'Fresh catch' },
   { key: 'home-kitchen', label: 'Home Kitchen', icon: '🍲', desc: 'Lutong bahay' },
   { key: 'home-baker', label: 'Home Bakers', icon: '🎂', desc: 'Pastries' },
-  { key: 'milktea', label: 'Desserts', icon: '🍦', desc: 'Sweets' },
+  { key: 'desserts', label: 'Desserts', icon: '🍦', desc: 'Sweets' },
   { key: 'catering', label: 'Catering', icon: '🍽️', desc: 'Events' },
 ];
 
@@ -388,7 +379,7 @@ export default function Food() {
             {['All', 'Manila', 'Cavite'].map(loc => (
               <button key={loc} onClick={() => setLocationFilter(loc)}
                 className={`px-5 py-2 rounded-full font-body font-semibold text-sm transition-all ${locationFilter === loc ? 'bg-[#0A192F] text-white' : 'bg-white border border-[#0A192F]/10 text-[#0A192F]/60 hover:border-[#0A192F]/20'}`}>
-                {loc === 'Manila' ? `🗺️ Manila (${manilaCount})` : loc === 'Cavite' ? `🏝️ Cavite (${caviteCount})` : `All (${filtered.length})`}
+                {loc === 'Manila' ? `Manila (${manilaCount})` : loc === 'Cavite' ? `Cavite (${caviteCount})` : `All (${filtered.length})`}
               </button>
             ))}
           </div>
@@ -479,16 +470,21 @@ export default function Food() {
           </div>
         )}
 
+        {/* Become a Seller CTA */}
+        {!currentUser && <BecomeSellerBanner className="mb-8" />}
+
         {/* Become a Member CTA */}
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="mt-16 rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)' }}>
-          <h2 className="font-heading font-bold text-2xl text-white mb-2">Rate & Save Your Favorites</h2>
-          <p className="font-body text-sm text-white/50 mb-6 max-w-md mx-auto">Become a free member to rate businesses, write reviews, and save your go-to spots across Manila and Cavite.</p>
-          <button onClick={() => setShowSignup(true)}
-            className="px-8 py-3 bg-[#00D4FF] text-[#0A192F] font-body font-bold rounded-xl hover:bg-white transition-colors">
-            Sign Up Free — It's 100% Free
-          </button>
-        </motion.div>
+        {!currentUser && (
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            className="mt-8 rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)' }}>
+            <h2 className="font-heading font-bold text-2xl text-white mb-2">Rate & Save Your Favorites</h2>
+            <p className="font-body text-sm text-white/50 mb-6 max-w-md mx-auto">Become a free member to rate businesses, write reviews, and save your go-to spots.</p>
+            <button onClick={() => setShowSignup(true)}
+              className="px-8 py-3 bg-[#00D4FF] text-[#0A192F] font-body font-bold rounded-xl hover:bg-white transition-colors">
+              Sign Up Free
+            </button>
+          </motion.div>
+        )}
       </div>
 
       <AnimatePresence>

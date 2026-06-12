@@ -71,10 +71,10 @@ export default function Navbar() {
   }, []);
   
   // Use ghost user if in ghost session, otherwise use regular user
-  const activeUser = ghostUser || user;
-  // isAdmin: STRICTLY NEVER true in any ghost session
-  const isAdmin = !ghostUser && !!(user?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
   const isGhostSession = !!ghostUser;
+  // isAdmin: STRICTLY NEVER true in any ghost session — ghost completely overrides admin state
+  const isAdmin = !isGhostSession && !!(user?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
+  const activeUser = isGhostSession ? ghostUser : user;
   // ALL type flags derived exclusively from activeUser (ghost data takes absolute precedence)
   const isSeller = !!(activeUser?.user_type === 'seller' || activeUser?.user_type === 'business' || activeUser?.is_seller || activeUser?.account_type === 'business_owner');
   const isBusiness = !!(activeUser?.user_type === 'business');

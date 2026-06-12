@@ -216,7 +216,7 @@ export default function SubcategorySplash({ subcategories, activeKey, onSelect, 
             <input
               value={filterQuery}
               onChange={e => setFilterQuery(e.target.value)}
-              placeholder="🔍 Filter categories..."
+              placeholder="Filter categories..."
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white font-body text-sm placeholder-white/25 focus:outline-none focus:border-[#00D4FF]/50"
             />
           </div>

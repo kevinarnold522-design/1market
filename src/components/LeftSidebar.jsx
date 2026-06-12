@@ -59,10 +59,10 @@ export default function LeftSidebar({ isMobileHidden = false }) {
   }, []);
 
   // Use ghost user if in ghost session, otherwise use regular user
-  const activeUser = ghostUser || user;
-  // isAdmin: STRICTLY NEVER true in ghost session
-  const isAdmin = !ghostUser && !!(user?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
   const isGhostSession = !!ghostUser;
+  // isAdmin: STRICTLY NEVER true in ghost session — ghost completely overrides admin state
+  const isAdmin = !isGhostSession && !!(user?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
+  const activeUser = isGhostSession ? ghostUser : user;
   const isSeller = !!(activeUser?.user_type === 'seller' || activeUser?.user_type === 'business' || activeUser?.is_seller || activeUser?.account_type === 'business_owner');
   const initials = activeUser ? (activeUser.full_name || activeUser.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
 

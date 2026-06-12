@@ -9,6 +9,7 @@ import TravelPostModal from '../components/travel/TravelPostModal';
 import MemberSignupModal from '../components/MemberSignupModal';
 import ScrollToTop from '../components/ScrollToTop';
 import MascotDog from '../components/MascotDog';
+import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import { Plus } from 'lucide-react';
 
 const TRAVEL_CATEGORIES = [
@@ -157,24 +158,24 @@ function ShareModal({ listing, onClose }) {
         <div className="grid grid-cols-3 gap-3 mb-4">
           <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`} target="_blank" rel="noopener noreferrer"
             className="flex flex-col items-center gap-1 p-3 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 transition-colors">
-            <span className="text-xl">📘</span>
+            <span className="font-body text-xs font-bold text-blue-300">FB</span>
             <span className="font-body text-[10px] text-white/70">Facebook</span>
           </a>
           <a href={`https://wa.me/?text=${text}%20${encodedUrl}`} target="_blank" rel="noopener noreferrer"
             className="flex flex-col items-center gap-1 p-3 rounded-xl bg-green-600/20 hover:bg-green-600/30 transition-colors">
-            <span className="text-xl">💬</span>
+            <span className="font-body text-xs font-bold text-green-300">WA</span>
             <span className="font-body text-[10px] text-white/70">WhatsApp</span>
           </a>
           <a href={`https://t.me/share/url?url=${encodedUrl}&text=${text}`} target="_blank" rel="noopener noreferrer"
             className="flex flex-col items-center gap-1 p-3 rounded-xl bg-sky-600/20 hover:bg-sky-600/30 transition-colors">
-            <span className="text-xl">✈️</span>
+            <span className="font-body text-xs font-bold text-sky-300">TG</span>
             <span className="font-body text-[10px] text-white/70">Telegram</span>
           </a>
         </div>
         <button onClick={() => { navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
           className="w-full py-2 rounded-xl font-body text-sm text-white transition-all"
           style={{ background: copied ? 'rgba(34,197,94,0.2)' : 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
-          {copied ? '✓ Copied!' : '🔗 Copy Link'}
+          {copied ? '✓ Copied!' : 'Copy Link'}
         </button>
       </motion.div>
     </motion.div>
@@ -319,7 +320,6 @@ export default function Travel() {
             </div>
             {filtered.length === 0 && (
               <div className="text-center py-20">
-                <p className="text-4xl mb-3">🌏</p>
                 <p className="font-body text-white/30">No listings found for "{search}"</p>
               </div>
             )}
@@ -347,6 +347,12 @@ export default function Travel() {
           </div>
         </motion.div>
       </div>
+
+      {!currentUser && (
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pb-4">
+          <BecomeSellerBanner />
+        </div>
+      )}
 
       <AnimatePresence>
         {shareTarget && <ShareModal listing={shareTarget} onClose={() => setShareTarget(null)} />}

@@ -6,6 +6,7 @@ import { Link, useLocation } from 'react-router-dom';
 import FilterSidebar from '@/components/FilterSidebar';
 import { useAuth } from '@/lib/AuthContext';
 import AddListingModal from '@/components/AddListingModal';
+import BecomeSellerBanner from '@/components/BecomeSelllerBanner';
 
 const CONDITIONS = ['Brand New', 'Like New', 'Good as New', 'Lightly Used', 'Used', 'Heavily Used'];
 const DELIVERY_OPTS = ['LBC', 'J&T Express', 'Shopee Express', 'Lalamove', 'GrabExpress', 'Flash Express', 'Meetup at Location', 'Pickup at My Address', 'Cash on Delivery (COD)'];
@@ -53,9 +54,9 @@ function ListingCard({ listing, idx }) {
           </span>
         )}
         {listing.flash_deal_active && (
-          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-red-500/90 font-body font-bold text-[10px] text-white">
-            🔥 Flash Deal
-          </span>
+        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-red-500/90 font-body font-bold text-[10px] text-white">
+          Flash Deal
+        </span>
         )}
         <button onClick={e => { e.preventDefault(); setHearted(h => !h); }}
           className="absolute bottom-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all"
@@ -276,7 +277,13 @@ export default function BuySell() {
             </div>
           </div>
 
-          {loading ? (
+            {!isAuthenticated && (
+            <div className="mb-4">
+              <BecomeSellerBanner />
+            </div>
+          )}
+
+        {loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div key={i} className="rounded-2xl overflow-hidden animate-pulse"

@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
 import PostListingMenu from '../components/PostListingMenu';
+import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import { base44 } from '@/api/base44Client';
 
 const SUBCATEGORIES = [
@@ -353,8 +354,10 @@ export default function Services() {
           </div>
         )}
 
+        {!currentUser && <BecomeSellerBanner className="mt-8 mb-4" />}
+
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="mt-12 rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)' }}>
+          className="mt-8 rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)' }}>
           <h2 className="font-heading font-bold text-2xl text-white mb-2">Offer Your Services Here</h2>
           <p className="font-body text-sm text-white/50 mb-6 max-w-md mx-auto">List your services for free and get discovered by thousands of customers across Manila and Cavite.</p>
           <button onClick={() => setShowSignup(true)} className="px-8 py-3 bg-[#00D4FF] text-[#0A192F] font-body font-bold rounded-xl hover:bg-white transition-colors">

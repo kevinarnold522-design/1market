@@ -10,6 +10,7 @@ import { base44 } from '@/api/base44Client';
 import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
 import MascotDog from '../components/MascotDog';
 import PostListingMenu from '../components/PostListingMenu';
+import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 
 // Multi-icon renderer for the section header
 function MultiIcon({ color }) {
@@ -99,7 +100,7 @@ function RentalCard({ item, onContact, user, isAdmin, onEdit }) {
         <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#070F1A]/80 to-transparent" />
         <div className="absolute top-3 left-3 flex gap-1.5">
-          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${item.location === 'Manila' ? 'bg-blue-500/80 text-white' : 'bg-emerald-500/80 text-white'}`}>📍 {item.area}</span>
+          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${item.location === 'Manila' ? 'bg-blue-500/80 text-white' : 'bg-emerald-500/80 text-white'}`}>{item.area}</span>
           <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/15 text-white backdrop-blur-sm">{item.sub}</span>
         </div>
         {item.link && (
@@ -321,8 +322,10 @@ export default function ForRent() {
           </div>
         )}
 
+        {!user && <BecomeSellerBanner className="mt-8 mb-4" />}
+
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="mt-12 rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)', border: '1px solid rgba(0,212,255,0.2)' }}>
+          className="mt-8 rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)', border: '1px solid rgba(0,212,255,0.2)' }}>
           <h2 className="font-heading font-bold text-2xl text-white mb-2">Have a Property or Item to Rent Out?</h2>
           <p className="font-body text-sm text-white/50 mb-6 max-w-md mx-auto">List your property, vehicle, or equipment for free and reach renters across Manila and Cavite.</p>
           <button onClick={() => setShowSignup(true)} className="px-8 py-3 bg-[#00D4FF] text-[#0A192F] font-body font-bold rounded-xl hover:bg-white transition-colors">
