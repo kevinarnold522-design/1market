@@ -9,7 +9,7 @@ import MetaVerifiedBadge from './MetaVerifiedBadge';
 import PostListingMenu from './PostListingMenu';
 import NotificationsBell from './NotificationsBell';
 
-const OWNER_EMAIL = 'Kevinarnold522@gmail.com';
+const OWNER_EMAIL = 'kevinarnold522@gmail.com';
 
 const NAV_ITEMS = [
   { to: '/', icon: Home, label: 'Home', color: '#00D4FF' },
@@ -50,7 +50,7 @@ export default function FloatingNavbar() {
   }, [isOpen]);
 
   const activeUser = ghostUser || user;
-  const isAdmin = !ghostUser && (activeUser?.role === 'admin' || activeUser?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase());
+  const isAdmin = !ghostUser && activeUser?.email?.toLowerCase() === OWNER_EMAIL;
   const isGhostSession = !!ghostUser;
   const isSeller = activeUser?.user_type === 'seller' || activeUser?.is_seller || activeUser?.account_type === 'business_owner';
   const isBusiness = activeUser?.user_type === 'business';
