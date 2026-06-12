@@ -2,210 +2,220 @@
   "name": "User",
   "type": "object",
   "properties": {
-    "username": {
+    "role": {
       "type": "string",
-      "default": "",
-      "description": "Unique username for the user"
-    },
-    "username_set": {
-      "type": "boolean",
-      "default": false,
-      "description": "Whether username has been set"
-    },
-    "channel_name": {
-      "type": "string",
-      "default": "",
-      "description": "Public channel/display name"
-    },
-    "bio": {
-      "type": "string",
-      "default": "",
-      "description": "User biography"
-    },
-    "profile_picture": {
-      "type": "string",
-      "default": "",
-      "description": "Profile picture URL"
-    },
-    "cover_photo": {
-      "type": "string",
-      "default": "",
-      "description": "Cover photo URL"
+      "enum": [
+        "admin",
+        "user"
+      ],
+      "default": "user"
     },
     "user_type": {
       "type": "string",
       "enum": [
         "customer",
         "seller",
-        "business"
+        "business",
+        "rider"
       ],
       "default": "customer",
-      "description": "Account type"
+      "description": "Account type: customer, sales (seller), business, or rider delivery"
+    },
+    "sales_subtype": {
+      "type": "string",
+      "description": "Subtype for Sales Accounts e.g. Online Seller, Real Estate Agent, Freelancer, etc."
+    },
+    "business_subtype": {
+      "type": "string",
+      "description": "Subtype for Business Accounts e.g. Restaurant, Hotel, Retail Store, etc."
     },
     "is_seller": {
       "type": "boolean",
-      "default": false,
-      "description": "Whether user is a seller"
+      "default": false
     },
     "account_type": {
       "type": "string",
       "enum": [
         "customer",
-        "business_owner"
+        "seller",
+        "business_owner",
+        "rider"
       ],
-      "default": "customer",
-      "description": "Account classification"
+      "default": "customer"
     },
-    "business_name": {
+    "channel_name": {
       "type": "string",
-      "default": "",
-      "description": "Business/store name"
+      "description": "Public display name / channel name"
     },
-    "seller_location": {
-      "type": "string",
-      "default": "",
-      "description": "Seller's location"
+    "username": {
+      "type": "string"
+    },
+    "username_set": {
+      "type": "boolean",
+      "default": false
+    },
+    "bio": {
+      "type": "string"
+    },
+    "seller_bio": {
+      "type": "string"
+    },
+    "profile_picture": {
+      "type": "string"
+    },
+    "cover_photo": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
     },
     "location": {
-      "type": "string",
-      "default": "",
-      "description": "General location"
+      "type": "string"
+    },
+    "seller_location": {
+      "type": "string"
     },
     "seller_area": {
-      "type": "string",
-      "default": "",
-      "description": "Specific area/district"
+      "type": "string"
     },
     "seller_page_enabled": {
       "type": "boolean",
-      "default": false,
-      "description": "Whether seller page is enabled"
+      "default": false
     },
-    "seller_bio": {
-      "type": "string",
-      "default": "",
-      "description": "Seller biography"
-    },
-    "is_ghost_account": {
-      "type": "boolean",
-      "default": false,
-      "description": "Whether this is a ghost/test account"
-    },
-    "is_connected_account": {
-      "type": "boolean",
-      "default": false,
-      "description": "Whether this is a connected account"
-    },
-    "ghost_id": {
-      "type": "string",
-      "default": "",
-      "description": "Unique ghost account identifier"
-    },
-    "ghost_linked": {
-      "type": "boolean",
-      "default": false,
-      "description": "Whether ghost account is linked to real user"
-    },
-    "is_verified_seller": {
-      "type": "boolean",
-      "default": false,
-      "description": "Whether seller is verified"
-    },
-    "verification_submitted": {
-      "type": "boolean",
-      "default": false,
-      "description": "Whether verification has been submitted"
-    },
-    "seller_pending": {
-      "type": "boolean",
-      "default": false,
-      "description": "Whether seller application is pending"
-    },
-    "business_pending": {
-      "type": "boolean",
-      "default": false,
-      "description": "Whether business application is pending"
+    "seller_type": {
+      "type": "string"
     },
     "seller_products": {
       "type": "array",
       "items": {
         "type": "string"
-      },
-      "default": [],
-      "description": "List of seller products"
+      }
+    },
+    "business_name": {
+      "type": "string"
+    },
+    "business_type": {
+      "type": "string"
+    },
+    "business_pending": {
+      "type": "boolean",
+      "default": false
     },
     "business_categories": {
       "type": "array",
       "items": {
         "type": "string"
-      },
-      "default": [],
-      "description": "List of business categories"
+      }
     },
-    "facebook_page_id": {
-      "type": "string",
-      "default": "",
-      "description": "Connected Facebook Page ID for live streaming"
-    },
-    "facebook_page_name": {
-      "type": "string",
-      "default": "",
-      "description": "Facebook Page name"
-    },
-    "facebook_live_enabled": {
+    "is_verified_seller": {
       "type": "boolean",
-      "default": false,
-      "description": "Whether Facebook Live is connected"
+      "default": false
+    },
+    "verification_submitted": {
+      "type": "boolean",
+      "default": false
     },
     "social_facebook": {
-      "type": "string",
-      "default": "",
-      "description": "Facebook profile/page URL"
+      "type": "string"
     },
     "social_instagram": {
-      "type": "string",
-      "default": "",
-      "description": "Instagram profile URL"
+      "type": "string"
     },
     "social_tiktok": {
-      "type": "string",
-      "default": "",
-      "description": "TikTok profile URL"
-    },
-    "social_twitter": {
-      "type": "string",
-      "default": "",
-      "description": "Twitter profile URL"
+      "type": "string"
     },
     "social_youtube": {
-      "type": "string",
-      "default": "",
-      "description": "YouTube channel URL"
+      "type": "string"
     },
     "social_viber": {
-      "type": "string",
-      "default": "",
-      "description": "Viber contact"
+      "type": "string"
     },
     "social_telegram": {
-      "type": "string",
-      "default": "",
-      "description": "Telegram contact"
-    },
-    "phone": {
-      "type": "string",
-      "default": "",
-      "description": "Phone number"
+      "type": "string"
     },
     "show_phone_public": {
       "type": "boolean",
-      "default": false,
-      "description": "Whether to show phone publicly"
+      "default": false
     },
     "show_email_public": {
       "type": "boolean",
-      "default": false,
-      "description": "Whether to show email publicly"
+      "default": false
+    },
+    "paypal_email": {
+      "type": "string"
+    },
+    "gcash_number": {
+      "type": "string"
+    },
+    "is_ghost_account": {
+      "type": "boolean",
+      "default": false
+    },
+    "ghost_id": {
+      "type": "string"
+    },
+    "is_connected_account": {
+      "type": "boolean",
+      "default": false
+    },
+    "rider_id1_url": {
+      "type": "string",
+      "description": "Rider: Valid ID #1"
+    },
+    "rider_id2_url": {
+      "type": "string",
+      "description": "Rider: Valid ID #2"
+    },
+    "rider_id3_url": {
+      "type": "string",
+      "description": "Rider: Valid ID #3"
+    },
+    "rider_billing_url": {
+      "type": "string",
+      "description": "Rider: Proof of Billing"
+    },
+    "rider_barangay_url": {
+      "type": "string",
+      "description": "Rider: Barangay Clearance"
+    },
+    "rider_verification_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "under_review",
+        "approved",
+        "rejected",
+        "resubmission_required"
+      ],
+      "default": "pending"
+    },
+    "rider_vehicle_type": {
+      "type": "string",
+      "enum": [
+        "motorcycle",
+        "bicycle",
+        "e-bike",
+        "car",
+        "other"
+      ]
+    },
+    "onboarding_completed": {
+      "type": "boolean",
+      "default": false
+    },
+    "onboarding_answers": {
+      "type": "object",
+      "description": "Saved onboarding question answers"
+    },
+    "facebook_page_id": {
+      "type": "string"
+    },
+    "facebook_page_name": {
+      "type": "string"
+    },
+    "facebook_live_enabled": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

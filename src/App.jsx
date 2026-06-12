@@ -37,6 +37,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import GlowInteraction from './components/GlowInteraction';
 import AdminRoute from './components/AdminRoute';
+import RiderOnboarding from './pages/RiderOnboarding';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -86,6 +87,7 @@ const AuthenticatedApp = () => {
         <Route path="/community" element={<BusinessCommunity />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/onboarding" element={<SellerOnboarding />} />
+        <Route path="/rider-onboarding" element={<RiderOnboarding />} />
         <Route path="/post-ad" element={<PostAdLanding />} />
         <Route path="/category/:category" element={<CategoryTransitionPage />} />
         <Route path="/connected-accounts" element={<AdminRoute><ConnectedAccounts /></AdminRoute>} />

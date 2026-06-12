@@ -686,8 +686,9 @@ export default function UserProfile() {
               <div className="flex-1 min-w-0">
                 <UsernameEditor user={user} onSaved={async () => { await reloadUser(); }}/>
                 <div className="flex flex-wrap gap-1 mt-1">
-                  <span className={`px-2 py-0.5 rounded-full font-body text-[9px] font-bold border ${isBusiness ? 'bg-purple-500/20 text-purple-300 border-purple-500/25' : isSeller ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25' : 'bg-[#2563EB]/20 text-[#60a5fa] border-[#2563EB]/20'}`}>
-                    {isBusiness ? `🏢 ${user.business_name || 'Business'}` : isSeller ? '🏪 Seller' : '🛍️ Customer'}
+                  <span className="inline-flex items-center font-body font-bold uppercase tracking-wider"
+                    style={{ fontSize: '9px', padding: '3px 10px', borderRadius: '5px', background: isAdmin ? 'rgba(245,158,11,0.15)' : isBusiness ? 'rgba(37,99,235,0.2)' : isSeller ? 'rgba(16,185,129,0.15)' : 'rgba(37,99,235,0.15)', border: `1px solid ${isAdmin ? 'rgba(245,158,11,0.4)' : isBusiness ? 'rgba(37,99,235,0.45)' : isSeller ? 'rgba(16,185,129,0.4)' : 'rgba(37,99,235,0.3)'}`, color: isAdmin ? '#fbbf24' : isBusiness ? '#93c5fd' : isSeller ? '#6ee7b7' : '#60a5fa' }}>
+                    {isAdmin ? 'Admin' : isBusiness ? (user.business_name || 'Business Account') : isSeller ? 'Sales Account' : 'Customer Account'}
                   </span>
                   {isVerified && isSeller && <MetaVerifiedBadge size="xs" label="" />}
                   {isPendingBusiness && !isBusiness && (
@@ -841,7 +842,7 @@ export default function UserProfile() {
                     { label: 'Username', value: user.username ? `@${user.username}` : '—' },
                     { label: 'Full Name', value: user.full_name || '—' },
                     { label: 'Email', value: user.email },
-                    { label: 'Account Type', value: isSeller ? '🏪 Business Owner / Seller' : '🛍️ Customer' },
+                    { label: 'Account Type', value: isAdmin ? 'Admin' : isBusiness ? 'Business Account' : isSeller ? 'Sales Account' : user?.user_type === 'rider' ? 'Rider Delivery Account' : 'Customer Account' },
                     { label: 'Location', value: user.location || user.seller_location || '—' },
                     { label: 'Member Since', value: memberSince },
                   ].map(({ label, value }) => (
@@ -875,11 +876,28 @@ export default function UserProfile() {
                         <Building2 className="w-8 h-8 text-[#3E97F1] flex-shrink-0 mt-0.5"/>
                         <div className="flex-1">
                           <p className="font-heading font-bold text-white text-sm">Register a Business</p>
-                          <p className="font-body text-[10px] text-white/40 mb-2">Convert to a Business Account to list under your business name. Submit 3 documents for admin approval + Verified Partner badge ✅.</p>
+                          <p className="font-body text-[10px] text-white/40 mb-2">Convert to a Business Account to list under your business name. Submit 3 documents for admin approval + Verified Partner badge.</p>
                            <button onClick={() => setShowBusinessModal(true)}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB] text-white rounded-xl font-body font-bold text-xs hover:bg-[#3E97F1] transition-colors">
                             <Building2 className="w-3 h-3"/> Convert To Business Account →
                           </button>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Become Rider */}
+                    <div className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg,rgba(245,158,11,0.10),rgba(251,191,36,0.05))', border: '1px solid rgba(245,158,11,0.2)' }}>
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: 'rgba(245,158,11,0.15)' }}>
+                          <span className="text-amber-400 font-bold text-lg">🏍</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-heading font-bold text-white text-sm">Become a Rider</p>
+                          <p className="font-body text-[10px] text-white/40 mb-2">Earn income by delivering orders in your area. ID verification required.</p>
+                          <Link to="/rider-onboarding"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-white rounded-xl font-body font-bold text-xs transition-colors"
+                            style={{ background: 'linear-gradient(135deg,#f59e0b,#fbbf24)', color: '#1a0a00' }}>
+                            Apply as Rider →
+                          </Link>
                         </div>
                       </div>
                     </div>

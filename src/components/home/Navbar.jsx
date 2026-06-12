@@ -80,7 +80,8 @@ export default function Navbar() {
   const isBusiness = activeUser?.user_type === 'business';
   const isCustomer = !isSeller && !isBusiness && !isGhostSession;
   const isVerified = activeUser?.is_verified_seller;
-  const adminLabel = isAdmin ? 'CEO & Founder' : isBusiness ? (activeUser?.business_name || 'Business Owner') : isSeller ? 'Seller' : isGhostSession ? 'Ghost Account' : 'Customer';
+  const isRider = activeUser?.user_type === 'rider';
+  const adminLabel = isAdmin ? 'CEO & Founder' : isBusiness ? (activeUser?.business_name || 'Business Account') : isRider ? 'Rider Delivery' : isSeller ? 'Sales Account' : isGhostSession ? 'Test Account' : 'Customer Account';
   const [uploadingPfp, setUploadingPfp] = useState(false);
 
   const handleNavPfpUpload = async (e) => {
@@ -368,8 +369,9 @@ export default function Navbar() {
                             </label>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1 mb-1 flex-wrap">
-                                <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>
-                                  {isGhostSession ? (isSeller ? 'Seller' : isBusiness ? 'Business' : 'Customer') : adminLabel}
+                                <span className="inline-flex items-center font-body font-bold uppercase tracking-wider text-white"
+                                  style={{ fontSize: '9px', padding: '2px 8px', borderRadius: '4px', background: isAdmin ? 'rgba(245,158,11,0.2)' : isBusiness ? 'rgba(37,99,235,0.2)' : isRider ? 'rgba(245,158,11,0.15)' : isSeller ? 'rgba(16,185,129,0.15)' : 'rgba(37,99,235,0.15)', border: `1px solid ${isAdmin ? 'rgba(245,158,11,0.45)' : isBusiness ? 'rgba(37,99,235,0.45)' : isRider ? 'rgba(245,158,11,0.4)' : isSeller ? 'rgba(16,185,129,0.4)' : 'rgba(37,99,235,0.35)'}`, color: isAdmin ? '#fbbf24' : isBusiness ? '#93c5fd' : isRider ? '#fde68a' : isSeller ? '#6ee7b7' : '#60a5fa' }}>
+                                  {adminLabel}
                                 </span>
                                 {isAdmin && !isGhostSession && <MetaVerifiedBadge size="sm" label="CEO" />}
                                 {isVerified && !isAdmin && isSeller && !isGhostSession && <MetaVerifiedBadge size="sm" label="Verified Partner" />}
@@ -585,7 +587,10 @@ export default function Navbar() {
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-1 mb-0.5 flex-wrap">
-                          <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>{isGhostSession ? (isSeller ? 'Seller' : 'Member') : adminLabel}</span>
+                          <span className="inline-flex items-center font-body font-bold uppercase tracking-wider"
+                            style={{ fontSize: '9px', padding: '2px 8px', borderRadius: '4px', background: isAdmin ? 'rgba(245,158,11,0.2)' : isBusiness ? 'rgba(37,99,235,0.2)' : isSeller ? 'rgba(16,185,129,0.15)' : 'rgba(37,99,235,0.15)', border: `1px solid ${isAdmin ? 'rgba(245,158,11,0.4)' : isBusiness ? 'rgba(37,99,235,0.4)' : isSeller ? 'rgba(16,185,129,0.35)' : 'rgba(37,99,235,0.3)'}`, color: isAdmin ? '#fbbf24' : isBusiness ? '#93c5fd' : isSeller ? '#6ee7b7' : '#60a5fa' }}>
+                            {adminLabel}
+                          </span>
                           {isAdmin && !isGhostSession && <MetaVerifiedBadge size="xs" label="" />}
                         </div>
                         <p className="font-body text-xs font-bold text-white truncate">{activeUser.full_name || activeUser.channel_name || 'Account'}</p>

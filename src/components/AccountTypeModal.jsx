@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingBag, Store, Users, Check, ArrowRight, Shield, Star, Package, Briefcase } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { X, ShoppingBag, Store, Users, Check, ArrowRight, Shield, Package, Briefcase, Bike } from 'lucide-react';
 
 const ACCOUNT_TYPES = [
   {
     key: 'buyer',
     icon: ShoppingBag,
-    label: 'Buyer / Customer',
+    label: 'Customer Account',
     tagline: 'Shop, save & discover deals',
     perks: ['Browse all listings for free', 'Save favorites & wishlist', 'Track your orders', 'Rate businesses & sellers'],
     color: 'from-blue-500 to-cyan-500',
     border: 'border-blue-500/40',
     bg: 'bg-blue-500/10',
     textColor: 'text-blue-400',
-    iconColor: '#60a5fa',
   },
   {
     key: 'seller',
@@ -26,27 +24,58 @@ const ACCOUNT_TYPES = [
     border: 'border-emerald-500/40',
     bg: 'bg-emerald-500/10',
     textColor: 'text-emerald-400',
-    iconColor: '#34d399',
   },
   {
     key: 'both',
     icon: Users,
-    label: 'Both — Buy & Sell',
-    tagline: 'The full 1Market experience',
-    perks: ['Everything in Buyer & Seller', 'Switch roles anytime', 'Priority support access', 'Exclusive member deals'],
+    label: 'Business Account',
+    tagline: 'The full 1Market business experience',
+    perks: ['Business profile & branding', 'Multiple staff listings', 'Priority support access', 'Exclusive Verified Partner badge'],
     color: 'from-purple-500 to-pink-500',
     border: 'border-purple-500/40',
     bg: 'bg-purple-500/10',
     textColor: 'text-purple-400',
-    iconColor: '#c084fc',
+  },
+  {
+    key: 'rider',
+    icon: Bike,
+    label: 'Rider Delivery Account',
+    tagline: 'Deliver for sellers in your community',
+    perks: ['Earn from deliveries', 'Get matched with nearby sellers', 'Flexible hours', 'Verified rider badge after ID check'],
+    color: 'from-amber-500 to-orange-500',
+    border: 'border-amber-500/40',
+    bg: 'bg-amber-500/10',
+    textColor: 'text-amber-400',
   },
 ];
 
 const QUESTIONS = [
   {
-    key: 'location',
-    question: 'Where are you based?',
+    key: 'purpose',
+    question: 'What do you want to use 1MarketPH for?',
+    subtitle: 'Help us personalize your experience from day one.',
+    options: [
+      { value: 'buying', label: 'Buying products & services', desc: 'Find deals, compare prices, order online' },
+      { value: 'selling', label: 'Selling my products or services', desc: 'Reach thousands of local buyers' },
+      { value: 'both', label: 'Both buying and selling', desc: 'The full marketplace experience' },
+      { value: 'delivery', label: 'Delivering orders for income', desc: 'Earn money as a rider' },
+    ]
+  },
+  {
+    key: 'interest',
+    question: 'Which categories interest you most?',
     subtitle: 'We\'ll show you the most relevant listings first.',
+    options: [
+      { value: 'food', label: 'Food & Dining', desc: 'Restaurants, home cooking, delivery' },
+      { value: 'electronics', label: 'Electronics & Gadgets', desc: 'Phones, laptops, accessories' },
+      { value: 'travel', label: 'Travel & Hotels', desc: 'Bookings, rentals, tours' },
+      { value: 'services', label: 'Services & Jobs', desc: 'Home, tech, beauty, hiring' },
+    ]
+  },
+  {
+    key: 'location',
+    question: 'Where are you primarily based?',
+    subtitle: 'We\'ll prioritize listings closest to you.',
     options: [
       { value: 'Manila', label: 'Manila / Metro Manila', desc: 'NCR and nearby cities' },
       { value: 'Cavite', label: 'Cavite', desc: 'Bacoor, Imus, Dasmariñas, etc.' },
@@ -56,25 +85,48 @@ const QUESTIONS = [
     ]
   },
   {
-    key: 'interest',
-    question: 'What are you most interested in?',
-    subtitle: 'Help us personalize your experience.',
+    key: 'individual_or_business',
+    question: 'Are you an individual or a business?',
+    subtitle: 'This helps us tailor your account features.',
     options: [
-      { value: 'food', label: 'Food & Dining', desc: 'Restaurants, carinderias, delivery' },
-      { value: 'electronics', label: 'Electronics & Gadgets', desc: 'Phones, laptops, accessories' },
-      { value: 'travel', label: 'Travel & Hotels', desc: 'Bookings, rentals, tours' },
-      { value: 'services', label: 'Services', desc: 'Home, tech, beauty, events' },
-      { value: 'general', label: 'General Shopping', desc: 'All categories' },
+      { value: 'individual', label: 'Individual / Personal', desc: 'Acting on my own behalf' },
+      { value: 'small_business', label: 'Small Business / SME', desc: 'Small to medium enterprise' },
+      { value: 'corporation', label: 'Corporation / Large Business', desc: 'Registered company or franchise' },
+      { value: 'ngo', label: 'NGO / Government / Non-profit', desc: 'Public service or advocacy org' },
     ]
-  }
+  },
+  {
+    key: 'frequency',
+    question: 'How often do you plan to buy or sell?',
+    subtitle: 'Helps us match you with the right tools.',
+    options: [
+      { value: 'daily', label: 'Every day', desc: 'Very active user' },
+      { value: 'weekly', label: 'A few times a week', desc: 'Regular user' },
+      { value: 'monthly', label: 'Occasionally', desc: 'Casual user' },
+      { value: 'just_looking', label: 'Just browsing for now', desc: 'Exploring the platform' },
+    ]
+  },
+  {
+    key: 'best_fit',
+    question: 'Which account type best fits your needs?',
+    subtitle: 'You can always change this later from your profile.',
+    options: [
+      { value: 'customer', label: 'Customer Account', desc: 'Buy & discover products' },
+      { value: 'seller', label: 'Sales Account', desc: 'Sell products & services' },
+      { value: 'business', label: 'Business Account', desc: 'Business listings & branding' },
+      { value: 'rider', label: 'Rider Delivery Account', desc: 'Earn income from deliveries' },
+    ]
+  },
 ];
 
 export default function AccountTypeModal({ onClose }) {
-  const [step, setStep] = useState(0); // 0=type, 1=q1, 2=q2, 3=final
+  const [step, setStep] = useState(0); // 0=type, 1-6=questions, 7=final
   const [selectedType, setSelectedType] = useState('');
   const [answers, setAnswers] = useState({});
 
   const currentQuestion = QUESTIONS[step - 1];
+  const totalSteps = QUESTIONS.length + 2;
+  const progress = ((step + 1) / totalSteps) * 100;
 
   const handleTypeSelect = (key) => {
     setSelectedType(key);
@@ -87,7 +139,6 @@ export default function AccountTypeModal({ onClose }) {
     if (step < QUESTIONS.length) {
       setTimeout(() => setStep(s => s + 1), 300);
     } else {
-      // All done — go to signup
       setStep(QUESTIONS.length + 1);
     }
   };
@@ -104,9 +155,6 @@ export default function AccountTypeModal({ onClose }) {
     }, 600);
   };
 
-  const totalSteps = QUESTIONS.length + 2; // type + questions + confirm
-  const progress = ((step + 1) / totalSteps) * 100;
-
   return (
     <AnimatePresence>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -121,8 +169,8 @@ export default function AccountTypeModal({ onClose }) {
           style={{ background: 'linear-gradient(135deg,#0A192F,#0D1F3C)', border: '1px solid rgba(0,212,255,0.2)' }}>
 
           {/* Progress bar */}
-          <div className="h-1 bg-white/10">
-            <motion.div className="h-full bg-gradient-to-r from-[#2563EB] to-[#00D4FF]"
+          <div className="h-1.5 bg-white/10">
+            <motion.div className="h-full" style={{ background: 'linear-gradient(90deg,#2563EB,#00D4FF)' }}
               animate={{ width: `${progress}%` }} transition={{ duration: 0.4 }} />
           </div>
 
@@ -132,11 +180,16 @@ export default function AccountTypeModal({ onClose }) {
               <div className="w-7 h-7 rounded-lg bg-[#00D4FF] flex items-center justify-center">
                 <span className="text-[#0A192F] font-bold text-sm">1</span>
               </div>
-              <span className="font-heading font-bold text-white text-sm">Marketph.com</span>
+              <span className="font-heading font-bold text-white text-sm">1MarketPH.com</span>
             </div>
-            <button onClick={onClose} className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
-              <X className="w-3.5 h-3.5 text-white/60" />
-            </button>
+            <div className="flex items-center gap-3">
+              {step > 0 && step <= QUESTIONS.length && (
+                <span className="font-body text-[10px] text-white/30">Step {step} of {QUESTIONS.length}</span>
+              )}
+              <button onClick={onClose} className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                <X className="w-3.5 h-3.5 text-white/60" />
+              </button>
+            </div>
           </div>
 
           <AnimatePresence mode="wait">
@@ -144,14 +197,14 @@ export default function AccountTypeModal({ onClose }) {
             {step === 0 && (
               <motion.div key="type" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="px-5 pb-6">
                 <h2 className="font-heading font-bold text-2xl text-white mb-1">Welcome to 1MarketPH</h2>
-                <p className="font-body text-sm text-white/40 mb-5">First, tell us what you're here for.</p>
+                <p className="font-body text-sm text-white/40 mb-5">First, what kind of account do you need?</p>
                 <div className="space-y-3">
                   {ACCOUNT_TYPES.map(type => (
                     <motion.button key={type.key} whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
                       onClick={() => handleTypeSelect(type.key)}
                       className={`w-full flex items-start gap-3 p-4 rounded-2xl border-2 text-left transition-all ${selectedType === type.key ? `${type.border} ${type.bg}` : 'border-white/10 hover:border-white/20 bg-white/5'}`}>
-                      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${type.color} flex items-center justify-center flex-shrink-0`}>
-                        <type.icon className="w-6 h-6 text-white" />
+                      <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${type.color} flex items-center justify-center flex-shrink-0`}>
+                        <type.icon className="w-5 h-5 text-white" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
@@ -159,10 +212,10 @@ export default function AccountTypeModal({ onClose }) {
                           {selectedType === type.key && <Check className={`w-4 h-4 ${type.textColor}`} />}
                         </div>
                         <p className={`font-body text-xs mt-0.5 ${type.textColor}`}>{type.tagline}</p>
-                        <div className="mt-2 space-y-0.5">
+                        <div className="mt-1.5 space-y-0.5">
                           {type.perks.map((p, i) => (
                             <div key={i} className="flex items-center gap-1.5">
-                              <div className={`w-1 h-1 rounded-full ${type.textColor.replace('text', 'bg')}`} />
+                              <div className="w-1 h-1 rounded-full bg-white/30" />
                               <span className="font-body text-[10px] text-white/40">{p}</span>
                             </div>
                           ))}
@@ -174,7 +227,7 @@ export default function AccountTypeModal({ onClose }) {
               </motion.div>
             )}
 
-            {/* Steps 1+: Questions */}
+            {/* Steps 1-6: Questions */}
             {step >= 1 && step <= QUESTIONS.length && currentQuestion && (
               <motion.div key={`q-${step}`} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="px-5 pb-6">
                 <button onClick={() => setStep(s => s - 1)} className="flex items-center gap-1 text-white/30 hover:text-white font-body text-xs mb-4 transition-colors">
@@ -191,12 +244,12 @@ export default function AccountTypeModal({ onClose }) {
                         <p className="font-body font-semibold text-sm text-white">{opt.label}</p>
                         <p className="font-body text-[10px] text-white/40 mt-0.5">{opt.desc}</p>
                       </div>
-                      {answers[currentQuestion.key] === opt.value && <Check className="w-4 h-4 text-[#00D4FF] flex-shrink-0" />}
-                      <ArrowRight className="w-3.5 h-3.5 text-white/20 flex-shrink-0" />
+                      {answers[currentQuestion.key] === opt.value
+                        ? <Check className="w-4 h-4 text-[#00D4FF] flex-shrink-0" />
+                        : <ArrowRight className="w-3.5 h-3.5 text-white/20 flex-shrink-0" />}
                     </motion.button>
                   ))}
                 </div>
-                <p className="text-center font-body text-[10px] text-white/20 mt-4">Question {step} of {QUESTIONS.length}</p>
               </motion.div>
             )}
 
@@ -208,22 +261,33 @@ export default function AccountTypeModal({ onClose }) {
                 </div>
                 <h2 className="font-heading font-bold text-2xl text-white mb-1">You're all set!</h2>
                 <p className="font-body text-sm text-white/50 mb-2">
-                  You're joining as a <strong className="text-[#00D4FF]">{ACCOUNT_TYPES.find(t => t.key === selectedType)?.label}</strong>
+                  Joining as a <strong className="text-[#00D4FF]">{ACCOUNT_TYPES.find(t => t.key === selectedType)?.label}</strong>
                   {answers.location ? ` from ${answers.location}` : ''}.
                 </p>
-                <p className="font-body text-xs text-white/30 mb-6">Create your free account to get started. No credit card needed.</p>
 
+                {/* Summary of answers */}
+                <div className="text-left mb-5 space-y-1.5 rounded-xl p-3" style={{ background: 'rgba(0,212,255,0.05)', border: '1px solid rgba(0,212,255,0.15)' }}>
+                  <p className="font-body text-[9px] text-[#00D4FF]/60 uppercase tracking-wider font-bold mb-2">Your Preferences (saved to profile)</p>
+                  {Object.entries(answers).map(([k, v]) => (
+                    <div key={k} className="flex items-center gap-2">
+                      <Check className="w-3 h-3 text-[#00D4FF] flex-shrink-0" />
+                      <span className="font-body text-[10px] text-white/60 capitalize">{k.replace(/_/g, ' ')}: <strong className="text-white/80">{v}</strong></span>
+                    </div>
+                  ))}
+                </div>
+
+                <p className="font-body text-xs text-white/30 mb-6">Create your free account to get started. No credit card needed.</p>
                 <div className="space-y-2.5 mb-4">
                   <button onClick={handleContinueToSignup}
-                    className="w-full py-3.5 bg-gradient-to-r from-[#2563EB] to-[#00D4FF] text-white rounded-xl font-body font-bold text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25">
-                    <Shield className="w-4 h-4" /> Continue with Google / Email →
+                    className="w-full py-3.5 text-white rounded-xl font-body font-bold text-sm flex items-center justify-center gap-2 shadow-lg"
+                    style={{ background: 'linear-gradient(135deg,#2563EB,#00D4FF)', boxShadow: '0 0 20px rgba(0,212,255,0.25)' }}>
+                    <Shield className="w-4 h-4" /> Continue with Google / Email
                   </button>
                   <button onClick={handleContinueToSignup}
                     className="w-full py-2.5 bg-white/10 border border-white/15 text-white/70 rounded-xl font-body text-sm hover:bg-white/15 transition-colors">
                     Sign in to existing account
                   </button>
                 </div>
-
                 <p className="font-body text-[9px] text-white/20 leading-relaxed">
                   By signing up you agree to our Privacy Policy. DPA 2012 compliant. Free forever.
                 </p>
