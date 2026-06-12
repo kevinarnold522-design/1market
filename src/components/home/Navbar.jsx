@@ -171,21 +171,13 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           {/* Left: welcome or tagline */}
           <div className="flex-1 min-w-0">
-            {isGhostSession ? (
+            {isAuthenticated && (activeUser || user) ? (
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-body text-xs font-semibold truncate">
-                  Ghost: <strong>{ghostUser.full_name?.split(' ')[0] || 'Account'}</strong>
+                  Welcome, <strong>{activeUser?.full_name?.split(' ')[0] || 'Member'}</strong>!
                 </span>
-                <span className="px-2 py-0.5 bg-purple-500/20 rounded-full text-[10px] font-bold border border-purple-500/30 text-purple-300 hidden sm:inline">Ghost Mode</span>
-              </div>
-            ) : isAuthenticated && user ? (
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-body text-xs font-semibold truncate">
-                  Welcome, <strong>{user.full_name?.split(' ')[0] || 'Member'}</strong>!
-                </span>
-                <span className="px-2 py-0.5 bg-white/15 rounded-full text-[10px] font-bold border border-white/20 hidden sm:inline">{adminLabel}</span>
-                {isAdmin && <MetaVerifiedBadge size="sm" label="CEO" />}
-                {isVerified && !isAdmin && <MetaVerifiedBadge size="sm" label="Verified" />}
+                {isAdmin && !isGhostSession && <MetaVerifiedBadge size="sm" label="CEO" />}
+                {isVerified && !isAdmin && !isGhostSession && <MetaVerifiedBadge size="sm" label="Verified" />}
               </div>
             ) : (
               <span className="font-body text-xs font-semibold text-white/90 hidden sm:block">
@@ -358,115 +350,85 @@ export default function Navbar() {
                         {/* Profile Header */}
                         <div className="p-4 border-b border-white/10">
                           <div className="flex items-center gap-3 mb-3">
-                            {!isGhostSession && (
-                              <label className="relative w-12 h-12 rounded-xl flex-shrink-0 cursor-pointer group">
-                                {activeUser?.profile_picture ? (
-                                  <img src={activeUser.profile_picture} alt="pfp" className="w-full h-full rounded-xl object-cover border border-white/20" />
-                                ) : (
-                                  <div className="w-full h-full rounded-xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-lg">
-                                    {initials}
-                                  </div>
-                                )}
-                                <div className="absolute inset-0 rounded-xl flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
-                                  {uploadingPfp ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Camera className="w-4 h-4 text-white" />}
+                            <label className="relative w-12 h-12 rounded-xl flex-shrink-0 cursor-pointer group">
+                              {activeUser?.profile_picture ? (
+                                <img src={activeUser.profile_picture} alt="pfp" className="w-full h-full rounded-xl object-cover border border-white/20" />
+                              ) : (
+                                <div className="w-full h-full rounded-xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center text-white font-heading font-bold text-lg">
+                                  {initials}
                                 </div>
-                                <input type="file" accept="image/*" className="hidden" onChange={handleNavPfpUpload} disabled={uploadingPfp} />
-                              </label>
-                            )}
-                            {isGhostSession && (
-                              <div className="w-12 h-12 rounded-xl flex-shrink-0 bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center text-white font-heading font-bold text-lg">
-                                {ghostUser?.full_name?.[0]?.toUpperCase() || 'G'}
-                              </div>
-                            )}
+                              )}
+                              {!isGhostSession && (
+                                <>
+                                  <div className="absolute inset-0 rounded-xl flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    {uploadingPfp ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Camera className="w-4 h-4 text-white" />}
+                                  </div>
+                                  <input type="file" accept="image/*" className="hidden" onChange={handleNavPfpUpload} disabled={uploadingPfp} />
+                                </>
+                              )}
+                            </label>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1 mb-1 flex-wrap">
                                 <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>
-                                  {adminLabel}
+                                  {isGhostSession ? (isSeller ? 'Seller' : isBusiness ? 'Business' : 'Customer') : adminLabel}
                                 </span>
-                                {isGhostSession && (
-                                  <span className="inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border bg-purple-500/20 text-purple-300 border-purple-500/30">
-                                    Ghost Mode
-                                  </span>
-                                )}
-                                {isAdmin && !isGhostSession && (
-                                  <MetaVerifiedBadge size="sm" label="CEO" />
-                                )}
-                                {isVerified && !isAdmin && isSeller && (
-                                  <MetaVerifiedBadge size="sm" label="Verified Partner" />
-                                )}
+                                {isAdmin && !isGhostSession && <MetaVerifiedBadge size="sm" label="CEO" />}
+                                {isVerified && !isAdmin && isSeller && !isGhostSession && <MetaVerifiedBadge size="sm" label="Verified Partner" />}
                               </div>
-                              {!isGhostSession && (
-                                <>
-                                  {editingName ? (
-                                    <div className="flex items-center gap-1.5">
-                                      <input
-                                        value={nameVal}
-                                        onChange={e => { setNameVal(e.target.value); setNameError(''); }}
-                                        className="flex-1 bg-white/10 border border-[#00D4FF]/40 rounded-lg px-2 py-1 text-white font-body text-xs focus:outline-none min-w-0"
-                                        autoFocus
-                                        onKeyDown={e => { if (e.key === 'Enter') handleSaveName(); if (e.key === 'Escape') { setEditingName(false); setNameError(''); } }}
-                                      />
-                                      <button onClick={handleSaveName} disabled={nameSaving}
-                                        className="w-6 h-6 rounded-full bg-[#00D4FF] flex items-center justify-center flex-shrink-0">
-                                        {nameSaving ? <div className="w-3 h-3 border border-[#0A192F]/30 border-t-[#0A192F] rounded-full animate-spin" /> : <Check className="w-3 h-3 text-[#0A192F]" />}
-                                      </button>
-                                      <button onClick={() => { setEditingName(false); setNameError(''); }} className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                                        <X className="w-3 h-3 text-white/50" />
-                                      </button>
-                                    </div>
-                                  ) : (
-                                    <div className="flex items-center gap-1.5">
-                                      <p className="font-body font-bold text-sm text-white truncate">{activeUser.full_name || 'Set Username'}</p>
-                                      <button onClick={() => setEditingName(true)}
-                                        className="w-5 h-5 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center flex-shrink-0 transition-colors">
-                                        <Edit2 className="w-2.5 h-2.5 text-white/50" />
-                                      </button>
-                                      {nameSaved && <span className="text-[9px] text-green-400">Saved</span>}
-                                    </div>
+                              {editingName && !isGhostSession ? (
+                                <div className="flex items-center gap-1.5">
+                                  <input
+                                    value={nameVal}
+                                    onChange={e => { setNameVal(e.target.value); setNameError(''); }}
+                                    className="flex-1 bg-white/10 border border-[#00D4FF]/40 rounded-lg px-2 py-1 text-white font-body text-xs focus:outline-none min-w-0"
+                                    autoFocus
+                                    onKeyDown={e => { if (e.key === 'Enter') handleSaveName(); if (e.key === 'Escape') { setEditingName(false); setNameError(''); } }}
+                                  />
+                                  <button onClick={handleSaveName} disabled={nameSaving}
+                                    className="w-6 h-6 rounded-full bg-[#00D4FF] flex items-center justify-center flex-shrink-0">
+                                    {nameSaving ? <div className="w-3 h-3 border border-[#0A192F]/30 border-t-[#0A192F] rounded-full animate-spin" /> : <Check className="w-3 h-3 text-[#0A192F]" />}
+                                  </button>
+                                  <button onClick={() => { setEditingName(false); setNameError(''); }} className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                                    <X className="w-3 h-3 text-white/50" />
+                                  </button>
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-1.5">
+                                  <p className="font-body font-bold text-sm text-white truncate">{activeUser.full_name || activeUser.channel_name || 'Account'}</p>
+                                  {!isGhostSession && (
+                                    <button onClick={() => setEditingName(true)}
+                                      className="w-5 h-5 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center flex-shrink-0 transition-colors">
+                                      <Edit2 className="w-2.5 h-2.5 text-white/50" />
+                                    </button>
                                   )}
-                                  {nameError && <p className="font-body text-[9px] text-red-400 mt-0.5">{nameError}</p>}
-                                </>
+                                  {nameSaved && <span className="text-[9px] text-green-400">Saved</span>}
+                                </div>
                               )}
-                              {isGhostSession && (
-                                <p className="font-body font-bold text-sm text-white truncate">{ghostUser?.full_name || 'Ghost'}</p>
-                              )}
+                              {nameError && <p className="font-body text-[9px] text-red-400 mt-0.5">{nameError}</p>}
                             </div>
                           </div>
 
                           <div className="space-y-1.5 text-[10px] font-body">
-                            {isGhostSession ? (
-                              <>
-                                <div className="flex items-center gap-2 text-white/50">
-                                  <User className="w-3 h-3 text-purple-400 flex-shrink-0" />
-                                  <span className="truncate">ID: {ghostUser?.id?.substring(0, 12)}...</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-white/50">
-                                  <Globe className="w-3 h-3 text-cyan-400 flex-shrink-0" />
-                                  <span>{ghostUser?.business_name || ghostUser?.channel_name || 'Ghost Account'}</span>
-                                </div>
-                              </>
-                            ) : (
-                              <>
-                                <div className="flex items-center gap-2 text-white/50">
-                                  <Mail className="w-3 h-3 text-[#00D4FF] flex-shrink-0" />
-                                  <span className="truncate">{activeUser.email}</span>
-                                </div>
-                                {activeUser.seller_location && (
-                                  <div className="flex items-center gap-2 text-white/50">
-                                    <MapPin className="w-3 h-3 text-green-400 flex-shrink-0" />
-                                    <span>{activeUser.seller_location}{activeUser.seller_area ? ` · ${activeUser.seller_area}` : ''}</span>
-                                  </div>
+                            <div className="flex items-center gap-2 text-white/50">
+                              <Mail className="w-3 h-3 text-[#00D4FF] flex-shrink-0" />
+                              <span className="truncate">{isGhostSession ? (activeUser.channel_name || activeUser.business_name || 'Member') : activeUser.email}</span>
+                            </div>
+                            {activeUser.seller_location && (
+                              <div className="flex items-center gap-2 text-white/50">
+                                <MapPin className="w-3 h-3 text-green-400 flex-shrink-0" />
+                                <span>{activeUser.seller_location}{activeUser.seller_area ? ` · ${activeUser.seller_area}` : ''}</span>
+                              </div>
+                            )}
+                            {!isGhostSession && (
+                              <div className="flex items-center gap-2 text-white/40">
+                                <User className="w-3 h-3 flex-shrink-0" />
+                                <span>Member since {memberSince}</span>
+                                {isAdmin && (
+                                  <span className="ml-1 px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[9px] border border-amber-500/25">
+                                    <Shield className="w-2.5 h-2.5 inline mr-0.5" />CEO
+                                  </span>
                                 )}
-                                <div className="flex items-center gap-2 text-white/40">
-                                  <User className="w-3 h-3 flex-shrink-0" />
-                                  <span>Member since {memberSince}</span>
-                                  {isAdmin && (
-                                     <span className="ml-1 px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[9px] border border-amber-500/25">
-                                       <Shield className="w-2.5 h-2.5 inline mr-0.5" />CEO
-                                     </span>
-                                   )}
-                                </div>
-                              </>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -516,7 +478,7 @@ export default function Navbar() {
                               <div className="px-3 py-1.5">
                                 <PostListingMenu user={isGhostSession ? ghostUser : user} compact={false} />
                               </div>
-                              {/* Admin-only: Connected Accounts below Post an Ad */}
+                              {/* Admin-only: Connected Accounts — never in ghost session */}
                               {isAdmin && !isGhostSession && (
                                 <Link to="/connected-accounts" onClick={() => setProfileOpen(false)}
                                   className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors font-body text-xs font-bold mb-1"
@@ -524,6 +486,7 @@ export default function Navbar() {
                                   <Ghost className="w-3.5 h-3.5 text-purple-400" /> <span className="text-purple-300">Connected Accounts</span>
                                 </Link>
                               )}
+                              {/* Never show Connected Accounts to non-admin */}
                               <Link to="/profile?tab=listings" onClick={() => setProfileOpen(false)}
                                 className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
                                 <Package className="w-3.5 h-3.5 text-[#00D4FF]" /> My Listings
@@ -543,7 +506,7 @@ export default function Navbar() {
                             </>
                           )}
 
-                          {/* Admin links */}
+                          {/* Admin links — real owner only, never ghost session */}
                           {isAdmin && !isGhostSession && (
                             <>
                               <div className="border-t border-white/8 my-1" />
@@ -562,27 +525,22 @@ export default function Navbar() {
                           )}
 
                           <div className="border-t border-white/8 my-1" />
-                          {isGhostSession ? (
-                            <button onClick={() => { 
+                          <Link to="/profile" onClick={() => setProfileOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
+                            <User className="w-3.5 h-3.5 text-[#00D4FF]" /> My Profile
+                          </Link>
+                          <button onClick={() => {
+                            if (isGhostSession) {
                               sessionStorage.removeItem('1m_ghost_session');
                               setProfileOpen(false);
-                              window.location.href = '/connected-accounts';
-                            }}
-                              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 transition-colors text-red-300 font-body text-xs font-bold">
-                              <LogOut className="w-3.5 h-3.5" /> Sign Out of Ghost
-                            </button>
-                          ) : (
-                            <>
-                              <Link to="/profile" onClick={() => setProfileOpen(false)}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/60 hover:text-white font-body text-xs">
-                                <User className="w-3.5 h-3.5 text-[#00D4FF]" /> My Profile
-                              </Link>
-                              <button onClick={() => { logout(true); setProfileOpen(false); }}
-                                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 transition-colors text-red-400 font-body text-xs">
-                                <LogOut className="w-3.5 h-3.5" /> Sign Out
-                              </button>
-                            </>
-                          )}
+                              window.location.href = '/';
+                            } else {
+                              logout(true); setProfileOpen(false);
+                            }
+                          }}
+                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 transition-colors text-red-400 font-body text-xs">
+                            <LogOut className="w-3.5 h-3.5" /> Sign Out
+                          </button>
                         </div>
                       </motion.div>
                     )}
@@ -623,17 +581,16 @@ export default function Navbar() {
                 {isAuthenticated && activeUser && (
                   <div className="p-3 rounded-xl bg-white/5 border border-white/10 mb-2">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white font-heading font-bold text-sm ${isGhostSession ? 'bg-gradient-to-br from-purple-500 to-cyan-500' : 'bg-gradient-to-br from-[#2563EB] to-[#00D4FF]'}`}>
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-heading font-bold text-sm bg-gradient-to-br from-[#2563EB] to-[#00D4FF]">
                         {initials}
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-1 mb-0.5 flex-wrap">
-                          <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>{adminLabel}</span>
-                          {isGhostSession && <span className="inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border bg-purple-500/20 text-purple-300 border-purple-500/30">Ghost</span>}
-                          {(isAdmin || (isVerified && isSeller)) && !isGhostSession && <MetaVerifiedBadge size="xs" label="" />}
+                          <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${accountTypeBadge}`}>{isGhostSession ? (isSeller ? 'Seller' : 'Member') : adminLabel}</span>
+                          {isAdmin && !isGhostSession && <MetaVerifiedBadge size="xs" label="" />}
                         </div>
-                        <p className="font-body text-xs font-bold text-white truncate">{activeUser.full_name || 'Account'}</p>
-                        <p className={`font-body text-[10px] truncate ${isGhostSession ? 'text-purple-400/70' : 'text-white/40'}`}>{isGhostSession ? 'Ghost Account' : activeUser.email}</p>
+                        <p className="font-body text-xs font-bold text-white truncate">{activeUser.full_name || activeUser.channel_name || 'Account'}</p>
+                        <p className="font-body text-[10px] truncate text-white/40">{isGhostSession ? (activeUser.channel_name || activeUser.business_name || '') : activeUser.email}</p>
                       </div>
                     </div>
                   </div>
@@ -687,7 +644,7 @@ export default function Navbar() {
                         </button>
                       </>
                     )}
-                    {isAdmin && !isGhost && !isGhostSession && (
+                    {isAdmin && !isGhostSession && (
                       <>
                         <Link to="/admin" onClick={() => setMenuOpen(false)}
                           className="block text-amber-400 font-body text-sm font-semibold py-2">
@@ -704,22 +661,18 @@ export default function Navbar() {
                       Saved Favourites
                     </Link>
 
-                    {isGhostSession && (
-                      <button onClick={() => { 
+                    <button onClick={() => {
+                      if (isGhostSession) {
                         sessionStorage.removeItem('1m_ghost_session');
                         setMenuOpen(false);
-                        window.location.href = '/connected-accounts';
-                      }}
-                        className="w-full mt-2 py-2.5 border border-red-500/30 text-red-400 rounded-xl font-body font-bold text-sm hover:bg-red-500/10 transition-colors">
-                        Sign Out Ghost
-                      </button>
-                    )}
-                    {!isGhostSession && (
-                      <button onClick={() => { logout(true); setMenuOpen(false); }}
-                        className="w-full mt-2 py-2.5 border border-red-500/30 text-red-400 rounded-xl font-body font-bold text-sm hover:bg-red-500/10 transition-colors">
-                        Sign Out
-                      </button>
-                    )}
+                        window.location.href = '/';
+                      } else {
+                        logout(true); setMenuOpen(false);
+                      }
+                    }}
+                      className="w-full mt-2 py-2.5 border border-red-500/30 text-red-400 rounded-xl font-body font-bold text-sm hover:bg-red-500/10 transition-colors">
+                      Sign Out
+                    </button>
                   </>
                 ) : (
                   <>
@@ -759,7 +712,7 @@ export default function Navbar() {
 
       {/* Floating Admin Edit Mode Bar */}
       <AnimatePresence>
-        {isAdmin && isAuthenticated && (
+        {isAdmin && isAuthenticated && !isGhostSession && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

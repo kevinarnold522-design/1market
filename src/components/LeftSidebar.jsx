@@ -216,8 +216,8 @@ export default function LeftSidebar({ isMobileHidden = false }) {
           </>
         )}
 
-        {/* Admin */}
-        {isAdmin && (
+        {/* Admin — only real owner, never ghost session */}
+        {isAdmin && !isGhostSession && (
           <>
             <div className="my-2 border-t border-white/8 mx-1" />
             {!collapsed && <p className="px-2 py-1 font-body text-[9px] text-amber-400/60 uppercase tracking-wider font-bold">Admin</p>}
@@ -259,35 +259,20 @@ export default function LeftSidebar({ isMobileHidden = false }) {
                 {activeUser?.profile_picture ? (
                   <img src={activeUser.profile_picture} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <div className={`w-full h-full rounded-lg flex items-center justify-center text-white font-heading font-bold text-[10px] ${isGhostSession ? 'bg-gradient-to-br from-purple-500 to-cyan-500' : 'bg-gradient-to-br from-[#2563EB] to-[#00D4FF]'}`}>
+                  <div className="w-full h-full rounded-lg flex items-center justify-center text-white font-heading font-bold text-[10px] bg-gradient-to-br from-[#2563EB] to-[#00D4FF]">
                     {initials}
                   </div>
                 )}
               </div>
               {!collapsed && (
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1">
-                    <p className="font-body text-[11px] font-bold text-white truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
-                    {isGhostSession && <Ghost className="w-3 h-3 text-purple-400 flex-shrink-0" />}
-                  </div>
-                  <p className={`font-body text-[9px] truncate ${isGhostSession ? 'text-purple-400' : 'text-[#00D4FF]/70'}`}>
-                    {isGhostSession ? 'Ghost Account' : activeUser.email}
+                  <p className="font-body text-[11px] font-bold text-white truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
+                  <p className="font-body text-[9px] truncate text-[#00D4FF]/70">
+                    {activeUser.channel_name || activeUser.email}
                   </p>
                 </div>
               )}
             </Link>
-            {/* Ghost sign out */}
-            {isGhostSession && (
-              <button onClick={() => { 
-                sessionStorage.removeItem('1m_ghost_session');
-                window.location.href = '/connected-accounts';
-              }}
-                className="w-full flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-red-400/70 hover:text-red-400 hover:bg-red-400/10 mt-1"
-                title={collapsed ? 'Sign Out Ghost' : undefined}>
-                <LogOut className="w-4 h-4 flex-shrink-0" />
-                {!collapsed && <span className="font-body text-xs font-semibold truncate">Sign Out Ghost</span>}
-              </button>
-            )}
           </>
         ) : (
           <>
