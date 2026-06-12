@@ -15,9 +15,9 @@ export default function PostListingButton({ className = '', size = 'md' }) {
     }).catch(() => {});
   }, []);
 
-  const isSeller = user?.user_type === 'seller' || user?.user_type === 'business' || user?.is_seller || user?.account_type === 'business_owner' || user?.role === 'admin';
+  const isAdmin = user?.role === 'admin';
 
-  if (user && isSeller) {
+  if (user && isAdmin) {
     return (
       <>
         <PostListingMenu user={user} compact={false} />

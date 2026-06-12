@@ -3,8 +3,9 @@ import React from 'react';
 /**
  * The "1checkmark" — animated color-cycling verified badge used sitewide.
  * Replaces MetaVerifiedBadge for the Verified Partner context.
+ * Pass showGetVerified=true to display a "Get Verified" CTA for unverified sellers.
  */
-export default function OneCheckmark({ size = 'md', label = 'Verified Partner' }) {
+export default function OneCheckmark({ size = 'md', label = 'Verified Partner', showGetVerified = false, onGetVerified }) {
   const sizes = {
     xs: { outer: 18, inner: 13, font: '8px' },
     sm: { outer: 24, inner: 18, font: '9px' },
@@ -50,6 +51,16 @@ export default function OneCheckmark({ size = 'md', label = 'Verified Partner' }
         <span className="font-body font-bold one-checkmark-label" style={{ fontSize: s.font }}>
           {label}
         </span>
+      )}
+
+      {showGetVerified && onGetVerified && (
+        <button
+          onClick={onGetVerified}
+          className="font-body font-bold text-[9px] px-2 py-0.5 rounded-full border transition-all hover:scale-105"
+          style={{ background: 'linear-gradient(135deg,rgba(37,99,235,0.2),rgba(0,212,255,0.15))', borderColor: 'rgba(0,212,255,0.4)', color: '#00D4FF', whiteSpace: 'nowrap' }}
+        >
+          Get Verified
+        </button>
       )}
 
       <style>{`

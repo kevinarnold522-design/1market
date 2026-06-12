@@ -3,7 +3,7 @@ import MascotDog from '../components/MascotDog';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock, ShoppingCart, Play, X, ExternalLink, Send, Briefcase, Utensils, Home, Car, Wrench, Plane } from 'lucide-react';
+import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock, ShoppingCart, Play, X, ExternalLink, Send, Briefcase, Utensils, Home, Car, Wrench, Plane, Tag, Package, Music, Link2, Store, MessageCircle } from 'lucide-react';
 import ReportModal from '../components/ReportModal';
 import ReceiptModal from '../components/ReceiptModal';
 import ScrollToTop from '../components/ScrollToTop';
@@ -156,9 +156,8 @@ function BlueHeartAnimation({ show }) {
           animate={{ scale: [1.5, 2, 1.2], opacity: [1, 1, 0], y: -60 }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
           className="fixed inset-0 flex items-center justify-center pointer-events-none z-[600]"
-          style={{ fontSize: 80 }}
         >
-          💙
+          <Heart className="w-20 h-20 text-blue-400 fill-blue-400" style={{ filter: 'drop-shadow(0 0 20px #3b82f6)' }} />
         </motion.div>
       )}
     </AnimatePresence>
@@ -227,6 +226,8 @@ export default function ListingDetail() {
           setHearts(hts.length);
           // Track recently viewed
           recordView(found);
+          // Increment view count
+          base44.entities.Listing.update(found.id, { view_count: (found.view_count || 0) + 1 }).catch(() => {});
           // Load seller's user profile for their social links
           if (found.created_by_id) {
             try {
@@ -508,7 +509,7 @@ export default function ListingDetail() {
                     {mainLabel && (
                       <span className="px-2.5 py-1 rounded-lg font-body text-[10px] font-bold uppercase tracking-wider flex items-center gap-1"
                         style={{ background: `${color}18`, border: `1px solid ${color}44`, color }}>
-                        🏷️ {mainLabel}
+                        <Tag className="w-3 h-3" /> {mainLabel}
                       </span>
                     )}
                     {typeLabel && mainLabel && <span className="text-white/25 text-[10px]">›</span>}
@@ -569,7 +570,7 @@ export default function ListingDetail() {
                   )}
                   {listing.quantity != null && listing.quantity > 0 && listing.type !== 'jobs' && listing.type !== 'services' && listing.type !== 'rent_lease' && (
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-body text-[10px] font-bold ${listing.quantity <= 5 ? 'bg-orange-500/15 text-orange-400 border border-orange-500/25' : 'bg-green-500/15 text-green-400 border border-green-500/25'}`}>
-                      📦 {listing.quantity <= 5 ? `Only ${listing.quantity} left!` : `${listing.quantity} in stock`}
+                      <Package className="w-3 h-3" /> {listing.quantity <= 5 ? `Only ${listing.quantity} left!` : `${listing.quantity} in stock`}
                     </span>
                   )}
                   {listing.quantity === 0 && (
@@ -629,7 +630,7 @@ export default function ListingDetail() {
               {/* Food details */}
               {listing.type === 'food' && (listing.food_serving || listing.food_dietary || listing.food_spice_level || listing.food_allergens) && (
                 <div className="mb-4 p-3 rounded-xl space-y-1.5" style={{ background: 'rgba(249,115,22,0.06)', border: '1px solid rgba(249,115,22,0.2)' }}>
-                  <p className="font-body text-[10px] text-orange-400 uppercase tracking-wider font-bold mb-2">🍜 Food Info</p>
+                  <p className="font-body text-[10px] text-orange-400 uppercase tracking-wider font-bold mb-2 flex items-center gap-1"><Utensils className="w-3 h-3" /> Food Info</p>
                   <div className="grid grid-cols-2 gap-1.5">
                     {listing.food_serving && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Serving</p><p className="font-body text-xs text-white">{listing.food_serving}</p></div>}
                     {listing.food_dietary && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Dietary</p><p className="font-body text-xs text-white">{listing.food_dietary}</p></div>}
@@ -642,7 +643,7 @@ export default function ListingDetail() {
               {/* Job details */}
               {listing.type === 'jobs' && (listing.company_hiring || listing.job_employment_type || listing.job_experience || listing.job_salary_min || listing.job_benefits) && (
                 <div className="mb-4 p-3 rounded-xl space-y-1.5" style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}>
-                  <p className="font-body text-[10px] text-amber-400 uppercase tracking-wider font-bold mb-2">💼 Job Details</p>
+                  <p className="font-body text-[10px] text-amber-400 uppercase tracking-wider font-bold mb-2 flex items-center gap-1"><Briefcase className="w-3 h-3" /> Job Details</p>
                   <div className="grid grid-cols-2 gap-1.5">
                     {listing.company_hiring && <div className="col-span-2 bg-amber-500/10 border border-amber-500/20 rounded-lg p-2"><p className="font-body text-[9px] text-amber-400/60">Company Hiring</p><p className="font-body text-sm text-amber-300 font-bold">{listing.company_hiring}</p></div>}
                     {listing.job_poster_role && <div className="col-span-2 bg-white/5 rounded-lg p-2 flex items-center gap-2"><p className="font-body text-[9px] text-white/30">Posted by</p><span className="ml-1 px-2 py-0.5 rounded-full font-body font-bold text-[10px]" style={{ background: 'rgba(245,158,11,0.15)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.3)' }}>{listing.job_poster_role}</span></div>}
@@ -664,7 +665,7 @@ export default function ListingDetail() {
               {/* Service details */}
               {listing.type === 'services' && (listing.service_duration || listing.service_rate_type || listing.service_availability) && (
                 <div className="mb-4 p-3 rounded-xl space-y-1.5" style={{ background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.2)' }}>
-                  <p className="font-body text-[10px] text-blue-400 uppercase tracking-wider font-bold mb-2">🔧 Service Details</p>
+                  <p className="font-body text-[10px] text-blue-400 uppercase tracking-wider font-bold mb-2 flex items-center gap-1"><Wrench className="w-3 h-3" /> Service Details</p>
                   <div className="grid grid-cols-2 gap-1.5">
                     {listing.service_duration && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Duration</p><p className="font-body text-xs text-white">{listing.service_duration}</p></div>}
                     {listing.service_rate_type && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Rate</p><p className="font-body text-xs text-white">{listing.service_rate_type}</p></div>}
@@ -676,7 +677,7 @@ export default function ListingDetail() {
               {/* Rental details */}
               {listing.type === 'rent_lease' && (listing.rent_furnished || listing.rent_pet_policy || listing.rent_deposit || listing.rent_utilities) && (
                 <div className="mb-4 p-3 rounded-xl space-y-1.5" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
-                  <p className="font-body text-[10px] text-emerald-400 uppercase tracking-wider font-bold mb-2">🏠 Rental Details</p>
+                  <p className="font-body text-[10px] text-emerald-400 uppercase tracking-wider font-bold mb-2 flex items-center gap-1"><Home className="w-3 h-3" /> Rental Details</p>
                   <div className="grid grid-cols-2 gap-1.5">
                     {listing.rent_furnished && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Furnished</p><p className="font-body text-xs text-white">{listing.rent_furnished}</p></div>}
                     {listing.rent_pet_policy && <div className="bg-white/5 rounded-lg p-2"><p className="font-body text-[9px] text-white/30">Pets</p><p className="font-body text-xs text-white">{listing.rent_pet_policy}</p></div>}
@@ -738,12 +739,12 @@ export default function ListingDetail() {
                         <a href={ttLink} target="_blank" rel="noopener noreferrer"
                           className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
                           style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}>
-                          <span className="text-sm leading-none">♪</span> TikTok
+                          <Music className="w-3.5 h-3.5" /> TikTok
                         </a>
                       ) : (
                         <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold cursor-not-allowed"
                           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.2)' }}>
-                          <span className="text-sm leading-none opacity-30">♪</span> TikTok not linked
+                          <Music className="w-3.5 h-3.5 opacity-30" /> TikTok not linked
                         </div>
                       )}
                       {/* Viber — only show if linked */}
@@ -933,7 +934,7 @@ export default function ListingDetail() {
                   </a>
                   <a href={`sms:${listing.phone}`}
                     className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-white/10 border border-white/15 text-white rounded-xl font-body font-bold text-xs hover:bg-white/20 transition-colors">
-                    💬 SMS
+                    <MessageSquare className="w-3.5 h-3.5" /> SMS
                   </a>
                 </div>
               )}
@@ -958,20 +959,20 @@ export default function ListingDetail() {
                         <Facebook className="w-3.5 h-3.5" /> Share on FB
                       </a>
                       <a href={`https://www.facebook.com/marketplace/create/item/?description=${encodeURIComponent(listing.title + '\n' + window.location.href)}`} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg font-body text-xs font-bold"
-                        style={{ background: 'rgba(24,119,242,0.2)', border: '1px solid rgba(24,119,242,0.4)', color: '#93c5fd' }}>
-                        🏪 FB Marketplace
+                       className="flex items-center gap-2 px-3 py-2 rounded-lg font-body text-xs font-bold"
+                       style={{ background: 'rgba(24,119,242,0.2)', border: '1px solid rgba(24,119,242,0.4)', color: '#93c5fd' }}>
+                        <Store className="w-3.5 h-3.5" /> FB Marketplace
                       </a>
                       <a href={`https://wa.me/?text=${encodeURIComponent(listing.title + ' ' + window.location.href)}`} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg font-body text-xs font-bold"
-                        style={{ background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)', color: '#4ade80' }}>
-                        💬 WhatsApp
-                      </a>
-                      <button onClick={() => { navigator.clipboard.writeText(window.location.href); setShowSharePanel(false); }}
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg font-body text-xs font-bold"
-                        style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.6)' }}>
-                        🔗 Copy Link
-                      </button>
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg font-body text-xs font-bold"
+                            style={{ background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)', color: '#4ade80' }}>
+                             <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
+                           </a>
+                           <button onClick={() => { navigator.clipboard.writeText(window.location.href); setShowSharePanel(false); }}
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg font-body text-xs font-bold"
+                            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.6)' }}>
+                             <Link2 className="w-3.5 h-3.5" /> Copy Link
+                           </button>
                     </div>
                   </motion.div>
                 )}
@@ -987,7 +988,7 @@ export default function ListingDetail() {
                   target="_blank" rel="noopener noreferrer"
                   className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl font-body text-xs font-bold transition-all hover:scale-[1.02]"
                   style={{ background: 'rgba(24,119,242,0.15)', border: '1px solid rgba(24,119,242,0.35)', color: '#60a5fa' }}>
-                  🏪 FB Marketplace
+                  <Store className="w-3.5 h-3.5" /> FB Marketplace
                 </a>
                 {user && (
                   <button onClick={() => setShowReport(true)}
@@ -1089,7 +1090,7 @@ export default function ListingDetail() {
             </a>
             <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 text-white font-body text-xs font-bold hover:bg-white/20 transition-colors border border-white/15">
-              🎵 TikTok
+              <Music className="w-3.5 h-3.5" /> TikTok
             </a>
             <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600/20 text-red-400 font-body text-xs font-bold hover:bg-red-600/35 transition-colors border border-red-600/25">

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Check, Upload, AlertCircle } from 'lucide-react';
+import { X, Check, Upload, AlertCircle, Clock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import OneCheckmark from './OneCheckmark';
 
@@ -185,7 +185,7 @@ export default function VerifiedPartnerBanner({ user, onClose, onSubmit }) {
                     <div>
                       <span className="font-body text-[10px] font-bold text-white">{doc.label}</span>
                       {doc.label.includes('NBI') && (
-                        <p className="font-body text-[9px] text-amber-300 mt-0.5">⚠️ NBI Clearance is the ONLY accepted valid ID</p>
+                        <p className="font-body text-[9px] text-amber-300 mt-0.5 flex items-center gap-1"><AlertCircle className="w-3 h-3 flex-shrink-0" /> NBI Clearance is the ONLY accepted valid ID</p>
                       )}
                     </div>
                   </div>
@@ -252,7 +252,7 @@ export default function VerifiedPartnerBanner({ user, onClose, onSubmit }) {
                 Your documents are under review. Once approved, you'll receive a congratulations email with your official <strong className="text-white">Verified Partner</strong> status and the <strong>1Checkmark</strong> badge.
               </p>
               <div className="rounded-xl p-3 text-left space-y-1" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}>
-                <p className="font-body text-[11px] font-bold text-green-400">⏳ Typical review time: 24-48 hours</p>
+                <p className="font-body text-[11px] font-bold text-green-400 flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Typical review time: 24-48 hours</p>
                 <p className="font-body text-[10px] text-white/40">You'll receive an approval or follow-up email from the 1MarketPH admin team.</p>
               </div>
               <button onClick={onClose}

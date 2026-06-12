@@ -19,7 +19,7 @@ const ACCOUNT_TYPES = [
   {
     key: 'seller',
     icon: Store,
-    label: 'Seller / Business Owner',
+    label: 'Sales Account',
     tagline: 'List & sell to thousands of buyers',
     perks: ['List products in any category', 'Manage your own store page', 'Receive & track orders', 'Apply for Verified Partner badge'],
     color: 'from-emerald-500 to-teal-500',

@@ -266,6 +266,11 @@
     "full_address": {
       "type": "string"
     },
+    "view_count": {
+      "type": "integer",
+      "default": 0,
+      "description": "Total number of times this listing has been viewed"
+    },
     "property_listing_type": {
       "type": "string",
       "enum": [

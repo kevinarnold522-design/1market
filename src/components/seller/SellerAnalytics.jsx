@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, MessageSquare, Eye, TrendingUp, Package, Star } from 'lucide-react';
+import { Heart, MessageSquare, Eye, TrendingUp, Package, Star, BarChart2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid } from 'recharts';
 import { base44 } from '@/api/base44Client';
 
@@ -53,6 +53,7 @@ export default function SellerAnalytics({ listings, user }) {
   const totalComments = Object.values(commentCounts).reduce((s,v)=>s+v,0);
   const totalListings = listings.length;
   const activeListings = listings.filter(l => l.is_active).length;
+  const totalViews = listings.reduce((s, l) => s + (l.view_count || 0), 0);
 
   // Chart data — top 8 listings
   const chartData = listings.slice(0, 8).map(l => ({
@@ -72,10 +73,11 @@ export default function SellerAnalytics({ listings, user }) {
       <h3 className="font-heading font-bold text-white text-sm">Seller Analytics</h3>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         {[
           { icon: Package, label: 'Total Listings', val: totalListings, color: '#00D4FF' },
           { icon: Eye, label: 'Active', val: activeListings, color: '#34d399' },
+          { icon: BarChart2, label: 'Total Views', val: totalViews, color: '#fbbf24' },
           { icon: Heart, label: 'Total Hearts', val: totalHearts, color: '#f87171' },
           { icon: MessageSquare, label: 'Reviews', val: totalComments, color: '#a78bfa' },
         ].map(({ icon: Icon, label, val, color }) => (
@@ -141,6 +143,10 @@ export default function SellerAnalytics({ listings, user }) {
               </div>
             </div>
             <div className="flex items-center gap-3 flex-shrink-0">
+              <div className="flex items-center gap-1">
+                <Eye className="w-3 h-3 text-amber-400" />
+                <span className="font-body text-[10px] text-white/60">{item.view_count || 0}</span>
+              </div>
               <div className="flex items-center gap-1">
                 <Heart className="w-3 h-3 text-red-400" />
                 <span className="font-body text-[10px] text-white/60">{heartCounts[item.id] || 0}</span>

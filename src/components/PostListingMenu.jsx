@@ -80,6 +80,10 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
     travel: '/travel',
   };
 
+  // Customer accounts can post jobs
+  const isCustomer = user && !user.is_seller && user.user_type !== 'seller' && user.user_type !== 'business' && user.account_type !== 'business_owner' && user.role !== 'admin';
+  const visibleCategories = isCustomer ? CATEGORIES.filter(c => c.key === 'jobs') : CATEGORIES;
+
   const handleSelectSubtype = (cat, subtype) => {
     setOpen(false);
     setExpandedCat(null);
@@ -123,7 +127,7 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
                 <p className="font-body text-[9px] text-white/30 uppercase tracking-wider font-bold px-1 pb-2">Post an Ad — Choose Category</p>
                 {/* Categories in 2-col grid */}
                 <div className="grid grid-cols-2 gap-1.5 mb-2">
-                  {CATEGORIES.map(cat => (
+                  {visibleCategories.map(cat => (
                     <button key={cat.key} onClick={() => handleSelectCat(cat)}
                       className="flex items-center gap-1.5 px-2 py-1.5 rounded-xl hover:bg-white/10 transition-colors text-left"
                       style={{ background: expandedCat === cat.key ? `${cat.color}18` : 'rgba(255,255,255,0.04)', border: `1px solid ${expandedCat === cat.key ? cat.color + '44' : 'rgba(255,255,255,0.06)'}` }}>
@@ -145,7 +149,7 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
                       exit={{ opacity: 0, height: 0 }}
                       className="overflow-hidden">
                       {(() => {
-                        const cat = CATEGORIES.find(c => c.key === expandedCat);
+                        const cat = visibleCategories.find(c => c.key === expandedCat);
                         if (!cat) return null;
                         return (
                           <div className="pt-2 border-t border-white/10">
