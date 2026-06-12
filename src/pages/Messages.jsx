@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Send, Search, ArrowLeft, User } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
+import AISmartReply from '../components/messages/AISmartReply';
 
 function formatTime(date) {
   if (!date) return '';
@@ -257,6 +258,13 @@ export default function Messages() {
             })}
             <div ref={messagesEndRef} />
           </div>
+
+          {/* AI Smart Reply */}
+          <AISmartReply
+            messages={messages}
+            listingTitle={activeConvo?.listing_title}
+            onSelectReply={(reply) => setNewMsg(reply)}
+          />
 
           {/* Input */}
           <form onSubmit={sendMessage} className="flex items-end gap-2 p-3 border-t border-white/8 flex-shrink-0"

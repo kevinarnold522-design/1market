@@ -4,6 +4,8 @@ import { X, Upload, Trash2, ChevronLeft, Image } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import CategoryIcon from './CategoryIcon';
 import AIListingAssistant from './listing/AIListingAssistant';
+import AIPriceSuggester from './listing/AIPriceSuggester';
+import AIListingQualityChecker from './AIListingQualityChecker';
 import SavedTemplates from './listing/SavedTemplates';
 
 const MAIN_CATEGORIES = [
@@ -590,6 +592,17 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       if (data.tags) set('tags', data.tags);
                     }}
                   />
+
+                  {/* AI PRICE SUGGESTER */}
+                  {!hidePrice && (
+                    <AIPriceSuggester
+                      form={form}
+                      onApplyPrice={(price) => { set('price', String(price)); set('price_label', `₱${Number(price).toLocaleString()}`); }}
+                    />
+                  )}
+
+                  {/* AI QUALITY CHECKER */}
+                  <AIListingQualityChecker form={form} />
 
                   {/* PHOTOS */}
                   <div>

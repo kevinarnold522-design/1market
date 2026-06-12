@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock, ShoppingCart, Play, X, ExternalLink, Send, Briefcase, Utensils, Home, Car, Wrench, Plane, Tag, Package, Music, Link2, Store, MessageCircle, Smartphone } from 'lucide-react';
 import ReportModal from '../components/ReportModal';
 import ReceiptModal from '../components/ReceiptModal';
+import AIReviewSummary from '../components/listing/AIReviewSummary';
 import ScrollToTop from '../components/ScrollToTop';
 import { base44 } from '@/api/base44Client';
 import Navbar from '../components/home/Navbar';
@@ -439,6 +440,9 @@ export default function ListingDetail() {
               <h3 className="font-heading font-bold text-white text-base mb-4 flex items-center gap-2">
                 <MessageSquare className="w-4 h-4 text-[#00D4FF]" /> Reviews ({comments.length})
               </h3>
+
+              {/* AI Review Summary — shown when 3+ reviews */}
+              <AIReviewSummary comments={comments} listing={listing} />
 
               {user ? (
                 <div className="mb-5 space-y-3">

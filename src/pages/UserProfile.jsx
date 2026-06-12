@@ -9,6 +9,7 @@ import {
   Youtube, Instagram, Facebook, Camera, UserPlus, UserCheck, Building2, Gift
 } from 'lucide-react';
 import SellerAnalytics from '../components/seller/SellerAnalytics';
+import AISellerTips from '../components/seller/AISellerTips';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import { getImpersonatedUser } from '@/pages/ConnectedAccounts';
@@ -768,7 +769,10 @@ export default function UserProfile() {
 
             {/* ANALYTICS */}
             {activeTab === 'analytics' && isSeller && (
-              <SellerAnalytics listings={listings} user={user} />
+              <div className="space-y-4">
+                <AISellerTips user={user} listings={listings} />
+                <SellerAnalytics listings={listings} user={user} />
+              </div>
             )}
 
             {/* PROFILE */}
