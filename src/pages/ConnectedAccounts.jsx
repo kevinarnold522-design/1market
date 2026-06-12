@@ -3,8 +3,8 @@ import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Ghost, Plus, Trash2, X, ArrowLeft, LogIn, Edit2, Save, Search, LogOut, Users, Activity } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { isOwnerAccount } from '@/lib/adminAuth';
 
-const OWNER_EMAIL = 'Kevinarnold522@gmail.com';
 const LOCATIONS = ['Manila', 'Cavite', 'Nationwide'];
 const STORAGE_PREFIX = '1m_ghost_';
 
@@ -72,9 +72,8 @@ export default function ConnectedAccounts() {
     }
 
     base44.auth.me().then(user => {
-      // Ghost accounts cannot access connected accounts - only real admin
-      const isRealAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
-      setIsAdmin(isRealAdmin);
+      // Only the owner email gets access — no role checks
+      setIsAdmin(isOwnerAccount(user, getGhostSession()));
       setAuthChecked(true);
     }).catch(() => setAuthChecked(true));
   }, []);

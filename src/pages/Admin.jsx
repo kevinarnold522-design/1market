@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
+import { OWNER_EMAIL } from '@/lib/adminAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, X, Save, ArrowLeft, Building2, ShoppingBag, Search, Upload, User, BadgeCheck, Shield, Flag, CheckCircle, XCircle, Ghost, Link2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
-const OWNER_EMAIL = 'Kevinarnold522@gmail.com';
+// OWNER_EMAIL imported from lib/adminAuth
 const ROLES = ['user', 'moderator', 'admin'];
 
 const SECTIONS = ['food', 'travel', 'buysell'];
