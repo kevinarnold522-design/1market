@@ -453,7 +453,7 @@ export default function UserProfile() {
   const isSellerOnly = user?.user_type === 'seller';
   const isCustomer = !isSeller && !isBusiness;
   const isPendingBusiness = user?.business_pending === true;
-  const isAdmin = !isGhostMode && (user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
+  const isAdmin = !isGhostMode && user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
   const pendingSellerOrders = sellerOrders.filter(o => o.status !== 'completed' && o.status !== 'cancelled');
 
   const updateUser = async (data) => {

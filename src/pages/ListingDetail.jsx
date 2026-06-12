@@ -3,13 +3,14 @@ import MascotDog from '../components/MascotDog';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock, ShoppingCart, Play, X, ExternalLink, Send, Briefcase, Utensils, Home, Car, Wrench, Plane, Tag, Package, Music, Link2, Store, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock, ShoppingCart, Play, X, ExternalLink, Send, Briefcase, Utensils, Home, Car, Wrench, Plane, Tag, Package, Music, Link2, Store, MessageCircle, Smartphone } from 'lucide-react';
 import ReportModal from '../components/ReportModal';
 import ReceiptModal from '../components/ReceiptModal';
 import ScrollToTop from '../components/ScrollToTop';
 import { base44 } from '@/api/base44Client';
 import Navbar from '../components/home/Navbar';
 import StarField from '../components/StarField';
+import RoyalBlueWaves from '../components/RoyalBlueWaves';
 import SimilarListings from '../components/SimilarListings';
 import { recordView } from '../components/home/RecentlyViewed';
 
@@ -284,13 +285,15 @@ export default function ListingDetail() {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-[#070F1A] flex items-center justify-center">
-      <div className="w-10 h-10 border-2 border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" />
+    <div className="min-h-screen bg-[#050d2e] flex items-center justify-center">
+      <RoyalBlueWaves />
+      <div className="relative z-10 w-10 h-10 border-2 border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" />
     </div>
   );
 
   if (!listing) return (
-    <div className="min-h-screen bg-[#070F1A] flex flex-col items-center justify-center gap-4 pt-24">
+    <div className="min-h-screen bg-[#050d2e] flex flex-col items-center justify-center gap-4 pt-24">
+      <RoyalBlueWaves />
       <StarField />
       <Navbar />
       <p className="font-body text-white/50 text-lg">Listing not found.</p>
@@ -304,7 +307,8 @@ export default function ListingDetail() {
     : listing.rating || 0;
 
   return (
-    <div className="min-h-screen bg-[#070F1A]">
+    <div className="min-h-screen bg-[#050d2e]">
+      <RoyalBlueWaves />
       <StarField />
       <Navbar />
       <BlueHeartAnimation show={showHeartAnim} />
@@ -313,7 +317,7 @@ export default function ListingDetail() {
       <AnimatePresence>
         {showReceipt && <ReceiptModal listing={listing} user={user} onClose={() => setShowReceipt(false)} />}
       </AnimatePresence>
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-24 lg:py-28">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-24 lg:py-28">
         <div className="flex items-center justify-between mb-6">
           <button onClick={() => window.history.back()}
             className="inline-flex items-center gap-2 text-white/50 hover:text-white font-body text-sm transition-colors">
@@ -704,10 +708,24 @@ export default function ListingDetail() {
                 const ttLink = listing.social_tiktok || sellerUser?.social_tiktok;
                 const viberLink = listing.social_viber || sellerUser?.social_viber;
                 const tgLink = listing.social_telegram || sellerUser?.social_telegram;
+                const phoneNum = listing.phone || sellerUser?.phone;
                 return (
                   <div className="mb-4 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                    <p className="font-body text-[9px] text-white/30 uppercase tracking-wider mb-2">Seller Socials</p>
+                    <p className="font-body text-[9px] text-white/30 uppercase tracking-wider mb-2">Seller Socials & Contact</p>
                     <div className="flex flex-wrap gap-2">
+                      {/* Phone */}
+                      {phoneNum ? (
+                        <a href={`tel:${phoneNum}`}
+                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
+                          style={{ background: 'rgba(0,100,220,0.25)', border: '1px solid rgba(0,180,255,0.5)', color: '#60cfff' }}>
+                          <Smartphone className="w-3.5 h-3.5" /> {phoneNum}
+                        </a>
+                      ) : (
+                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold cursor-not-allowed"
+                          style={{ background: 'rgba(0,60,160,0.12)', border: '1px solid rgba(0,100,200,0.18)', color: 'rgba(100,180,255,0.3)' }}>
+                          <Smartphone className="w-3.5 h-3.5 opacity-40" /> No phone
+                        </div>
+                      )}
                       {/* Facebook */}
                       {fbLink ? (
                         <a href={fbLink} target="_blank" rel="noopener noreferrer"
