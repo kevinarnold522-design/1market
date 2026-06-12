@@ -7,7 +7,6 @@ import PostListingMenu from './PostListingMenu';
 import NotificationsBell from './NotificationsBell';
 import MetaVerifiedBadge from './MetaVerifiedBadge';
 import { getImpersonatedUser } from '@/pages/ConnectedAccounts';
-import { isOwnerAccount } from '@/lib/adminAuth';
 
 const NAV_ITEMS = [
   { to: '/',           icon: Home,           label: 'Home',         color: '#00D4FF' },
@@ -61,7 +60,7 @@ export default function LeftSidebar({ isMobileHidden = false }) {
 
   // Use ghost user if in ghost session, otherwise use regular user
   const activeUser = ghostUser || user;
-  const isAdmin = isOwnerAccount(user, ghostUser);
+  const isAdmin = !ghostUser && user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
   const isSeller = activeUser?.user_type === 'seller' || activeUser?.is_seller || activeUser?.account_type === 'business_owner';
   const isGhostSession = !!ghostUser;
   const initials = activeUser ? (activeUser.full_name || activeUser.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';

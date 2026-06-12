@@ -17,7 +17,6 @@ import NavCategoryBar from './NavCategoryBar';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 import { getImpersonatedUser, clearImpersonation } from '@/pages/ConnectedAccounts';
-import { isOwnerAccount } from '@/lib/adminAuth';
 
 // Global edit mode state
 let _editModeListeners = [];
@@ -74,7 +73,7 @@ export default function Navbar() {
   // Use ghost user if in ghost session, otherwise use regular user
   const activeUser = ghostUser || user;
   // In ghost session: force non-admin regardless of real user
-  const isAdmin = isOwnerAccount(user, ghostUser);
+  const isAdmin = !ghostUser && user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
   const isGhost = activeUser?.is_ghost_account || activeUser?.ghost_id;
   const isGhostSession = !!ghostUser;
   const isSeller = activeUser?.user_type === 'seller' || activeUser?.user_type === 'business' || activeUser?.is_seller || activeUser?.account_type === 'business_owner';
