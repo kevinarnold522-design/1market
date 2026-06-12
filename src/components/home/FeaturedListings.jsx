@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { ArrowRight, ChevronLeft, ChevronRight, Heart, Share2, Flag, Bookmark } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAdDelay } from '@/hooks/useAdDelay';
 
 const CATEGORY_COLORS = {
   shoes: 'bg-orange-500/20 text-orange-300',
@@ -140,6 +141,7 @@ export default function FeaturedListings() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const scrollRef = useRef(null);
+  const adsReady = useAdDelay();
 
   useEffect(() => {
     base44.auth.isAuthenticated().then(ok => {
@@ -159,6 +161,7 @@ export default function FeaturedListings() {
     }
   };
 
+  if (!adsReady) return null;
   if (loading) return null;
   if (!listings.length) return null;
 

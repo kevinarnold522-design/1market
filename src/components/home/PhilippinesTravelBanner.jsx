@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { X, Plane, MapPin } from 'lucide-react';
+import { useAdDelay } from '@/hooks/useAdDelay';
 
 const PH_TZ_OFFSET = 8; // UTC+8
 
@@ -23,13 +24,15 @@ const ISLANDS = ['🏝️ Boracay', '🌋 Mayon Volcano', '🐠 Tubbataha Reef',
 export default function PhilippinesTravelBanner() {
   const [show, setShow] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const adsReady = useAdDelay();
 
   useEffect(() => {
+    if (!adsReady) return;
     const alreadyDismissed = sessionStorage.getItem('ph_travel_banner_dismissed');
     if (!alreadyDismissed && isProbablyOutsidePhilippines()) {
-      setTimeout(() => setShow(true), 1500);
+      setTimeout(() => setShow(true), 500);
     }
-  }, []);
+  }, [adsReady]);
 
   const dismiss = () => {
     setDismissed(true);

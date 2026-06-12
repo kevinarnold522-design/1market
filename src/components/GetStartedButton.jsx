@@ -2,15 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
+import { useAdDelay } from '@/hooks/useAdDelay';
 
 export default function GetStartedButton() {
   const { isAuthenticated } = useAuth();
   const [visible, setVisible] = useState(false);
+  const adsReady = useAdDelay();
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), 2000);
+    if (!adsReady) return;
+    const timer = setTimeout(() => setVisible(true), 500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [adsReady]);
 
   if (isAuthenticated) return null;
 

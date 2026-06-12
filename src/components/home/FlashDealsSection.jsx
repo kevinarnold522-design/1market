@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, Clock, Tag, Plus, X, Upload, Trash2 } from 'lucide-react';
+import { useAdDelay } from '@/hooks/useAdDelay';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 
@@ -160,6 +161,7 @@ export default function FlashDealsSection() {
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
+  const adsReady = useAdDelay();
 
   const isSellerOrAdmin = user?.role === 'admin' || user?.is_seller || user?.account_type === 'business_owner' || user?.user_type === 'seller' || user?.user_type === 'business';
 
@@ -185,6 +187,7 @@ export default function FlashDealsSection() {
     }).catch(() => {});
   }, []);
 
+  if (!adsReady) return null;
   if (!loading && deals.length === 0 && !isSellerOrAdmin) return null;
 
   return (

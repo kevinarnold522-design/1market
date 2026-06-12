@@ -6,6 +6,7 @@ import BecomeSellerModal from '../BecomeSellerModal';
 import BecomeBusinessModal from '../BecomeBusinessModal';
 import NotificationsBell from '../NotificationsBell';
 import PostListingMenu from '../PostListingMenu';
+import SmartSearchBar from '../SmartSearchBar';
 import RewardDashboard from '../RewardDashboard';
 import MetaVerifiedBadge from '../MetaVerifiedBadge';
 import OneCheckmark from '../OneCheckmark';
@@ -257,8 +258,13 @@ export default function Navbar() {
 
             <NavUserBadge />
 
+            {/* Smart Search */}
+            <div className="hidden md:flex flex-1 max-w-sm mx-3">
+              <SmartSearchBar placeholder="Search listings, food, jobs..." />
+            </div>
+
             {/* Spacer */}
-            <div className="flex-1" />
+            <div className="flex-shrink-0" />
 
             {/* Messages button — signed-in only */}
             {isAuthenticated && activeUser && (

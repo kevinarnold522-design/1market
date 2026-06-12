@@ -1,0 +1,25 @@
+{
+  "name": "SavedListingTemplate",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Template display name, e.g. 'My iPhone Template'"
+    },
+    "form_data": {
+      "type": "object",
+      "description": "Full serialized form state"
+    }
+  },
+  "required": [
+    "user_id",
+    "name",
+    "form_data"
+  ]
+}

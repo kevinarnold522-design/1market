@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload, Trash2, ChevronLeft, Image } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import CategoryIcon from './CategoryIcon';
+import AIListingAssistant from './listing/AIListingAssistant';
+import SavedTemplates from './listing/SavedTemplates';
 
 const MAIN_CATEGORIES = [
   { value: 'travel',   label: 'Travel',                   iconKey: 'travel',   color: '#0ea5e9' },
@@ -354,6 +356,10 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   });
   const [step, setStep] = useState(resolvedMain ? (defaultType ? 2 : 1) : 0);
   const [uploading, setUploading] = useState(false);
+
+  const handleLoadTemplate = (templateForm) => {
+    setForm(f => ({ ...f, ...templateForm }));
+  };
   const [uploadingExtra, setUploadingExtra] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -571,6 +577,19 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
 
               {step === 2 && (
                 <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
+
+                  {/* SAVED TEMPLATES */}
+                  <SavedTemplates form={form} onLoadTemplate={handleLoadTemplate} />
+
+                  {/* AI LISTING ASSISTANT */}
+                  <AIListingAssistant
+                    form={form}
+                    onApplyDescription={(desc) => set('description', desc)}
+                    onApplyImageData={(data) => {
+                      if (data.title) set('title', data.title);
+                      if (data.tags) set('tags', data.tags);
+                    }}
+                  />
 
                   {/* PHOTOS */}
                   <div>
