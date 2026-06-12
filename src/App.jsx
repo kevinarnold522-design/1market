@@ -36,6 +36,7 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import GlowInteraction from './components/GlowInteraction';
+import AdminRoute from './components/AdminRoute';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -68,7 +69,7 @@ const AuthenticatedApp = () => {
         <Route path="/travel" element={<Travel />} />
         <Route path="/food" element={<Food />} />
         <Route path="/buysell" element={<BuySell />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
         <Route path="/seller" element={<Navigate to="/profile?tab=listings" replace />} />
         <Route path="/rent" element={<ForRent />} />
         <Route path="/services" element={<Services />} />
@@ -87,7 +88,7 @@ const AuthenticatedApp = () => {
         <Route path="/onboarding" element={<SellerOnboarding />} />
         <Route path="/post-ad" element={<PostAdLanding />} />
         <Route path="/category/:category" element={<CategoryTransitionPage />} />
-        <Route path="/connected-accounts" element={<ConnectedAccounts />} />
+        <Route path="/connected-accounts" element={<AdminRoute><ConnectedAccounts /></AdminRoute>} />
         <Route path="/groups" element={<Groups />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
