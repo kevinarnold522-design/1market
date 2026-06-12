@@ -58,9 +58,10 @@ export default function LeftSidebar({ isMobileHidden = false }) {
     if (ghost) setGhostUser(ghost);
   }, []);
 
+  const OWNER_EMAIL = 'kevinarnold522@gmail.com';
   // Use ghost user if in ghost session, otherwise use regular user
   const activeUser = ghostUser || user;
-  const isAdmin = activeUser?.role === 'admin';
+  const isAdmin = !ghostUser && user?.email?.toLowerCase() === OWNER_EMAIL;
   const isSeller = activeUser?.user_type === 'seller' || activeUser?.is_seller || activeUser?.account_type === 'business_owner';
   const isGhostSession = !!ghostUser;
   const initials = activeUser ? (activeUser.full_name || activeUser.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';

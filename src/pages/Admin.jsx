@@ -282,11 +282,7 @@ export default function Admin() {
 
   useEffect(() => {
     base44.auth.me().then(user => {
-      setIsOwner(
-        user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase() ||
-        user?.role === 'admin' ||
-        user?.role === 'moderator'
-      );
+      setIsOwner(user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase());
       setAuthChecked(true);
     }).catch(() => setAuthChecked(true));
   }, []);
