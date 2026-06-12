@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
+import AISellerTips from '../components/seller/AISellerTips';
 import MenuManager from '../components/seller/MenuManager';
 // Ghost session helpers
 const getGhostSession = () => { try { return JSON.parse(sessionStorage.getItem('1m_ghost_session')); } catch { return null; } };
@@ -585,6 +586,7 @@ export default function SellerProfilePage() {
           </div>
 
           {/* Stats Row — only public/safe stats */}
+          {isOwnProfile && <div className="mt-4"><AISellerTips user={seller} listings={listings} /></div>}
           <div className="grid grid-cols-3 gap-2 mt-5 pt-4 border-t border-white/8">
             <div className="text-center py-2">
               <p className="font-heading font-bold text-xl text-white">{listings.length}</p>
