@@ -3,16 +3,17 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Plus } from 'lucide-react';
 import CategoryIcon from '../components/CategoryIcon';
+import { useAuth } from '@/lib/AuthContext';
 import AddListingModal from '../components/AddListingModal';
 import MemberSignupModal from '../components/MemberSignupModal';
 import Navbar from '../components/home/Navbar';
 import StarField from '../components/StarField';
-import { base44 } from '@/api/base44Client';
 
+// Matches PostListingMenu categories exactly
 const CATEGORIES = [
   {
     key: 'buysell', label: 'Buy & Sell', iconKey: 'buysell', color: '#8b5cf6',
-    emoji: '🛍️', desc: 'Sell products, electronics, cars, real estate',
+    desc: 'Sell products, electronics, cars, real estate',
     subtypes: [
       { label: 'General Product', type: 'product' },
       { label: 'Electronics', type: 'electronics' },
@@ -27,18 +28,18 @@ const CATEGORIES = [
     ]
   },
   {
-    key: 'food', label: 'Food & Beverages', iconKey: 'food', color: '#f97316',
-    emoji: '🍜', desc: 'Home kitchen, bakery, carinderia, restaurant',
+    key: 'jobs', label: 'Jobs', iconKey: 'jobs', color: '#f59e0b',
+    desc: 'Full-time, part-time, freelance & remote jobs',
+    subtypes: [{ label: 'Any Job Posting', type: 'jobs' }]
+  },
+  {
+    key: 'food', label: 'Food', iconKey: 'food', color: '#f97316',
+    desc: 'Home kitchen, bakery, carinderia, restaurant',
     subtypes: [{ label: 'Food & Beverages', type: 'food' }]
   },
   {
-    key: 'jobs', label: 'Jobs', iconKey: 'jobs', color: '#f59e0b',
-    emoji: '💼', desc: 'Full-time, part-time, freelance & remote jobs',
-    subtypes: [{ label: 'Job Posting', type: 'jobs' }]
-  },
-  {
     key: 'rent', label: 'Rent / For Sale', iconKey: 'rent', color: '#10b981',
-    emoji: '🏠', desc: 'Rooms, condos, commercial space, vehicles for rent',
+    desc: 'Rooms, condos, commercial space, vehicles for rent',
     subtypes: [
       { label: 'Property — Rent / Sale / Lease', type: 'rent_lease' },
       { label: 'Vehicle Rental', type: 'vehicle_rental' },
@@ -46,17 +47,16 @@ const CATEGORIES = [
   },
   {
     key: 'services', label: 'Services', iconKey: 'services', color: '#3b82f6',
-    emoji: '🔧', desc: 'Home repair, IT, creative, professional services',
+    desc: 'Home repair, IT, creative, professional services',
     subtypes: [{ label: 'Service Listing', type: 'services' }]
   },
   {
-    key: 'travel', label: 'Travel & Hotel', iconKey: 'travel', color: '#0ea5e9',
-    emoji: '✈️', desc: 'Hotels, tours, resorts, flight packages',
+    key: 'travel', label: 'Travel / Hotel', iconKey: 'travel', color: '#0ea5e9',
+    desc: 'Hotels, tours, resorts, flight packages',
     subtypes: [
       { label: 'Hotel / Accommodation', type: 'hotel' },
       { label: 'Flights / Tour Package', type: 'flights' },
       { label: 'Vehicle Rental', type: 'vehicle_rental' },
-      { label: 'Other Travel', type: 'other' },
     ]
   },
 ];
@@ -65,8 +65,8 @@ export default function PostAdLanding() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const preselectedKey = searchParams.get('category');
+  const { user } = useAuth();
 
-  const [user, setUser] = useState(null);
   const [selectedCat, setSelectedCat] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
@@ -74,30 +74,18 @@ export default function PostAdLanding() {
 
   useEffect(() => {
     const typeParam = searchParams.get('type');
-    base44.auth.isAuthenticated().then(ok => {
-      if (ok) base44.auth.me().then(u => {
-        setUser(u);
-        // If both category and type pre-selected, open modal directly
-        if (preselectedKey && typeParam) {
-          const cat = CATEGORIES.find(c => c.key === preselectedKey);
-          if (cat) {
-            setSelectedCat(cat);
-            setSelectedType(typeParam);
-            setShowModal(true);
-          }
-        } else if (preselectedKey) {
-          const cat = CATEGORIES.find(c => c.key === preselectedKey);
-          if (cat) {
-            setSelectedCat(cat);
-            if (cat.subtypes.length === 1) {
-              setSelectedType(cat.subtypes[0].type);
-              setShowModal(true);
-            }
-          }
-        }
-      }).catch(() => {});
-    }).catch(() => {});
-  }, []);
+    if (!user) return;
+    if (preselectedKey && typeParam) {
+      const cat = CATEGORIES.find(c => c.key === preselectedKey);
+      if (cat) { setSelectedCat(cat); setSelectedType(typeParam); setShowModal(true); }
+    } else if (preselectedKey) {
+      const cat = CATEGORIES.find(c => c.key === preselectedKey);
+      if (cat) {
+        setSelectedCat(cat);
+        if (cat.subtypes.length === 1) { setSelectedType(cat.subtypes[0].type); setShowModal(true); }
+      }
+    }
+  }, [user]);
 
   const handleSelectSubtype = (cat, type) => {
     if (!user) { setShowSignup(true); return; }
@@ -154,9 +142,9 @@ export default function PostAdLanding() {
                   boxShadow: selectedCat?.key === cat.key ? `0 0 20px ${cat.color}30` : 'none',
                 }}>
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-xl"
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
                     style={{ background: `${cat.color}20` }}>
-                    {cat.emoji}
+                    <CategoryIcon name={cat.iconKey} size={18} color={cat.color} />
                   </div>
                   <div>
                     <p className="font-heading font-bold text-sm text-white mb-0.5">{cat.label}</p>

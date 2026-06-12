@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, ChevronRight, ChevronDown } from 'lucide-react';
 import AddListingModal from './AddListingModal';
@@ -62,14 +63,25 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
   const [open, setOpen] = useState(false);
   const [expandedCat, setExpandedCat] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
   const ref = useRef(null);
+  const btnRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) { setOpen(false); setExpandedCat(null); } };
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target) && !btnRef.current?.contains(e.target)) { setOpen(false); setExpandedCat(null); } };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
+
+  const handleOpen = () => {
+    if (btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      setDropdownPos({ top: rect.bottom + 8, left: rect.left });
+    }
+    setOpen(o => !o);
+    setExpandedCat(null);
+  };
 
   const CATEGORY_ROUTES = {
     buysell: '/buysell',
@@ -109,7 +121,8 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
     <>
       <div className="relative" ref={ref}>
         <button
-          onClick={() => { setOpen(o => !o); setExpandedCat(null); }}
+          ref={btnRef}
+          onClick={handleOpen}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105 whitespace-nowrap"
           style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }}
           title="Post a Listing"
@@ -119,13 +132,14 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
         </button>
 
         <AnimatePresence>
-          {open && (
+          {open && createPortal(
             <motion.div
+              ref={ref}
               initial={{ opacity: 0, y: 8, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.95 }}
-              className="absolute left-0 top-full mt-2 rounded-2xl shadow-2xl z-[9999]"
-              style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)', width: 'min(340px, 96vw)', maxHeight: 'calc(100vh - 120px)', overflowY: 'auto', position: 'absolute' }}>
+              className="rounded-2xl shadow-2xl z-[99999]"
+              style={{ position: 'fixed', top: dropdownPos.top, left: Math.min(dropdownPos.left, window.innerWidth - 370), background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)', width: 'min(360px, 96vw)', maxHeight: 'calc(100vh - 120px)', overflowY: 'auto' }}>
               <div className="p-3">
                 <p className="font-body text-[9px] text-white/30 uppercase tracking-wider font-bold px-1 pb-2">Post an Ad — Choose Category</p>
                 {/* Categories in 2-col grid */}
@@ -177,7 +191,8 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
                 </AnimatePresence>
               </div>
             </motion.div>
-          )}
+          , document.body)
+          }
         </AnimatePresence>
       </div>
 

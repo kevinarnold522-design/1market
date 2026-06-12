@@ -127,17 +127,28 @@ function JobCard({ job, onApply }) {
           </div>
         )}
         <p className="font-body text-xs text-white/40 mb-3 line-clamp-2">{job.desc}</p>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <span className="font-heading font-bold text-sm text-amber-400 flex items-center gap-1">
             <DollarSign className="w-3 h-3" />{job.pay}
           </span>
-          <button
-            onClick={() => onApply(job)}
-            className="px-4 py-1.5 rounded-lg font-body text-xs font-bold text-white transition-all hover:scale-105"
-            style={{ background: `linear-gradient(135deg, ${THEME.primary}, ${THEME.accent})` }}
-          >
-            {isFreelance ? 'View Profile' : 'Apply'}
-          </button>
+          <div className="flex items-center gap-1.5">
+            {isFreelance && (
+              <button
+                onClick={() => onApply(job)}
+                className="px-3 py-1.5 rounded-lg font-body text-xs font-bold text-white transition-all hover:scale-105"
+                style={{ background: 'linear-gradient(135deg,#a855f7,#c084fc)' }}
+              >
+                Connect
+              </button>
+            )}
+            <button
+              onClick={() => onApply(job)}
+              className="px-3 py-1.5 rounded-lg font-body text-xs font-bold text-white transition-all hover:scale-105"
+              style={{ background: `linear-gradient(135deg, ${THEME.primary}, ${THEME.accent})` }}
+            >
+              {isFreelance ? 'Details' : 'Apply'}
+            </button>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -203,7 +214,16 @@ function ApplyModal({ job, onClose }) {
           
           {/* Contact / Apply Section */}
           <div className="space-y-2">
-            <p className="font-body text-[10px] text-white/40 uppercase tracking-wider">Contact / Apply via:</p>
+            <p className="font-body text-[10px] text-white/40 uppercase tracking-wider">
+              {isFreelance ? 'Connect with Freelancer:' : 'Contact / Apply via:'}
+            </p>
+            {isFreelance && (
+              <a href={job.link || `mailto:${job.contact}`} target={job.link ? '_blank' : undefined} rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body text-xs font-bold text-white transition-all hover:scale-[1.02]"
+                style={{ background: 'linear-gradient(135deg,#a855f7,#c084fc)' }}>
+                <Users className="w-3.5 h-3.5" /> Connect with this Freelancer
+              </a>
+            )}
             {job.link ? (
               <a href={job.link} target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body text-xs font-bold text-white transition-all hover:scale-[1.02]"

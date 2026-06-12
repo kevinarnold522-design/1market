@@ -84,10 +84,14 @@ export default function Navbar() {
   const isVerified = !isGhostSession && !!(activeUser?.is_verified_seller);
   // adminLabel: derive purely from activeUser data, never ghost as admin
   const adminLabel = isAdmin ? 'CEO & Founder'
+    : isGhostSession
+      ? (ghostUser?.user_type === 'business' ? (ghostUser?.business_name || 'Business Account')
+        : ghostUser?.user_type === 'seller' ? 'Sales Account'
+        : ghostUser?.user_type === 'rider' ? 'Rider Delivery'
+        : 'Customer Account')
     : isBusiness ? (activeUser?.business_name || 'Business Account')
     : isRider ? 'Rider Delivery'
     : isSeller ? 'Sales Account'
-    : isGhostSession ? (ghostUser?.user_type === 'customer' ? 'Customer Account' : 'Live Test Account')
     : 'Customer Account';
   const [uploadingPfp, setUploadingPfp] = useState(false);
 
@@ -221,9 +225,9 @@ export default function Navbar() {
 
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'backdrop-blur-2xl shadow-lg shadow-[#0033CC]/30' : 'backdrop-blur-xl'}`} style={{ background: scrolled ? 'rgba(0,26,128,0.75)' : 'rgba(0,10,64,0.55)', borderBottom: '1px solid rgba(255,255,255,0.08)', WebkitBackdropFilter: 'blur(24px)' }}>
         {/* Category Bar — LEFT aligned */}
-        <div className="hidden md:block border-b border-white/8 bg-[#000d40]/80 backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8" style={{ paddingLeft: 240 }}>
-            <div className="flex items-center gap-2 h-9">
+        <div className="hidden md:block border-b border-white/8 bg-[#000d40]/80 backdrop-blur-sm" style={{ overflow: 'visible' }}>
+          <div className="max-w-7xl mx-auto px-6 lg:px-8" style={{ paddingLeft: 240, overflow: 'visible' }}>
+            <div className="flex items-center gap-2 h-9" style={{ overflow: 'visible' }}>
               <NavCategoryBar />
               <Link to="/community" className="flex items-center gap-1 px-2.5 py-1 rounded-xl font-body text-xs font-semibold text-purple-400 hover:bg-white/8 transition-all whitespace-nowrap ml-1">
                 <Users className="w-3 h-3" /> Community
