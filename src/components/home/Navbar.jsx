@@ -73,7 +73,7 @@ export default function Navbar() {
   // Use ghost user if in ghost session, otherwise use regular user
   const activeUser = ghostUser || user;
   // In ghost session: force non-admin regardless of real user
-  const isAdmin = !ghostUser && !getImpersonatedUser() && (user?.role === 'admin' || user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase());
+  const isAdmin = !ghostUser && !getImpersonatedUser() && user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
   const isGhost = activeUser?.is_ghost_account || activeUser?.ghost_id;
   const isGhostSession = !!ghostUser;
   const isSeller = activeUser?.user_type === 'seller' || activeUser?.user_type === 'business' || activeUser?.is_seller || activeUser?.account_type === 'business_owner';
@@ -459,11 +459,11 @@ export default function Navbar() {
                                 <div className="flex items-center gap-2 text-white/40">
                                   <User className="w-3 h-3 flex-shrink-0" />
                                   <span>Member since {memberSince}</span>
-                                  {activeUser.role === 'admin' && (
-                                    <span className="ml-1 px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[9px] border border-amber-500/25">
-                                      <Shield className="w-2.5 h-2.5 inline mr-0.5" />Admin
-                                    </span>
-                                  )}
+                                  {isAdmin && (
+                                     <span className="ml-1 px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[9px] border border-amber-500/25">
+                                       <Shield className="w-2.5 h-2.5 inline mr-0.5" />CEO
+                                     </span>
+                                   )}
                                 </div>
                               </>
                             )}
