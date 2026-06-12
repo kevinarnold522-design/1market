@@ -71,19 +71,24 @@ export default function Navbar() {
   }, []);
   
   // Use ghost user if in ghost session, otherwise use regular user
-  // IMPORTANT: all role/type flags must use ghostUser data exclusively when in ghost session
   const activeUser = ghostUser || user;
-  // isAdmin: NEVER true in ghost session
-  const isAdmin = !ghostUser && user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
+  // isAdmin: STRICTLY NEVER true in any ghost session
+  const isAdmin = !ghostUser && !!(user?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
   const isGhostSession = !!ghostUser;
-  // Type flags derived exclusively from activeUser (ghost data takes precedence)
-  const isSeller = activeUser?.user_type === 'seller' || activeUser?.user_type === 'business' || activeUser?.is_seller || activeUser?.account_type === 'business_owner';
-  const isBusiness = activeUser?.user_type === 'business';
-  const isRider = activeUser?.user_type === 'rider';
-  // isCustomer: ghost customer accounts should still be "customer"
+  // ALL type flags derived exclusively from activeUser (ghost data takes absolute precedence)
+  const isSeller = !!(activeUser?.user_type === 'seller' || activeUser?.user_type === 'business' || activeUser?.is_seller || activeUser?.account_type === 'business_owner');
+  const isBusiness = !!(activeUser?.user_type === 'business');
+  const isRider = !!(activeUser?.user_type === 'rider');
   const isCustomer = !isSeller && !isBusiness && !isRider;
-  const isVerified = !isGhostSession && activeUser?.is_verified_seller;
-  const adminLabel = isAdmin ? 'CEO & Founder' : isBusiness ? (ghostUser?.business_name || activeUser?.business_name || 'Business Account') : isRider ? 'Rider Delivery' : isSeller ? 'Sales Account' : isGhostSession ? 'Test Account' : 'Customer Account';
+  // Verified: never show ghost accounts as verified
+  const isVerified = !isGhostSession && !!(activeUser?.is_verified_seller);
+  // adminLabel: derive purely from activeUser data, never ghost as admin
+  const adminLabel = isAdmin ? 'CEO & Founder'
+    : isBusiness ? (activeUser?.business_name || 'Business Account')
+    : isRider ? 'Rider Delivery'
+    : isSeller ? 'Sales Account'
+    : isGhostSession ? (ghostUser?.user_type === 'customer' ? 'Customer Account' : 'Live Test Account')
+    : 'Customer Account';
   const [uploadingPfp, setUploadingPfp] = useState(false);
 
   const handleNavPfpUpload = async (e) => {

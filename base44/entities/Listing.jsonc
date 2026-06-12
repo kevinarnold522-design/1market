@@ -136,6 +136,10 @@
       "type": "string",
       "description": "Admin-approved public display name for the lister/channel"
     },
+    "posting_as": {
+      "type": "string",
+      "description": "Role/capacity the lister is posting as, e.g. Home Owner, Recruiter, Real Estate Agent"
+    },
     "phone": {
       "type": "string"
     },

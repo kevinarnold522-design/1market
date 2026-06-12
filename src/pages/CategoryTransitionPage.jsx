@@ -92,12 +92,20 @@ export default function CategoryTransitionPage() {
   const catConfig = CATEGORY_CONFIG[category];
 
   useEffect(() => {
+    // Also check ghost session
+    const ghost = (() => { try { return JSON.parse(sessionStorage.getItem('1m_ghost_session')); } catch { return null; } })();
+    if (ghost) {
+      setUser(ghost);
+      setLoading(false);
+      if (preselectedType) { setModalType(preselectedType); setShowModal(true); }
+      return;
+    }
     base44.auth.isAuthenticated().then(ok => {
       if (ok) {
         base44.auth.me().then(u => {
           setUser(u);
           setLoading(false);
-          // Auto-open modal if type is preselected
+          // Auto-open modal immediately when type is preselected — skip the selection screen
           if (preselectedType) {
             setModalType(preselectedType);
             setShowModal(true);

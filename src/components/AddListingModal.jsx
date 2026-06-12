@@ -211,11 +211,14 @@ const SLIDESHOW_ANIMATIONS = [
 const DELIVERY_OPTIONS_BUYSELL = [
   'LBC', 'J&T Express', 'Shopee Express', 'Lazada Express', 'Lalamove',
   'GrabExpress', 'Angkas Padala', 'Flash Express', 'GoGo Xpress', 'DHL',
+  'Bike Rider (Community Delivery)', 'E-Bike Rider (Community Delivery)',
   'Meetup at Location', 'Pickup at My Address', 'Cash on Delivery (COD)',
 ];
 const DELIVERY_OPTIONS_FOOD = [
   'Lalamove', 'GrabFood Delivery', 'Foodpanda Delivery',
-  'Angkas Padala', 'GrabExpress', 'Pickup at Store / Kitchen',
+  'Angkas Padala', 'GrabExpress',
+  'Bike Rider (Community Delivery)', 'E-Bike Rider (Community Delivery)',
+  'Pickup at Store / Kitchen',
   'Meetup / Agreed Location', 'Free Delivery (within area)', 'Cash on Delivery (COD)',
 ];
 
@@ -238,6 +241,26 @@ const PROPERTY_SALE_TYPES = ['Pre-Selling', 'Ready for Occupancy (RFO)', 'Pasalo
 const PRESELLING_TURNOVER = ['12-18 months', '18-24 months', '24-30 months', '30-36 months', '36-42 months', '42-48 months', '48-60 months', '5+ years'];
 const LEASE_MONTHS = [1, 2, 3, 6, 12, 18, 24, 36, 60];
 
+const POSTING_AS_BY_TYPE = {
+  houses:         ['Real Estate Agent', 'Property Owner', 'Developer', 'Contractor', 'Builder', 'Home Owner', 'Relative / Friend', 'Referrer'],
+  rent_lease:     ['Home Owner', 'Landlord / Lessor', 'Relative / Friend', 'Referrer', 'Real Estate Agent', 'Property Manager'],
+  cars:           ['Car Owner', 'Dealer / Reseller', 'Fleet Manager', 'Referrer', 'Other'],
+  food:           ['Business Owner', 'Employee', 'Home Cook', 'Sales Representative', 'Catering Staff', 'Referrer'],
+  services:       ['Service Provider', 'Business Owner', 'Freelancer', 'Staff / Employee', 'Referrer'],
+  jobs:           ['Recruiter', 'Owner / Employer', 'HR Manager', 'Referrer', 'Bounty / Bouncer'],
+  product:        ['Seller / Owner', 'Reseller', 'Retailer', 'Referrer'],
+  electronics:    ['Owner / Seller', 'Authorized Dealer', 'Reseller', 'Referrer'],
+  furniture:      ['Owner / Seller', 'Manufacturer', 'Retailer', 'Reseller', 'Referrer'],
+  homeappliances: ['Owner / Seller', 'Authorized Dealer', 'Reseller', 'Referrer'],
+  clothing:       ['Brand / Boutique', 'RTW Seller', 'Online Seller', 'Reseller', 'Referrer'],
+  shoes:          ['Brand / Store', 'Online Seller', 'Reseller', 'Referrer'],
+  vehicle_rental: ['Car / Fleet Owner', 'Rental Company', 'Driver / Operator', 'Referrer'],
+  hotel:          ['Hotel Owner', 'Hotel Staff', 'Property Manager', 'Referrer'],
+  flights:        ['Travel Agent', 'Tour Operator', 'Airline Staff', 'Referrer'],
+  mods:           ['Shop Owner', 'Mechanic', 'Modifier / Builder', 'Referrer'],
+  other:          ['Owner / Seller', 'Reseller', 'Referrer'],
+};
+
 const PRICE_RATE_TYPES = ['Per Item','Per Hour','Per Day','Per Week','Per Month','Per Year','Fixed Rate','Negotiable'];
 const FLIGHT_TYPES = ['One Way','Round Trip','Multi-City'];
 const AIRLINES = ['Philippine Airlines','Cebu Pacific','AirAsia','SEAIR','SkyJet','Charter Flight','Private Jet','Other Airline'];
@@ -249,6 +272,7 @@ const EMPTY_FORM = {
   main_category: '', type: '', subcategory: '', title: '', description: '',
   city: '', state_region: '', zip: '', area: '',
   price: '', original_price: '', price_label: '', price_rate_type: 'Per Item', quantity: 1,
+  posting_as: '',
   seller_name: '', phone: '', email_contact: '', apply_link: '',
   condition: 'Brand New', image_url: '', extra_images: [], is_active: true,
   slideshow_animation: 'fade',
@@ -395,6 +419,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       price_label: hidePrice ? '' : form.price_label,
       description: form.description, image_url: form.image_url, extra_images: form.extra_images || [],
       phone: form.phone, seller_name: sellerDisplayName, email_contact: contactEmail, apply_link: form.apply_link,
+      posting_as: form.posting_as || '',
       condition: form.condition, is_active: false,
       approval_status: 'pending',
       quantity: Number(form.quantity) || 1,
@@ -621,6 +646,25 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                         </div>
                         {form.subcategory && <p className="font-body text-[10px] text-[#00D4FF]/70">Selected: {form.subcategory}</p>}
                       </div>
+                    </div>
+                  )}
+
+                  {/* POSTING AS */}
+                  {(POSTING_AS_BY_TYPE[form.type] || []).length > 0 && (
+                    <div>
+                      <label className={labelCls}>Posting As *</label>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(POSTING_AS_BY_TYPE[form.type] || []).map(role => (
+                          <button key={role} type="button" onClick={() => set('posting_as', role)}
+                            className="px-3 py-1.5 rounded-full border font-body text-[11px] transition-all"
+                            style={{
+                              borderColor: form.posting_as === role ? '#00D4FF' : 'rgba(255,255,255,0.12)',
+                              background: form.posting_as === role ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.04)',
+                              color: form.posting_as === role ? '#00D4FF' : 'rgba(255,255,255,0.5)',
+                            }}>{role}</button>
+                        ))}
+                      </div>
+                      {form.posting_as && <p className="font-body text-[10px] text-[#00D4FF]/70 mt-1">Posting as: {form.posting_as}</p>}
                     </div>
                   )}
 

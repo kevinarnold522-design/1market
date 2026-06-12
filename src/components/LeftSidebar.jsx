@@ -60,9 +60,10 @@ export default function LeftSidebar({ isMobileHidden = false }) {
 
   // Use ghost user if in ghost session, otherwise use regular user
   const activeUser = ghostUser || user;
-  const isAdmin = !ghostUser && user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
-  const isSeller = activeUser?.user_type === 'seller' || activeUser?.is_seller || activeUser?.account_type === 'business_owner';
+  // isAdmin: STRICTLY NEVER true in ghost session
+  const isAdmin = !ghostUser && !!(user?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
   const isGhostSession = !!ghostUser;
+  const isSeller = !!(activeUser?.user_type === 'seller' || activeUser?.user_type === 'business' || activeUser?.is_seller || activeUser?.account_type === 'business_owner');
   const initials = activeUser ? (activeUser.full_name || activeUser.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
 
   if (isMobileHidden) return null;
@@ -215,7 +216,7 @@ export default function LeftSidebar({ isMobileHidden = false }) {
           </>
         )}
 
-        {/* Admin — only real owner, never ghost session */}
+        {/* Admin — ONLY real owner, never ghost session, never non-admin */}
         {isAdmin && !isGhostSession && (
           <>
             <div className="my-2 border-t border-white/8 mx-1" />
@@ -226,6 +227,7 @@ export default function LeftSidebar({ isMobileHidden = false }) {
               <Shield className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span className="font-body text-xs font-semibold truncate">Admin Panel</span>}
             </Link>
+            {/* Connected Accounts: strictly admin only, NEVER in ghost session */}
             <Link to="/connected-accounts"
               className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-purple-400/70 hover:text-purple-400 hover:bg-purple-400/10"
               title={collapsed ? 'Connected Accounts' : undefined}>
