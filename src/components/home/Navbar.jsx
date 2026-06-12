@@ -228,9 +228,9 @@ export default function Navbar() {
               <Link to="/community" className="flex items-center gap-1 px-2.5 py-1 rounded-xl font-body text-xs font-semibold text-purple-400 hover:bg-white/8 transition-all whitespace-nowrap ml-1">
                 <Users className="w-3 h-3" /> Community
               </Link>
-              {isAuthenticated && user && (isSeller || isAdmin) && (
+              {isAuthenticated && activeUser && (isSeller || isAdmin || isCustomer) && (
                 <div className="ml-auto flex-shrink-0">
-                  <PostListingMenu user={user} compact />
+                  <PostListingMenu user={activeUser} compact />
                 </div>
               )}
             </div>
@@ -496,6 +496,17 @@ export default function Navbar() {
                             <Gift className="w-3.5 h-3.5" /> Daily Rewards
                           </button>
 
+                          {/* Customer: can post jobs */}
+                          {isCustomer && !isSeller && !isGhostSession && (
+                            <>
+                              <div className="border-t border-white/8 my-1" />
+                              <p className="px-3 py-1 font-body text-[9px] text-white/40 uppercase tracking-wider font-bold">Post a Job</p>
+                              <div className="px-3 py-1.5">
+                                <PostListingMenu user={activeUser} compact={false} />
+                              </div>
+                            </>
+                          )}
+
                           {/* Seller links - for both regular and ghost sellers */}
                           {(isSeller || (isGhostSession && ghostUser?.user_type === 'seller')) && (
                             <>
@@ -626,7 +637,7 @@ export default function Navbar() {
                     </div>
                   </div>
                 )}
-                {isAuthenticated && user ? (
+                {isAuthenticated && activeUser ? (
                   <>
                     <Link to="/messages" onClick={() => setMenuOpen(false)}
                       className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
@@ -639,7 +650,7 @@ export default function Navbar() {
                     {(isSeller || isAdmin) && (
                       <>
                         <div className="py-1">
-                          <PostListingMenu user={user} compact={true} />
+                          <PostListingMenu user={activeUser} compact={true} />
                         </div>
                         <Link to="/profile?tab=listings" onClick={() => setMenuOpen(false)}
                           className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
@@ -660,8 +671,11 @@ export default function Navbar() {
                     {isSeller && !isVerified && !isAdmin && user?.verification_submitted && (
                       <span className="block text-amber-400 font-body text-sm py-2">⏳ Verification Pending</span>
                     )}
-                    {isCustomer && !isSeller && !isBusiness && (
+                    {isCustomer && !isSeller && !isBusiness && !isGhostSession && (
                       <>
+                        <div className="py-1">
+                          <PostListingMenu user={activeUser} compact={true} />
+                        </div>
                         <button onClick={() => { setMenuOpen(false); navigate('/onboarding'); }}
                           className="block w-full text-left text-emerald-400 font-body text-sm font-semibold py-2 transition-colors">
                           Become a Seller
@@ -672,7 +686,7 @@ export default function Navbar() {
                         </button>
                       </>
                     )}
-                    {isAdmin && !isGhost && (
+                    {isAdmin && !isGhost && !isGhostSession && (
                       <>
                         <Link to="/admin" onClick={() => setMenuOpen(false)}
                           className="block text-amber-400 font-body text-sm font-semibold py-2">
