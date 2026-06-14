@@ -120,16 +120,16 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
   return (
     <>
       <div className="relative" ref={ref}>
-        <button
-          ref={btnRef}
-          onClick={handleOpen}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105 whitespace-nowrap hidden"
-          style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }}
-          title="Post a Listing">
-          
-          <Plus className="w-3.5 h-3.5 flex-shrink-0 hidden" />
-          {btnLabel && <span className="hidden">{btnLabel}</span>}
-        </button>
+        
+
+
+
+
+
+
+
+
+        
 
         <AnimatePresence>
           {open && createPortal(
