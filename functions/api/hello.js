@@ -1,7 +1,5 @@
 export function onRequest(context) {
-  return new Response("Hello from your new backend!", {
-    headers: {
-      "Content-Type": "text/plain",
-    },
+  return new Response("Backend is working!", {
+    headers: { "Content-Type": "text/plain" },
   });
 }
