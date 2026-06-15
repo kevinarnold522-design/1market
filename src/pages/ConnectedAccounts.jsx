@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Ghost, Plus, Trash2, X, ArrowLeft, LogIn, Edit2, Save, Search, LogOut, Users, Activity } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { isOwnerAccount } from '@/lib/adminAuth';
+import { saveGhostSession as persistGhostSession, clearGhostSession as clearPersistedGhostSession } from '@/lib/ghostAccounts';
 
 const LOCATIONS = ['Manila', 'Cavite', 'Nationwide'];
 const STORAGE_PREFIX = '1m_ghost_';
@@ -19,9 +20,9 @@ const EMPTY_FORM = {
 };
 
 // localStorage helpers for session management
-const saveGhostSession = (ghost) => sessionStorage.setItem('1m_ghost_session', JSON.stringify(ghost));
-const getGhostSession = () => { try { return JSON.parse(sessionStorage.getItem('1m_ghost_session')); } catch { return null; } };
-const clearGhostSession = () => sessionStorage.removeItem('1m_ghost_session');
+const saveGhostSession = (ghost) => persistGhostSession(ghost);
+const getGhostSession = () => { try { return JSON.parse(sessionStorage.getItem('1m_ghost_session') || localStorage.getItem('1m_ghost_session')); } catch { return null; } };
+const clearGhostSession = () => clearPersistedGhostSession();
 const saveGhostLocal = (g) => localStorage.setItem(STORAGE_PREFIX + g.ghost_id, JSON.stringify(g));
 const getAllGhostsLocal = () => {
   const ghosts = [];

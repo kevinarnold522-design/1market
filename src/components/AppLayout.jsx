@@ -6,6 +6,7 @@ import WaveTransition from './WaveTransition';
 import UserTasks from './UserTasks';
 import { subscribeWave, isWaveActive, triggerWave } from '@/lib/waveTransition';
 import { base44 } from '@/api/base44Client';
+import { getGhostSession } from '@/lib/ghostAccounts';
 
 export default function AppLayout() {
   const [waveActive, setWaveActive] = useState(isWaveActive());
@@ -13,7 +14,16 @@ export default function AppLayout() {
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
   const navigate = useNavigate();
   const [appUser, setAppUser] = useState(null);
-  useEffect(() => { base44.auth.me().then(setAppUser).catch(() => {}); }, []);
+  useEffect(() => {
+    const refresh = () => {
+      const ghost = getGhostSession();
+      if (ghost) { setAppUser(null); return; }
+      base44.auth.me().then(setAppUser).catch(() => {});
+    };
+    refresh();
+    window.addEventListener('ghost-session-changed', refresh);
+    return () => window.removeEventListener('ghost-session-changed', refresh);
+  }, []);
 
   // Global wave interceptor for listing navigation
   useEffect(() => {

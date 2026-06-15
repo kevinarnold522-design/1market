@@ -7,6 +7,7 @@ import AIListingAssistant from './listing/AIListingAssistant';
 import AIPriceSuggester from './listing/AIPriceSuggester';
 import AIListingQualityChecker from './AIListingQualityChecker';
 import SavedTemplates from './listing/SavedTemplates';
+import { getGhostSession, ghostOwnerFields } from '@/lib/ghostAccounts';
 
 const MAIN_CATEGORIES = [
   { value: 'travel',   label: 'Travel',                   iconKey: 'travel',   color: '#0ea5e9' },
@@ -339,13 +340,10 @@ function PillSelect({ options, value, onChange, color = '#00D4FF' }) {
   );
 }
 
-// Get ghost session helper (must not import from pages to avoid circular dep)
-const getGhostSessionLocal = () => { try { return JSON.parse(sessionStorage.getItem('1m_ghost_session')); } catch { return null; } };
-
 export default function AddListingModal({ onClose, defaultType = '', defaultSubcategory = '', user }) {
   const resolvedMain = defaultType ? (Object.entries(TYPE_TO_MAIN).find(([t]) => t === defaultType)?.[1] || '') : '';
   // Detect ghost session — use ghost identity for listing, not real user
-  const ghostSession = getGhostSessionLocal();
+  const ghostSession = getGhostSession();
   const effectiveUser = ghostSession || user;
 
   const [form, setForm] = useState({
@@ -414,10 +412,13 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
     setSubmitting(true);
     const locationStr = [form.city, form.state_region].filter(Boolean).join(', ') || 'Nationwide';
     // For ghost sessions: use ghost's display name, never expose internal ghost email
-    const ghostSess = getGhostSessionLocal();
+    const ghostSess = getGhostSession();
     const sellerDisplayName = form.seller_name || effectiveUser?.channel_name || effectiveUser?.business_name || effectiveUser?.full_name || '';
     const contactEmail = ghostSess ? '' : (form.email_contact || '');
     await base44.entities.Listing.create({
+      ...ghostOwnerFields(ghostSess),
+      owner_user_id: ghostSess ? '' : (effectiveUser?.id || ''),
+      owner_email: ghostSess ? '' : (effectiveUser?.email || ''),
       title: form.title, type: form.type, main_category: form.main_category, subcategory: form.subcategory,
       location: locationStr,
       area: form.area || (form.zip ? `Zip: ${form.zip}` : ''),

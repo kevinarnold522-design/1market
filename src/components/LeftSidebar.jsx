@@ -5,7 +5,8 @@ import { Home, Plane, UtensilsCrossed, ShoppingBag, Car, Wrench, Briefcase, User
 import { useAuth } from '@/lib/AuthContext';
 import PostListingMenu from './PostListingMenu';
 import MetaVerifiedBadge from './MetaVerifiedBadge';
-import { getImpersonatedUser } from '@/pages/ConnectedAccounts';
+import GhostAccountMenu from './GhostAccountMenu';
+import { getGhostSession } from '@/lib/ghostAccounts';
 
 const NAV_ITEMS = [
   { to: '/',           icon: Home,           label: 'Home',         color: '#00D4FF' },
@@ -53,8 +54,14 @@ export default function LeftSidebar({ isMobileHidden = false }) {
   const [ghostUser, setGhostUser] = useState(null);
 
   useEffect(() => {
-    const ghost = getImpersonatedUser();
-    if (ghost) setGhostUser(ghost);
+    const refresh = () => setGhostUser(getGhostSession());
+    refresh();
+    window.addEventListener('ghost-session-changed', refresh);
+    window.addEventListener('focus', refresh);
+    return () => {
+      window.removeEventListener('ghost-session-changed', refresh);
+      window.removeEventListener('focus', refresh);
+    };
   }, []);
 
   // Use ghost user if in ghost session, otherwise use regular user
@@ -173,6 +180,8 @@ export default function LeftSidebar({ isMobileHidden = false }) {
             </Link>
           );
         })}
+
+        <GhostAccountMenu collapsed={collapsed} />
 
         {/* Divider */}
         <div className="my-2 border-t border-white/8 mx-1" />

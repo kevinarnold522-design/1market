@@ -2,7 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
-import { getImpersonatedUser } from '@/pages/ConnectedAccounts';
+import { getGhostSession, clearGhostSession } from '@/lib/ghostAccounts';
 
 const AuthContext = createContext();
 
@@ -22,6 +22,13 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     checkAppState();
+    const refreshGhostSession = () => {
+      _cachedUser = null;
+      _authInitialized = false;
+      checkAppState();
+    };
+    window.addEventListener('ghost-session-changed', refreshGhostSession);
+    return () => window.removeEventListener('ghost-session-changed', refreshGhostSession);
   }, []);
 
   const checkAppState = async () => {
@@ -29,8 +36,9 @@ export const AuthProvider = ({ children }) => {
       setIsLoadingPublicSettings(true);
       setAuthError(null);
 
-      // Use cached values for fast subsequent loads
-      if (_authInitialized && _cachedPublicSettings) {
+      const activeGhost = getGhostSession();
+      // Use cached values for fast subsequent loads, unless a Ghost session is active/changed
+      if (_authInitialized && _cachedPublicSettings && !activeGhost) {
         setAppPublicSettings(_cachedPublicSettings);
         if (_cachedUser) {
           setUser(_cachedUser);
@@ -57,8 +65,8 @@ export const AuthProvider = ({ children }) => {
       try {
         [publicSettings, currentUser] = await Promise.all([settingsPromise, authPromise]);
         
-        // Check for impersonation session (ghost account login)
-        const impersonated = getImpersonatedUser();
+        // Check for Ghost account session. Ghost identity fully overrides the real admin/user session.
+        const impersonated = getGhostSession();
         if (impersonated) {
           currentUser = impersonated;
         }
@@ -120,6 +128,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = (shouldRedirect = true) => {
+    clearGhostSession();
     _cachedUser = null;
     _authInitialized = false;
     setUser(null);

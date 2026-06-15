@@ -17,7 +17,8 @@ import NavUserBadge from './NavUserBadge';
 import NavCategoryBar from './NavCategoryBar';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
-import { getImpersonatedUser, clearImpersonation } from '@/pages/ConnectedAccounts';
+import { getGhostSession, clearGhostSession } from '@/lib/ghostAccounts';
+import GhostAccountMenu from '@/components/GhostAccountMenu';
 
 // Global edit mode state
 let _editModeListeners = [];
@@ -57,18 +58,22 @@ export default function Navbar() {
   
   // Check for ghost session on mount — re-read on every render by checking sessionStorage directly
   useEffect(() => {
-    const ghost = getImpersonatedUser();
+    const ghost = getGhostSession();
     setGhostUser(ghost || null);
   }, []);
 
   // Also re-read ghost session whenever the window gains focus (after refresh)
   useEffect(() => {
     const handler = () => {
-      const ghost = getImpersonatedUser();
+      const ghost = getGhostSession();
       setGhostUser(ghost || null);
     };
     window.addEventListener('focus', handler);
-    return () => window.removeEventListener('focus', handler);
+    window.addEventListener('ghost-session-changed', handler);
+    return () => {
+      window.removeEventListener('focus', handler);
+      window.removeEventListener('ghost-session-changed', handler);
+    };
   }, []);
   
   // Use ghost user if in ghost session, otherwise use regular user
@@ -186,7 +191,7 @@ export default function Navbar() {
             {isAuthenticated && (activeUser || user) ? (
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-body text-xs font-semibold truncate">
-                  Welcome, <strong>{activeUser?.full_name?.split(' ')[0] || 'Member'}</strong>!
+                  {isGhostSession ? 'Ghost Active:' : 'Welcome,'} <strong>{activeUser?.full_name?.split(' ')[0] || 'Member'}</strong>{!isGhostSession && '!'}
                 </span>
                 {isAdmin && !isGhostSession && <MetaVerifiedBadge size="sm" label="CEO" />}
                 {isVerified && !isAdmin && !isGhostSession && <MetaVerifiedBadge size="sm" label="Verified" />}
@@ -260,6 +265,10 @@ export default function Navbar() {
 
             {/* Spacer */}
             <div className="flex-shrink-0" />
+
+            <div className="hidden md:block">
+              <GhostAccountMenu compact />
+            </div>
 
             {/* Messages button — signed-in only */}
             {isAuthenticated && activeUser && (
@@ -544,7 +553,7 @@ export default function Navbar() {
                           </Link>
                           <button onClick={() => {
                             if (isGhostSession) {
-                              sessionStorage.removeItem('1m_ghost_session');
+                              clearGhostSession();
                               setProfileOpen(false);
                               window.location.href = '/';
                             } else {
@@ -591,6 +600,9 @@ export default function Navbar() {
               exit={{ opacity: 0, height: 0 }}
               className="md:hidden bg-[#0A192F]/95 backdrop-blur-xl border-t border-white/10">
               <div className="px-6 py-4 space-y-3">
+                <div className="mb-2">
+                  <GhostAccountMenu onAction={() => setMenuOpen(false)} />
+                </div>
                 {isAuthenticated && activeUser && (
                   <div className="p-3 rounded-xl bg-white/5 border border-white/10 mb-2">
                     <div className="flex items-center gap-3 mb-2">
