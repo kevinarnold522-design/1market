@@ -4,13 +4,11 @@ import { useNavigate } from 'react-router-dom';
 export default function PostListingMenu({ user, compact = false, iconOnly = false }) {
   const navigate = useNavigate();
   const userType = user?.user_type;
-  const isAdmin = user.role === 'admin' || user.email?.toLowerCase() === 'kevinarnold522@gmail.com';
-  const canPost = !!user && (isAdmin || (userType !== 'customer' && userType !== 'rider' && (
-    userType === 'seller' ||
-    userType === 'business' ||
-    user.is_seller ||
-    user.account_type === 'business_owner'
-  )));
+  const isAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
+  const isBusinessAccount = userType === 'business' || user?.account_type === 'business_owner';
+  const isSellerAccount = userType === 'seller' || user?.is_seller || isBusinessAccount;
+  const isBlockedUserType = userType === 'rider' || (userType === 'customer' && !isSellerAccount);
+  const canPost = !!user && !isBlockedUserType && (isAdmin || isSellerAccount);
 
   if (!canPost) return null;
 

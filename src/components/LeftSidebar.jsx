@@ -304,7 +304,7 @@ export default function LeftSidebar({ isMobileHidden = false }) {
       </nav>
 
       {/* Post & Add — seller/admin only (including ghost sellers) */}
-      {(isAdmin || ((isSeller && !isGhostSession) || (isGhostSession && (ghostUser?.user_type === 'seller' || ghostUser?.user_type === 'business'))) && activeUser?.user_type !== 'customer' && activeUser?.user_type !== 'rider') && isAuthenticated && (
+      {(isAdmin || ((isSeller && !isGhostSession) || (isGhostSession && (ghostUser?.user_type === 'seller' || ghostUser?.user_type === 'business')))) && activeUser?.user_type !== 'rider' && !(activeUser?.user_type === 'customer' && !isSeller) && isAuthenticated && (
         <div className="px-2 pb-2 flex-shrink-0 border-t border-white/8 pt-2">
           {collapsed ? (
             <div className="flex justify-center">

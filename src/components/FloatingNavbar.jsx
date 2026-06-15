@@ -174,7 +174,7 @@ return (
                     </div>
 
                     {/* Seller Section */}
-                    {(isAdmin || (isSeller && activeUser?.user_type !== 'rider' && activeUser?.user_type !== 'customer')) && (
+                    {(isAdmin || (isSeller && activeUser?.user_type !== 'rider' && !(activeUser?.user_type === 'customer' && !isSeller))) && (
                       <div className="space-y-0.5 mb-3">
                         <p className="px-3 py-1 font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold">Seller Tools</p>
                         <div className="px-3 py-2">

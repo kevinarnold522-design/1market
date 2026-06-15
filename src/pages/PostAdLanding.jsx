@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Plus } from 'lucide-react';
 import CategoryIcon from '../components/CategoryIcon';
 import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
 import AddListingModal from '../components/AddListingModal';
 import MemberSignupModal from '../components/MemberSignupModal';
 import Navbar from '../components/home/Navbar';
@@ -88,6 +89,7 @@ export default function PostAdLanding() {
   const [searchParams] = useSearchParams();
   const preselectedKey = searchParams.get('category');
   const { user } = useAuth();
+  const [currentUser, setCurrentUser] = useState(user);
 
   const [selectedCat, setSelectedCat] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -95,14 +97,17 @@ export default function PostAdLanding() {
   const [selectedType, setSelectedType] = useState('');
   const [selectedSubcategory, setSelectedSubcategory] = useState('');
 
-  const userType = user?.user_type;
-  const isAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
-  const canPost = !!user && (isAdmin || (userType !== 'customer' && userType !== 'rider' && (
-    userType === 'seller' ||
-    userType === 'business' ||
-    user.is_seller ||
-    user.account_type === 'business_owner'
-  )));
+  useEffect(() => {
+    setCurrentUser(user);
+    if (user) base44.auth.me().then(setCurrentUser).catch(() => {});
+  }, [user]);
+
+  const userType = currentUser?.user_type;
+  const isAdmin = currentUser?.role === 'admin' || currentUser?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
+  const isBusinessAccount = userType === 'business' || currentUser?.account_type === 'business_owner';
+  const isSellerAccount = userType === 'seller' || currentUser?.is_seller || isBusinessAccount;
+  const isBlockedUserType = userType === 'rider' || (userType === 'customer' && !isSellerAccount);
+  const canPost = !!currentUser && !isBlockedUserType && (isAdmin || isSellerAccount);
 
   useEffect(() => {
     if (!canPost || !preselectedKey) return;
@@ -223,7 +228,7 @@ export default function PostAdLanding() {
       <AnimatePresence>
         {showModal && selectedCat && canPost && (
           <AddListingModal
-            user={user}
+            user={currentUser}
             defaultType={selectedType}
             defaultSubcategory={selectedSubcategory}
             onClose={() => { setShowModal(false); setSelectedType(''); setSelectedSubcategory(''); setSelectedCat(null); }}
