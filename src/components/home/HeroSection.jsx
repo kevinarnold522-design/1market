@@ -4,15 +4,23 @@ import { ArrowDown } from 'lucide-react';
 import AccountTypeModal from '../AccountTypeModal';
 import LoginModal from '@/components/LoginModal';
 import { base44 } from '@/api/base44Client';
+import SmartSearchBar from '../SmartSearchBar';
+import PostListingMenu from '../PostListingMenu';
 
 export default function HeroSection({ heroImage }) {
   const [isAuth, setIsAuth] = useState(false);
+  const [user, setUser] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
-    base44.auth.isAuthenticated().then(setIsAuth).catch(() => {});
+    base44.auth.isAuthenticated().then(async ok => {
+      setIsAuth(ok);
+      if (ok) setUser(await base44.auth.me());
+    }).catch(() => {});
   }, []);
+
+  const canPost = user && (user.role === 'admin' || user.user_type === 'seller' || user.user_type === 'business' || user.is_seller || user.account_type === 'business_owner');
 
   return (
     <section className="relative min-h-[80vh] flex items-center overflow-hidden">
@@ -74,7 +82,9 @@ export default function HeroSection({ heroImage }) {
                 ))}
               </div>
 
-              <div className="flex items-center gap-2.5 mt-2 flex-wrap">
+              <div className="mt-5 max-w-xl"><SmartSearchBar placeholder="Search listings, food, services, jobs..." /></div>
+
+              <div className="flex items-center gap-2.5 mt-4 flex-wrap">
                 {!isAuth ? (
                   <>
                     <motion.button
@@ -93,12 +103,13 @@ export default function HeroSection({ heroImage }) {
                   </>
                 ) : (
                   <div className="flex items-center gap-3 flex-wrap">
+                    {canPost && <PostListingMenu user={user} />}
                     <motion.a
                       href="/explore"
                       className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
                       style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 24px rgba(0,212,255,0.35)' }}
                       whileHover={{ scale: 1.05 }}>
-                      Explore Now →
+                      Explore Now
                     </motion.a>
 
                   </div>

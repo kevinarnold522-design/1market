@@ -8,9 +8,6 @@ import CategoryCards from '../components/home/CategoryCards';
 import CompactOneStopDashboard from '../components/home/OneStopShopDashboard';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
-import { Store } from 'lucide-react';
-
-const StoreIcon = Store;
 
 // Lazy-load heavy/below-fold sections
 const LiveCategoryDashboards = lazy(() => import('../components/home/LiveCategoryDashboards'));
@@ -52,29 +49,6 @@ export default function Home() {
         
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>
         <CategoryCards />
-        <Suspense fallback={<Spinner />}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="grid grid-cols-1 gap-4">
-              {/* Become a Seller CTA */}
-              <div className="rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap"
-                style={{ background: 'linear-gradient(135deg,rgba(16,185,129,0.15),rgba(0,212,255,0.08))', border: '1px solid rgba(16,185,129,0.25)' }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)' }}>
-                    <StoreIcon className="w-5 h-5 text-emerald-400" />
-                  </div>
-                  <div>
-                    <p className="font-heading font-bold text-white text-sm">Want to earn money?</p>
-                    <p className="font-body text-xs text-white/50">Open a Sales Account — start listing for free.</p>
-                  </div>
-                </div>
-                <a href="/onboarding" className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-body font-bold text-sm text-white flex-shrink-0 transition-all hover:scale-105"
-                  style={{ background: 'linear-gradient(135deg,#10b981,#059669)', boxShadow: '0 0 16px rgba(16,185,129,0.3)' }}>
-                  <StoreIcon className="w-4 h-4" /> Become a Seller
-                </a>
-              </div>
-            </div>
-          </div>
-        </Suspense>
         <Suspense fallback={<Spinner />}><CompactOneStopDashboardLazy /></Suspense>
         <Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense>
         <Suspense fallback={<Spinner />}><PhFlightDeals /></Suspense>

@@ -1,0 +1,4 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft, Package } from 'lucide-react';
+export default function AccountListings(){return <div className="min-h-screen bg-gradient-to-b from-[#0033CC] to-[#001a80] px-4 py-8 text-white"><div className="max-w-4xl mx-auto"><button onClick={()=>window.history.back()} className="inline-flex items-center gap-2 text-white/70 hover:text-white mb-6"><ArrowLeft className="w-4 h-4"/> Back</button><div className="bg-white text-slate-900 rounded-3xl p-8 shadow-xl text-center"><Package className="w-12 h-12 text-blue-600 mx-auto mb-3"/><h1 className="font-heading font-bold text-2xl mb-2">My Listings</h1><p className="text-slate-500 mb-5">Manage listings from your profile tools.</p><Link to="/profile" className="px-5 py-2 rounded-xl bg-blue-600 text-white font-bold">Open profile details</Link></div></div></div>;}

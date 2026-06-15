@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, ChevronRight, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import AddListingModal from './AddListingModal';
 import MemberSignupModal from './MemberSignupModal';
 import TravelPostModal from './travel/TravelPostModal';
@@ -99,9 +99,9 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
     setExpandedCat(null);
   };
 
-  // Customer accounts can post jobs
-  const isCustomer = user && !user.is_seller && user.user_type !== 'seller' && user.user_type !== 'business' && user.account_type !== 'business_owner' && user.role !== 'admin';
-  const visibleCategories = isCustomer ? CATEGORIES.filter((c) => c.key === 'jobs') : CATEGORIES;
+  const canPost = !!user && (user.role === 'admin' || user.user_type === 'seller' || user.user_type === 'business' || user.is_seller || user.account_type === 'business_owner');
+  if (!canPost) return null;
+  const visibleCategories = CATEGORIES;
 
   const handleSelectSubtype = (cat, subtype) => {
     setOpen(false);
@@ -116,7 +116,7 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
     setExpandedCat(expandedCat === cat.key ? null : cat.key);
   };
 
-  const btnLabel = iconOnly ? null : compact ? '+ Post an Ad' : 'Post an Ad';
+  const btnLabel = iconOnly ? null : 'Post an Ad';
 
   return (
     <>
@@ -131,7 +131,6 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
         }`}
         style={!compact ? { boxShadow: '0 0 14px rgba(0,212,255,0.3)' } : undefined}
       >
-        <Plus className="w-3.5 h-3.5" />
         {btnLabel}
       </button>
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Home, Plane, UtensilsCrossed, ShoppingBag, KeyRound, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, LogOut, Ghost, Globe, Package, BarChart2, Shield, Search, ShoppingCart } from 'lucide-react';
+import { Menu, X, Home, Plane, UtensilsCrossed, ShoppingBag, KeyRound, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, LogOut, Ghost, Globe, Package, BarChart2, Shield, ShoppingCart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
@@ -23,7 +23,6 @@ const NAV_ITEMS = [
 export default function FloatingNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const { user, isAuthenticated, logout } = useAuth();
   const [ghostUser, setGhostUser] = useState(null);
   const navigate = useNavigate();
@@ -61,15 +60,6 @@ export default function FloatingNavbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/explore?q=${encodeURIComponent(searchQuery.trim())}`);
-      setIsOpen(false);
-      setSearchQuery('');
-    }
-  };
 
 return (
     <>
@@ -137,20 +127,6 @@ return (
                 </button>
               </div>
 
-              {/* Search Bar */}
-              <form onSubmit={handleSearch} className="px-4 py-3 border-b border-white/8">
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search listings..."
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 pl-9 font-body text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#00D4FF]/50 transition-colors"
-                  />
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30" />
-                </div>
-              </form>
-
               {/* Navigation Menu */}
               <div className="p-3 max-h-[60vh] overflow-y-scroll" data-navbar-menu style={{ scrollbarGutter: 'stable', minHeight: '420px' }}>
                 {/* Auth Section */}
@@ -189,10 +165,10 @@ return (
                       <Link to="/messages" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-[#00D4FF]">
                         <MessageSquare className="w-4 h-4 text-[#00D4FF]" /> Messages
                       </Link>
-                      <Link to="/profile?tab=orders" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-[#00D4FF]">
+                      <Link to="/orders" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-[#00D4FF]">
                         <Package className="w-4 h-4 text-[#00D4FF]" /> My Orders
                       </Link>
-                      <Link to="/profile?tab=cart" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400">
+                      <Link to="/cart" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400">
                         <ShoppingCart className="w-4 h-4 text-green-400" /> My Cart
                       </Link>
                     </div>

@@ -1,0 +1,12 @@
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft, ShoppingCart, Trash2, Package } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+
+export default function AccountCart() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => { (async () => { const user = await base44.auth.me(); const cart = await base44.entities.Cart.filter({ user_email: user.email }); setItems(cart); setLoading(false); })().catch(() => setLoading(false)); }, []);
+  const remove = async (id) => { await base44.entities.Cart.delete(id); setItems(prev => prev.filter(i => i.id !== id)); };
+  return <div className="min-h-screen bg-gradient-to-b from-[#0033CC] to-[#001a80] px-4 py-8 text-white"><div className="max-w-4xl mx-auto"><button onClick={() => window.history.back()} className="inline-flex items-center gap-2 text-white/70 hover:text-white mb-6"><ArrowLeft className="w-4 h-4" /> Back</button><div className="rounded-3xl bg-white text-slate-900 p-6 shadow-xl"><div className="flex items-center gap-3 mb-6"><div className="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center"><ShoppingCart className="w-6 h-6 text-blue-700" /></div><div><h1 className="font-heading font-bold text-2xl">My Cart</h1><p className="text-sm text-slate-500">Your saved checkout items</p></div></div>{loading ? <div className="py-16 text-center text-slate-400">Loading cart...</div> : items.length === 0 ? <div className="py-16 text-center"><Package className="w-12 h-12 text-slate-200 mx-auto mb-3" /><p className="text-slate-500 mb-4">Your cart is empty.</p><Link to="/buysell" className="px-5 py-2 rounded-xl bg-blue-600 text-white font-bold">Browse listings</Link></div> : <div className="space-y-3">{items.map(item => <div key={item.id} className="flex items-center gap-3 p-4 rounded-2xl border border-blue-100 bg-blue-50/40">{item.listing_image && <img src={item.listing_image} alt="" className="w-16 h-16 rounded-xl object-cover" />}<div className="flex-1"><p className="font-bold">{item.listing_title}</p><p className="text-sm text-blue-700">{item.price_label}</p><p className="text-xs text-slate-500">{item.seller_name}</p></div><button onClick={() => remove(item.id)} className="p-2 rounded-xl hover:bg-red-50 text-red-600"><Trash2 className="w-4 h-4" /></button></div>)}</div>}</div></div></div>;
+}

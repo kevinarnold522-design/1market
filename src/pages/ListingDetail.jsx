@@ -3,7 +3,7 @@ import MascotDog from '../components/MascotDog';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock, ShoppingCart, Play, X, ExternalLink, Send, Briefcase, Utensils, Home, Car, Wrench, Plane, Tag, Package, Music, Link2, Store, MessageCircle, Smartphone } from 'lucide-react';
+import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock, ShoppingCart, Play, X, ExternalLink, Send, Briefcase, Utensils, Home, Car, Wrench, Plane, Tag, Package, Music, Link2, Store, MessageCircle, Smartphone, Hourglass, Ban } from 'lucide-react';
 import ReportModal from '../components/ReportModal';
 import ReceiptModal from '../components/ReceiptModal';
 import AIReviewSummary from '../components/listing/AIReviewSummary';
@@ -330,7 +330,7 @@ export default function ListingDetail() {
           {/* Approval Status Badge */}
           {listing.approval_status === 'pending' && (
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-body font-bold text-xs" style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', color: '#fbbf24' }}>
-              ⏳ Pending Approval
+              <Hourglass className="w-3 h-3" /> Pending Approval
             </span>
           )}
           {listing.approval_status === 'approved' && (
@@ -340,10 +340,17 @@ export default function ListingDetail() {
           )}
           {listing.approval_status === 'rejected' && (
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-body font-bold text-xs" style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.35)', color: '#f87171' }}>
-              ✕ Rejected
+              <Ban className="w-3 h-3" /> Rejected
             </span>
           )}
         </div>
+
+        {listing.description && (
+          <div className="rounded-2xl p-5 mb-6" style={{ background: 'rgba(13,31,60,0.92)', border: '1px solid rgba(0,212,255,0.18)' }}>
+            <p className="font-body text-xs text-[#00D4FF] mb-2 uppercase tracking-wider font-bold">Description</p>
+            <p className="font-body text-base text-white/80 leading-relaxed whitespace-pre-line">{listing.description}</p>
+          </div>
+        )}
 
         <div className="grid lg:grid-cols-5 gap-8">
           {/* Left: Images */}
@@ -429,7 +436,7 @@ export default function ListingDetail() {
                     <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0">
                       <Play className="w-4 h-4 text-white fill-white" />
                     </div>
-                    <span className="text-red-300">▶ Watch Video Preview</span>
+                    <span className="text-red-300">Watch Video Preview</span>
                   </button>
                 )}
               </div>
@@ -592,13 +599,6 @@ export default function ListingDetail() {
                   )}
                 </div>
               </div>
-
-              {listing.description && (
-                <div className="mb-4">
-                  <p className="font-body text-xs text-white/50 mb-1 uppercase tracking-wider">Description</p>
-                  <p className="font-body text-sm text-white/75 leading-relaxed whitespace-pre-line">{listing.description}</p>
-                </div>
-              )}
 
               {/* Flight details */}
               {listing.type === 'flights' && (listing.flight_departure_date || listing.flight_departure_time || listing.flight_return_date) && (

@@ -209,7 +209,7 @@ export default function LeftSidebar({ isMobileHidden = false }) {
         )}
 
         {/* Seller tools - for both regular and ghost sellers */}
-        {((isSeller && !isGhostSession) || (isGhostSession && ghostUser?.user_type === 'seller') || isAdmin) && isAuthenticated && (
+        {((isSeller && !isGhostSession) || (isGhostSession && (ghostUser?.user_type === 'seller' || ghostUser?.user_type === 'business')) || isAdmin) && isAuthenticated && (
           <>
             <div className="my-2 border-t border-white/8 mx-1" />
             {!collapsed && <p className="px-2 py-1 font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold">Seller</p>}

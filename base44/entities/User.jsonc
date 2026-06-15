@@ -22,12 +22,10 @@
       "description": "Account type: customer, sales (seller), business, or rider delivery"
     },
     "sales_subtype": {
-      "type": "string",
-      "description": "Subtype for Sales Accounts e.g. Online Seller, Real Estate Agent, Freelancer, etc."
+      "type": "string"
     },
     "business_subtype": {
-      "type": "string",
-      "description": "Subtype for Business Accounts e.g. Restaurant, Hotel, Retail Store, etc."
+      "type": "string"
     },
     "is_seller": {
       "type": "boolean",
@@ -44,8 +42,7 @@
       "default": "customer"
     },
     "channel_name": {
-      "type": "string",
-      "description": "Public display name / channel name"
+      "type": "string"
     },
     "username": {
       "type": "string"
@@ -63,8 +60,20 @@
     "profile_picture": {
       "type": "string"
     },
+    "profile_photos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "cover_photo": {
       "type": "string"
+    },
+    "cover_photos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "phone": {
       "type": "string"
@@ -159,24 +168,19 @@
       "default": false
     },
     "rider_id1_url": {
-      "type": "string",
-      "description": "Rider: Valid ID #1"
+      "type": "string"
     },
     "rider_id2_url": {
-      "type": "string",
-      "description": "Rider: Valid ID #2"
+      "type": "string"
     },
     "rider_id3_url": {
-      "type": "string",
-      "description": "Rider: Valid ID #3"
+      "type": "string"
     },
     "rider_billing_url": {
-      "type": "string",
-      "description": "Rider: Proof of Billing"
+      "type": "string"
     },
     "rider_barangay_url": {
-      "type": "string",
-      "description": "Rider: Barangay Clearance"
+      "type": "string"
     },
     "rider_verification_status": {
       "type": "string",
@@ -204,8 +208,7 @@
       "default": false
     },
     "onboarding_answers": {
-      "type": "object",
-      "description": "Saved onboarding question answers"
+      "type": "object"
     },
     "facebook_page_id": {
       "type": "string"

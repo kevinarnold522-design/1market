@@ -96,7 +96,7 @@ const AuthenticatedApp = () => {
         <Route path="/explore" element={<ExplorePage />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/favourites" element={<Favourites />} />
-        <Route path="/community" element={<BusinessCommunity />} />
+        <Route path="/community" element={<Groups />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/onboarding" element={<SellerOnboarding />} />
         <Route path="/rider-onboarding" element={<RiderOnboarding />} />

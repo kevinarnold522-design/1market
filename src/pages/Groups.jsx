@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Users, Lock, Globe, Clock, CheckCircle, X, Image as ImageIcon, Heart, MessageCircle, Share2, Send, ChevronLeft, Layers, Flag } from 'lucide-react';
+import { Plus, Users, Lock, Globe, Clock, CheckCircle, X, Image as ImageIcon, Heart, MessageCircle, Share2, Send, ChevronLeft, Layers, Flag, Hourglass } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import DoubleHeartAnimation from '../components/DoubleHeartAnimation';
 
@@ -79,7 +79,7 @@ export default function Groups() {
       creator_email: user.email,
       creator_name: user.full_name || user.email,
       member_count: 1,
-      approval_status: isAdmin ? 'approved' : 'pending',
+      approval_status: 'pending',
     });
     setGroupForm({ name: '', description: '', category: '', is_private: false });
     setShowCreateGroup(false);
@@ -108,7 +108,7 @@ export default function Groups() {
       content: postForm.content.trim(),
       image_url: postForm.image_url,
       post_type: postForm.post_type,
-      approval_status: postForm.post_type === 'listing' && !isAdmin ? 'pending' : 'approved',
+      approval_status: 'pending',
       likes: 0,
       comment_count: 0,
     });
@@ -183,6 +183,9 @@ export default function Groups() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div className="flex items-center gap-3">
+            <button onClick={() => window.history.back()} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-white/70 hover:text-white font-body text-sm">
+              <ChevronLeft className="w-4 h-4" /> Back
+            </button>
             <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#ec4899,#a855f7)' }}>
               <Layers className="w-5 h-5 text-white" />
             </div>
@@ -205,7 +208,7 @@ export default function Groups() {
         {/* Admin pending approvals */}
         {isAdmin && pendingGroups.length > 0 && !selectedGroup && (
           <div className="mb-6 p-4 rounded-2xl" style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.3)' }}>
-            <p className="font-body font-bold text-amber-300 text-sm mb-3">⏳ Pending Group Approvals ({pendingGroups.length})</p>
+            <p className="font-body font-bold text-amber-300 text-sm mb-3 flex items-center gap-2"><Hourglass className="w-4 h-4" /> Pending Group Approvals ({pendingGroups.length})</p>
             <div className="space-y-2">
               {pendingGroups.map(g => (
                 <div key={g.id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 flex-wrap">
@@ -388,7 +391,7 @@ export default function Groups() {
                 <button key={t} onClick={() => setTab(t)}
                   className={`px-4 py-2 rounded-xl font-body font-bold text-sm transition-all ${tab === t ? 'text-white' : 'text-white/40 hover:text-white bg-white/5'}`}
                   style={tab === t ? { background: 'linear-gradient(135deg,#ec4899,#a855f7)' } : {}}>
-                  {t === 'discover' ? '🌍 Discover' : '👥 My Groups'}
+                  {t === 'discover' ? <><Globe className="w-4 h-4 inline mr-1" /> Discover</> : <><Users className="w-4 h-4 inline mr-1" /> My Groups</>}
                 </button>
               ))}
             </div>
@@ -400,7 +403,7 @@ export default function Groups() {
                 <p className="font-body text-white/30 text-sm">{tab === 'my-groups' ? "You haven't joined any groups yet." : 'No approved groups yet. Create the first one!'}</p>
                 {tab === 'discover' && user && (
                   <button onClick={() => setShowCreateGroup(true)} className="mt-4 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white" style={{ background: 'linear-gradient(135deg,#ec4899,#a855f7)' }}>
-                    + Create Group
+                    <Plus className="w-4 h-4 inline mr-1" /> Create Group
                   </button>
                 )}
               </div>
@@ -466,7 +469,7 @@ export default function Groups() {
               </div>
               <div className="p-5 space-y-4">
                 {!user && <p className="font-body text-sm text-amber-300 bg-amber-500/10 rounded-xl px-3 py-2 border border-amber-500/20">Please log in to create a group.</p>}
-                {!isAdmin && <p className="font-body text-xs text-white/40 bg-white/5 rounded-xl px-3 py-2 border border-white/8">⏳ New groups require admin approval before they become visible.</p>}
+                <p className="font-body text-xs text-white/40 bg-white/5 rounded-xl px-3 py-2 border border-white/8 flex items-center gap-2"><Hourglass className="w-4 h-4 text-amber-300" /> New groups require admin approval before they become visible.</p>
                 <div>
                   <label className="block font-body text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1">Group Name *</label>
                   <input value={groupForm.name} onChange={e => setGroupForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g. Manila Sneakers Community"
