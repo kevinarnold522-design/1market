@@ -95,24 +95,23 @@ export default function PostAdLanding() {
   const [selectedType, setSelectedType] = useState('');
   const [selectedSubcategory, setSelectedSubcategory] = useState('');
 
+  const userType = user?.user_type;
+  const isAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
+  const canPost = !!user && (isAdmin || (userType !== 'customer' && userType !== 'rider' && (
+    userType === 'seller' ||
+    userType === 'business' ||
+    user.is_seller ||
+    user.account_type === 'business_owner'
+  )));
+
   useEffect(() => {
-    const typeParam = searchParams.get('type');
-    const subParam = searchParams.get('sub') || '';
-    if (!user) return;
-    if (preselectedKey && typeParam) {
-      const cat = CATEGORIES.find(c => c.key === preselectedKey);
-      if (cat) { setSelectedCat(cat); setSelectedType(typeParam); setSelectedSubcategory(subParam); setShowModal(true); }
-    } else if (preselectedKey) {
-      const cat = CATEGORIES.find(c => c.key === preselectedKey);
-      if (cat) {
-        setSelectedCat(cat);
-        if (cat.subtypes.length === 1) { setSelectedType(cat.subtypes[0].type); setShowModal(true); }
-      }
-    }
-  }, [user]);
+    if (!canPost || !preselectedKey) return;
+    const cat = CATEGORIES.find(c => c.key === preselectedKey);
+    if (cat) setSelectedCat(cat);
+  }, [canPost, preselectedKey]);
 
   const handleSelectSubtype = (cat, subtype) => {
-    if (!user) { setShowSignup(true); return; }
+    if (!canPost) return;
     setSelectedCat(cat);
     setSelectedType(subtype.type);
     setSelectedSubcategory(subtype.subcategory || '');
@@ -120,7 +119,7 @@ export default function PostAdLanding() {
   };
 
   const handleCatClick = (cat) => {
-    if (!user) { setShowSignup(true); return; }
+    if (!canPost) return;
     setSelectedCat(selectedCat?.key === cat.key ? null : cat);
   };
 
@@ -142,11 +141,17 @@ export default function PostAdLanding() {
           <h1 className="font-heading font-bold text-3xl sm:text-4xl text-white mb-2">
             What are you listing?
           </h1>
-          <p className="font-body text-sm text-white/40">Choose a category to get started</p>
+          <p className="font-body text-sm text-white/40">Choose a category, then pick a subcategory before creating your listing</p>
         </motion.div>
 
+        {!canPost && (
+          <div className="mb-8 text-center p-5 rounded-2xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <p className="font-body text-sm text-white/65">Post an Ad is available for seller, business, and admin accounts only.</p>
+          </div>
+        )}
+
         {/* Category Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        {canPost && <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {CATEGORIES.map((cat, i) => (
             <motion.div key={cat.key}
               initial={{ opacity: 0, y: 20 }}
@@ -199,7 +204,7 @@ export default function PostAdLanding() {
               </AnimatePresence>
             </motion.div>
           ))}
-        </div>
+        </div>}
 
         {!user && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
@@ -216,7 +221,7 @@ export default function PostAdLanding() {
       </div>
 
       <AnimatePresence>
-        {showModal && selectedCat && (
+        {showModal && selectedCat && canPost && (
           <AddListingModal
             user={user}
             defaultType={selectedType}

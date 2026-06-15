@@ -233,7 +233,7 @@ export default function Navbar() {
               <Link to="/community" className="flex items-center gap-1 px-2.5 py-1 rounded-xl font-body text-xs font-semibold text-purple-400 hover:bg-white/8 transition-all whitespace-nowrap ml-1">
                 <Users className="w-3 h-3" /> Community
               </Link>
-              {isAuthenticated && activeUser && (isSeller || isAdmin) && (
+              {isAuthenticated && activeUser && (isAdmin || (isSeller && !isRider && !isCustomer)) && (
                 <div className="ml-auto flex-shrink-0">
                   <PostListingMenu user={activeUser} compact />
                 </div>
@@ -489,7 +489,7 @@ export default function Navbar() {
                               <div className="border-t border-white/8 my-1" />
                               <p className="px-3 py-1 font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold">Seller Tools</p>
                               <div className="px-3 py-1.5">
-                                <PostListingMenu user={isGhostSession ? ghostUser : user} compact={false} />
+                                <PostListingMenu user={activeUser} compact={false} />
                               </div>
                               {/* Admin-only: Connected Accounts — never in ghost session */}
                               {isAdmin && !isGhostSession && (
@@ -626,7 +626,7 @@ export default function Navbar() {
                       className="block text-[#00D4FF] font-body text-sm font-semibold py-2">
                       My Profile
                     </Link>
-                    {(isSeller || isAdmin) && (
+                    {(isAdmin || (isSeller && !isRider && !isCustomer)) && (
                       <>
                         <div className="py-1">
                           <PostListingMenu user={activeUser} compact={true} />
