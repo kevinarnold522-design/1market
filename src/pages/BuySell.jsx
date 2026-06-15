@@ -147,6 +147,8 @@ export default function BuySell() {
   const [showAddModal, setShowAddModal] = useState(shouldPost && !!user);
   const [defaultType, setDefaultType] = useState(urlType || 'product');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(parseInt(params.get('page')) || 1);
+  const ITEMS_PER_PAGE = 10;
 
   const isSeller = user?.user_type === 'seller' || user?.user_type === 'business' || user?.is_seller || user?.role === 'admin';
 
@@ -196,6 +198,15 @@ export default function BuySell() {
       if (sortBy === 'Most Popular') return (b.rating_count || 0) - (a.rating_count || 0);
       return new Date(b.created_date) - new Date(a.created_date);
     });
+
+  // Pagination
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedItems = filtered.slice((safePage - 1) * ITEMS_PER_PAGE, safePage * ITEMS_PER_PAGE);
+  const goToPage = (p) => {
+    setCurrentPage(p);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
@@ -309,11 +320,32 @@ export default function BuySell() {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filtered.map((listing, idx) => (
-                <ListingCard key={listing.id} listing={listing} idx={idx} />
-              ))}
-            </div>
+           <>
+             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+               {paginatedItems.map((listing, idx) => (
+                 <ListingCard key={listing.id} listing={listing} idx={idx} />
+               ))}
+             </div>
+             {/* Pagination */}
+             {totalPages > 1 && (
+               <div className="flex items-center justify-center gap-1.5 mt-6">
+                 <button onClick={() => goToPage(safePage - 1)} disabled={safePage <= 1}
+                   className="px-3 py-1.5 rounded-lg font-body text-xs font-bold bg-white/5 border border-white/10 text-white/50 hover:text-white disabled:opacity-25 transition-all">
+                   ‹ Prev
+                 </button>
+                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                   <button key={p} onClick={() => goToPage(p)}
+                     className={`w-8 h-8 rounded-lg font-body text-xs font-bold transition-all ${p === safePage ? 'bg-[#00D4FF] text-[#0A192F]' : 'bg-white/5 border border-white/10 text-white/50 hover:text-white'}`}>
+                     {p}
+                   </button>
+                 ))}
+                 <button onClick={() => goToPage(safePage + 1)} disabled={safePage >= totalPages}
+                   className="px-3 py-1.5 rounded-lg font-body text-xs font-bold bg-white/5 border border-white/10 text-white/50 hover:text-white disabled:opacity-25 transition-all">
+                   Next ›
+                 </button>
+               </div>
+             )}
+           </>
           )}
         </div>
       </div>

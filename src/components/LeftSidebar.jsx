@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Plane, UtensilsCrossed, ShoppingBag, Car, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, ChevronLeft, ChevronRight, ShoppingCart, Package, BarChart2, Settings, LogOut, Shield, KeyRound, Ghost, Search, HelpCircle, Info, FileText, Layers } from 'lucide-react';
+import { Home, Plane, UtensilsCrossed, ShoppingBag, Car, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, ChevronLeft, ChevronRight, ShoppingCart, Package, BarChart2, Settings, LogOut, Shield, KeyRound, Ghost, HelpCircle, Info, FileText, Layers } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import PostListingMenu from './PostListingMenu';
 import NotificationsBell from './NotificationsBell';
@@ -185,6 +185,12 @@ export default function LeftSidebar({ isMobileHidden = false }) {
               title={collapsed ? 'Saved' : undefined}>
               <Heart className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span className="font-body text-xs font-semibold truncate">Saved</span>}
+            </Link>
+            <Link to="/profile?tab=cart"
+              className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-white/50 hover:text-green-400 hover:bg-green-500/10"
+              title={collapsed ? 'Cart' : undefined}>
+              <ShoppingCart className="w-4 h-4 flex-shrink-0" />
+              {!collapsed && <span className="font-body text-xs font-semibold truncate">Cart</span>}
             </Link>
             <Link to="/messages"
               className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-white/50 hover:text-[#00D4FF] hover:bg-[#00D4FF]/10"

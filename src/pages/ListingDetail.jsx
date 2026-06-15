@@ -503,10 +503,16 @@ export default function ListingDetail() {
                   services: 'Services',
                   jobs: 'Jobs',
                 };
+                const MAIN_TO_ROUTE = {
+                  'travel': '/travel', 'food': '/food', 'buysell': '/buysell',
+                  'rent': '/rent', 'services': '/services', 'jobs': '/jobs',
+                };
                 const mainLabel = listing.main_category
                   ? (listing.main_category === 'buysell' ? 'Buy & Sell' : listing.main_category === 'rent' ? 'Rent & Lease' : listing.main_category.charAt(0).toUpperCase() + listing.main_category.slice(1))
                   : (listing.type ? TYPE_TO_MAIN[listing.type] : null);
                 const typeLabel = listing.type ? listing.type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : null;
+                const catRoute = MAIN_TO_ROUTE[listing.main_category] || '/buysell';
+                const subRoute = listing.main_category === 'buysell' ? `/buysell?type=${listing.type}&sub=${encodeURIComponent(listing.subcategory || '')}` : listing.main_category === 'food' ? `/food?sub=${encodeURIComponent(listing.subcategory || '')}` : listing.main_category === 'travel' ? `/travel?sub=${encodeURIComponent(listing.subcategory || '')}` : listing.main_category === 'rent' ? `/rent?sub=${encodeURIComponent(listing.subcategory || '')}` : listing.main_category === 'services' ? `/services?sub=${encodeURIComponent(listing.subcategory || '')}` : listing.main_category === 'jobs' ? `/jobs?sub=${encodeURIComponent(listing.subcategory || '')}` : '/buysell';
                 const CAT_COLORS = {
                   'Buy & Sell': '#c084fc', 'Travel': '#60a5fa', 'Food': '#fb923c',
                   'Rent & Lease': '#4ade80', 'Services': '#38bdf8', 'Jobs': '#fbbf24',
@@ -515,24 +521,24 @@ export default function ListingDetail() {
                 return (
                   <div className="flex flex-wrap items-center gap-1.5 mb-3">
                     {mainLabel && (
-                      <span className="px-2.5 py-1 rounded-lg font-body text-[10px] font-bold uppercase tracking-wider flex items-center gap-1"
+                      <Link to={catRoute} className="px-2.5 py-1 rounded-lg font-body text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 hover:scale-105 transition-transform cursor-pointer"
                         style={{ background: `${color}18`, border: `1px solid ${color}44`, color }}>
                         <Tag className="w-3 h-3" /> {mainLabel}
-                      </span>
+                      </Link>
                     )}
                     {typeLabel && mainLabel && <span className="text-white/25 text-[10px]">›</span>}
                     {typeLabel && (
-                      <span className="px-2.5 py-1 rounded-lg font-body text-[10px] font-bold"
+                      <Link to={catRoute} className="px-2.5 py-1 rounded-lg font-body text-[10px] font-bold hover:scale-105 transition-transform cursor-pointer"
                         style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.65)' }}>
                         {typeLabel}
-                      </span>
+                      </Link>
                     )}
                     {listing.subcategory && (typeLabel || mainLabel) && <span className="text-white/25 text-[10px]">›</span>}
                     {listing.subcategory && (
-                      <span className="px-2.5 py-1 rounded-lg font-body text-[10px] font-bold"
+                      <Link to={subRoute} className="px-2.5 py-1 rounded-lg font-body text-[10px] font-bold hover:scale-105 transition-transform cursor-pointer"
                         style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.5)' }}>
                         {listing.subcategory}
-                      </span>
+                      </Link>
                     )}
                   </div>
                 );

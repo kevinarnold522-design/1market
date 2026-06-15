@@ -175,6 +175,25 @@
     "video_url": {
       "type": "string"
     },
+    "preview_media": {
+      "type": "string",
+      "description": "YouTube URL or uploaded video URL for universal preview"
+    },
+    "ign_rating": {
+      "type": "number",
+      "description": "IGN-style rating score (0-10) for Games category listings"
+    },
+    "game_platforms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Selected game distribution platforms (Steam, Epic Games, etc.)"
+    },
+    "target_game": {
+      "type": "string",
+      "description": "Manual text field for Tools category - which game the tool is for"
+    },
     "condition": {
       "type": "string",
       "enum": [
