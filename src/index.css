@@ -94,22 +94,46 @@
 aside nav {
   overflow-y: scroll !important;
   scrollbar-width: 16px;
-  scrollbar-color: rgba(255,255,255,1) rgba(255,255,255,0.15);
+  scrollbar-color: rgba(255,255,255,0.9) rgba(255,255,255,0.12);
 }
 aside nav::-webkit-scrollbar {
-  width: 16px !important;
+  width: 14px !important;
   display: block !important;
 }
 aside nav::-webkit-scrollbar-track {
-  background: rgba(255,255,255,0.15);
-  border-radius: 8px;
+  background: rgba(255,255,255,0.10);
+  border-radius: 7px;
+  margin: 4px 0;
 }
 aside nav::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 1);
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 7px;
   min-height: 40px;
-  border: 3px solid rgba(0,13,64,0.6);
+  border: 2px solid rgba(0,13,64,0.5);
 }
 aside nav::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 1);
+}
+
+/* Global thick white scrollbar on all scrollable areas */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.5) transparent;
+}
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+*::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.06);
+  border-radius: 6px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 6px;
+  min-height: 30px;
+  border: 2px solid rgba(0,13,64,0.4);
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.85);
 }

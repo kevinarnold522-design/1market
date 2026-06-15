@@ -15,9 +15,16 @@ export default function PostListingButton({ className = '', size = 'md' }) {
     }).catch(() => {});
   }, []);
 
-  const isAdmin = user?.role === 'admin';
+  // Allow posting for admin, seller, business users
+  const canPost = user && (
+    user.email?.toLowerCase() === 'kevinarnold522@gmail.com' ||
+    user.user_type === 'seller' ||
+    user.user_type === 'business' ||
+    user.is_seller ||
+    user.account_type === 'business_owner'
+  );
 
-  if (user && isAdmin) {
+  if (user && canPost) {
     return (
       <>
         <PostListingMenu user={user} compact={false} />
@@ -31,7 +38,13 @@ export default function PostListingButton({ className = '', size = 'md' }) {
   return (
     <>
       <button
-        onClick={() => setShowSignup(true)}
+        onClick={() => {
+          if (user) {
+            // Authenticated but not yet a seller → nothing happens (they'll use profile)
+          } else {
+            setShowSignup(true);
+          }
+        }}
         className={`inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-body font-bold text-sm text-white transition-all hover:scale-105 ${className}`}
         style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 20px rgba(37,99,235,0.5)' }}
       >

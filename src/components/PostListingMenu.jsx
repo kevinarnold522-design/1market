@@ -119,6 +119,22 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
 
   return (
     <>
+      {/* Trigger Button */}
+      <button
+        ref={btnRef}
+        onClick={handleOpen}
+        className={`flex items-center gap-1.5 font-body font-bold transition-all rounded-xl ${
+          compact
+            ? 'px-2.5 py-1.5 text-xs bg-white/8 border border-white/10 text-white/70 hover:text-white hover:border-[#00D4FF]/40'
+            : 'px-4 py-2 text-xs bg-[#00D4FF] hover:bg-white text-[#0A192F]'
+        }`}
+        style={!compact ? { boxShadow: '0 0 14px rgba(0,212,255,0.3)' } : undefined}
+      >
+        <Plus className="w-3.5 h-3.5" />
+        {btnLabel}
+      </button>
+
+      {/* Dropdown (portal) */}
       <div className="relative" ref={ref}>
         
 
@@ -199,6 +215,6 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
       <AnimatePresence>
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
       </AnimatePresence>
-    </>);
-
+    </>
+  );
 }

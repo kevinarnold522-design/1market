@@ -8,6 +8,10 @@ import CategoryCards from '../components/home/CategoryCards';
 import CompactOneStopDashboard from '../components/home/OneStopShopDashboard';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
+import { Plus, Store } from 'lucide-react';
+
+const PlusIcon = Plus;
+const StoreIcon = Store;
 
 // Lazy-load heavy/below-fold sections
 const LiveCategoryDashboards = lazy(() => import('../components/home/LiveCategoryDashboards'));
@@ -49,6 +53,46 @@ export default function Home() {
         
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>
         <CategoryCards />
+        <Suspense fallback={<Spinner />}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Post an Ad CTA */}
+              <div className="rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap"
+                style={{ background: 'linear-gradient(135deg,rgba(0,51,204,0.5),rgba(0,26,128,0.7))', border: '1px solid rgba(0,212,255,0.25)' }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(0,212,255,0.15)', border: '1px solid rgba(0,212,255,0.3)' }}>
+                    <PlusIcon className="w-5 h-5 text-[#00D4FF]" />
+                  </div>
+                  <div>
+                    <p className="font-heading font-bold text-white text-sm">Got something to sell?</p>
+                    <p className="font-body text-xs text-white/50">Post an Ad — browse all categories.</p>
+                  </div>
+                </div>
+                <a href="/post-ad" className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] flex-shrink-0 transition-all hover:scale-105"
+                  style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 16px rgba(0,212,255,0.35)' }}>
+                  <PlusIcon className="w-4 h-4" /> Post an Ad
+                </a>
+              </div>
+              {/* Become a Seller CTA */}
+              <div className="rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap"
+                style={{ background: 'linear-gradient(135deg,rgba(16,185,129,0.15),rgba(0,212,255,0.08))', border: '1px solid rgba(16,185,129,0.25)' }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)' }}>
+                    <StoreIcon className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <div>
+                    <p className="font-heading font-bold text-white text-sm">Want to earn money?</p>
+                    <p className="font-body text-xs text-white/50">Open a Sales Account — start listing for free.</p>
+                  </div>
+                </div>
+                <a href="/onboarding" className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-body font-bold text-sm text-white flex-shrink-0 transition-all hover:scale-105"
+                  style={{ background: 'linear-gradient(135deg,#10b981,#059669)', boxShadow: '0 0 16px rgba(16,185,129,0.3)' }}>
+                  <StoreIcon className="w-4 h-4" /> Become a Seller
+                </a>
+              </div>
+            </div>
+          </div>
+        </Suspense>
         <Suspense fallback={<Spinner />}><CompactOneStopDashboardLazy /></Suspense>
         <Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense>
         <Suspense fallback={<Spinner />}><PhFlightDeals /></Suspense>

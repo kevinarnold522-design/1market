@@ -488,6 +488,18 @@
       },
       "description": "Available delivery/pickup options"
     },
+    "shoppee_link": {
+      "type": "string",
+      "description": "Shopee product or store link"
+    },
+    "lazada_link": {
+      "type": "string",
+      "description": "Lazada product or store link"
+    },
+    "tiktok_shop_link": {
+      "type": "string",
+      "description": "TikTok Shop product or store link"
+    },
     "meetup_details": {
       "type": "string",
       "description": "Meetup or pickup location details"
