@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Star, MapPin, Phone, Heart, ExternalLink, Share2 } from 'lucide-react';
+import { X, Star, MapPin, Heart, ExternalLink, Share2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import ListingContactLinks from './ListingContactLinks';
 
 export default function QuickViewModal({ listing, onClose, user }) {
   const [activeImage, setActiveImage] = useState(0);
@@ -102,22 +103,19 @@ export default function QuickViewModal({ listing, onClose, user }) {
               )}
             </div>
 
-            <div className="flex gap-2">
-              <Link to={`/listing/${listing.id}`} onClick={onClose}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
-                style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}>
-                <ExternalLink className="w-3.5 h-3.5" /> View Full Listing
-              </Link>
-              {listing.phone && (
-                <a href={`tel:${listing.phone}`}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-green-500/15 border border-green-500/25 text-green-400 font-body font-bold text-sm hover:bg-green-500/25 transition-colors">
-                  <Phone className="w-3.5 h-3.5" /> Call
-                </a>
-              )}
-              <button onClick={share}
-                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/25 transition-all">
-                <Share2 className="w-4 h-4" />
-              </button>
+            <div className="space-y-3">
+              <ListingContactLinks listing={listing} compact />
+              <div className="flex gap-2">
+                <Link to={`/listing/${listing.id}`} onClick={onClose}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
+                  style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}>
+                  <ExternalLink className="w-3.5 h-3.5" /> View Full Listing
+                </Link>
+                <button onClick={share}
+                  className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/25 transition-all">
+                  <Share2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
         </motion.div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ParticleBackground from '../components/ParticleBackground';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, ExternalLink, Phone, MessageSquare, AlertCircle, Plus, Home, Building2, Car, Wrench, CalendarDays, Grid3X3, Pencil, Trash2, X, Laptop, Bike } from 'lucide-react';
+import { ArrowLeft, Search, ExternalLink, Phone, MessageSquare, AlertCircle, Home, Building2, Car, Wrench, CalendarDays, Grid3X3, Pencil, Trash2, X, Laptop, Bike } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
@@ -10,6 +10,7 @@ import { base44 } from '@/api/base44Client';
 import MascotDog from '../components/MascotDog';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import SmartFilterChips from '../components/SmartFilterChips';
+import ListingContactLinks from '../components/ListingContactLinks';
 
 // Multi-icon renderer for the section header
 function MultiIcon({ color }) {
@@ -145,14 +146,7 @@ function ContactModal({ item, onClose }) {
           <p className="absolute bottom-2 left-4 font-heading font-bold text-white text-sm">{item.title}</p>
         </div>
         <div className="p-5 space-y-3">
-          <div className="flex gap-2">
-            <a href={`tel:${item.contact}`} className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[#2563EB] text-white rounded-xl font-body text-xs font-semibold hover:bg-[#00D4FF] hover:text-[#0A192F] transition-colors">
-              <Phone className="w-3.5 h-3.5" /> Call
-            </a>
-            <a href={`sms:${item.contact}`} className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-white/10 border border-white/15 text-white rounded-xl font-body text-xs font-semibold hover:bg-white/20 transition-colors">
-              <MessageSquare className="w-3.5 h-3.5" /> SMS
-            </a>
-          </div>
+          <ListingContactLinks listing={item} compact />
           <div className="flex items-start gap-2 bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl">
             <AlertCircle className="w-3.5 h-3.5 text-amber-400 flex-shrink-0 mt-0.5" />
             <p className="font-body text-[10px] text-amber-300">Verify all agreements and documents directly with the owner before any payment.</p>
@@ -240,11 +234,7 @@ export default function ForRent() {
             </div>
             <div className="flex items-center gap-3 mb-2 flex-wrap">
               <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">For Rent / For Sale / Lease</h1>
-              {(isAdmin || isSeller) && (
-                <Link to="/post-ad?category=rent&type=rent_lease" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl font-body font-bold text-sm text-white" style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)' }}>
-                  <Plus className="w-4 h-4" /> Post Rental
-                </Link>
-              )}
+
             </div>
             <div className="flex items-center gap-2 mb-3">
               <Home className="w-5 h-5 text-emerald-400" />

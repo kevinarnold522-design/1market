@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Plus, Tag, MapPin, Star, Heart, MessageSquare, Truck, SlidersHorizontal, X } from 'lucide-react';
+import { Search, Tag, MapPin, Star, Heart, MessageSquare, Truck, SlidersHorizontal, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import FilterSidebar from '@/components/FilterSidebar';
 import { useAuth } from '@/lib/AuthContext';
 import AddListingModal from '@/components/AddListingModal';
 import BecomeSellerBanner from '@/components/BecomeSelllerBanner';
 import SmartFilterChips from '@/components/SmartFilterChips';
+import ListingContactLinks from '@/components/ListingContactLinks';
 
 const CONDITIONS = ['Brand New', 'Like New', 'Good as New', 'Lightly Used', 'Used', 'Heavily Used'];
 const DELIVERY_OPTS = ['LBC', 'J&T Express', 'Shopee Express', 'Lalamove', 'GrabExpress', 'Flash Express', 'Meetup at Location', 'Pickup at My Address', 'Cash on Delivery (COD)'];
@@ -116,20 +117,23 @@ function ListingCard({ listing, idx }) {
           </div>
         )}
 
-        <div className="flex items-center justify-between mt-auto pt-1">
-          <div>
-            {listing.original_price && listing.original_price > listing.price && (
-              <p className="font-body text-[10px] text-white/30 line-through">₱{listing.original_price.toLocaleString()}</p>
-            )}
-            <p className="font-heading font-bold text-base text-[#00D4FF]">
-              {listing.price_label || (listing.price ? `₱${Number(listing.price).toLocaleString()}` : 'Price on request')}
-            </p>
+        <div className="mt-auto pt-1 space-y-2">
+          <div className="flex items-center justify-between">
+            <div>
+              {listing.original_price && listing.original_price > listing.price && (
+                <p className="font-body text-[10px] text-white/30 line-through">₱{listing.original_price.toLocaleString()}</p>
+              )}
+              <p className="font-heading font-bold text-base text-[#00D4FF]">
+                {listing.price_label || (listing.price ? `₱${Number(listing.price).toLocaleString()}` : 'Price on request')}
+              </p>
+            </div>
+            <Link to={`/listing/${listing.id}`}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl font-body font-bold text-[11px] transition-all hover:scale-105"
+              style={{ background: 'rgba(0,212,255,0.15)', color: '#00D4FF', border: '1px solid rgba(0,212,255,0.3)' }}>
+              <MessageSquare className="w-3 h-3" /> Details
+            </Link>
           </div>
-          <Link to={`/listing/${listing.id}`}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl font-body font-bold text-[11px] transition-all hover:scale-105"
-            style={{ background: 'rgba(0,212,255,0.15)', color: '#00D4FF', border: '1px solid rgba(0,212,255,0.3)' }}>
-            <MessageSquare className="w-3 h-3" /> Contact
-          </Link>
+          <ListingContactLinks listing={listing} compact />
         </div>
       </div>
     </motion.div>
@@ -242,13 +246,7 @@ export default function BuySell() {
               </span>
             )}
           </button>
-          {isSeller && (
-            <button onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl font-body font-bold text-sm text-white"
-              style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)' }}>
-              <Plus className="w-4 h-4" /> Post
-            </button>
-          )}
+
         </div>
       </div>
 

@@ -2,11 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import ParticleBackground from '../components/ParticleBackground';
 import MascotDog from '../components/MascotDog';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, MapPin, Briefcase, ExternalLink, X, Building2, DollarSign, Plus, Clock, Users } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, Briefcase, ExternalLink, X, Building2, DollarSign, Clock, Users } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import SmartFilterChips from '../components/SmartFilterChips';
+import ListingContactLinks from '../components/ListingContactLinks';
 import { base44 } from '@/api/base44Client';
 
 // Royal Blue theme colors
@@ -224,19 +225,15 @@ function ApplyModal({ job, onClose }) {
                 <Users className="w-3.5 h-3.5" /> Connect with this Freelancer
               </a>
             )}
-            {job.link ? (
+            {job.link && (
               <a href={job.link} target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body text-xs font-bold text-white transition-all hover:scale-[1.02]"
                 style={{ background: `linear-gradient(135deg,${THEME.primary},${THEME.accent})` }}>
                 <ExternalLink className="w-3.5 h-3.5" /> Open Application Page
               </a>
-            ) : (job.candidate_email_public || job.candidate_contact_public) ? (
-              <a href={`mailto:${job.contact}`}
-                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body text-xs font-bold text-white transition-all hover:scale-[1.02]"
-                style={{ background: `linear-gradient(135deg,${THEME.primary},${THEME.accent})` }}>
-                {job.contact}
-              </a>
-            ) : (
+            )}
+            <ListingContactLinks listing={job} compact />
+            {!job.link && !(job.email_contact || job.phone) && (
               <div className="p-3 rounded-xl text-center" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
                 <p className="font-body text-xs text-white/40 mb-2">Contact information is private</p>
                 <p className="font-body text-[10px] text-white/30">Apply through the platform to connect with the candidate</p>
@@ -279,6 +276,7 @@ export default function Jobs() {
   };
 
   const allJobs = dbJobs.map(j => ({
+    ...j,
     id: j.id,
     type: j.subcategory?.toLowerCase().replace(/\s+/g, '') || (j.type === 'jobs' ? 'general' : 'other'),
     title: j.title,
@@ -330,27 +328,7 @@ export default function Jobs() {
             </div>
             <div className="flex items-center gap-4 flex-wrap mb-2">
               <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Jobs in the Philippines</h1>
-              {currentUser ? (
-                <div className="flex items-center gap-2">
-                  <Link to="/post-ad?category=jobs&type=jobs"
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105 whitespace-nowrap"
-                    style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }}>
-                    <Plus className="w-3.5 h-3.5" /> Post a Job
-                  </Link>
-                  <Link to="/post-ad?category=services&type=services&sub=Freelance%20%26%20Remote"
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105 whitespace-nowrap"
-                    style={{ background: 'linear-gradient(135deg,#a855f7,#c084fc)', boxShadow: '0 0 12px rgba(168,85,247,0.4)' }}>
-                    <Plus className="w-3.5 h-3.5" /> Post Freelance Service
-                  </Link>
-                </div>
-              ) : (
-                <button
-                  onClick={() => setShowSignup(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105 whitespace-nowrap"
-                  style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }}>
-                  <Plus className="w-3.5 h-3.5" /> Post a Job
-                </button>
-              )}
+
             </div>
             <p className="font-body text-sm text-white/60 max-w-xl">Full-time, part-time, freelance & remote — real jobs from real companies across the Philippines.</p>
           </motion.div>

@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import StarField from '../components/StarField';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, Phone, MessageSquare, Star, AlertCircle, Plus, Pencil, Trash2, X, Home, Laptop, Sparkles, Calendar, Briefcase, Truck, Heart, Scale, Coins, GraduationCap, Video, Wrench, Palette, Stethoscope, Utensils, Scissors, Camera, Mic, Bed, Car, Plane, Package } from 'lucide-react';
+import { ArrowLeft, Search, Phone, MessageSquare, Star, AlertCircle, Pencil, Trash2, X, Home, Laptop, Sparkles, Calendar, Briefcase, Truck, Heart, Scale, Coins, GraduationCap, Video, Wrench, Palette, Stethoscope, Utensils, Scissors, Camera, Mic, Bed, Car, Plane, Package } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import SmartFilterChips from '../components/SmartFilterChips';
+import ListingContactLinks from '../components/ListingContactLinks';
 import { base44 } from '@/api/base44Client';
 
 const SUBCATEGORIES = [
@@ -203,14 +204,7 @@ function ContactModal({ item, onClose }) {
         <div className="p-5 space-y-3">
           <p className="font-body text-xs text-[#0A192F]/60">Provider: <strong>{item.provider}</strong></p>
           <p className="font-body text-xs text-[#2563EB] font-semibold">{item.rate}</p>
-          <div className="flex gap-2">
-            <a href={`tel:${item.contact}`} className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[#0A192F] text-white rounded-xl font-body text-xs font-semibold hover:bg-[#2563EB] transition-colors">
-              <Phone className="w-3.5 h-3.5" /> Call
-            </a>
-            <a href={`sms:${item.contact}`} className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[#F8FAFC] border border-[#0A192F]/10 text-[#0A192F] rounded-xl font-body text-xs font-semibold hover:bg-[#EFF6FF] transition-colors">
-              <MessageSquare className="w-3.5 h-3.5" /> SMS
-            </a>
-          </div>
+          <ListingContactLinks listing={item} compact />
           <div className="flex items-start gap-2 bg-amber-50 p-3 rounded-xl">
             <AlertCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
             <p className="font-body text-[10px] text-amber-700">Always verify credentials and agree on terms before any payment.</p>
@@ -258,6 +252,7 @@ export default function Services() {
   const typeMap = { legal: 'professional', finance: 'professional', education: 'professional', media: 'tech' };
 
   const allServices = dbListings.map(l => ({
+    ...l,
     id: l.id, type: l.subcategory?.toLowerCase().replace(/\s+/g, '') || 'home',
     title: l.title, provider: l.approved_channel_name || l.seller_name || '1Market Listing',
     rate: l.price_label || (l.price ? `₱${Number(l.price).toLocaleString()}` : 'Contact for rate'),
@@ -303,11 +298,7 @@ export default function Services() {
             </div>
             <div className="flex items-center gap-4 mb-3 flex-wrap">
               <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Services Provided</h1>
-              {canAddListing && (
-                <Link to="/post-ad?category=services&type=services" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl font-body font-bold text-sm text-white" style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)' }}>
-                  <Plus className="w-4 h-4" /> Post a Service
-                </Link>
-              )}
+
             </div>
             <p className="font-body text-base text-white/50 max-w-xl">Home services, tech, beauty, events, professional & health services across Manila and Cavite.</p>
           </motion.div>

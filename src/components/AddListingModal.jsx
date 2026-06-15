@@ -278,6 +278,7 @@ const EMPTY_FORM = {
   price: '', original_price: '', price_label: '', price_rate_type: 'Per Item', quantity: 1,
   posting_as: '',
   seller_name: '', phone: '', email_contact: '', apply_link: '',
+  social_facebook: '', social_whatsapp: '', social_instagram: '',
   condition: 'Brand New', image_url: '', extra_images: [], is_active: true,
   slideshow_animation: 'fade',
   tags: '',
@@ -426,6 +427,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       price_label: hidePrice ? '' : form.price_label,
       description: form.description, image_url: form.image_url, extra_images: form.extra_images || [],
       phone: form.phone, seller_name: sellerDisplayName, email_contact: contactEmail, apply_link: form.apply_link,
+      social_facebook: form.social_facebook, social_whatsapp: form.social_whatsapp, social_instagram: form.social_instagram,
       posting_as: form.posting_as || '',
       condition: form.condition, is_active: false,
       approval_status: 'pending',
@@ -1134,11 +1136,23 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       <div>
                         <label className={labelCls}>Contact Number (optional)</label>
                         <input value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+63 9xx xxx xxxx" className={inputCls} />
-                        <p className="font-body text-[9px] text-white/25 mt-0.5">Hidden by default unless enabled in settings</p>
+                        <p className="font-body text-[9px] text-white/25 mt-0.5">Shown only after buyers click the phone icon</p>
                       </div>
                       <div>
                         <label className={labelCls}>Email Contact (optional)</label>
                         <input value={form.email_contact} onChange={e => set('email_contact', e.target.value)} placeholder="youremail@mail.com" className={inputCls} />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Facebook Link (optional)</label>
+                        <input value={form.social_facebook} onChange={e => set('social_facebook', e.target.value)} placeholder="https://facebook.com/yourpage" className={inputCls} />
+                      </div>
+                      <div>
+                        <label className={labelCls}>WhatsApp Number or Link (optional)</label>
+                        <input value={form.social_whatsapp} onChange={e => set('social_whatsapp', e.target.value)} placeholder="+63 9xx xxx xxxx" className={inputCls} />
+                      </div>
+                      <div className="col-span-2">
+                        <label className={labelCls}>Instagram Link (optional)</label>
+                        <input value={form.social_instagram} onChange={e => set('social_instagram', e.target.value)} placeholder="https://instagram.com/yourhandle" className={inputCls} />
                       </div>
                     </div>
                   </div>

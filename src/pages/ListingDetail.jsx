@@ -13,6 +13,7 @@ import Navbar from '../components/home/Navbar';
 import StarField from '../components/StarField';
 import RoyalBlueWaves from '../components/RoyalBlueWaves';
 import SimilarListings from '../components/SimilarListings';
+import ListingContactLinks from '../components/ListingContactLinks';
 import { recordView } from '../components/home/RecentlyViewed';
 
 function HotelRoomSelector({ listing, user }) {
@@ -711,90 +712,9 @@ export default function ListingDetail() {
                 </div>
               )}
 
-              {/* Seller Social Media — always shown, greyed out if not linked */}
-              {(() => {
-                const fbLink = listing.social_facebook || sellerUser?.social_facebook;
-                const igLink = listing.social_instagram || sellerUser?.social_instagram;
-                const ttLink = listing.social_tiktok || sellerUser?.social_tiktok;
-                const viberLink = listing.social_viber || sellerUser?.social_viber;
-                const tgLink = listing.social_telegram || sellerUser?.social_telegram;
-                const phoneNum = listing.phone || sellerUser?.phone;
-                return (
-                  <div className="mb-4 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                    <p className="font-body text-[9px] text-white/30 uppercase tracking-wider mb-2">Seller Socials & Contact</p>
-                    <div className="flex flex-wrap gap-2">
-                      {/* Phone */}
-                      {phoneNum ? (
-                        <a href={`tel:${phoneNum}`}
-                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
-                          style={{ background: 'rgba(0,100,220,0.25)', border: '1px solid rgba(0,180,255,0.5)', color: '#60cfff' }}>
-                          <Smartphone className="w-3.5 h-3.5" /> {phoneNum}
-                        </a>
-                      ) : (
-                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold cursor-not-allowed"
-                          style={{ background: 'rgba(0,60,160,0.12)', border: '1px solid rgba(0,100,200,0.18)', color: 'rgba(100,180,255,0.3)' }}>
-                          <Smartphone className="w-3.5 h-3.5 opacity-40" /> No phone
-                        </div>
-                      )}
-                      {/* Facebook */}
-                      {fbLink ? (
-                        <a href={fbLink} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
-                          style={{ background: 'rgba(37,99,235,0.2)', border: '1px solid rgba(37,99,235,0.4)', color: '#60a5fa' }}>
-                          <Facebook className="w-3.5 h-3.5" /> Facebook
-                        </a>
-                      ) : (
-                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold cursor-not-allowed"
-                          style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.2)' }}>
-                          <Facebook className="w-3.5 h-3.5 opacity-30" /> FB not linked
-                        </div>
-                      )}
-                      {/* Instagram */}
-                      {igLink ? (
-                        <a href={igLink} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
-                          style={{ background: 'rgba(236,72,153,0.2)', border: '1px solid rgba(236,72,153,0.4)', color: '#f472b6' }}>
-                          <Instagram className="w-3.5 h-3.5" /> Instagram
-                        </a>
-                      ) : (
-                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold cursor-not-allowed"
-                          style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.2)' }}>
-                          <Instagram className="w-3.5 h-3.5 opacity-30" /> Insta not linked
-                        </div>
-                      )}
-                      {/* TikTok */}
-                      {ttLink ? (
-                        <a href={ttLink} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
-                          style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}>
-                          <Music className="w-3.5 h-3.5" /> TikTok
-                        </a>
-                      ) : (
-                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold cursor-not-allowed"
-                          style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.2)' }}>
-                          <Music className="w-3.5 h-3.5 opacity-30" /> TikTok not linked
-                        </div>
-                      )}
-                      {/* Viber — only show if linked */}
-                      {viberLink && (
-                        <a href={`viber://chat?number=${viberLink}`}
-                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
-                          style={{ background: 'rgba(139,92,246,0.2)', border: '1px solid rgba(139,92,246,0.4)', color: '#c084fc' }}>
-                          <Send className="w-3 h-3" /> Viber
-                        </a>
-                      )}
-                      {/* Telegram — only show if linked */}
-                      {tgLink && (
-                        <a href={`https://t.me/${tgLink}`} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-xs font-bold transition-all hover:scale-105"
-                          style={{ background: 'rgba(14,165,233,0.2)', border: '1px solid rgba(14,165,233,0.4)', color: '#38bdf8' }}>
-                          <Send className="w-3 h-3" /> Telegram
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                );
-              })()}
+              <div className="mb-4">
+                <ListingContactLinks listing={listing} sellerUser={sellerUser} />
+              </div>
 
               {/* Tailored CTA — based on category & subcategory */}
               {(() => {
@@ -951,21 +871,6 @@ export default function ListingDetail() {
                   </button>
                 );
               })()}
-
-              {/* Contact */}
-              {listing.phone && (
-                <div className="flex gap-2 mb-4">
-                  <a href={`tel:${listing.phone}`}
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-white font-body font-bold text-xs transition-all"
-                    style={{ background: 'linear-gradient(135deg,#2563EB,#00D4FF)' }}>
-                    <Phone className="w-3.5 h-3.5" /> Call Seller
-                  </a>
-                  <a href={`sms:${listing.phone}`}
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-white/10 border border-white/15 text-white rounded-xl font-body font-bold text-xs hover:bg-white/20 transition-colors">
-                    <MessageSquare className="w-3.5 h-3.5" /> SMS
-                  </a>
-                </div>
-              )}
 
               {/* Hotel Room Selector */}
               {listing.type === 'hotel' && listing.hotel_rooms && listing.hotel_rooms.length > 0 && (

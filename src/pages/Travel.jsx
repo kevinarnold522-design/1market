@@ -11,7 +11,6 @@ import ScrollToTop from '../components/ScrollToTop';
 import MascotDog from '../components/MascotDog';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import SmartFilterChips from '../components/SmartFilterChips';
-import { Plus } from 'lucide-react';
 
 const TRAVEL_CATEGORIES = [
   { key: 'hotel',       label: 'Hotels',         icon: <Hotel className="w-4 h-4" />, color: '#6366f1' },
@@ -276,11 +275,7 @@ export default function Travel() {
             </div>
             <div className="flex items-center gap-4 flex-wrap mb-2">
               <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Explore the Philippines</h1>
-              <button onClick={handleAddListing}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105"
-                style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }}>
-                <Plus className="w-3.5 h-3.5" /> Add a Listing
-              </button>
+
             </div>
             <p className="font-body text-sm text-white/60 max-w-xl">Hotels, resorts, tours, island hopping, diving, surfing and more.</p>
           </motion.div>
