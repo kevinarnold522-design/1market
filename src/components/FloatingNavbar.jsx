@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Home, Plane, UtensilsCrossed, ShoppingBag, KeyRound, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, LogOut, Ghost, Globe, Package, BarChart2, Shield, Search, ShoppingCart } from 'lucide-react';
-import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 import { getImpersonatedUser, clearImpersonation } from '@/pages/ConnectedAccounts';
@@ -55,8 +55,8 @@ export default function FloatingNavbar() {
   const isBusiness = activeUser?.user_type === 'business';
   const isSeller = activeUser?.user_type === 'seller' || isBusiness || activeUser?.is_seller || activeUser?.account_type === 'business_owner';
   const isVerified = activeUser?.is_verified_seller;
-  const isGhost = activeUser?.is_ghost_account || activeUser?.ghost_id;
   const initials = activeUser ? (activeUser.full_name || activeUser.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
+  const accountTypeLabel = isAdmin ? 'CEO & Founder' : isBusiness ? 'Business' : activeUser?.user_type === 'rider' ? 'Rider Delivery' : isSeller ? 'Sales Account' : isGhostSession ? 'Live Test' : 'Customer';
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -147,28 +147,13 @@ return (
               </form>
 
               {/* Navigation Menu */}
-              <div className="p-3 max-h-[60vh] overflow-y-auto">
-                {/* Main Navigation */}
-                <div className="space-y-0.5 mb-3">
-                  {NAV_ITEMS.map((item) => (
-                    <Link
-                      key={item.to}
-                      to={item.to}
-                      onClick={() => setIsOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all hover:bg-white/10 group"
-                    >
-                      <item.icon className="w-4 h-4 flex-shrink-0" style={{ color: item.color }} />
-                      <span className="font-body text-sm font-semibold text-white/80 group-hover:text-white">{item.label}</span>
-                    </Link>
-                  ))}
-                </div>
-
+              <div className="p-3 max-h-[60vh] overflow-y-scroll" data-navbar-menu style={{ scrollbarGutter: 'stable' }}>
                 {/* Auth Section */}
                 {isAuthenticated && activeUser ? (
                   <>
                     {/* User Info */}
-                    <div className="px-3 py-2 mb-2 rounded-xl bg-white/5 border border-white/10">
-                      <div className="flex items-center gap-2 mb-2">
+                    <Link to="/profile" onClick={() => setIsOpen(false)} className="block px-3 py-2 mb-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+                      <div className="flex items-center gap-2 mb-1">
                         <div className={`w-8 h-8 rounded-lg overflow-hidden flex-shrink-0 ${isGhostSession ? 'ring-2 ring-purple-400' : ''}`}>
                           {activeUser?.profile_picture ? (
                             <img src={activeUser.profile_picture} alt="" className="w-full h-full object-cover" />
@@ -179,13 +164,13 @@ return (
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md border border-[#00D4FF]/25 bg-[#00D4FF]/10 font-body text-[8px] font-bold uppercase tracking-wider text-[#00D4FF] mb-0.5">
+                            {accountTypeLabel}
+                          </span>
                           <p className="font-body text-xs font-bold text-white truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
-                          <p className={`font-body text-[9px] truncate ${isGhostSession ? 'text-purple-400' : 'text-[#00D4FF]/70'}`}>
-                            {isGhostSession ? 'Ghost' : activeUser.email}
-                          </p>
                         </div>
                       </div>
-                    </div>
+                    </Link>
 
                     {/* Buyer Section */}
                     <div className="space-y-0.5 mb-3">
@@ -251,6 +236,22 @@ return (
                       </div>
                     </div>
 
+                    {/* Main Navigation at bottom */}
+                    <div className="space-y-0.5 mb-3 border-t border-white/8 pt-2">
+                      <p className="px-3 py-1 font-body text-[9px] text-white/40 uppercase tracking-wider font-bold">Browse</p>
+                      {NAV_ITEMS.map((item) => (
+                        <Link
+                          key={item.to}
+                          to={item.to}
+                          onClick={() => setIsOpen(false)}
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all hover:bg-white/10 group"
+                        >
+                          <item.icon className="w-4 h-4 flex-shrink-0" style={{ color: item.color }} />
+                          <span className="font-body text-sm font-semibold text-white/80 group-hover:text-white">{item.label}</span>
+                        </Link>
+                      ))}
+                    </div>
+
                     {/* Sign Out */}
                     {isGhostSession ? (
                       <button onClick={() => { clearImpersonation(); setIsOpen(false); }} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 transition-colors text-red-300 font-body text-xs font-bold">
@@ -268,9 +269,20 @@ return (
                     <Link to="/login" onClick={() => setIsOpen(false)} className="block w-full py-2.5 border border-white/20 text-white text-center rounded-xl font-body font-bold text-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
                       Login
                     </Link>
+                    <Link to="/login" onClick={() => setIsOpen(false)} className="block w-full py-2.5 rounded-xl bg-white/10 border border-white/15 text-white text-center font-body font-bold text-sm hover:bg-white/15 transition-colors">
+                      Continue with Google
+                    </Link>
                     <Link to="/register" onClick={() => setIsOpen(false)} className="block w-full py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all text-center" style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}>
                       Get Started
                     </Link>
+                    <div className="space-y-0.5 border-t border-white/8 pt-2 mt-2">
+                      {NAV_ITEMS.map((item) => (
+                        <Link key={item.to} to={item.to} onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all hover:bg-white/10 group">
+                          <item.icon className="w-4 h-4 flex-shrink-0" style={{ color: item.color }} />
+                          <span className="font-body text-sm font-semibold text-white/80 group-hover:text-white">{item.label}</span>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>

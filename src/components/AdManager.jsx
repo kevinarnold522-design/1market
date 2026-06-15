@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 
-// AdManager: shows ads after 2-minute delay, no close button, admin exempt
+// AdManager: shows one ad after a 4-minute delay, no close button, admin exempt
 export default function AdManager() {
   const [show, setShow] = useState(false);
 
@@ -11,8 +11,8 @@ export default function AdManager() {
         const u = await base44.auth.me();
         if (u?.role === 'admin' || u?.email === 'Kevinarnold522@gmail.com') return;
       } catch {}
-      // 2-minute delay before showing ads
-      const t = setTimeout(() => setShow(true), 2 * 60 * 1000);
+      // 4-minute delay before showing the single ad slot
+      const t = setTimeout(() => setShow(true), 4 * 60 * 1000);
       return () => clearTimeout(t);
     };
     init();

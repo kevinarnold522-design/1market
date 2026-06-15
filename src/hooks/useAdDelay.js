@@ -1,10 +1,10 @@
 /**
- * useAdDelay — returns true after 2 minutes from first page visit.
+ * useAdDelay — returns true after 4 minutes from first page visit.
  * Persists via sessionStorage so a full page refresh resets it.
  */
 import { useState, useEffect } from 'react';
 
-const DELAY_MS = 2 * 60 * 1000; // 2 minutes
+const DELAY_MS = 4 * 60 * 1000; // 4 minutes
 const STORAGE_KEY = '1m_visit_start';
 
 export function useAdDelay() {

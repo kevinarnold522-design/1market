@@ -65,6 +65,7 @@ export default function LeftSidebar({ isMobileHidden = false }) {
   const activeUser = isGhostSession ? ghostUser : user;
   const isSeller = !!(activeUser?.user_type === 'seller' || activeUser?.user_type === 'business' || activeUser?.is_seller || activeUser?.account_type === 'business_owner');
   const initials = activeUser ? (activeUser.full_name || activeUser.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
+  const accountTypeLabel = isAdmin ? 'CEO & Founder' : activeUser?.user_type === 'business' ? 'Business' : activeUser?.user_type === 'rider' ? 'Rider Delivery' : isSeller ? 'Sales Account' : isGhostSession ? 'Live Test' : 'Customer';
 
   if (isMobileHidden) return null;
 
@@ -129,7 +130,7 @@ export default function LeftSidebar({ isMobileHidden = false }) {
                     border: `1px solid ${isAdmin ? 'rgba(245,158,11,0.4)' : activeUser?.user_type === 'business' ? 'rgba(37,99,235,0.4)' : activeUser?.user_type === 'rider' ? 'rgba(245,158,11,0.35)' : isSeller ? 'rgba(16,185,129,0.38)' : isGhostSession ? 'rgba(168,85,247,0.35)' : 'rgba(37,99,235,0.3)'}`,
                     color: isAdmin ? '#fbbf24' : activeUser?.user_type === 'business' ? '#93c5fd' : activeUser?.user_type === 'rider' ? '#fde68a' : isSeller ? '#6ee7b7' : isGhostSession ? '#d8b4fe' : '#60a5fa',
                   }}>
-                  {isAdmin ? 'CEO & Founder' : activeUser?.user_type === 'business' ? 'Business' : activeUser?.user_type === 'rider' ? 'Rider Delivery' : isSeller ? 'Sales Account' : isGhostSession ? 'Live Test' : 'Customer'}
+                  {accountTypeLabel}
                 </span>
                 <p className="font-body text-[11px] font-bold text-white truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
               </div>
@@ -139,7 +140,7 @@ export default function LeftSidebar({ isMobileHidden = false }) {
       )}
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-scroll py-2 space-y-0.5 px-2" style={{ scrollbarWidth: 'thick', scrollbarColor: 'rgba(255,255,255,0.85) rgba(255,255,255,0.08)' }}
+      <nav className="flex-1 overflow-y-scroll py-2 space-y-0.5 px-2" style={{ scrollbarWidth: 'auto', scrollbarColor: 'rgba(255,255,255,0.85) rgba(255,255,255,0.08)', scrollbarGutter: 'stable' }}
         ref={el => {
           if (el) {
             el.style.setProperty('--scrollbar-width', '10px');
@@ -192,23 +193,7 @@ export default function LeftSidebar({ isMobileHidden = false }) {
               <ShoppingCart className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span className="font-body text-xs font-semibold truncate">Cart</span>}
             </Link>
-            {!isSeller && (
-              <>
-                <div className="my-2 border-t border-white/8 mx-1" />
-                {NAV_ITEMS.map(item => {
-                  const active = location.pathname === item.to || (item.to !== '/' && location.pathname.startsWith(item.to));
-                  return (
-                    <Link key={item.to} to={item.to}
-                      className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all group relative"
-                      style={{ background: active ? `${item.color}22` : 'transparent', borderLeft: active ? `3px solid ${item.color}` : '3px solid transparent' }}
-                      title={collapsed ? item.label : undefined}>
-                      <item.icon className="w-4 h-4 flex-shrink-0 transition-colors" style={{ color: active ? item.color : 'rgba(255,255,255,0.5)' }} />
-                      {!collapsed && <span className="font-body text-xs font-semibold truncate transition-colors" style={{ color: active ? 'white' : 'rgba(255,255,255,0.55)' }}>{item.label}</span>}
-                    </Link>
-                  );
-                })}
-              </>
-            )}
+
             <Link to="/messages"
               className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-white/50 hover:text-[#00D4FF] hover:bg-[#00D4FF]/10"
               title={collapsed ? 'Messages' : undefined}>
@@ -241,19 +226,12 @@ export default function LeftSidebar({ isMobileHidden = false }) {
               <BarChart2 className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span className="font-body text-xs font-semibold truncate">Analytics</span>}
             </Link>
-            <div className="my-2 border-t border-white/8 mx-1" />
-            {NAV_ITEMS.map(item => {
-              const active = location.pathname === item.to || (item.to !== '/' && location.pathname.startsWith(item.to));
-              return (
-                <Link key={item.to} to={item.to}
-                  className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all group relative"
-                  style={{ background: active ? `${item.color}22` : 'transparent', borderLeft: active ? `3px solid ${item.color}` : '3px solid transparent' }}
-                  title={collapsed ? item.label : undefined}>
-                  <item.icon className="w-4 h-4 flex-shrink-0 transition-colors" style={{ color: active ? item.color : 'rgba(255,255,255,0.5)' }} />
-                  {!collapsed && <span className="font-body text-xs font-semibold truncate transition-colors" style={{ color: active ? 'white' : 'rgba(255,255,255,0.55)' }}>{item.label}</span>}
-                </Link>
-              );
-            })}
+            <Link to={`/seller/${isGhostSession ? (ghostUser?.username || ghostUser?.id) : (activeUser?.username || activeUser?.id)}`}
+              className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-white/50 hover:text-green-400 hover:bg-green-400/10"
+              title={collapsed ? 'My Seller Profile' : undefined}>
+              <User className="w-4 h-4 flex-shrink-0" />
+              {!collapsed && <span className="font-body text-xs font-semibold truncate">My Seller Profile</span>}
+            </Link>
           </>
         )}
 
@@ -281,6 +259,26 @@ export default function LeftSidebar({ isMobileHidden = false }) {
               <HelpCircle className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span className="font-body text-xs font-semibold truncate">Support</span>}
             </button>
+          </>
+        )}
+
+        {/* Main site links — kept at the bottom for all account types */}
+        {isAuthenticated && activeUser && (
+          <>
+            <div className="my-2 border-t border-white/8 mx-1" />
+            {!collapsed && <p className="px-2 py-1 font-body text-[9px] text-white/30 uppercase tracking-wider font-bold">Browse</p>}
+            {NAV_ITEMS.map(item => {
+              const active = location.pathname === item.to || (item.to !== '/' && location.pathname.startsWith(item.to));
+              return (
+                <Link key={item.to} to={item.to}
+                  className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all group relative"
+                  style={{ background: active ? `${item.color}22` : 'transparent', borderLeft: active ? `3px solid ${item.color}` : '3px solid transparent' }}
+                  title={collapsed ? item.label : undefined}>
+                  <item.icon className="w-4 h-4 flex-shrink-0 transition-colors" style={{ color: active ? item.color : 'rgba(255,255,255,0.5)' }} />
+                  {!collapsed && <span className="font-body text-xs font-semibold truncate transition-colors" style={{ color: active ? 'white' : 'rgba(255,255,255,0.55)' }}>{item.label}</span>}
+                </Link>
+              );
+            })}
           </>
         )}
 
@@ -335,10 +333,10 @@ export default function LeftSidebar({ isMobileHidden = false }) {
               </div>
               {!collapsed && (
                 <div className="flex-1 min-w-0">
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded border border-[#00D4FF]/25 bg-[#00D4FF]/10 font-body text-[8px] font-bold uppercase tracking-wider text-[#00D4FF] mb-0.5">
+                    {accountTypeLabel}
+                  </span>
                   <p className="font-body text-[11px] font-bold text-white truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
-                  <p className="font-body text-[9px] truncate text-[#00D4FF]/70">
-                    {activeUser.channel_name || activeUser.email}
-                  </p>
                 </div>
               )}
             </Link>
