@@ -255,6 +255,12 @@ export default function SellerProfilePage() {
   const [lightboxImages, setLightboxImages] = useState(null);
   const [lightboxIdx, setLightboxIdx] = useState(0);
   const [error, setError] = useState(null);
+  const [galleryTick, setGalleryTick] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => setGalleryTick(t => t + 1), 4500);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     // Get current user
@@ -427,6 +433,10 @@ export default function SellerProfilePage() {
   // Show contact info only if seller has set it public AND not a ghost account
   const showPhone = !isGhostAccount && seller.show_phone_public && seller.phone;
   const showEmail = !isGhostAccount && seller.show_email_public && seller.email && !seller.email.includes('@1marketph-ghost.internal');
+  const coverImages = Array.from(new Set([seller.cover_photo, ...(seller.cover_photo_gallery || [])].filter(Boolean)));
+  const profileImages = Array.from(new Set([seller.profile_picture, ...(seller.profile_picture_gallery || [])].filter(Boolean)));
+  const activeCoverPhoto = coverImages.length ? coverImages[galleryTick % coverImages.length] : '';
+  const activeProfilePicture = profileImages.length ? profileImages[galleryTick % profileImages.length] : '';
 
   const socials = [
     seller.social_facebook && { key: 'facebook', url: seller.social_facebook },
@@ -464,9 +474,11 @@ export default function SellerProfilePage() {
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
       {/* Cover Photo */}
       <div className="relative h-52 md:h-64 overflow-hidden">
-        {seller.cover_photo
-          ? <img src={seller.cover_photo} alt="cover" className="w-full h-full object-cover" />
-          : <div className="w-full h-full" style={{ background: 'linear-gradient(135deg,#0033CC 0%,#001a80 50%,#0D1F3C 100%)' }} />}
+        <AnimatePresence mode="wait">
+          {activeCoverPhoto
+            ? <motion.img key={activeCoverPhoto} src={activeCoverPhoto} alt="cover" className="absolute inset-0 w-full h-full object-cover" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }} />
+            : <div className="w-full h-full" style={{ background: 'linear-gradient(135deg,#0033CC 0%,#001a80 50%,#0D1F3C 100%)' }} />}
+        </AnimatePresence>
         <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(7,15,26,0.97) 100%)' }} />
         <button onClick={() => navigate(-1)}
           className="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body text-xs font-semibold text-white/80 hover:text-white transition-colors"
@@ -487,8 +499,8 @@ export default function SellerProfilePage() {
                 style={isVerified
                   ? { boxShadow: '0 0 0 2px #a855f7, 0 0 0 4px #38bdf8, 0 0 20px rgba(168,85,247,0.4)' }
                   : { boxShadow: '0 0 0 2px rgba(37,99,235,0.5)' }}>
-                {seller.profile_picture
-                  ? <img src={seller.profile_picture} alt={displayName} className="w-full h-full object-cover" />
+                {activeProfilePicture
+                  ? <AnimatePresence mode="wait"><motion.img key={activeProfilePicture} src={activeProfilePicture} alt={displayName} className="w-full h-full object-cover" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.03 }} transition={{ duration: 0.5 }} /></AnimatePresence>
                   : <div className="w-full h-full bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center font-heading font-bold text-3xl text-white">
                       {displayName[0].toUpperCase()}
                     </div>}

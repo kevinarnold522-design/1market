@@ -7,6 +7,7 @@ import FilterSidebar from '@/components/FilterSidebar';
 import { useAuth } from '@/lib/AuthContext';
 import AddListingModal from '@/components/AddListingModal';
 import BecomeSellerBanner from '@/components/BecomeSelllerBanner';
+import SmartFilterChips from '@/components/SmartFilterChips';
 
 const CONDITIONS = ['Brand New', 'Like New', 'Good as New', 'Lightly Used', 'Used', 'Heavily Used'];
 const DELIVERY_OPTS = ['LBC', 'J&T Express', 'Shopee Express', 'Lalamove', 'GrabExpress', 'Flash Express', 'Meetup at Location', 'Pickup at My Address', 'Cash on Delivery (COD)'];
@@ -29,6 +30,7 @@ const CATEGORIES = [
 
 function ListingCard({ listing, idx }) {
   const [hearted, setHearted] = useState(false);
+  const [showHeartBurst, setShowHeartBurst] = useState(false);
 
   return (
     <motion.div
@@ -58,11 +60,19 @@ function ListingCard({ listing, idx }) {
           Flash Deal
         </span>
         )}
-        <button onClick={e => { e.preventDefault(); setHearted(h => !h); }}
+        <button onClick={e => { e.preventDefault(); setHearted(h => !h); setShowHeartBurst(true); setTimeout(() => setShowHeartBurst(false), 900); }}
           className="absolute bottom-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all"
-          style={{ background: hearted ? 'rgba(236,72,153,0.9)' : 'rgba(0,0,0,0.6)' }}>
+          style={{ background: hearted ? 'rgba(0,212,255,0.9)' : 'rgba(0,0,0,0.6)' }}>
           <Heart className="w-3.5 h-3.5 text-white" fill={hearted ? 'white' : 'none'} />
         </button>
+        <AnimatePresence>
+          {showHeartBurst && (
+            <motion.div className="absolute inset-0 flex items-center justify-center pointer-events-none" initial={{ opacity: 0, scale: 0.65 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.35 }} transition={{ duration: 0.7 }}>
+              <Heart className="absolute w-28 h-28 text-[#00D4FF] drop-shadow-[0_0_24px_rgba(0,212,255,0.9)]" fill="rgba(0,212,255,0.22)" strokeWidth={1.6} />
+              <Heart className="absolute w-20 h-20 text-[#3E97F1] translate-x-5 -translate-y-3 drop-shadow-[0_0_18px_rgba(62,151,241,0.85)]" fill="rgba(62,151,241,0.24)" strokeWidth={1.8} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Link>
 
       <div className="p-3 flex flex-col gap-1.5 flex-1">
@@ -270,6 +280,12 @@ export default function BuySell() {
 
         {/* Listings Grid */}
         <div className="flex-1 min-w-0">
+          <SmartFilterChips options={[
+            { label: 'Best deals', onClick: () => setSortBy('Price: Low to High') },
+            { label: 'Popular picks', onClick: () => setSortBy('Most Popular') },
+            { label: 'Nationwide', onClick: () => setActiveLocation('Nationwide') },
+            { label: 'Clear filters', onClick: handleReset },
+          ]} />
           <div className="flex items-center justify-between mb-4">
             <div>
               {urlSub && (

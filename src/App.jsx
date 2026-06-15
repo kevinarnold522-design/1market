@@ -38,6 +38,12 @@ import ResetPassword from './pages/ResetPassword';
 import GlowInteraction from './components/GlowInteraction';
 import AdminRoute from './components/AdminRoute';
 import RiderOnboarding from './pages/RiderOnboarding';
+import AccountCart from './pages/AccountCart';
+import AccountOrders from './pages/AccountOrders';
+import AccountListings from './pages/AccountListings';
+import AccountAnalytics from './pages/AccountAnalytics';
+import AccountSellerOrders from './pages/AccountSellerOrders';
+import AccountDrafts from './pages/AccountDrafts';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -71,11 +77,17 @@ const AuthenticatedApp = () => {
         <Route path="/food" element={<Food />} />
         <Route path="/buysell" element={<BuySell />} />
         <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
-        <Route path="/seller" element={<Navigate to="/profile?tab=listings" replace />} />
+        <Route path="/seller" element={<Navigate to="/my-listings" replace />} />
         <Route path="/rent" element={<ForRent />} />
         <Route path="/services" element={<Services />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/profile" element={<UserProfile />} />
+        <Route path="/profile" element={<UserProfile forcedTab="profile" />} />
+        <Route path="/cart" element={<AccountCart />} />
+        <Route path="/orders" element={<AccountOrders />} />
+        <Route path="/my-listings" element={<AccountListings />} />
+        <Route path="/my-analytics" element={<AccountAnalytics />} />
+        <Route path="/seller-orders" element={<AccountSellerOrders />} />
+        <Route path="/drafts" element={<AccountDrafts />} />
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/seller/:sellerId" element={<SellerProfilePage />} />
         <Route path="/seller-profile/:sellerId" element={<SellerProfilePage />} />

@@ -10,9 +10,9 @@ import { base44 } from '@/api/base44Client';
 import MemberSignupModal from '../components/MemberSignupModal';
 import BusinessBioModal from '../components/home/BusinessBioModal';
 import { getAdminEditMode } from '../components/home/Navbar';
-import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
 import MascotDog from '../components/MascotDog';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
+import SmartFilterChips from '../components/SmartFilterChips';
 
 const KNOWN_LOGOS = {
   'Jollibee': 'https://upload.wikimedia.org/wikipedia/en/thumb/8/84/Jollibee_logo.svg/220px-Jollibee_logo.svg.png',
@@ -373,6 +373,12 @@ export default function Food() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+        <SmartFilterChips options={[
+          { label: 'All food', onClick: () => { setActiveTypes([]); setSearch(''); } },
+          { label: 'Fast food', onClick: () => setActiveTypes(['chain']) },
+          { label: 'Home kitchen', onClick: () => setActiveTypes(['home-kitchen']) },
+          { label: 'Cavite', onClick: () => setLocationFilter('Cavite') },
+        ]} />
         {/* Location Tabs + Filter Toggle */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div className="flex gap-2">
@@ -493,14 +499,7 @@ export default function Food() {
       </AnimatePresence>
       {infoBiz && <BusinessBioModal business={infoBiz} onClose={() => setInfoBiz(null)} onUpdated={(updated) => setDbBusinesses(prev => prev.map(b => b.id === updated.id ? updated : b))} />}
       <MascotDog page="food" />
-      <AdminQuickAddFAB
-        defaultMode="business"
-        forceSection="food"
-        forceSubcategory={selectedSubcat || undefined}
-        onAdded={() => {
-          base44.entities.Business.filter({ section: 'food', is_active: true }).then(setDbBusinesses).catch(() => {});
-        }}
-      />
+
     </div>
   );
 }

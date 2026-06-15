@@ -10,6 +10,7 @@ import MemberSignupModal from '../components/MemberSignupModal';
 import ScrollToTop from '../components/ScrollToTop';
 import MascotDog from '../components/MascotDog';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
+import SmartFilterChips from '../components/SmartFilterChips';
 import { Plus } from 'lucide-react';
 
 const TRAVEL_CATEGORIES = [
@@ -310,6 +311,12 @@ export default function Travel() {
 
       {/* Feeds */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-10">
+        <SmartFilterChips options={[
+          { label: 'Hotels', onClick: () => setSearch('hotel') },
+          { label: 'Flights & tours', onClick: () => setSearch('tour') },
+          { label: 'Vehicle rentals', onClick: () => setSearch('rental') },
+          { label: 'Clear search', onClick: () => setSearch('') },
+        ]} />
         {search ? (
           <>
             <p className="font-body text-sm text-white/40 mb-6">{filtered.length} results for "{search}"</p>
@@ -332,20 +339,6 @@ export default function Travel() {
           ))
         )}
 
-        {/* CTA */}
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="mt-8 rounded-2xl p-8 text-center"
-          style={{ background: 'linear-gradient(135deg,#0033CC,#1a4de8)', border: '1px solid rgba(0,212,255,0.3)' }}>
-          <h2 className="font-heading font-bold text-2xl text-white mb-2">List Your Travel Business</h2>
-          <p className="font-body text-sm text-white/60 mb-5 max-w-md mx-auto">Hotels, tours, rentals, activities — reach thousands of Filipino travelers.</p>
-          <div className="flex justify-center">
-            <button onClick={handleAddListing}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105"
-              style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }}>
-              <Plus className="w-3.5 h-3.5" /> Add a Listing
-            </button>
-          </div>
-        </motion.div>
       </div>
 
       {!currentUser && (

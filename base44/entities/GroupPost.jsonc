@@ -34,6 +34,15 @@
     "listing_data": {
       "type": "object"
     },
+    "approval_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "approved"
+    },
     "likes": {
       "type": "integer",
       "default": 0

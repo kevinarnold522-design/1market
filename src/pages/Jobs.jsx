@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, MapPin, Briefcase, ExternalLink, X, Building2, DollarSign, Plus, Clock, Users } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
-import PostListingMenu from '../components/PostListingMenu';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
+import SmartFilterChips from '../components/SmartFilterChips';
 import { base44 } from '@/api/base44Client';
 
 // Royal Blue theme colors
@@ -337,10 +337,10 @@ export default function Jobs() {
                     style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }}>
                     <Plus className="w-3.5 h-3.5" /> Post a Job
                   </Link>
-                  <Link to="/post-ad?category=jobs&type=freelance"
+                  <Link to="/post-ad?category=services&type=services&sub=Freelance%20%26%20Remote"
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-body font-bold text-xs text-white transition-all hover:scale-105 whitespace-nowrap"
                     style={{ background: 'linear-gradient(135deg,#a855f7,#c084fc)', boxShadow: '0 0 12px rgba(168,85,247,0.4)' }}>
-                    <Plus className="w-3.5 h-3.5" /> Post Freelance
+                    <Plus className="w-3.5 h-3.5" /> Post Freelance Service
                   </Link>
                 </div>
               ) : (
@@ -367,6 +367,12 @@ export default function Jobs() {
 
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-8">
+        <SmartFilterChips options={[
+          { label: 'All jobs', onClick: () => { setActiveType('all'); setSearch(''); } },
+          { label: 'Remote', onClick: () => setActiveType('remote') },
+          { label: 'Freelance', onClick: () => setActiveType('freelance') },
+          { label: 'Nationwide', onClick: () => setLocationFilter('Nationwide') },
+        ]} />
         {/* Category pills */}
         <div className="flex gap-2 mb-5 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
           {JOB_SUBCATEGORIES.map(sc => (
@@ -410,38 +416,11 @@ export default function Jobs() {
             <p className="font-body text-white/30 mb-2">
               {allJobs.length === 0 ? 'No job listings yet. Be the first to post one!' : 'No jobs found. Try different filters.'}
             </p>
-            {allJobs.length === 0 && currentUser && (
-              <Link to="/post-ad?category=jobs&type=jobs"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-body font-bold text-sm text-white mt-2"
-                style={{ background: 'linear-gradient(135deg,#f59e0b,#f97316)' }}>
-                <Plus className="w-4 h-4" /> Post a Job Now
-              </Link>
-            )}
+
           </div>
         )}
 
         {!currentUser && <BecomeSellerBanner className="mt-8 mb-4" />}
-
-        {!currentUser && <BecomeSellerBanner className="mt-8 mb-4" />}
-
-        {/* CTA */}
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="mt-14 rounded-2xl p-8 text-center"
-          style={{ background: `linear-gradient(135deg, ${THEME.primaryDark}, ${THEME.primary})`, border: `1px solid ${THEME.accent}44` }}>
-          <h2 className="font-heading font-bold text-2xl text-white mb-2">Hiring? Post a Job for Free</h2>
-          <p className="font-body text-sm text-white/60 mb-5 max-w-md mx-auto">Reach thousands of job seekers across the Philippines. Free job postings for all users.</p>
-          <div className="flex justify-center">
-            {currentUser ? (
-              <PostListingMenu user={currentUser} compact={false} />
-            ) : (
-              <button onClick={() => setShowSignup(true)}
-                className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105"
-                style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 16px rgba(37,99,235,0.4)' }}>
-                <Plus className="w-4 h-4" /> Post a Job Ad for Free
-              </button>
-            )}
-          </div>
-        </motion.div>
       </div>
 
       <AnimatePresence>

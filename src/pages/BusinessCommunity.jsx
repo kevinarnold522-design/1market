@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Building2, Plus, Heart, MessageCircle, Image, Send, Megaphone, HelpCircle, Tag, RefreshCw, X } from 'lucide-react';
+import { Building2, Plus, Heart, MessageCircle, Image, Send, Megaphone, HelpCircle, Tag, RefreshCw, X, Share2, Flag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/home/Navbar';
 
@@ -52,6 +52,23 @@ function PostCard({ post, user, onLike }) {
     if (onLike) onLike(post.id);
   };
 
+  const handleShare = () => {
+    if (navigator.share) navigator.share({ title: post.business_name || 'Community post', text: post.content, url: window.location.href }).catch(() => {});
+    else navigator.clipboard.writeText(window.location.href);
+  };
+
+  const handleReport = async () => {
+    await base44.entities.Report.create({
+      listing_id: post.id,
+      listing_title: post.content?.slice(0, 80) || 'Community post',
+      reporter_email: user?.email || 'anonymous',
+      reporter_name: user?.full_name || 'Anonymous',
+      reason: 'inappropriate',
+      details: 'Reported from Business Communities',
+      status: 'pending',
+    });
+  };
+
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
       className="rounded-2xl overflow-hidden"
@@ -94,6 +111,14 @@ function PostCard({ post, user, onLike }) {
           className="flex items-center gap-1.5 font-body text-xs text-white/40 hover:text-blue-400 transition-colors">
           <MessageCircle className="w-4 h-4" />
           <span>{post.comment_count || 0} comments</span>
+        </button>
+        <button onClick={handleShare}
+          className="flex items-center gap-1.5 font-body text-xs text-white/40 hover:text-green-400 transition-colors">
+          <Share2 className="w-4 h-4" /> Share
+        </button>
+        <button onClick={handleReport}
+          className="flex items-center gap-1.5 font-body text-xs text-white/40 hover:text-red-400 transition-colors">
+          <Flag className="w-4 h-4" /> Report
         </button>
       </div>
 

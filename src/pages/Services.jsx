@@ -6,8 +6,8 @@ import { ArrowLeft, Search, Phone, MessageSquare, Star, AlertCircle, Plus, Penci
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
-import PostListingMenu from '../components/PostListingMenu';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
+import SmartFilterChips from '../components/SmartFilterChips';
 import { base44 } from '@/api/base44Client';
 
 const SUBCATEGORIES = [
@@ -303,7 +303,11 @@ export default function Services() {
             </div>
             <div className="flex items-center gap-4 mb-3 flex-wrap">
               <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">Services Provided</h1>
-              {canAddListing && <PostListingMenu user={currentUser} compact={false} />}
+              {canAddListing && (
+                <Link to="/post-ad?category=services&type=services" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl font-body font-bold text-sm text-white" style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)' }}>
+                  <Plus className="w-4 h-4" /> Post a Service
+                </Link>
+              )}
             </div>
             <p className="font-body text-base text-white/50 max-w-xl">Home services, tech, beauty, events, professional & health services across Manila and Cavite.</p>
           </motion.div>
@@ -316,6 +320,12 @@ export default function Services() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+        <SmartFilterChips options={[
+          { label: 'All services', onClick: () => { setActiveCategory('all'); setSearch(''); } },
+          { label: 'Freelance', onClick: () => { setActiveCategory('all'); setSearch('freelance'); } },
+          { label: 'Near Manila', onClick: () => setLocationFilter('Manila') },
+          { label: 'Near Cavite', onClick: () => setLocationFilter('Cavite') },
+        ]} />
         <div className="flex gap-2 flex-wrap mb-8">
           {SUBCATEGORIES.map(sc => (
             <button key={sc.key} onClick={() => setActiveCategory(sc.key)}
@@ -356,18 +366,6 @@ export default function Services() {
 
         {!currentUser && <BecomeSellerBanner className="mt-8 mb-4" />}
 
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="mt-8 rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)' }}>
-          <h2 className="font-heading font-bold text-2xl text-white mb-2">Offer Your Services Here</h2>
-          <p className="font-body text-sm text-white/50 mb-6 max-w-md mx-auto">List your services for free and get discovered by thousands of customers across Manila and Cavite.</p>
-          {currentUser ? (
-            <div className="flex justify-center"><PostListingMenu user={currentUser} compact={false} /></div>
-          ) : (
-            <button onClick={() => setShowSignup(true)} className="px-8 py-3 bg-[#00D4FF] text-[#0A192F] font-body font-bold rounded-xl hover:bg-white transition-colors">
-              Sign Up Free & List Your Service
-            </button>
-          )}
-        </motion.div>
       </div>
 
       <AnimatePresence>

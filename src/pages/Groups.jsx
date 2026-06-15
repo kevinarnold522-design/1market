@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Users, Lock, Globe, Clock, CheckCircle, X, Image as ImageIcon, Heart, MessageCircle, Share2, Send, ChevronLeft, Layers } from 'lucide-react';
+import { Plus, Users, Lock, Globe, Clock, CheckCircle, X, Image as ImageIcon, Heart, MessageCircle, Share2, Send, ChevronLeft, Layers, Flag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import DoubleHeartAnimation from '../components/DoubleHeartAnimation';
 
@@ -55,7 +55,7 @@ export default function Groups() {
   const loadPosts = async () => {
     if (!selectedGroup) return;
     const p = await base44.entities.GroupPost.filter({ group_id: selectedGroup.id }, '-created_date', 50);
-    setPosts(p);
+    setPosts(p.filter(post => post.approval_status !== 'rejected' && (post.approval_status !== 'pending' || isAdmin || post.author_email === user?.email)));
     // Load likes for current user
     if (user) {
       const likes = await base44.entities.GroupPostLike.filter({ user_email: user.email });
@@ -108,6 +108,7 @@ export default function Groups() {
       content: postForm.content.trim(),
       image_url: postForm.image_url,
       post_type: postForm.post_type,
+      approval_status: postForm.post_type === 'listing' && !isAdmin ? 'pending' : 'approved',
       likes: 0,
       comment_count: 0,
     });
@@ -127,6 +128,18 @@ export default function Groups() {
     await base44.entities.GroupPost.update(post.id, { likes: (post.likes || 0) + 1 });
     setLikedPosts(prev => new Set([...prev, post.id]));
     setPosts(prev => prev.map(p => p.id === post.id ? { ...p, likes: (p.likes || 0) + 1 } : p));
+  };
+
+  const handleReportPost = async (post) => {
+    await base44.entities.Report.create({
+      listing_id: post.id,
+      listing_title: post.content?.slice(0, 80) || 'Group post',
+      reporter_email: user?.email || 'anonymous',
+      reporter_name: user?.full_name || 'Anonymous',
+      reason: 'inappropriate',
+      details: `Reported from group: ${selectedGroup?.name || ''}`,
+      status: 'pending',
+    });
   };
 
   const handleComment = async (postId) => {
@@ -326,6 +339,13 @@ export default function Groups() {
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-white/40 hover:text-white/70 hover:bg-white/5 font-body text-xs font-semibold transition-all">
                       <Share2 className="w-4 h-4" />
                     </button>
+                    <button onClick={() => handleReportPost(post)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-white/40 hover:text-red-400 hover:bg-red-500/10 font-body text-xs font-semibold transition-all">
+                      <Flag className="w-4 h-4" /> Report
+                    </button>
+                    {post.approval_status === 'pending' && (
+                      <span className="ml-auto px-2 py-1 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/25 font-body text-[10px] font-bold">Pending approval</span>
+                    )}
                   </div>
                   {/* Comments section */}
                   <AnimatePresence>

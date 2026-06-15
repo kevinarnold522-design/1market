@@ -7,10 +7,9 @@ import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
 import { base44 } from '@/api/base44Client';
-import AdminQuickAddFAB from '../components/admin/AdminQuickAddFAB';
 import MascotDog from '../components/MascotDog';
-import PostListingMenu from '../components/PostListingMenu';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
+import SmartFilterChips from '../components/SmartFilterChips';
 
 // Multi-icon renderer for the section header
 function MultiIcon({ color }) {
@@ -239,8 +238,13 @@ export default function ForRent() {
               <div className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
               <span className="font-body text-xs tracking-[0.2em] uppercase text-[#00D4FF]">1Market Rentals</span>
             </div>
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-3 mb-2 flex-wrap">
               <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white">For Rent / For Sale / Lease</h1>
+              {(isAdmin || isSeller) && (
+                <Link to="/post-ad?category=rent&type=rent_lease" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl font-body font-bold text-sm text-white" style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)' }}>
+                  <Plus className="w-4 h-4" /> Post Rental
+                </Link>
+              )}
             </div>
             <div className="flex items-center gap-2 mb-3">
               <Home className="w-5 h-5 text-emerald-400" />
@@ -260,6 +264,12 @@ export default function ForRent() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-8">
+        <SmartFilterChips options={[
+          { label: 'All rentals', onClick: () => { setActiveCategory('all'); setSearch(''); setSpaceType('All Types'); } },
+          { label: 'Properties', onClick: () => setActiveCategory('residential') },
+          { label: 'Vehicles', onClick: () => setActiveCategory('vehicles') },
+          { label: 'Nationwide', onClick: () => setLocationFilter('Nationwide') },
+        ]} />
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-8">
           {SUBCATEGORIES.map(sc => {
             const Icon = sc.Icon;
@@ -300,11 +310,6 @@ export default function ForRent() {
           ))}
         </div>
 
-        {(isAdmin || isSeller) && (
-          <div className="mb-6">
-            <PostListingMenu user={user} compact={false} />
-          </div>
-        )}
 
         {filtered.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
@@ -324,18 +329,6 @@ export default function ForRent() {
 
         {!user && <BecomeSellerBanner className="mt-8 mb-4" />}
 
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="mt-8 rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)', border: '1px solid rgba(0,212,255,0.2)' }}>
-          <h2 className="font-heading font-bold text-2xl text-white mb-2">Have a Property or Item to Rent Out?</h2>
-          <p className="font-body text-sm text-white/50 mb-6 max-w-md mx-auto">List your property, vehicle, or equipment for free and reach renters across Manila and Cavite.</p>
-          {user ? (
-            <div className="flex justify-center"><PostListingMenu user={user} compact={false} /></div>
-          ) : (
-            <button onClick={() => setShowSignup(true)} className="px-8 py-3 bg-[#00D4FF] text-[#0A192F] font-body font-bold rounded-xl hover:bg-white transition-colors">
-              Sign Up Free & Post a Rental
-            </button>
-          )}
-        </motion.div>
       </div>
 
       <AnimatePresence>
@@ -358,7 +351,6 @@ export default function ForRent() {
         )}
       </AnimatePresence>
 
-      <AdminQuickAddFAB defaultMode="listing" forceSubcategory="residential" />
       <MascotDog page="rent" />
     </div>
   );
