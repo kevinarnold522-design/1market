@@ -367,7 +367,6 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   const [done, setDone] = useState(false);
   const [dpaAccepted, setDpaAccepted] = useState(false);
   const [legalAccepted, setLegalAccepted] = useState(false);
-  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -488,7 +487,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   const isFlights = form.type === 'flights';
   const totalImages = (form.image_url ? 1 : 0) + (form.extra_images?.length || 0);
   const photosRequired = !isJob;
-  const canSubmit = form.title && form.description && dpaAccepted && termsAccepted && (isCar ? legalAccepted : true) && (!photosRequired || totalImages >= 3);
+  const canSubmit = form.title && form.description && dpaAccepted && (isCar ? legalAccepted : true) && (!photosRequired || totalImages >= 3);
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -1297,30 +1296,22 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                     <label htmlFor="publish-toggle" className="font-body text-xs text-white/50">Publish publicly</label>
                   </div>
 
-                  {/* DPA CONSENT */}
-                  <div className={`flex items-start gap-2.5 p-3 rounded-xl border ${dpaAccepted ? 'border-green-500/30 bg-green-500/5' : 'border-amber-500/30 bg-amber-500/5'}`}>
-                    <input type="checkbox" id="dpa-consent" checked={dpaAccepted} onChange={e => setDpaAccepted(e.target.checked)} className="w-4 h-4 mt-0.5 accent-[#00D4FF] flex-shrink-0" />
-                    <label htmlFor="dpa-consent" className="font-body text-[11px] text-white/60 leading-relaxed cursor-pointer">
-                      I agree to the Data Privacy Act of 2012 (RA 10173). I consent to the collection and processing of my personal information for this listing. 1MarketPH may store and display this publicly.
-                    </label>
-                  </div>
-
-                  {/* FULL LEGAL TERMS & CONDITIONS */}
-                  <div className={`p-3 rounded-xl border space-y-2 ${termsAccepted ? 'border-blue-500/30 bg-blue-500/5' : 'border-red-500/30 bg-red-500/5'}`}>
-                    <p className="font-body text-[10px] font-bold text-white/50 uppercase tracking-wider">Terms & Conditions — Required</p>
+                  {/* PRIVACY + TERMS CONSENT */}
+                  <div className={`p-3 rounded-xl border space-y-2 ${dpaAccepted ? 'border-green-500/30 bg-green-500/5' : 'border-amber-500/30 bg-amber-500/5'}`}>
+                    <p className="font-body text-[10px] font-bold text-white/50 uppercase tracking-wider">Privacy, Terms & Conditions — Required</p>
                     <div className="max-h-28 overflow-y-auto pr-1">
                       <p className="font-body text-[10px] text-white/50 leading-relaxed">
-                        By agreeing to these Terms and Conditions, you promise to have no false or inaccurate information on the listed item/service published. 1MarketPH does not promote or tolerate the promotion of illegal drugs, gambling, harmful products, or products that can cause physical or immediate danger to any buyers or users.
+                        I agree to the Data Privacy Act of 2012 (RA 10173) and consent to 1MarketPH collecting, storing, processing, and publicly displaying the information needed for this listing.
                         <br /><br />
-                        By accepting these terms you legally agree that 1MarketPH is not liable for any illegal products promoted on its platform, but has full legal authority to ensure that forms of damages caused by any misrepresentation, false advertisement, or the promotion of dangerous products or illegal drugs constitutes an act of endangering 1MarketPH's reputation and is in violation of Philippine laws. Therefore any forms of damages can be recovered through legal means.
+                        I also agree to the 1MarketPH Terms and Conditions. I confirm this listing is truthful and accurate, and does not promote illegal drugs, gambling, dangerous products, harmful services, false advertising, or anything that violates Philippine laws.
                         <br /><br />
-                        By clicking Submit, this listing will be reviewed by our Approval Team. Once fully approved, you will receive an approval email and notification.
+                        I understand that all listings are reviewed before approval and that 1MarketPH may reject or remove listings that break these rules.
                       </p>
                     </div>
                     <div className="flex items-start gap-2.5 pt-1">
-                      <input type="checkbox" id="terms-consent" checked={termsAccepted} onChange={e => setTermsAccepted(e.target.checked)} className="w-4 h-4 mt-0.5 accent-[#00D4FF] flex-shrink-0" />
-                      <label htmlFor="terms-consent" className="font-body text-[11px] text-white/70 leading-relaxed cursor-pointer font-semibold">
-                        I have read and agree to the 1MarketPH Terms and Conditions above.
+                      <input type="checkbox" id="privacy-terms-consent" checked={dpaAccepted} onChange={e => setDpaAccepted(e.target.checked)} className="w-4 h-4 mt-0.5 accent-[#00D4FF] flex-shrink-0" />
+                      <label htmlFor="privacy-terms-consent" className="font-body text-[11px] text-white/70 leading-relaxed cursor-pointer font-semibold">
+                        I have read and agree to the Data Privacy Act notice and 1MarketPH Terms and Conditions.
                       </label>
                     </div>
                   </div>

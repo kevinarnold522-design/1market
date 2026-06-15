@@ -27,13 +27,23 @@ const CATEGORIES = [
 {
   key: 'jobs', label: 'Jobs', iconKey: 'jobs', color: '#f59e0b', modal: 'standard',
   subtypes: [
-  { label: 'Any Job Posting', type: 'jobs' }]
+  { label: 'Customer Service / BPO', type: 'jobs', subcategory: 'Customer Service Rep' },
+  { label: 'Tech & IT', type: 'jobs', subcategory: 'Software Engineer' },
+  { label: 'Healthcare', type: 'jobs', subcategory: 'Staff Nurse (RN)' },
+  { label: 'Delivery Rider', type: 'jobs', subcategory: 'Delivery Rider' },
+  { label: 'Virtual Assistant', type: 'jobs', subcategory: 'Virtual Assistant (VA)' },
+  { label: 'Other Job', type: 'jobs', subcategory: 'Other / Not Listed' }]
 
 },
 {
   key: 'food', label: 'Food', iconKey: 'food', color: '#f97316', modal: 'standard',
   subtypes: [
-  { label: 'Food & Beverages', type: 'food' }]
+  { label: 'Home Kitchen', type: 'food', subcategory: 'Homemade Meals' },
+  { label: 'Bakery / Pastries', type: 'food', subcategory: 'Home Bakery' },
+  { label: 'Restaurant / Fast Food', type: 'food', subcategory: 'Quick Service Restaurant' },
+  { label: 'Catering', type: 'food', subcategory: 'Event Catering' },
+  { label: 'Drinks / Coffee / Milk Tea', type: 'food', subcategory: 'Beverages & Drinks' },
+  { label: 'Other Food', type: 'food', subcategory: 'Other / Type Manually' }]
 
 },
 {
@@ -46,7 +56,13 @@ const CATEGORIES = [
 {
   key: 'services', label: 'Services', iconKey: 'services', color: '#3b82f6', modal: 'standard',
   subtypes: [
-  { label: 'Service Listing', type: 'services' }]
+  { label: 'Home Services', type: 'services', subcategory: 'House Cleaning' },
+  { label: 'Tech & Digital', type: 'services', subcategory: 'Website Development' },
+  { label: 'Beauty & Wellness', type: 'services', subcategory: 'Massage Services' },
+  { label: 'Events & Catering', type: 'services', subcategory: 'Event Planning' },
+  { label: 'Professional Services', type: 'services', subcategory: 'Accounting' },
+  { label: 'Transport & Delivery', type: 'services', subcategory: 'Delivery Services' },
+  { label: 'Other Service', type: 'services', subcategory: 'Other / Type Manually' }]
 
 },
 {
@@ -100,19 +116,13 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
     setOpen(false);
     setExpandedCat(null);
     if (!user) {setShowSignup(true);return;}
-    // Navigate directly to category page with type pre-selected → auto-opens modal
-    navigate(`/category/${cat.key}?type=${subtype.type}`);
+    const sub = subtype.subcategory ? `&sub=${encodeURIComponent(subtype.subcategory)}` : '';
+    navigate(`/post-ad?category=${cat.key}&type=${subtype.type}${sub}`);
   };
 
   const handleSelectCat = (cat) => {
     if (!user) {setOpen(false);setShowSignup(true);return;}
-    if (cat.subtypes.length === 1) {
-      // Single subtype → go directly to listing form
-      navigate(`/category/${cat.key}?type=${cat.subtypes[0].type}`);
-      setOpen(false);
-    } else {
-      setExpandedCat(expandedCat === cat.key ? null : cat.key);
-    }
+    setExpandedCat(expandedCat === cat.key ? null : cat.key);
   };
 
   const btnLabel = iconOnly ? null : compact ? '+ Post an Ad' : 'Post an Ad';

@@ -411,14 +411,23 @@ export default function MascotDog({ page = 'home', onGetStarted }) {
         </AnimatePresence>
 
         {/* Alfie character — draggable */}
-        <div
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          className="cursor-grab active:cursor-grabbing"
-          style={{ touchAction: 'none' }}
-        >
-          <AlfieCharacter mode={mode} />
+        <div className="relative">
+          <button
+            onClick={(e) => { e.stopPropagation(); setDismissed(true); }}
+            className="absolute -top-1 -right-1 z-20 w-5 h-5 rounded-full bg-white/95 shadow-lg flex items-center justify-center hover:bg-white transition-colors"
+            title="Hide Alfie"
+          >
+            <X className="w-3 h-3 text-[#0A192F]" />
+          </button>
+          <div
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            className="cursor-grab active:cursor-grabbing"
+            style={{ touchAction: 'none' }}
+          >
+            <AlfieCharacter mode={mode} />
+          </div>
         </div>
 
         {/* Bubble below when near top */}

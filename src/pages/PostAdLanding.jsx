@@ -30,12 +30,26 @@ const CATEGORIES = [
   {
     key: 'jobs', label: 'Jobs', iconKey: 'jobs', color: '#f59e0b',
     desc: 'Full-time, part-time, freelance & remote jobs',
-    subtypes: [{ label: 'Any Job Posting', type: 'jobs' }]
+    subtypes: [
+      { label: 'Customer Service / BPO', type: 'jobs', subcategory: 'Customer Service Rep' },
+      { label: 'Tech & IT', type: 'jobs', subcategory: 'Software Engineer' },
+      { label: 'Healthcare', type: 'jobs', subcategory: 'Staff Nurse (RN)' },
+      { label: 'Delivery Rider', type: 'jobs', subcategory: 'Delivery Rider' },
+      { label: 'Virtual Assistant', type: 'jobs', subcategory: 'Virtual Assistant (VA)' },
+      { label: 'Other Job', type: 'jobs', subcategory: 'Other / Not Listed' },
+    ]
   },
   {
     key: 'food', label: 'Food', iconKey: 'food', color: '#f97316',
     desc: 'Home kitchen, bakery, carinderia, restaurant',
-    subtypes: [{ label: 'Food & Beverages', type: 'food' }]
+    subtypes: [
+      { label: 'Home Kitchen', type: 'food', subcategory: 'Homemade Meals' },
+      { label: 'Bakery / Pastries', type: 'food', subcategory: 'Home Bakery' },
+      { label: 'Restaurant / Fast Food', type: 'food', subcategory: 'Quick Service Restaurant' },
+      { label: 'Catering', type: 'food', subcategory: 'Event Catering' },
+      { label: 'Drinks / Coffee / Milk Tea', type: 'food', subcategory: 'Beverages & Drinks' },
+      { label: 'Other Food', type: 'food', subcategory: 'Other / Type Manually' },
+    ]
   },
   {
     key: 'rent', label: 'Rent / For Sale', iconKey: 'rent', color: '#10b981',
@@ -48,7 +62,15 @@ const CATEGORIES = [
   {
     key: 'services', label: 'Services', iconKey: 'services', color: '#3b82f6',
     desc: 'Home repair, IT, creative, professional services',
-    subtypes: [{ label: 'Service Listing', type: 'services' }]
+    subtypes: [
+      { label: 'Home Services', type: 'services', subcategory: 'House Cleaning' },
+      { label: 'Tech & Digital', type: 'services', subcategory: 'Website Development' },
+      { label: 'Beauty & Wellness', type: 'services', subcategory: 'Massage Services' },
+      { label: 'Events & Catering', type: 'services', subcategory: 'Event Planning' },
+      { label: 'Professional Services', type: 'services', subcategory: 'Accounting' },
+      { label: 'Transport & Delivery', type: 'services', subcategory: 'Delivery Services' },
+      { label: 'Other Service', type: 'services', subcategory: 'Other / Type Manually' },
+    ]
   },
   {
     key: 'travel', label: 'Travel / Hotel', iconKey: 'travel', color: '#0ea5e9',
@@ -71,13 +93,15 @@ export default function PostAdLanding() {
   const [showModal, setShowModal] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [selectedType, setSelectedType] = useState('');
+  const [selectedSubcategory, setSelectedSubcategory] = useState('');
 
   useEffect(() => {
     const typeParam = searchParams.get('type');
+    const subParam = searchParams.get('sub') || '';
     if (!user) return;
     if (preselectedKey && typeParam) {
       const cat = CATEGORIES.find(c => c.key === preselectedKey);
-      if (cat) { setSelectedCat(cat); setSelectedType(typeParam); setShowModal(true); }
+      if (cat) { setSelectedCat(cat); setSelectedType(typeParam); setSelectedSubcategory(subParam); setShowModal(true); }
     } else if (preselectedKey) {
       const cat = CATEGORIES.find(c => c.key === preselectedKey);
       if (cat) {
@@ -87,22 +111,17 @@ export default function PostAdLanding() {
     }
   }, [user]);
 
-  const handleSelectSubtype = (cat, type) => {
+  const handleSelectSubtype = (cat, subtype) => {
     if (!user) { setShowSignup(true); return; }
     setSelectedCat(cat);
-    setSelectedType(type);
+    setSelectedType(subtype.type);
+    setSelectedSubcategory(subtype.subcategory || '');
     setShowModal(true);
   };
 
   const handleCatClick = (cat) => {
     if (!user) { setShowSignup(true); return; }
-    if (cat.subtypes.length === 1) {
-      setSelectedType(cat.subtypes[0].type);
-      setSelectedCat(cat);
-      setShowModal(true);
-    } else {
-      setSelectedCat(selectedCat?.key === cat.key ? null : cat);
-    }
+    setSelectedCat(selectedCat?.key === cat.key ? null : cat);
   };
 
   return (
@@ -167,7 +186,7 @@ export default function PostAdLanding() {
                         style={{ color: cat.color }}>Choose type:</p>
                       {cat.subtypes.map(sub => (
                         <button key={sub.type}
-                          onClick={() => handleSelectSubtype(cat, sub.type)}
+                          onClick={() => handleSelectSubtype(cat, sub)}
                           className="w-full flex items-center gap-2 px-3 py-2 rounded-lg font-body text-xs text-white/80 hover:text-white transition-all hover:scale-[1.01] text-left"
                           style={{ background: `${cat.color}15`, border: `1px solid ${cat.color}30` }}>
                           <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: cat.color }} />
@@ -201,7 +220,8 @@ export default function PostAdLanding() {
           <AddListingModal
             user={user}
             defaultType={selectedType}
-            onClose={() => { setShowModal(false); setSelectedType(''); setSelectedCat(null); }}
+            defaultSubcategory={selectedSubcategory}
+            onClose={() => { setShowModal(false); setSelectedType(''); setSelectedSubcategory(''); setSelectedCat(null); }}
           />
         )}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}

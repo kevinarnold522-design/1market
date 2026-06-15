@@ -121,9 +121,8 @@ export default function LeftSidebar({ isMobileHidden = false }) {
             </div>
             {!collapsed && (
               <div className="flex-1 min-w-0">
-                <p className="font-body text-[11px] font-bold text-white truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
                 {/* Standardized account type badge */}
-                <span className="inline-flex items-center font-body font-bold uppercase tracking-wider mt-0.5 flex-shrink-0"
+                <span className="inline-flex items-center font-body font-bold uppercase tracking-wider mb-0.5 flex-shrink-0"
                   style={{
                     fontSize: '8px', padding: '2px 7px', borderRadius: '4px',
                     background: isAdmin ? 'rgba(245,158,11,0.18)' : activeUser?.user_type === 'business' ? 'rgba(37,99,235,0.18)' : activeUser?.user_type === 'rider' ? 'rgba(245,158,11,0.13)' : isSeller ? 'rgba(16,185,129,0.15)' : isGhostSession ? 'rgba(168,85,247,0.13)' : 'rgba(37,99,235,0.13)',
@@ -132,6 +131,7 @@ export default function LeftSidebar({ isMobileHidden = false }) {
                   }}>
                   {isAdmin ? 'CEO & Founder' : activeUser?.user_type === 'business' ? 'Business' : activeUser?.user_type === 'rider' ? 'Rider Delivery' : isSeller ? 'Sales Account' : isGhostSession ? 'Live Test' : 'Customer'}
                 </span>
+                <p className="font-body text-[11px] font-bold text-white truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
               </div>
             )}
           </Link>
@@ -139,14 +139,14 @@ export default function LeftSidebar({ isMobileHidden = false }) {
       )}
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-2 space-y-0.5 px-2" style={{ scrollbarWidth: 'thick', scrollbarColor: 'rgba(255,255,255,0.7) transparent' }}
+      <nav className="flex-1 overflow-y-scroll py-2 space-y-0.5 px-2" style={{ scrollbarWidth: 'thick', scrollbarColor: 'rgba(255,255,255,0.85) rgba(255,255,255,0.08)' }}
         ref={el => {
           if (el) {
             el.style.setProperty('--scrollbar-width', '10px');
           }
         }}
       >
-        {NAV_ITEMS.map(item => {
+        {!isAuthenticated && NAV_ITEMS.map(item => {
           const active = location.pathname === item.to || (item.to !== '/' && location.pathname.startsWith(item.to));
           return (
             <Link key={item.to} to={item.to}
@@ -192,6 +192,23 @@ export default function LeftSidebar({ isMobileHidden = false }) {
               <ShoppingCart className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span className="font-body text-xs font-semibold truncate">Cart</span>}
             </Link>
+            {!isSeller && (
+              <>
+                <div className="my-2 border-t border-white/8 mx-1" />
+                {NAV_ITEMS.map(item => {
+                  const active = location.pathname === item.to || (item.to !== '/' && location.pathname.startsWith(item.to));
+                  return (
+                    <Link key={item.to} to={item.to}
+                      className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all group relative"
+                      style={{ background: active ? `${item.color}22` : 'transparent', borderLeft: active ? `3px solid ${item.color}` : '3px solid transparent' }}
+                      title={collapsed ? item.label : undefined}>
+                      <item.icon className="w-4 h-4 flex-shrink-0 transition-colors" style={{ color: active ? item.color : 'rgba(255,255,255,0.5)' }} />
+                      {!collapsed && <span className="font-body text-xs font-semibold truncate transition-colors" style={{ color: active ? 'white' : 'rgba(255,255,255,0.55)' }}>{item.label}</span>}
+                    </Link>
+                  );
+                })}
+              </>
+            )}
             <Link to="/messages"
               className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-white/50 hover:text-[#00D4FF] hover:bg-[#00D4FF]/10"
               title={collapsed ? 'Messages' : undefined}>
@@ -224,6 +241,19 @@ export default function LeftSidebar({ isMobileHidden = false }) {
               <BarChart2 className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span className="font-body text-xs font-semibold truncate">Analytics</span>}
             </Link>
+            <div className="my-2 border-t border-white/8 mx-1" />
+            {NAV_ITEMS.map(item => {
+              const active = location.pathname === item.to || (item.to !== '/' && location.pathname.startsWith(item.to));
+              return (
+                <Link key={item.to} to={item.to}
+                  className="flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all group relative"
+                  style={{ background: active ? `${item.color}22` : 'transparent', borderLeft: active ? `3px solid ${item.color}` : '3px solid transparent' }}
+                  title={collapsed ? item.label : undefined}>
+                  <item.icon className="w-4 h-4 flex-shrink-0 transition-colors" style={{ color: active ? item.color : 'rgba(255,255,255,0.5)' }} />
+                  {!collapsed && <span className="font-body text-xs font-semibold truncate transition-colors" style={{ color: active ? 'white' : 'rgba(255,255,255,0.55)' }}>{item.label}</span>}
+                </Link>
+              );
+            })}
           </>
         )}
 
@@ -318,6 +348,10 @@ export default function LeftSidebar({ isMobileHidden = false }) {
             <Link to="/login" className="flex items-center gap-2 px-2 py-2 rounded-xl bg-[#2563EB]/20 hover:bg-[#2563EB]/30 transition-colors">
               <User className="w-4 h-4 text-[#00D4FF] flex-shrink-0" />
               {!collapsed && <span className="font-body text-xs font-semibold text-[#00D4FF]">Login</span>}
+            </Link>
+            <Link to="/login" className="flex items-center gap-2 px-2 py-2 rounded-xl bg-white/10 hover:bg-white/15 transition-colors mt-1">
+              <User className="w-4 h-4 text-white flex-shrink-0" />
+              {!collapsed && <span className="font-body text-xs font-semibold text-white">Continue with Google</span>}
             </Link>
             <Link to="/register" className="flex items-center gap-2 px-2 py-2 rounded-xl bg-[#00D4FF]/20 hover:bg-[#00D4FF]/30 transition-colors mt-1">
               <User className="w-4 h-4 text-[#00D4FF] flex-shrink-0" />
