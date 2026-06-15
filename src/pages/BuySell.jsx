@@ -150,7 +150,7 @@ export default function BuySell() {
   const [currentPage, setCurrentPage] = useState(parseInt(params.get('page')) || 1);
   const ITEMS_PER_PAGE = 10;
 
-  const isSeller = user?.user_type === 'seller' || user?.user_type === 'business' || user?.is_seller || user?.role === 'admin';
+  const isSeller = user?.user_type === 'seller' || user?.user_type === 'business' || user?.is_seller || user?.account_type === 'business_owner' || user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
 
   useEffect(() => {
     base44.entities.Listing.filter({ approval_status: 'approved', is_active: true })

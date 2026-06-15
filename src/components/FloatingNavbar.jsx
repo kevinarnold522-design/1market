@@ -52,8 +52,8 @@ export default function FloatingNavbar() {
   const activeUser = ghostUser || user;
   const isAdmin = !ghostUser && activeUser?.email?.toLowerCase() === OWNER_EMAIL;
   const isGhostSession = !!ghostUser;
-  const isSeller = activeUser?.user_type === 'seller' || activeUser?.is_seller || activeUser?.account_type === 'business_owner';
   const isBusiness = activeUser?.user_type === 'business';
+  const isSeller = activeUser?.user_type === 'seller' || isBusiness || activeUser?.is_seller || activeUser?.account_type === 'business_owner';
   const isVerified = activeUser?.is_verified_seller;
   const isGhost = activeUser?.is_ghost_account || activeUser?.ghost_id;
   const initials = activeUser ? (activeUser.full_name || activeUser.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';

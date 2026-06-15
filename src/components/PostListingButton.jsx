@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import PostListingMenu from './PostListingMenu';
 import { base44 } from '@/api/base44Client';
 import MemberSignupModal from './MemberSignupModal';
@@ -8,11 +9,10 @@ import MemberSignupModal from './MemberSignupModal';
 export default function PostListingButton({ className = '', size = 'md' }) {
   const [user, setUser] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    base44.auth.isAuthenticated().then(ok => {
-      if (ok) base44.auth.me().then(u => setUser(u)).catch(() => {});
-    }).catch(() => {});
+    base44.auth.me().then(u => setUser(u)).catch(() => {});
   }, []);
 
   // Allow posting for admin, seller, business users
@@ -40,7 +40,7 @@ export default function PostListingButton({ className = '', size = 'md' }) {
       <button
         onClick={() => {
           if (user) {
-            // Authenticated but not yet a seller → nothing happens (they'll use profile)
+            navigate('/post-ad');
           } else {
             setShowSignup(true);
           }

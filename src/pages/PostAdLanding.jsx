@@ -185,7 +185,7 @@ export default function PostAdLanding() {
                       <p className="font-body text-[9px] text-white/30 uppercase tracking-wider font-bold mb-2"
                         style={{ color: cat.color }}>Choose type:</p>
                       {cat.subtypes.map(sub => (
-                        <button key={sub.type}
+                        <button key={`${sub.type}-${sub.label}`}
                           onClick={() => handleSelectSubtype(cat, sub)}
                           className="w-full flex items-center gap-2 px-3 py-2 rounded-lg font-body text-xs text-white/80 hover:text-white transition-all hover:scale-[1.01] text-left"
                           style={{ background: `${cat.color}15`, border: `1px solid ${cat.color}30` }}>

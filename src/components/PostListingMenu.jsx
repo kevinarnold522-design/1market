@@ -99,15 +99,6 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
     setExpandedCat(null);
   };
 
-  const CATEGORY_ROUTES = {
-    buysell: '/buysell',
-    jobs: '/jobs',
-    food: '/food',
-    rent: '/rent',
-    services: '/services',
-    travel: '/travel'
-  };
-
   // Customer accounts can post jobs
   const isCustomer = user && !user.is_seller && user.user_type !== 'seller' && user.user_type !== 'business' && user.account_type !== 'business_owner' && user.role !== 'admin';
   const visibleCategories = isCustomer ? CATEGORIES.filter((c) => c.key === 'jobs') : CATEGORIES;
@@ -201,7 +192,7 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
                             </p>
                             <div className="flex flex-wrap gap-1.5 pb-1">
                               {cat.subtypes.map((sub) =>
-                            <button key={sub.type} onClick={() => handleSelectSubtype(cat, sub)}
+                            <button key={`${sub.type}-${sub.label}`} onClick={() => handleSelectSubtype(cat, sub)}
                             className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl font-body text-[11px] font-semibold text-white/80 hover:text-white transition-all hover:scale-105"
                             style={{ background: `${cat.color}18`, border: `1px solid ${cat.color}33` }}>
                                   <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: cat.color }} />

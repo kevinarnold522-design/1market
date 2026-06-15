@@ -189,8 +189,8 @@ export default function ForRent() {
   useEffect(() => {
     base44.auth.me().then(u => {
       setUser(u);
-      setIsAdmin(u?.role === 'admin' || u?.role === 'moderator');
-      setIsSeller(u?.is_seller || u?.account_type === 'business_owner');
+      setIsAdmin(u?.role === 'admin' || u?.role === 'moderator' || u?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
+      setIsSeller(u?.is_seller || u?.user_type === 'seller' || u?.user_type === 'business' || u?.account_type === 'business_owner');
     }).catch(() => {});
     Promise.all([
       base44.entities.Listing.filter({ type: 'rent_lease', is_active: true }, '-created_date', 50),
@@ -328,9 +328,13 @@ export default function ForRent() {
           className="mt-8 rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)', border: '1px solid rgba(0,212,255,0.2)' }}>
           <h2 className="font-heading font-bold text-2xl text-white mb-2">Have a Property or Item to Rent Out?</h2>
           <p className="font-body text-sm text-white/50 mb-6 max-w-md mx-auto">List your property, vehicle, or equipment for free and reach renters across Manila and Cavite.</p>
-          <button onClick={() => setShowSignup(true)} className="px-8 py-3 bg-[#00D4FF] text-[#0A192F] font-body font-bold rounded-xl hover:bg-white transition-colors">
-            Sign Up Free & Post a Rental
-          </button>
+          {user ? (
+            <div className="flex justify-center"><PostListingMenu user={user} compact={false} /></div>
+          ) : (
+            <button onClick={() => setShowSignup(true)} className="px-8 py-3 bg-[#00D4FF] text-[#0A192F] font-body font-bold rounded-xl hover:bg-white transition-colors">
+              Sign Up Free & Post a Rental
+            </button>
+          )}
         </motion.div>
       </div>
 

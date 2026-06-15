@@ -245,9 +245,9 @@ export default function Services() {
     base44.auth.isAuthenticated().then(ok => {
       if (ok) base44.auth.me().then(u => {
         setCurrentUser(u);
-        const admin = u.role === 'admin' || u.email === 'Kevinarnold522@gmail.com';
+        const admin = u.role === 'admin' || u.email?.toLowerCase() === 'kevinarnold522@gmail.com';
         setIsAdmin(admin);
-        const allowed = admin || u.is_seller || u.account_type === 'business_owner';
+        const allowed = admin || u.is_seller || u.user_type === 'seller' || u.user_type === 'business' || u.account_type === 'business_owner';
         setCanAddListing(allowed);
       }).catch(() => {});
     }).catch(() => {});
@@ -360,9 +360,13 @@ export default function Services() {
           className="mt-8 rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)' }}>
           <h2 className="font-heading font-bold text-2xl text-white mb-2">Offer Your Services Here</h2>
           <p className="font-body text-sm text-white/50 mb-6 max-w-md mx-auto">List your services for free and get discovered by thousands of customers across Manila and Cavite.</p>
-          <button onClick={() => setShowSignup(true)} className="px-8 py-3 bg-[#00D4FF] text-[#0A192F] font-body font-bold rounded-xl hover:bg-white transition-colors">
-            Sign Up Free & List Your Service
-          </button>
+          {currentUser ? (
+            <div className="flex justify-center"><PostListingMenu user={currentUser} compact={false} /></div>
+          ) : (
+            <button onClick={() => setShowSignup(true)} className="px-8 py-3 bg-[#00D4FF] text-[#0A192F] font-body font-bold rounded-xl hover:bg-white transition-colors">
+              Sign Up Free & List Your Service
+            </button>
+          )}
         </motion.div>
       </div>
 
