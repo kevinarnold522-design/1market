@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
 import AccountTypeModal from '../AccountTypeModal';
 import LoginModal from '@/components/LoginModal';
-import PostListingButton from '../PostListingButton';
 import { base44 } from '@/api/base44Client';
 
 export default function HeroSection({ heroImage }) {
@@ -41,12 +40,14 @@ export default function HeroSection({ heroImage }) {
 
               {/* Brand Logo */}
               <div className="flex items-center gap-3">
-                <img
-                  src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
-                  alt="1Market Philippines"
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover shadow-2xl"
-                  style={{ boxShadow: '0 0 24px rgba(255,215,0,0.35)' }}
-                />
+                <a href="/" className="inline-flex flex-shrink-0" aria-label="Go to homepage">
+                  <img
+                    src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
+                    alt="1Market Philippines"
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover shadow-2xl"
+                    style={{ boxShadow: '0 0 24px rgba(255,215,0,0.35)' }}
+                  />
+                </a>
                 <h1 className="font-heading font-bold leading-[0.95] tracking-tight">
                   <span className="block text-2xl sm:text-3xl lg:text-4xl" style={{ color: '#3E97F1' }}>Welcome to</span>
                   <span className="block text-2xl sm:text-3xl lg:text-4xl mt-0.5" style={{ background: 'linear-gradient(135deg,#0040D0,#3E97F1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>1Market PH™</span>
@@ -99,7 +100,7 @@ export default function HeroSection({ heroImage }) {
                       whileHover={{ scale: 1.05 }}>
                       Explore Now →
                     </motion.a>
-                    <PostListingButton />
+
                   </div>
                 )}
                 <motion.a

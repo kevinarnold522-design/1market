@@ -7,8 +7,6 @@ import { base44 } from '@/api/base44Client';
 import { getImpersonatedUser, clearImpersonation } from '@/pages/ConnectedAccounts';
 import MetaVerifiedBadge from './MetaVerifiedBadge';
 import PostListingMenu from './PostListingMenu';
-import NotificationsBell from './NotificationsBell';
-
 const OWNER_EMAIL = 'kevinarnold522@gmail.com';
 
 const NAV_ITEMS = [
@@ -118,15 +116,22 @@ return (
             >
               {/* Header with Logo */}
               <div className="flex items-center gap-3 px-4 py-3 border-b border-white/10">
-                <img
-                  src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
-                  alt="1MarketPH"
-                  className="w-8 h-8 rounded-lg object-cover"
-                />
-                <div className="flex-1">
-                  <p className="font-heading font-bold text-sm text-white">1Market<span className="text-[#FFD700]">PH</span></p>
-                  <p className="font-body text-[9px] text-white/40">Buy, Sell & Connect</p>
-                </div>
+                <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-3 flex-1 min-w-0" aria-label="Go to homepage">
+                  <img
+                    src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
+                    alt="1MarketPH"
+                    className="w-8 h-8 rounded-lg object-cover"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-heading font-bold text-sm text-white">1Market<span className="text-[#FFD700]">PH</span></p>
+                    <p className="font-body text-[9px] text-white/40">Buy, Sell & Connect</p>
+                  </div>
+                </Link>
+                {isAuthenticated && activeUser && (
+                  <Link to="/notifications" onClick={() => setIsOpen(false)} className="w-7 h-7 rounded-full bg-[#00D4FF]/15 border border-[#00D4FF]/25 flex items-center justify-center hover:bg-[#00D4FF]/25 transition-colors" aria-label="Open notifications">
+                    <Bell className="w-3.5 h-3.5 text-[#00D4FF]" />
+                  </Link>
+                )}
                 <button onClick={() => setIsOpen(false)} className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
                   <X className="w-3.5 h-3.5 text-white" />
                 </button>
@@ -147,7 +152,7 @@ return (
               </form>
 
               {/* Navigation Menu */}
-              <div className="p-3 max-h-[60vh] overflow-y-scroll" data-navbar-menu style={{ scrollbarGutter: 'stable' }}>
+              <div className="p-3 max-h-[60vh] overflow-y-scroll" data-navbar-menu style={{ scrollbarGutter: 'stable', minHeight: '420px' }}>
                 {/* Auth Section */}
                 {isAuthenticated && activeUser ? (
                   <>
@@ -227,14 +232,6 @@ return (
                         </Link>
                       </div>
                     )}
-
-                    {/* Notifications Bell - authenticated users only */}
-                    <div className="px-3 py-2 border-t border-white/8 mb-2">
-                      <div className="flex items-center justify-between">
-                        <span className="font-body text-xs text-white/60">Notifications</span>
-                        <NotificationsBell user={activeUser} />
-                      </div>
-                    </div>
 
                     {/* Main Navigation at bottom */}
                     <div className="space-y-0.5 mb-3 border-t border-white/8 pt-2">

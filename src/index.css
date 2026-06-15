@@ -97,6 +97,8 @@ aside nav,
   scrollbar-width: auto;
   scrollbar-color: rgba(255,255,255,0.9) rgba(255,255,255,0.12);
   scrollbar-gutter: stable;
+  position: relative;
+  padding-right: 12px;
 }
 aside nav::-webkit-scrollbar,
 [data-navbar-menu]::-webkit-scrollbar {
@@ -119,6 +121,24 @@ aside nav::-webkit-scrollbar-thumb,
 aside nav::-webkit-scrollbar-thumb:hover,
 [data-navbar-menu]::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 1);
+}
+
+/* Permanent visual rail for systems that auto-hide native scrollbars */
+aside nav::after,
+[data-navbar-menu]::after {
+  content: "";
+  position: sticky;
+  right: 0;
+  top: 8px;
+  float: right;
+  width: 8px;
+  height: calc(100% - 16px);
+  min-height: 120px;
+  margin-right: -10px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.55));
+  box-shadow: inset 0 0 0 2px rgba(0,13,64,0.45), 0 0 10px rgba(255,255,255,0.18);
+  pointer-events: none;
 }
 
 /* Global thick white scrollbar on all scrollable areas */

@@ -140,7 +140,7 @@ export default function LeftSidebar({ isMobileHidden = false }) {
       )}
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-scroll py-2 space-y-0.5 px-2" style={{ scrollbarWidth: 'auto', scrollbarColor: 'rgba(255,255,255,0.85) rgba(255,255,255,0.08)', scrollbarGutter: 'stable' }}
+      <nav className="flex-1 overflow-y-scroll py-2 space-y-0.5 px-2" style={{ scrollbarWidth: 'auto', scrollbarColor: 'rgba(255,255,255,0.85) rgba(255,255,255,0.08)', scrollbarGutter: 'stable', minHeight: 0 }}
         ref={el => {
           if (el) {
             el.style.setProperty('--scrollbar-width', '10px');
