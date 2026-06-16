@@ -24,6 +24,7 @@ Deno.serve(async (req) => {
       region: 'auto',
       endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
       credentials: { accessKeyId, secretAccessKey },
+      forcePathStyle: true,
     });
 
     await client.send(new PutObjectCommand({ Bucket: bucket, Key: key, Body: bytes, ContentType: content_type }));
