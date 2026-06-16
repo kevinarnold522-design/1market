@@ -17,6 +17,7 @@ import NavUserBadge from './NavUserBadge';
 import NavCategoryBar from './NavCategoryBar';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
+import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 import { getGhostSession, clearGhostSession } from '@/lib/ghostAccounts';
 import GhostAccountMenu from '@/components/GhostAccountMenu';
 
@@ -106,7 +107,7 @@ export default function Navbar() {
     const file = e.target.files[0]; if (!file) return;
     setUploadingPfp(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await uploadMediaFileToR2(file);
       await base44.auth.updateMe({ profile_picture: file_url });
       window.location.reload();
     } catch (err) { showToast('Upload failed'); }

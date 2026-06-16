@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Camera, Mail, MapPin, Phone, Save, User, Facebook, Instagram, Youtube, Music, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
+import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 import { useAuth } from '@/lib/AuthContext';
 import { getImpersonatedUser } from '@/pages/ConnectedAccounts';
 
@@ -69,7 +70,7 @@ export default function UserProfile() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(type);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadMediaFileToR2(file);
     const field = type === 'cover' ? 'cover_photos' : 'profile_photos';
     const primary = type === 'cover' ? 'cover_photo' : 'profile_picture';
     const current = user?.[field] || (user?.[primary] ? [user[primary]] : []);

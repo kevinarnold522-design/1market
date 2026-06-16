@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, Upload, X, Save, ChevronDown, ChevronUp, UtensilsCrossed, Hotel, Plane } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 
 // MenuManager — Food sellers get "Menu Items", Hotels get "Rooms", Travel gets "Packages"
 
@@ -24,7 +25,7 @@ function MenuItemForm({ item, onSave, onCancel, context }) {
   const uploadImg = async (e) => {
     const file = e.target.files[0]; if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadMediaFileToR2(file);
     set('image_url', file_url);
     setUploading(false); e.target.value = '';
   };

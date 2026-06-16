@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, MapPin, Clock, Phone, ExternalLink, Star, Calendar, User, Camera, Upload } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 import MultiPlatformRating from '../MultiPlatformRating';
 
 export default function BusinessBioModal({ business, onClose, onUpdated }) {
@@ -27,7 +28,7 @@ export default function BusinessBioModal({ business, onClose, onUpdated }) {
   const handleImageUpload = async (field, file) => {
     if (!file || !isAdmin || !isDbRecord) return;
     setUploadingField(field);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadMediaFileToR2(file);
     await base44.entities.Business.update(localBiz.id, { [field]: file_url });
     const updated = { ...localBiz, [field]: file_url };
     setLocalBiz(updated);

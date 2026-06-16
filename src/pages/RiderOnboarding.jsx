@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, ChevronLeft, ChevronRight, Upload, Camera, Check, AlertCircle, Bike, FileText, Shield } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 
 const DOC_FIELDS = [
   { key: 'rider_id1_url', label: 'Valid ID #1', desc: 'Government-issued ID (front)' },
@@ -40,7 +41,7 @@ export default function RiderOnboarding() {
 
   const uploadDoc = async (field, file) => {
     setUploading(u => ({ ...u, [field]: true }));
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadMediaFileToR2(file);
     setDocs(d => ({ ...d, [field]: file_url }));
     setUploading(u => ({ ...u, [field]: false }));
   };

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check, Building2, ChevronRight, AlertCircle, Upload, BadgeCheck, ChevronLeft } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 import CategoryIcon from './CategoryIcon';
 
 // Step 0 — Business type
@@ -137,7 +138,7 @@ export default function BecomeBusinessModal({ user, onClose, onSuccess }) {
   const uploadDoc = async (idx, file) => {
     if (!file) return;
     const next = [...uploading]; next[idx] = true; setUploading(next);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadMediaFileToR2(file);
     const nextDocs = [...docs]; nextDocs[idx] = file_url; setDocs(nextDocs);
     const nextUp = [...uploading]; nextUp[idx] = false; setUploading(nextUp);
   };

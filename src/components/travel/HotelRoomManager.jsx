@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Upload, Calendar, Clock, Image, Video, ChevronDown, ChevronUp, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 
 const TRANSITIONS = ['Fade', 'Horizontal Slide', 'Zoom', 'Flip'];
 const AMENITIES_LIST = ['AC', 'WiFi', 'TV', 'Hot Water', 'Mini Bar', 'Balcony', 'Sea View', 'Bathtub', 'King Bed', 'Twin Beds', 'Safe Box', 'Hair Dryer', 'Coffee Maker', 'Room Service'];
@@ -63,7 +64,7 @@ function RoomCard({ room, index, onChange, onDelete }) {
     const files = Array.from(e.target.files);
     setUploading(true);
     try {
-      const urls = await Promise.all(files.map(f => base44.integrations.Core.UploadFile({ file: f }).then(r => r.file_url)));
+      const urls = await Promise.all(files.map(f => uploadMediaFileToR2(f).then(r => r.file_url)));
       update('images', [...(room.images || []), ...urls]);
     } catch { } finally { setUploading(false); }
   };
@@ -73,7 +74,7 @@ function RoomCard({ room, index, onChange, onDelete }) {
     if (!file) return;
     setUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await uploadMediaFileToR2(file);
       update('video_url', file_url);
     } catch { } finally { setUploading(false); }
   };

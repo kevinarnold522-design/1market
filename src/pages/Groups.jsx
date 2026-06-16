@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Users, Lock, Globe, Clock, CheckCircle, X, Image as ImageIcon, Heart, MessageCircle, Share2, Send, ChevronLeft, Layers, Flag, Hourglass } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -155,7 +156,7 @@ export default function Groups() {
   const handleUploadImage = async (e) => {
     const file = e.target.files[0]; if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadMediaFileToR2(file);
     setPostForm(f => ({ ...f, image_url: file_url }));
     setUploading(false);
     e.target.value = '';

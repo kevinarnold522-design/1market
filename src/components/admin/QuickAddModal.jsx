@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Save, Upload, Plus } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const SECTIONS = ['food', 'travel', 'buysell'];
@@ -76,7 +77,7 @@ function ImgUpload({ label, value, onChange }) {
   const handle = async (e) => {
     const file = e.target.files[0]; if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadMediaFileToR2(file);
     onChange(file_url); setUploading(false); e.target.value = '';
   };
   return (
@@ -103,7 +104,7 @@ function MultiImgUpload({ label, value, onChange }) {
   const handle = async (e) => {
     const files = Array.from(e.target.files); if (!files.length) return;
     setUploading(true);
-    const urls = await Promise.all(files.map(f => base44.integrations.Core.UploadFile({ file: f }).then(r => r.file_url)));
+    const urls = await Promise.all(files.map(f => uploadMediaFileToR2(f).then(r => r.file_url)));
     onChange([...(value || []), ...urls]);
     setUploading(false); e.target.value = '';
   };

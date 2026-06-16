@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 import { Building2, Plus, Heart, MessageCircle, Image, Send, Megaphone, HelpCircle, Tag, RefreshCw, X, Share2, Flag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/home/Navbar';
@@ -180,7 +181,7 @@ function NewPostModal({ user, businesses, onClose, onCreated }) {
   const handleImage = async (e) => {
     const file = e.target.files[0]; if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadMediaFileToR2(file);
     setImageUrl(file_url);
     setUploading(false);
   };

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import OneCheckmark from '../components/OneCheckmark';
 import { base44 } from '@/api/base44Client';
+import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 
 const LOCATIONS = ['Manila', 'Cavite', 'Nationwide'];
 const AREAS = {
@@ -71,7 +72,7 @@ export default function SellerOnboarding() {
     const file = e.target.files[0];
     if (!file) return;
     setUploadingImg(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadMediaFileToR2(file);
     set('profile_picture', file_url);
     setUploadingImg(false);
     e.target.value = '';

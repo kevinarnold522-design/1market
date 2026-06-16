@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload, Briefcase } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 
 const PH_LOCATIONS = [
   { group: 'NCR — Metro Manila', cities: ['Manila', 'Quezon City', 'Makati', 'Taguig', 'Pasig', 'Mandaluyong', 'Marikina', 'Parañaque', 'Las Piñas', 'Muntinlupa', 'Caloocan', 'Valenzuela', 'Malabon', 'Navotas', 'San Juan', 'Pasay', 'Pateros'] },
@@ -43,7 +44,7 @@ export default function AddJobModal({ onClose, user, categories = [] }) {
     const file = e.target.files[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadMediaFileToR2(file);
     set('image_url', file_url);
     setUploading(false);
     e.target.value = '';
