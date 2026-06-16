@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload, Trash2, ChevronLeft, Image } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 import CategoryIcon from './CategoryIcon';
+import AIPhotoListingCreator from './listing/AIPhotoListingCreator';
 import AIListingAssistant from './listing/AIListingAssistant';
 import AIPriceSuggester from './listing/AIPriceSuggester';
 import AIListingQualityChecker from './AIListingQualityChecker';
@@ -283,6 +285,7 @@ const EMPTY_FORM = {
   condition: 'Brand New', image_url: '', extra_images: [], is_active: true,
   slideshow_animation: 'fade',
   tags: '',
+  brand: '', model: '', specs: '', ai_confidence_score: 0, ai_metadata: {}, ai_generated: false,
   custom_product_name: '',
   custom_service_name: '',
   manual_type_name: '',
@@ -388,7 +391,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   const handleImageUpload = async (e) => {
     const file = e.target.files[0]; if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadMediaFileToR2(file, 'listing-images');
     set('image_url', file_url);
     setUploading(false); e.target.value = '';
   };
@@ -398,7 +401,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
     setUploadingExtra(true);
     const urls = [];
     for (const file of files) {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await uploadMediaFileToR2(file, 'listing-images');
       urls.push(file_url);
     }
     set('extra_images', [...(form.extra_images || []), ...urls]);
@@ -434,7 +437,12 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       approval_status: 'pending',
       quantity: Number(form.quantity) || 1,
       tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean).join(',') : '',
-      specs: [form.custom_product_name, form.custom_service_name].filter(Boolean).join(' | ') || undefined,
+      brand: form.brand || undefined,
+      model: form.model || undefined,
+      ai_generated: !!form.ai_generated,
+      ai_confidence_score: Number(form.ai_confidence_score) || 0,
+      ai_metadata: form.ai_metadata || {},
+      specs: [form.specs, form.custom_product_name, form.custom_service_name].filter(Boolean).join(' | ') || undefined,
       slideshow_animation: form.slideshow_animation || 'fade',
       ...(form.type === 'food' ? { food_serving: form.food_serving, food_dietary: form.food_dietary, food_spice_level: form.food_spice_level, food_allergens: form.food_allergens, food_business_type: form.food_business_type, food_type: form.food_type, delivery_options: form.delivery_options, meetup_details: form.meetup_details } : {}),
       ...(form.main_category === 'buysell' ? { delivery_options: form.delivery_options, meetup_details: form.meetup_details } : {}),
@@ -581,6 +589,31 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
 
               {step === 2 && (
                 <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
+
+                  <AIPhotoListingCreator onApplyListing={(draft, urls) => {
+                    setForm(f => ({
+                      ...f,
+                      title: draft.title || f.title,
+                      description: draft.description || f.description,
+                      main_category: draft.main_category || f.main_category,
+                      type: draft.type || f.type,
+                      subcategory: draft.subcategory || f.subcategory,
+                      tags: [...(draft.tags || []), ...(draft.keywords || [])].join(', '),
+                      condition: draft.condition || f.condition,
+                      price: draft.suggested_price_min ? String(draft.suggested_price_min) : f.price,
+                      price_label: draft.suggested_price_min && draft.suggested_price_max ? `₱${Number(draft.suggested_price_min).toLocaleString()} - ₱${Number(draft.suggested_price_max).toLocaleString()}` : f.price_label,
+                      brand: draft.brand || f.brand,
+                      model: draft.model || f.model,
+                      city: draft.location || f.city,
+                      specs: [...(draft.features || []), ...(draft.specifications || [])].join(' | '),
+                      image_url: urls[0] || f.image_url,
+                      extra_images: [...(f.extra_images || []), ...urls.slice(1)],
+                      ai_confidence_score: Number(draft.confidence_score) || 0,
+                      ai_metadata: draft,
+                      ai_generated: true,
+                    }));
+                    setStep(2);
+                  }} />
 
                   {/* SAVED TEMPLATES */}
                   <SavedTemplates form={form} onLoadTemplate={handleLoadTemplate} />

@@ -85,6 +85,11 @@
     @apply border-border outline-ring/50;
   }
 
+  html, body, #root {
+    min-height: 100%;
+    background: linear-gradient(180deg, #0033CC 0%, #001a80 100%);
+  }
+
   body {
     @apply bg-background text-foreground;
   }

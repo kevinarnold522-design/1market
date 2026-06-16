@@ -47,13 +47,13 @@ export default function AppLayout() {
   }, []);
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-[#0033CC]" style={{ background: 'linear-gradient(180deg,#0033CC 0%,#001a80 100%)' }}>
       {/* Left Sidebar — desktop only */}
       {!isMobile && <LeftSidebar isMobileHidden={false} />}
 
       {/* Main content — offset by sidebar width on desktop */}
       <main
-        className="flex-1 min-w-0 overflow-x-hidden"
+        className="flex-1 min-w-0 overflow-x-hidden bg-[#0033CC]"
         style={{ marginLeft: isMobile ? 0 : (220) }}
       >
         <FloatingNavbar />

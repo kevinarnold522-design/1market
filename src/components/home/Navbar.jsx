@@ -102,7 +102,7 @@ export default function Navbar() {
   const [uploadingPfp, setUploadingPfp] = useState(false);
 
   const handleNavPfpUpload = async (e) => {
-    if (isGhostSession) { showToast('Cannot upload to ghost account'); return; }
+    if (isGhostSession) { showToast('Created users manage profile photos from their own profile.'); return; }
     const file = e.target.files[0]; if (!file) return;
     setUploadingPfp(true);
     try {
@@ -191,7 +191,7 @@ export default function Navbar() {
             {isAuthenticated && (activeUser || user) ? (
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-body text-xs font-semibold truncate">
-                  {isGhostSession ? 'Ghost Active:' : 'Welcome,'} <strong>{activeUser?.full_name?.split(' ')[0] || 'Member'}</strong>{!isGhostSession && '!'}
+                  {isGhostSession ? 'Created User:' : 'Welcome,'} <strong>{activeUser?.full_name?.split(' ')[0] || 'Member'}</strong>{!isGhostSession && '!'}
                 </span>
                 {isAdmin && !isGhostSession && <MetaVerifiedBadge size="sm" label="CEO" />}
                 {isVerified && !isAdmin && !isGhostSession && <MetaVerifiedBadge size="sm" label="Verified" />}
@@ -449,7 +449,7 @@ export default function Navbar() {
                             {isGhostSession && ghostUser?.user_type && (
                               <div className="flex items-center gap-2 text-white/40">
                                 <User className="w-3 h-3 flex-shrink-0" />
-                                <span>Ghost / Test Account · {ghostUser.user_type}</span>
+                                <span>Created User · {ghostUser.user_type}</span>
                               </div>
                             )}
                             {!isGhostSession && (

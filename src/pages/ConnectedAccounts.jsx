@@ -66,7 +66,7 @@ export default function ConnectedAccounts() {
   const setField = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   useEffect(() => {
-    // Check for active ghost session - ghost accounts cannot access this page
+    // Check for active ghost session - created users cannot access this page
     const session = getGhostSession();
     if (session) {
       setCurrentGhost(session);
@@ -326,7 +326,7 @@ export default function ConnectedAccounts() {
     </div>
   );
 
-  // Block ghost accounts from accessing this page
+  // Block created users from accessing this page
   const session = getGhostSession();
   if (session || !isAdmin) return (
     <div className="min-h-screen flex items-center justify-center p-6" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
@@ -356,8 +356,8 @@ export default function ConnectedAccounts() {
                 <Ghost className="w-4 h-4 text-white" />
               </div>
               <div>
-                <span className="font-heading font-bold text-white block text-sm">Ghost Account Dashboard</span>
-                <span className="font-body text-[10px] text-white/40">Manage test accounts</span>
+                <span className="font-heading font-bold text-white block text-sm">Created Users Dashboard</span>
+                <span className="font-body text-[10px] text-white/40">Manage live created users</span>
               </div>
             </div>
           </div>
@@ -371,7 +371,7 @@ export default function ConnectedAccounts() {
             <button onClick={() => { setShowForm(true); setEditing(null); setForm(EMPTY_FORM); }}
               className="flex items-center gap-2 px-4 py-2 rounded-xl font-body font-bold text-sm text-white"
               style={{ background: 'linear-gradient(135deg,#a855f7,#7c3aed)' }}>
-              <Plus className="w-4 h-4" /> New Ghost
+              <Plus className="w-4 h-4" /> New Created User
             </button>
           </div>
         </div>
@@ -399,18 +399,18 @@ export default function ConnectedAccounts() {
         <div className="flex gap-2 mb-6">
           <button onClick={() => setActiveTab('local')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-body font-bold text-sm transition-all ${activeTab === 'local' ? 'bg-purple-500/20 border border-purple-500/40 text-purple-300' : 'bg-white/5 border border-white/10 text-white/40 hover:text-white'}`}>
-            <Users className="w-4 h-4" /> Local Ghosts ({ghosts.length})
+            <Users className="w-4 h-4" /> Local Created Users ({ghosts.length})
           </button>
           <button onClick={() => setActiveTab('database')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-body font-bold text-sm transition-all ${activeTab === 'database' ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-300' : 'bg-white/5 border border-white/10 text-white/40 hover:text-white'}`}>
-            <DatabaseIcon className="w-4 h-4" /> Database Ghosts ({dbGhosts.length})
+            <DatabaseIcon className="w-4 h-4" /> Database Created Users ({dbGhosts.length})
           </button>
         </div>
 
         {/* Info card */}
         <div className="mb-6 p-4 rounded-2xl" style={{ background: 'rgba(168,85,247,0.07)', border: '1px solid rgba(168,85,247,0.2)' }}>
           <p className="font-body text-xs text-purple-300 leading-relaxed">
-            <strong className="text-white">Local Ghosts:</strong> Stored in browser, quick testing. <strong className="text-white">Database Ghosts:</strong> Real User records, persistent across devices. Click <strong>"Login As"</strong> to impersonate — session persists until sign out.
+            <strong className="text-white">Local Created Users:</strong> Stored in browser, quick testing. <strong className="text-white">Database Created Users:</strong> Real User records, persistent across devices. Click <strong>"Login As"</strong> to impersonate — session persists until sign out.
           </p>
         </div>
 
