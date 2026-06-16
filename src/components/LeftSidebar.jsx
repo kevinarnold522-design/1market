@@ -8,6 +8,8 @@ import MetaVerifiedBadge from './MetaVerifiedBadge';
 import GhostAccountMenu from './GhostAccountMenu';
 import { getGhostSession } from '@/lib/ghostAccounts';
 
+const SUPPORT_URL = 'https://www.facebook.com/share/14kSkbPDNnd/?mibextid=wwXIfr';
+
 const NAV_ITEMS = [
   { to: '/',           icon: Home,           label: 'Home',         color: '#00D4FF' },
   { to: '/travel',     icon: Plane,          label: 'Travel',       color: '#0ea5e9' },
@@ -71,7 +73,7 @@ export default function LeftSidebar({ isMobileHidden = false }) {
   const activeUser = isGhostSession ? ghostUser : user;
   const isSeller = !!(activeUser?.user_type === 'seller' || activeUser?.user_type === 'business' || activeUser?.is_seller || activeUser?.account_type === 'business_owner');
   const initials = activeUser ? (activeUser.full_name || activeUser.email || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
-  const accountTypeLabel = isAdmin ? 'CEO & Founder' : activeUser?.user_type === 'business' ? 'Business' : activeUser?.user_type === 'rider' ? 'Rider Delivery' : isSeller ? 'Sales Account' : isGhostSession ? 'Live Test' : 'Customer';
+  const accountTypeLabel = isAdmin ? 'CEO & Founder' : activeUser?.user_type === 'business' ? 'Business' : activeUser?.user_type === 'rider' ? 'Rider Delivery' : isSeller ? 'Sales Account' : 'Customer';
 
   if (isMobileHidden) return null;
 
@@ -181,7 +183,7 @@ export default function LeftSidebar({ isMobileHidden = false }) {
           );
         })}
 
-        <GhostAccountMenu collapsed={collapsed} />
+        {isAdmin && !isGhostSession && <GhostAccountMenu collapsed={collapsed} />}
 
         {/* Divider */}
         <div className="my-2 border-t border-white/8 mx-1" />
@@ -260,13 +262,15 @@ export default function LeftSidebar({ isMobileHidden = false }) {
               <FileText className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span className="font-body text-xs font-semibold truncate">Privacy Policy</span>}
             </Link>
-            <button
-              onClick={() => window.dispatchEvent(new CustomEvent('open-support'))}
+            <a
+              href={SUPPORT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-full flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all text-white/50 hover:text-emerald-400 hover:bg-emerald-400/10"
               title={collapsed ? 'Support' : undefined}>
               <HelpCircle className="w-4 h-4 flex-shrink-0" />
               {!collapsed && <span className="font-body text-xs font-semibold truncate">Support</span>}
-            </button>
+            </a>
           </>
         )}
 

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 import { useAuth } from '@/lib/AuthContext';
-import { getImpersonatedUser } from '@/pages/ConnectedAccounts';
+import { clearGhostSession, getGhostSession, saveGhostSession } from '@/lib/ghostAccounts';
 
 function RotatingImage({ images, fallback, alt, className }) {
   const [index, setIndex] = useState(0);
@@ -21,7 +21,7 @@ function RotatingImage({ images, fallback, alt, className }) {
 
 export default function UserProfile() {
   const { user: authUser, logout } = useAuth();
-  const ghost = getImpersonatedUser();
+  const ghost = getGhostSession();
   const [user, setUser] = useState(null);
   const [form, setForm] = useState({ full_name: '', username: '', bio: '', phone: '', location: '', channel_name: '', social_facebook: '', social_instagram: '', social_youtube: '', social_tiktok: '' });
   const [saving, setSaving] = useState(false);
@@ -50,7 +50,8 @@ export default function UserProfile() {
   const updateUser = async (data) => {
     if (ghost) {
       const updated = { ...ghost, ...data };
-      sessionStorage.setItem('1m_ghost_session', JSON.stringify(updated));
+      await base44.entities.User.update(ghost.id, data);
+      saveGhostSession(updated);
       setUser(updated);
       return;
     }
@@ -114,7 +115,7 @@ export default function UserProfile() {
                 <h1 className="font-heading text-3xl font-bold text-slate-950">{form.full_name || 'My Profile'}</h1>
                 <p className="text-blue-700 font-semibold text-sm">{user.email}</p>
               </div>
-              <button onClick={() => logout(true)} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-red-100 text-red-600 hover:bg-red-50 font-semibold text-sm"><LogOut className="w-4 h-4" /> Sign out</button>
+              <button onClick={() => { if (ghost) { clearGhostSession(); window.location.href = '/'; } else { logout(true); } }} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-red-100 text-red-600 hover:bg-red-50 font-semibold text-sm"><LogOut className="w-4 h-4" /> Sign out</button>
             </div>
 
             <div className="grid md:grid-cols-2 gap-5">

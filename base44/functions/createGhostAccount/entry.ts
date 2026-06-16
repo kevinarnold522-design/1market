@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
     
     // STEP 1: Verify admin access
     const user = await base44.auth.me();
-    if (!user || (user.role !== 'admin' && user.email !== 'Kevinarnold522@gmail.com')) {
+    if (!user || (user.role !== 'admin' && user.email?.toLowerCase() !== 'kevinarnold522@gmail.com')) {
       return Response.json({ error: 'Unauthorized: Admin access required' }, { status: 403 });
     }
 
@@ -50,11 +50,13 @@ Deno.serve(async (req) => {
       seller_area: seller_area || '',
       seller_page_enabled: user_type !== 'customer',
       
-      // Ghost markers
+      // Created-user tracking markers
       is_ghost_account: true,
       is_connected_account: true,
       ghost_id: ghostId,
       ghost_linked: false,
+      created_by_admin_id: user.id,
+      created_by_admin_email: user.email,
       
       // Profile data
       bio: bio || '',
@@ -183,7 +185,20 @@ Deno.serve(async (req) => {
         ghost_id: verified.ghost_id,
         user_type: verified.user_type,
         is_ghost_account: verified.is_ghost_account,
+        is_connected_account: verified.is_connected_account,
+        is_seller: verified.is_seller,
+        account_type: verified.account_type,
+        business_name: verified.business_name,
         seller_location: verified.seller_location,
+        location: verified.location,
+        seller_area: verified.seller_area,
+        seller_page_enabled: verified.seller_page_enabled,
+        profile_picture: verified.profile_picture,
+        cover_photo: verified.cover_photo,
+        bio: verified.bio,
+        seller_bio: verified.seller_bio,
+        created_by_admin_id: verified.created_by_admin_id,
+        created_by_admin_email: verified.created_by_admin_email,
         created_date: verified.created_date
       },
       profile_url: `/seller/${verified.id}`,

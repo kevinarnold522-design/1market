@@ -150,7 +150,7 @@ export default function Navbar() {
   }, []);
 
   const handleSaveName = async () => {
-    if (isGhostSession) { showToast('Cannot edit ghost account name'); return; }
+    if (isGhostSession) { showToast('Created user profile names are edited on the profile page'); return; }
     const clean = nameVal.trim().toLowerCase().replace(/\s/g, '');
     if (clean.length < 3) { setNameError('At least 3 characters required.'); return; }
     if (!/^[a-zA-Z0-9_.-]+$/.test(clean)) { setNameError('Letters, numbers, _ . - only.'); return; }
@@ -192,7 +192,7 @@ export default function Navbar() {
             {isAuthenticated && (activeUser || user) ? (
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-body text-xs font-semibold truncate">
-                  {isGhostSession ? 'Created User:' : 'Welcome,'} <strong>{activeUser?.full_name?.split(' ')[0] || 'Member'}</strong>{!isGhostSession && '!'}
+                  Welcome, <strong>{activeUser?.full_name?.split(' ')[0] || 'Member'}</strong>!
                 </span>
                 {isAdmin && !isGhostSession && <MetaVerifiedBadge size="sm" label="CEO" />}
                 {isVerified && !isAdmin && !isGhostSession && <MetaVerifiedBadge size="sm" label="Verified" />}
@@ -267,9 +267,11 @@ export default function Navbar() {
             {/* Spacer */}
             <div className="flex-shrink-0" />
 
-            <div className="hidden md:block">
-              <GhostAccountMenu compact />
-            </div>
+            {isAdmin && !isGhostSession && (
+              <div className="hidden md:block">
+                <GhostAccountMenu compact />
+              </div>
+            )}
 
             {/* Messages button — signed-in only */}
             {isAuthenticated && activeUser && (
@@ -347,7 +349,7 @@ export default function Navbar() {
                         <div className="flex items-center gap-1">
                           <p className="font-body text-xs text-white font-semibold leading-tight max-w-[80px] truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
                           {(isAdmin || isVerified) && isSeller && !isGhostSession && <MetaVerifiedBadge size="xs" label="" />}
-                          {isGhostSession && <Ghost className="w-3 h-3 text-purple-400" />}
+
                         </div>
                         <p className={`font-body text-[9px] leading-tight ${isGhostSession ? 'text-purple-400' : 'text-[#00D4FF]'}`}>{adminLabel}</p>
                       </div>
@@ -450,7 +452,7 @@ export default function Navbar() {
                             {isGhostSession && ghostUser?.user_type && (
                               <div className="flex items-center gap-2 text-white/40">
                                 <User className="w-3 h-3 flex-shrink-0" />
-                                <span>Created User · {ghostUser.user_type}</span>
+                                <span>{adminLabel}</span>
                               </div>
                             )}
                             {!isGhostSession && (
@@ -601,9 +603,11 @@ export default function Navbar() {
               exit={{ opacity: 0, height: 0 }}
               className="md:hidden bg-[#0A192F]/95 backdrop-blur-xl border-t border-white/10">
               <div className="px-6 py-4 space-y-3">
-                <div className="mb-2">
-                  <GhostAccountMenu onAction={() => setMenuOpen(false)} />
-                </div>
+                {isAdmin && !isGhostSession && (
+                  <div className="mb-2">
+                    <GhostAccountMenu onAction={() => setMenuOpen(false)} />
+                  </div>
+                )}
                 {isAuthenticated && activeUser && (
                   <div className="p-3 rounded-xl bg-white/5 border border-white/10 mb-2">
                     <div className="flex items-center gap-3 mb-2">
@@ -694,7 +698,7 @@ export default function Navbar() {
 
                     <button onClick={() => {
                       if (isGhostSession) {
-                        sessionStorage.removeItem('1m_ghost_session');
+                        clearGhostSession();
                         setMenuOpen(false);
                         window.location.href = '/';
                       } else {

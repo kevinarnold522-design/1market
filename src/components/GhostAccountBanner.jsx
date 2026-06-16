@@ -21,10 +21,10 @@ export default function GhostAccountBanner({ ghostUser, onSignOut }) {
           </div>
           <div>
             <p className="font-body text-xs font-bold text-white">
-              Signed in as Ghost: <span className="text-purple-200">{ghostUser.full_name}</span>
+              Signed in as Created User: <span className="text-purple-200">{ghostUser.full_name}</span>
             </p>
             <p className="font-body text-[10px] text-purple-200/70">
-              {ghostUser.business_name || ghostUser.channel_name || 'Ghost Account'}
+              {ghostUser.business_name || ghostUser.channel_name || 'Created User'}
             </p>
           </div>
         </div>

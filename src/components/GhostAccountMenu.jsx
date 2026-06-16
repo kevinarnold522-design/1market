@@ -40,7 +40,7 @@ export default function GhostAccountMenu({ collapsed = false, compact = false, o
   const switchGhost = (g) => {
     saveGhostSession(g);
     close();
-    window.location.href = '/';
+    window.location.href = '/profile';
   };
 
   const createGhost = async () => {

@@ -22,6 +22,7 @@ export function saveGhostSession(ghost) {
   sessionStorage.setItem(SESSION_KEY, JSON.stringify(cleanGhost));
   localStorage.setItem(SESSION_KEY, JSON.stringify(cleanGhost));
   window.dispatchEvent(new CustomEvent('ghost-session-changed', { detail: cleanGhost }));
+  window.dispatchEvent(new CustomEvent('active-user-changed', { detail: cleanGhost }));
   return cleanGhost;
 }
 
@@ -29,6 +30,7 @@ export function clearGhostSession() {
   sessionStorage.removeItem(SESSION_KEY);
   localStorage.removeItem(SESSION_KEY);
   window.dispatchEvent(new CustomEvent('ghost-session-changed', { detail: null }));
+  window.dispatchEvent(new CustomEvent('active-user-changed', { detail: null }));
 }
 
 export function getAllLocalGhosts() {

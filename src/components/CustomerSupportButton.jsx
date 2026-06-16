@@ -29,7 +29,7 @@ export default function CustomerSupportButton() {
         transition={{ delay: 1.5 }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        onClick={() => setOpen(true)}
+        onClick={() => window.open('https://www.facebook.com/share/14kSkbPDNnd/?mibextid=wwXIfr', '_blank', 'noopener,noreferrer')}
         className="fixed top-24 right-4 z-40 w-11 h-11 rounded-full flex items-center justify-center shadow-lg"
         style={{ background: 'linear-gradient(135deg,#0A192F,#1d3a6e)', border: '1.5px solid rgba(0,212,255,0.35)', boxShadow: '0 0 18px rgba(0,212,255,0.2)' }}
         title="Customer Support"
@@ -65,15 +65,15 @@ export default function CustomerSupportButton() {
                 {/* Quick actions */}
                 <div className="space-y-1.5">
                   <p className="font-body text-[10px] text-white/30 uppercase tracking-wider mb-2">Contact Us</p>
-                  <a href="mailto:support@1marketph.com"
+                  <a href="mailto:kevin@1marketph.com"
                     className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                     <Mail className="w-4 h-4 text-[#00D4FF]" />
                     <div>
                       <p className="font-body text-xs text-white font-semibold">Email Support</p>
-                      <p className="font-body text-[10px] text-white/30">support@1marketph.com</p>
+                      <p className="font-body text-[10px] text-white/30">kevin@1marketph.com</p>
                     </div>
                   </a>
-                  <a href="https://m.me/1marketph" target="_blank" rel="noopener noreferrer"
+                  <a href="https://www.facebook.com/share/14kSkbPDNnd/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                     <MessageCircle className="w-4 h-4 text-blue-400" />
                     <div>

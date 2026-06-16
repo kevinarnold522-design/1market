@@ -3,8 +3,9 @@ import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 import { isOwnerAccount } from '@/lib/adminAuth';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Pencil, Trash2, X, Save, ArrowLeft, Building2, ShoppingBag, Search, Upload, User, BadgeCheck, Shield, Flag, CheckCircle, XCircle, Ghost, Link2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Save, ArrowLeft, Building2, ShoppingBag, Search, Upload, User, Users, BadgeCheck, Shield, Flag, CheckCircle, XCircle, Ghost, Link2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { saveGhostSession } from '@/lib/ghostAccounts';
 
 const ROLES = ['user', 'moderator', 'admin'];
 
@@ -265,6 +266,7 @@ function ListingForm({ initial, onSave, onCancel }) {
 }
 
 export default function Admin() {
+  const navigate = useNavigate();
   const [tab, setTab] = useState('approvals');
   const [pendingJobs, setPendingJobs] = useState([]);
   const [pendingListings, setPendingListings] = useState([]);
@@ -275,7 +277,7 @@ export default function Admin() {
   const [adminMessages, setAdminMessages] = useState([]);
   const [msgUserEmail, setMsgUserEmail] = useState('');
   const [loadingMsgs, setLoadingMsgs] = useState(false);
-  // Ghost accounts
+  // Created user accounts
   const [ghostForm, setGhostForm] = useState({ full_name: '', user_type: 'seller', business_name: '', location: 'Manila' });
   const [ghostSaving, setGhostSaving] = useState(false);
   const [ghostLinkEmail, setGhostLinkEmail] = useState({});
@@ -359,7 +361,7 @@ export default function Admin() {
         const isGhostId = u.ghost_id?.startsWith('ghost_');
         return isGhostEmail || isGhostFlag || isGhostId;
       });
-      console.log('✓ Ghost users found:', ghosts.length, 'Total users:', userList.length);
+      console.log('✓ Created users found:', ghosts.length, 'Total users:', userList.length);
       setGhostUsers(ghosts);
       
       // Update stats with total user count (ghosts count as regular users)
@@ -443,93 +445,26 @@ export default function Admin() {
     if (!ghostForm.full_name.trim()) { showToast('Name is required'); return; }
     setGhostSaving(true);
     try {
-      // Generate unique ghost ID with timestamp and random string
-      const timestamp = Date.now();
-      const randomStr = Math.random().toString(36).substring(2, 8);
-      const ghostId = `ghost_${timestamp}_${randomStr}`;
-      const ghostEmail = `${ghostId}@1marketph-ghost.internal`;
-      
-      console.log('Creating ghost account:', { ghostId, ghostEmail, ...ghostForm });
-      
-      const userData = {
-        // Core identity fields
+      const response = await base44.functions.invoke('createGhostAccount', {
         full_name: ghostForm.full_name.trim(),
-        email: ghostEmail,
-        role: 'user',
-        
-        // Account type fields
+        channel_name: ghostForm.business_name.trim() || ghostForm.full_name.trim(),
         user_type: ghostForm.user_type,
-        is_seller: ghostForm.user_type === 'seller' || ghostForm.user_type === 'business',
-        account_type: ghostForm.user_type === 'business' ? 'business_owner' : 'customer',
-        member_type: ghostForm.user_type,
-        
-        // Business/seller info
         business_name: ghostForm.business_name.trim() || ghostForm.full_name.trim(),
-        seller_location: ghostForm.location || 'Manila',
         location: ghostForm.location || 'Manila',
-        seller_page_enabled: ghostForm.user_type !== 'customer',
-        
-        // Ghost account markers
-        is_ghost_account: true,
-        ghost_id: ghostId,
-        ghost_linked: false,
-        
-        // Username (must be unique)
-        username: ghostId.toLowerCase().replace(/[^a-z0-9_]/g, ''),
-        username_set: false,
-        
-        // Profile fields (empty defaults)
-        profile_picture: '',
-        cover_photo: '',
         bio: '',
-        channel_name: ghostForm.full_name.trim(),
-        seller_bio: '',
-        business_type: '',
         seller_area: '',
-        
-        // Social links (empty)
-        social_facebook: '',
-        social_instagram: '',
-        social_youtube: '',
-        social_viber: '',
-        social_telegram: '',
-        social_tiktok: '',
-        
-        // Privacy settings
-        show_phone_public: false,
-        show_email_public: false,
-        
-        // Verification status
-        is_verified_seller: false,
-        verification_submitted: false,
-        seller_pending: false,
-        business_pending: false,
-        
-        // Arrays
-        seller_products: [],
-        business_categories: [],
-      };
-      
-      console.log('Creating user with data:', JSON.stringify(userData, null, 2));
-      
-      const result = await base44.entities.User.create(userData);
-      console.log('✓ Ghost account created successfully:', result);
-      
-      // Reset form
+      });
+
+      const newUser = response.data.user;
+      localStorage.setItem('1m_ghost_' + (newUser.ghost_id || newUser.id), JSON.stringify(newUser));
+      saveGhostSession(newUser);
+
       setGhostSaving(false);
       setGhostForm({ full_name: '', user_type: 'seller', business_name: '', location: 'Manila' });
-      showToast('Ghost account created!');
-      
-      // Wait a moment then reload
-      setTimeout(async () => {
-        await loadAll();
-        console.log('User list refreshed after creation');
-      }, 500);
+      showToast('Created user account created. Signing in...');
+      navigate('/profile');
     } catch (err) {
-      console.error('✗ Ghost account creation failed:', err);
-      console.error('Error name:', err.name);
-      console.error('Error message:', err.message);
-      console.error('Stack:', err.stack);
+      console.error('✗ Created user account creation failed:', err);
       setGhostSaving(false);
       showToast('Failed: ' + (err.message || 'Check console for details'));
     }
@@ -544,7 +479,7 @@ export default function Admin() {
       ghost_linked: true,
     });
     setGhostLinkEmail(prev => ({ ...prev, [ghostUser.id]: '' }));
-    showToast('Ghost account linked to real email!');
+    showToast('Created user account linked to real email!');
     loadAll();
   };
 
@@ -602,7 +537,7 @@ export default function Admin() {
             <Link to="/connected-accounts"
               className="flex items-center gap-2 px-4 py-2 rounded-xl font-body font-bold text-sm text-white transition-colors"
               style={{ background: 'linear-gradient(135deg,#a855f7,#7c3aed)' }}>
-              <Ghost className="w-4 h-4" /> Manage Ghost Accounts
+              <Users className="w-4 h-4" /> Manage Created User Accounts
             </Link>
             <button onClick={() => { setShowBizForm(true); setEditingBiz(null); setTab('businesses'); }}
               className="flex items-center gap-2 px-4 py-2 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-sm hover:bg-white transition-colors">
@@ -622,7 +557,7 @@ export default function Admin() {
           {[
             { label: 'Total Businesses', value: businesses.length, color: '#00D4FF', border: 'rgba(0,212,255,0.25)' },
             { label: 'Total Users', value: totalUsers, color: '#34d399', border: 'rgba(52,211,153,0.25)' },
-            { label: 'Ghost Accounts', value: ghostUsers.length, color: '#a855f7', border: 'rgba(168,85,247,0.25)' },
+            { label: 'Created User Accounts', value: ghostUsers.length, color: '#a855f7', border: 'rgba(168,85,247,0.25)' },
             { label: 'All Listings', value: listings.length, color: '#c084fc', border: 'rgba(192,132,252,0.25)' },
             { label: 'Pending Approvals', value: pendingListings.length, color: '#fbbf24', border: 'rgba(251,191,36,0.35)' },
             { label: 'Pending Reports', value: reports.filter(r => r.status === 'pending').length, color: '#f87171', border: 'rgba(248,113,113,0.25)' },
@@ -644,7 +579,7 @@ export default function Admin() {
             { key: 'reports', label: `Reports (${reports.filter(r=>r.status==='pending').length})`, icon: Flag },
             { key: 'verifications', label: `Verify (${verifications.filter(v=>v.status==='pending').length})`, icon: BadgeCheck },
             { key: 'messages', label: 'Messages', icon: Shield },
-            { key: 'ghost', label: `Ghost Accounts (${ghostUsers.length})`, icon: Ghost },
+            { key: 'ghost', label: `Created Users (${ghostUsers.length})`, icon: Users },
           ].map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl font-body font-semibold text-xs transition-all ${tab === t.key ? 'text-[#0A192F]' : 'text-white/50 hover:text-white border border-white/10 hover:border-white/25'}`}
@@ -1091,14 +1026,14 @@ export default function Admin() {
             </div>
           </div>
         ) : tab === 'ghost' ? (
-          /* GHOST ACCOUNTS TAB */
+          /* CREATED USER ACCOUNTS TAB */
           <div className="space-y-6">
             {/* Create ghost account form */}
             <div className="rounded-2xl p-5" style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(168,85,247,0.2)' }}>
               <div className="flex items-center gap-2 mb-4">
                 <Ghost className="w-4 h-4 text-purple-500" />
-                <h3 className="font-heading font-bold text-sm text-[#0A192F]">Create Ghost Account</h3>
-                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-purple-100 text-purple-700">Placeholder profiles without email</span>
+                <h3 className="font-heading font-bold text-sm text-[#0A192F]">Create User Account</h3>
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-purple-100 text-purple-700">Admin-created account</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                 <div>
@@ -1131,15 +1066,15 @@ export default function Admin() {
               <button onClick={createGhostAccount} disabled={ghostSaving}
                 className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-body text-sm font-bold transition-colors disabled:opacity-50">
                 {ghostSaving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Ghost className="w-4 h-4" />}
-                Create Ghost Account
+                Create User Account
               </button>
             </div>
 
             {/* List ghost accounts */}
             <div>
-              <h4 className="font-heading font-bold text-sm text-[#0A192F] mb-3">Ghost Accounts ({ghostUsers.length})</h4>
+              <h4 className="font-heading font-bold text-sm text-[#0A192F] mb-3">Created User Accounts ({ghostUsers.length})</h4>
               {ghostUsers.length === 0 && (
-                <div className="text-center py-12 text-[#0A192F]/30 font-body text-sm">No ghost accounts yet.</div>
+                <div className="text-center py-12 text-[#0A192F]/30 font-body text-sm">No created user accounts yet.</div>
               )}
               <div className="space-y-3">
                 {ghostUsers.map(u => (
@@ -1172,9 +1107,9 @@ export default function Admin() {
                       </div>
                     )}
                     <button onClick={async () => {
-                        if (!window.confirm('Delete this ghost account?')) return;
+                        if (!window.confirm('Delete this created user account?')) return;
                         await base44.entities.User.delete(u.id);
-                        showToast('Ghost account deleted.');
+                        showToast('Created user account deleted.');
                         loadAll();
                       }}
                       className="p-2 rounded-xl bg-[#F8FAFC] hover:bg-red-50 border border-[#0A192F]/10 transition-colors flex-shrink-0">

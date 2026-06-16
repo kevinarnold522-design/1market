@@ -332,7 +332,7 @@ export default function ConnectedAccounts() {
     <div className="min-h-screen flex items-center justify-center p-6" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
       <div className="text-center">
         <div className="text-4xl mb-4">🔒</div>
-        <p className="font-body text-white/50 mb-4">{session ? 'Ghost accounts cannot access this page' : 'Admin access required'}</p>
+        <p className="font-body text-white/50 mb-4">{session ? 'Created users cannot access this page' : 'Admin access required'}</p>
         <Link to="/" className="px-4 py-2 bg-[#2563EB] text-white rounded-xl font-body text-sm font-bold">← Home</Link>
       </div>
     </div>
@@ -388,7 +388,7 @@ export default function ConnectedAccounts() {
                 <Activity className="w-4 h-4 text-green-400" />
               </div>
               <div>
-                <p className="font-body font-bold text-sm text-green-200">Currently signed in as ghost: <span className="text-white">{currentGhost.full_name}</span></p>
+                <p className="font-body font-bold text-sm text-green-200">Currently signed in as created user: <span className="text-white">{currentGhost.full_name}</span></p>
                 <p className="font-body text-[10px] text-green-300/60">Session persists across refreshes. Sign out to return to admin account.</p>
               </div>
             </div>
@@ -410,7 +410,7 @@ export default function ConnectedAccounts() {
         {/* Info card */}
         <div className="mb-6 p-4 rounded-2xl" style={{ background: 'rgba(168,85,247,0.07)', border: '1px solid rgba(168,85,247,0.2)' }}>
           <p className="font-body text-xs text-purple-300 leading-relaxed">
-            <strong className="text-white">Local Created Users:</strong> Stored in browser, quick testing. <strong className="text-white">Database Created Users:</strong> Real User records, persistent across devices. Click <strong>"Login As"</strong> to impersonate — session persists until sign out.
+            <strong className="text-white">Local Created Users:</strong> Stored in browser for quick testing. <strong className="text-white">Database Created Users:</strong> Real user records, persistent across devices. Click <strong>"Login As"</strong> to sign in as that created user — session persists until sign out.
           </p>
         </div>
 
@@ -421,7 +421,7 @@ export default function ConnectedAccounts() {
               className="mb-8 rounded-2xl p-6 space-y-4"
               style={{ background: 'rgba(13,31,60,0.9)', border: '1px solid rgba(168,85,247,0.3)' }}>
               <div className="flex items-center justify-between">
-                <h3 className="font-heading font-bold text-white">{editing ? 'Edit Ghost' : `Create ${activeTab === 'database' ? 'Database' : 'Local'} Ghost`}</h3>
+                <h3 className="font-heading font-bold text-white">{editing ? 'Edit Created User' : `Create ${activeTab === 'database' ? 'Database' : 'Local'} Created User`}</h3>
                 <button onClick={() => { setShowForm(false); setEditing(null); setForm(EMPTY_FORM); }}
                   className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">
                   <X className="w-3.5 h-3.5 text-white" />
@@ -481,7 +481,7 @@ export default function ConnectedAccounts() {
         {/* Search */}
         <div className="relative mb-6">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder={`Search ${activeTab === 'database' ? 'database' : 'local'} ghosts...`}
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder={`Search ${activeTab === 'database' ? 'database' : 'local'} created users...`}
             className="w-full pl-9 pr-4 py-2.5 rounded-xl font-body text-sm text-white focus:outline-none focus:border-[#00D4FF]"
             style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }} />
         </div>
@@ -494,7 +494,7 @@ export default function ConnectedAccounts() {
         ) : (activeTab === 'database' ? filteredDb : filteredLocal).length === 0 ? (
           <div className="text-center py-20">
             <Ghost className="w-12 h-12 text-white/10 mx-auto mb-3" />
-            <p className="font-body text-white/30 text-sm">No {activeTab === 'database' ? 'database' : 'local'} ghosts yet</p>
+            <p className="font-body text-white/30 text-sm">No {activeTab === 'database' ? 'database' : 'local'} created users yet</p>
           </div>
         ) : (
           <div className="space-y-3">
