@@ -1,4 +1,4 @@
-import { sendEmail } from './_email.js';
+import { sendEmail } from '../server/email.js';
 
 export default async function handler(req, res) {
   try {

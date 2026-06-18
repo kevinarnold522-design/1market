@@ -1,4 +1,15 @@
+import { createClient } from '@base44/sdk';
 import { requireSupabase } from '@/lib/supabaseClient';
+import { appParams } from '@/lib/app-params';
+
+const base44Fallback = createClient({
+  appId: appParams.appId,
+  token: appParams.token,
+  functionsVersion: appParams.functionsVersion,
+  serverUrl: '',
+  requiresAuth: false,
+  appBaseUrl: appParams.appBaseUrl
+});
 
 const entityNames = [
   'User','Listing','Business','Order','Cart','Favourite','Review','MenuItem','Group','GroupPost','GroupComment','GroupMember','GroupPostLike','CommunityPost','Notification','VerificationApplication','Follow','Report','ListingHeart','ListingComment','Reservation','ChatMessage','DraftListing','SavedListingTemplate','UserReward','UserTasks'
@@ -207,14 +218,25 @@ export const supabaseCompat = {
   },
   functions: {
     async invoke(name, payload = {}) {
-      const response = await fetch(`/api/${name}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || `Function ${name} failed`);
-      return { data, status: response.status, headers: response.headers };
+      let vercelError = null;
+      try {
+        const response = await fetch(`/api/${name}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json().catch(() => ({}));
+        if (response.ok) return { data, status: response.status, headers: response.headers };
+        vercelError = new Error(data.error || `Function ${name} failed`);
+      } catch (error) {
+        vercelError = error;
+      }
+
+      try {
+        return await base44Fallback.functions.invoke(name, payload);
+      } catch (fallbackError) {
+        throw vercelError || fallbackError;
+      }
     }
   },
   integrations: { Core: {} },
