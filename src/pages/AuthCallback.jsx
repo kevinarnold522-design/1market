@@ -25,7 +25,9 @@ export default function AuthCallback() {
 
         if (code) {
           // Exchange the code for a session
-          const db = supabaseCompat._getDb?.() || await require('@/lib/supabaseClient').requireSupabase();
+          const { supabaseCompat: compat } = await import('@/api/supabaseCompatClient');
+          const db = (await import('@/lib/supabaseClient')).requireSupabase();
+          
           const { data, error: sessionError } = await db.auth.exchangeCodeForSession(code);
           
           if (sessionError) {
@@ -37,7 +39,7 @@ export default function AuthCallback() {
 
           if (data?.user) {
             // Profile should auto-create via trigger, but ensure it exists
-            await supabaseCompat.ensureProfile(data.user);
+            await compat.auth.ensureProfile(data.user);
             
             // Redirect to home or previous location
             const next = searchParams.get('next') || '/';
@@ -57,7 +59,7 @@ export default function AuthCallback() {
     };
 
     handleCallback();
-  }, [searchParams, navigate]);
+  }, [searchParams]);
 
   if (loading) {
     return (

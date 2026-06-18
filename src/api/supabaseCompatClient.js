@@ -174,11 +174,16 @@ export const supabaseCompat = {
     },
     async loginWithProvider(provider, redirectTo = '/') {
       const db = requireSupabase();
-      // For OAuth, don't specify redirectTo - let Supabase use its default
-      // This uses the Supabase redirect endpoint which must be registered in the OAuth provider
+      // Redirect to our callback handler which exchanges code for session
+      const callbackUrl =
+        typeof window !== 'undefined'
+          ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`
+          : '/auth/callback';
+      
       const { data, error } = await db.auth.signInWithOAuth({
         provider,
         options: { 
+          redirectTo: callbackUrl,
           skipBrowserRedirect: false
         }
       });
