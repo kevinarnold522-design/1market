@@ -17,8 +17,9 @@ import NavUserBadge from './NavUserBadge';
 import NavCategoryBar from './NavCategoryBar';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
-import { uploadMediaFileToR2 } from '@/lib/r2Upload';
+import { uploadProfilePicture } from '@/lib/supabaseStorage';
 import { getGhostSession, clearGhostSession } from '@/lib/ghostAccounts';
+import { supabaseCompat } from '@/api/supabaseCompatClient';
 import GhostAccountMenu from '@/components/GhostAccountMenu';
 
 // Global edit mode state
@@ -107,10 +108,19 @@ export default function Navbar() {
     const file = e.target.files[0]; if (!file) return;
     setUploadingPfp(true);
     try {
-      const { file_url } = await uploadMediaFileToR2(file);
-      await base44.auth.updateMe({ profile_picture: file_url });
+      const { file_url } = await uploadProfilePicture(file);
+      await supabaseCompat.auth.updateMe({ full_name: activeUser?.full_name || '' });
+      // Update profile picture via direct profile update
+      const db = (await import('@/lib/supabaseClient')).requireSupabase();
+      const { data: userData } = await db.auth.getUser();
+      if (userData?.user) {
+        await db.from('profiles').update({ profile_picture: file_url }).eq('id', userData.user.id);
+      }
       window.location.reload();
-    } catch (err) { showToast('Upload failed'); }
+    } catch (err) { 
+      console.error('[v0] Profile picture upload error:', err);
+      showToast('Upload failed'); 
+    }
     setUploadingPfp(false);
     e.target.value = '';
   };
