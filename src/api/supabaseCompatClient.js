@@ -174,17 +174,29 @@ export const supabaseCompat = {
     },
     async loginWithProvider(provider, redirectTo = '/') {
       const db = requireSupabase();
+      // Use v0 proxy redirect URL for OAuth callbacks in development
+      const oauthRedirectTo =
+        import.meta.env.VITE_DEV_SUPABASE_REDIRECT_URL ||
+        import.meta.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
+        `${window.location.origin}/auth/callback`;
+      
       const { data, error } = await db.auth.signInWithOAuth({
         provider,
-        options: { redirectTo: `${window.location.origin}${redirectTo}` }
+        options: { redirectTo: oauthRedirectTo }
       });
       if (error) throw error;
       return data;
     },
     async resetPasswordRequest(email) {
       const db = requireSupabase();
+      // Use v0 proxy redirect URL for password reset flow
+      const resetRedirectTo =
+        import.meta.env.VITE_DEV_SUPABASE_REDIRECT_URL ||
+        import.meta.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
+        `${window.location.origin}/auth/callback`;
+      
       const { data, error } = await db.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`
+        redirectTo: resetRedirectTo
       });
       if (error) throw error;
       return data;

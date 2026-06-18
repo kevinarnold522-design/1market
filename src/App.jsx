@@ -35,6 +35,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import AuthCallback from './pages/AuthCallback';
 import GlowInteraction from './components/GlowInteraction';
 import AdminRoute from './components/AdminRoute';
 import RiderOnboarding from './pages/RiderOnboarding';
@@ -107,6 +108,7 @@ const AuthenticatedApp = () => {
         <Route path="*" element={<PageNotFound />} />
       </Route>
       {/* Auth pages - outside AppLayout */}
+      <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
