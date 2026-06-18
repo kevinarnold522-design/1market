@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import { TrendingUp, Package, Heart, MessageSquare, Star, Users } from 'lucide-react';
 import StarField from '../components/StarField';
-import Navbar from '../components/home/Navbar';
 import { base44 } from '@/api/base44Client';
 
 const COLORS = ['#00D4FF', '#f87171', '#a78bfa', '#34d399', '#fbbf24', '#60a5fa'];
@@ -82,7 +81,6 @@ export default function Analytics() {
   return (
     <div className="min-h-screen bg-[#070F1A]">
       <StarField />
-      <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 pt-28 pb-20">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>

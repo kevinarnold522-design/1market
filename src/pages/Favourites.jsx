@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Bookmark, Heart, Trash2, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import Navbar from '../components/home/Navbar';
 import StarField from '../components/StarField';
 
 export default function Favourites() {
@@ -49,7 +48,6 @@ export default function Favourites() {
   return (
     <div className="min-h-screen bg-[#070F1A]">
       <StarField />
-      <Navbar />
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 pt-28 pb-16">
         <Link to="/" className="inline-flex items-center gap-1.5 text-white/40 hover:text-white transition-colors mb-5 font-body text-xs">
           <ArrowLeft className="w-3.5 h-3.5" /> Back to Home

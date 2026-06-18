@@ -2,8 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Globe, Heart, Users, ShoppingBag, Home, Briefcase, Star, Flag, Lock, Sprout } from 'lucide-react';
-import Navbar from '../components/home/Navbar';
-
 const MILESTONES = [
   { year: '2026', title: 'Founded', desc: 'Kevin Roberto launches 1Marketph.com in Manila with a vision to unite Filipino buyers, sellers, and businesses under one platform.' },
   { year: '2026', title: 'Buy & Sell Marketplace', desc: 'The first feature — a marketplace for shoes, cars, houses, electronics, and services — goes live for Manila and Cavite.' },
@@ -21,7 +19,6 @@ const VALUES = [
 export default function About() {
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
-      <Navbar />
       <div className="pt-28">
         {/* Hero */}
         <div className="relative overflow-hidden py-20 px-6" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)' }}>

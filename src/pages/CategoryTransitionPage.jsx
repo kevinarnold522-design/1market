@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, CheckCircle, ShoppingBag, Briefcase, UtensilsCrossed, Home, Wrench, Plane, Package, Smartphone, Shirt, Footprints, Building2, Zap, Settings, MoreHorizontal, Hotel, Car, Building, BedDouble } from 'lucide-react';
-import Navbar from '../components/home/Navbar';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal';
 import { base44 } from '@/api/base44Client';
@@ -129,7 +128,6 @@ export default function CategoryTransitionPage() {
   if (!catConfig) {
     return (
       <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001060 100%)' }}>
-        <Navbar />
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-white mb-2">Category not found</h1>
@@ -152,7 +150,6 @@ export default function CategoryTransitionPage() {
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001060 100%)' }}>
-      <Navbar />
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 pt-28 pb-20">
         <Link to="/" className="inline-flex items-center gap-2 text-white/50 hover:text-white font-body text-sm mb-8 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Home
