@@ -152,7 +152,10 @@ export const supabaseCompat = {
         password,
         options: {
           data: { full_name: full_name || email?.split('@')[0] || 'Member' },
-          emailRedirectTo: `${window.location.origin}/login`
+          emailRedirectTo:
+            import.meta.env.VITE_DEV_SUPABASE_REDIRECT_URL ||
+            import.meta.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
+            `${window.location.origin}/login`
         }
       });
       if (error) throw error;
