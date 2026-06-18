@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import LeftSidebar from './LeftSidebar';
 import FloatingNavbar from './FloatingNavbar';
 import WaveTransition from './WaveTransition';
 import UserTasks from './UserTasks';
@@ -11,7 +10,6 @@ import { getGhostSession } from '@/lib/ghostAccounts';
 export default function AppLayout() {
   const [waveActive, setWaveActive] = useState(isWaveActive());
   useEffect(() => subscribeWave(setWaveActive), []);
-  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
   const navigate = useNavigate();
   const [appUser, setAppUser] = useState(null);
   useEffect(() => {
@@ -40,22 +38,10 @@ export default function AppLayout() {
     return () => document.removeEventListener('click', handler, true);
   }, [navigate]);
 
-  useEffect(() => {
-    const handler = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handler);
-    return () => window.removeEventListener('resize', handler);
-  }, []);
 
   return (
     <div className="flex min-h-screen bg-[#0033CC]" style={{ background: 'linear-gradient(180deg,#0033CC 0%,#001a80 100%)' }}>
-      {/* Left Sidebar — desktop only */}
-      {!isMobile && <LeftSidebar isMobileHidden={false} />}
-
-      {/* Main content — offset by sidebar width on desktop */}
-      <main
-        className="flex-1 min-w-0 overflow-x-hidden bg-[#0033CC]"
-        style={{ marginLeft: isMobile ? 0 : (220) }}
-      >
+      <main className="flex-1 min-w-0 overflow-x-hidden bg-[#0033CC]">
         <FloatingNavbar />
         <Outlet />
       </main>

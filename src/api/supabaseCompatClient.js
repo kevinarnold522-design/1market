@@ -173,22 +173,30 @@ export const supabaseCompat = {
       return data;
     },
     async loginWithProvider(provider, redirectTo = '/') {
-      const db = requireSupabase();
-      // Redirect to our callback handler which exchanges code for session
-      const callbackUrl =
-        typeof window !== 'undefined'
-          ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`
-          : '/auth/callback';
-      
-      const { data, error } = await db.auth.signInWithOAuth({
-        provider,
-        options: { 
-          redirectTo: callbackUrl,
-          skipBrowserRedirect: false
-        }
-      });
-      if (error) throw error;
-      return data;
+      try {
+        const db = requireSupabase();
+        // Redirect to our callback handler which exchanges code for session
+        const callbackUrl =
+          typeof window !== 'undefined'
+            ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`
+            : '/auth/callback';
+        
+        const { data, error } = await db.auth.signInWithOAuth({
+          provider,
+          options: { 
+            redirectTo: callbackUrl,
+            skipBrowserRedirect: false
+          }
+        });
+        if (error) throw error;
+        return data;
+      } catch (error) {
+        const nextUrl = typeof window !== 'undefined'
+          ? `${window.location.origin}${redirectTo.startsWith('/') ? redirectTo : `/${redirectTo}`}`
+          : redirectTo;
+        base44Fallback.auth.redirectToLogin(nextUrl);
+        return { fallback: 'base44', error: error.message };
+      }
     },
     async resetPasswordRequest(email) {
       const db = requireSupabase();
