@@ -174,21 +174,14 @@ export const supabaseCompat = {
     },
     async loginWithProvider(provider, redirectTo = '/') {
       const db = requireSupabase();
-      // For OAuth, use the v0 proxy redirect URL in development
-      const oauthRedirectTo =
-        import.meta.env.VITE_DEV_SUPABASE_REDIRECT_URL ||
-        import.meta.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
-        `${window.location.origin}/auth/callback`;
-      
-      console.log('[v0] OAuth provider:', provider);
-      console.log('[v0] OAuth redirectTo:', oauthRedirectTo);
-      console.log('[v0] VITE_DEV_SUPABASE_REDIRECT_URL:', import.meta.env.VITE_DEV_SUPABASE_REDIRECT_URL);
-      
+      // For OAuth, don't specify redirectTo - let Supabase use its default
+      // This uses the Supabase redirect endpoint which must be registered in the OAuth provider
       const { data, error } = await db.auth.signInWithOAuth({
         provider,
-        options: { redirectTo: oauthRedirectTo }
+        options: { 
+          skipBrowserRedirect: false
+        }
       });
-      console.log('[v0] OAuth response:', { data, error });
       if (error) throw error;
       return data;
     },
