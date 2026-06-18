@@ -115,12 +115,9 @@ export const supabaseCompat = {
       const profile = {
         id: authUser.id,
         email: authUser.email,
-        full_name: authUser.user_metadata?.full_name || authUser.email?.split('@')[0] || 'Member',
-        role: authUser.user_metadata?.role || 'user',
-        user_type: authUser.user_metadata?.user_type || 'customer',
-        updated_at: new Date().toISOString()
+        full_name: authUser.user_metadata?.full_name || authUser.email?.split('@')[0] || 'Member'
       };
-      const { data, error } = await db.from('users').upsert(profile, { onConflict: 'id' }).select('*').single();
+      const { data, error } = await db.from('profiles').upsert(profile, { onConflict: 'id' }).select('*').single();
       if (error) return profile;
       return data;
     },
@@ -130,7 +127,7 @@ export const supabaseCompat = {
       if (sessionError) throw sessionError;
       const authUser = sessionData?.user;
       if (!authUser) throw new Error('Not authenticated');
-      const { data } = await db.from('users').select('*').eq('id', authUser.id).maybeSingle();
+      const { data } = await db.from('profiles').select('*').eq('id', authUser.id).maybeSingle();
       return data || this.ensureProfile(authUser);
     },
     async isAuthenticated() {
@@ -177,17 +174,32 @@ export const supabaseCompat = {
     },
     async loginWithProvider(provider, redirectTo = '/') {
       const db = requireSupabase();
+      // Redirect to our callback handler which exchanges code for session
+      const callbackUrl =
+        typeof window !== 'undefined'
+          ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`
+          : '/auth/callback';
+      
       const { data, error } = await db.auth.signInWithOAuth({
         provider,
-        options: { redirectTo: `${window.location.origin}${redirectTo}` }
+        options: { 
+          redirectTo: callbackUrl,
+          skipBrowserRedirect: false
+        }
       });
       if (error) throw error;
       return data;
     },
     async resetPasswordRequest(email) {
       const db = requireSupabase();
+      // Use v0 proxy redirect URL for password reset flow
+      const resetRedirectTo =
+        import.meta.env.VITE_DEV_SUPABASE_REDIRECT_URL ||
+        import.meta.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
+        `${window.location.origin}/auth/callback`;
+      
       const { data, error } = await db.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`
+        redirectTo: resetRedirectTo
       });
       if (error) throw error;
       return data;
@@ -206,7 +218,7 @@ export const supabaseCompat = {
       const { data: userData } = await db.auth.getUser();
       const id = userData?.user?.id;
       if (!id) throw new Error('Not authenticated');
-      const { data, error } = await db.from('users').update(patch).eq('id', id).select('*').single();
+      const { data, error } = await db.from('profiles').update({ ...patch, updated_at: new Date().toISOString() }).eq('id', id).select('*').single();
       if (error) throw error;
       return data;
     },
