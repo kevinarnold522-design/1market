@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { supabaseCompat } from "@/api/supabaseCompatClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,6 +9,8 @@ import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,18 +21,24 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      await base44.auth.loginViaEmailPassword(email, password);
-      // Force reload to ensure auth state is updated
-      window.location.reload();
+      await supabaseCompat.auth.loginViaEmailPassword(email, password);
+      const next = searchParams.get("next") || "/";
+      window.location.href = next;
     } catch (err) {
+      console.error("[v0] Login error:", err);
       setError(err.message || "Invalid email or password");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogle = () => {
-    base44.auth.loginWithProvider("google", "/");
+  const handleGoogle = async () => {
+    try {
+      await supabaseCompat.auth.loginWithProvider("google", "/");
+    } catch (err) {
+      console.error("[v0] Google login error:", err);
+      setError(err.message || "Google login failed");
+    }
   };
 
   return (

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { supabaseCompat } from "@/api/supabaseCompatClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,8 +15,7 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showOtp, setShowOtp] = useState(false);
-  const [otpCode, setOtpCode] = useState("");
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,30 +26,11 @@ export default function Register() {
     }
     setLoading(true);
     try {
-      const result = await base44.auth.register({ email, password });
-      if (result?.session) {
-        window.location.href = "/";
-        return;
-      }
-      setShowOtp(true);
+      await supabaseCompat.auth.register({ email, password });
+      setShowConfirmation(true);
     } catch (err) {
-      setError(err.message || "Registration failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleVerify = async () => {
-    setError("");
-    setLoading(true);
-    try {
-      const result = await base44.auth.verifyOtp({ email, otpCode });
-      if (result?.access_token) {
-        base44.auth.setToken(result.access_token);
-      }
-      window.location.href = "/";
-    } catch (err) {
-      setError(err.message || "Invalid verification code");
+      console.error("[v0] Register error:", err);
+      setError(err.message || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -58,22 +38,31 @@ export default function Register() {
 
   const handleResend = async () => {
     setError("");
+    setLoading(true);
     try {
-      await base44.auth.resendOtp(email);
+      await supabaseCompat.auth.resendOtp(email);
       toast({
-        title: "Code sent",
-        description: "Check your email for the new code.",
+        title: "Email sent",
+        description: "Check your email for the confirmation link.",
       });
     } catch (err) {
-      setError(err.message || "Failed to resend code");
+      console.error("[v0] Resend error:", err);
+      setError(err.message || "Failed to resend confirmation email");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleGoogle = () => {
-    base44.auth.loginWithProvider("google", "/");
+  const handleGoogle = async () => {
+    try {
+      await supabaseCompat.auth.loginWithProvider("google", "/");
+    } catch (err) {
+      console.error("[v0] Google register error:", err);
+      setError(err.message || "Google sign-up failed");
+    }
   };
 
-  if (showOtp) {
+  if (showConfirmation) {
     return (
       <AuthLayout
         icon={Mail}
@@ -81,7 +70,7 @@ export default function Register() {
         subtitle={`We sent a confirmation link to ${email}`}
         footer={
           <Link to="/login" className="text-primary font-medium hover:underline">
-            Back to log in
+            Already confirmed? Log in
           </Link>
         }
       >
@@ -91,7 +80,7 @@ export default function Register() {
           </div>
         )}
         <p className="text-sm text-foreground text-center mb-6">
-          Open the confirmation link in your inbox, then log in with your email and password.
+          Click the confirmation link in your email to verify your account, then log in with your email and password.
         </p>
         <Button className="w-full h-12 font-medium" onClick={handleResend} disabled={loading}>
           {loading ? (
