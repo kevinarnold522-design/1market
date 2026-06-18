@@ -9,7 +9,6 @@ import ReceiptModal from '../components/ReceiptModal';
 import AIReviewSummary from '../components/listing/AIReviewSummary';
 import ScrollToTop from '../components/ScrollToTop';
 import { base44 } from '@/api/base44Client';
-import Navbar from '../components/home/Navbar';
 import StarField from '../components/StarField';
 import RoyalBlueWaves from '../components/RoyalBlueWaves';
 import SimilarListings from '../components/SimilarListings';
@@ -297,7 +296,6 @@ export default function ListingDetail() {
     <div className="min-h-screen bg-[#050d2e] flex flex-col items-center justify-center gap-4 pt-24">
       <RoyalBlueWaves />
       <StarField />
-      <Navbar />
       <p className="font-body text-white/50 text-lg">Listing not found.</p>
       <Link to="/" className="px-6 py-2.5 bg-[#2563EB] text-white rounded-xl font-body font-bold text-sm hover:bg-[#00D4FF] hover:text-[#0A192F] transition-colors">← Go Home</Link>
     </div>
@@ -312,7 +310,6 @@ export default function ListingDetail() {
     <div className="min-h-screen bg-[#050d2e]">
       <RoyalBlueWaves />
       <StarField />
-      <Navbar />
       <BlueHeartAnimation show={showHeartAnim} />
 
       {showReport && <ReportModal listing={listing} user={user} onClose={() => setShowReport(false)} />}

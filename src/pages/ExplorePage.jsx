@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, MapPin, Heart, MessageSquare, Share2, Flag, X, Bookmark, Star, SlidersHorizontal, Grid, List, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import StarField from '../components/StarField';
-import Navbar from '../components/home/Navbar';
 import ReportModal from '../components/ReportModal';
 import { base44 } from '@/api/base44Client';
 import ScrollToTop from '../components/ScrollToTop';
@@ -226,7 +225,6 @@ export default function ExplorePage() {
   return (
     <div className="min-h-screen bg-[#070F1A]">
       <StarField />
-      <Navbar />
 
       {/* Header */}
       <div className="pt-28 pb-10 px-4 sm:px-6 text-center">

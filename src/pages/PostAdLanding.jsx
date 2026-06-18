@@ -7,7 +7,6 @@ import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 import AddListingModal from '../components/AddListingModal';
 import MemberSignupModal from '../components/MemberSignupModal';
-import Navbar from '../components/home/Navbar';
 import StarField from '../components/StarField';
 
 // Matches PostListingMenu categories exactly
@@ -131,7 +130,6 @@ export default function PostAdLanding() {
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001060 100%)' }}>
       <StarField />
-      <Navbar />
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 pt-32 pb-20">
         <Link to="/" className="inline-flex items-center gap-2 text-white/50 hover:text-white font-body text-sm mb-8 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Home

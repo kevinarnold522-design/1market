@@ -3,7 +3,6 @@ import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToR2 } from '@/lib/r2Upload';
 import { Building2, Plus, Heart, MessageCircle, Image, Send, Megaphone, HelpCircle, Tag, RefreshCw, X, Share2, Flag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from '../components/home/Navbar';
 
 const POST_TYPES = [
   { value: 'update', label: 'Update', icon: RefreshCw, color: '#00D4FF' },
@@ -300,7 +299,6 @@ export default function BusinessCommunity() {
 
   return (
     <div className="min-h-screen bg-[#060F1E] pt-28">
-      <Navbar />
       <div className="max-w-2xl mx-auto px-4 pb-20">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
