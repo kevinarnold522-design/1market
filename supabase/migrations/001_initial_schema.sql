@@ -302,6 +302,7 @@ alter table public.chat_messages enable row level security;
 alter table public.notifications enable row level security;
 
 create policy "users can read public profiles" on public.users for select using (true);
+create policy "users can insert own profile" on public.users for insert with check (auth.uid() = id);
 create policy "users can update own profile" on public.users for update using (auth.uid() = id);
 create policy "public approved listings are readable" on public.listings for select using (is_active = true and approval_status = 'approved');
 create policy "users manage own listings" on public.listings for all using (auth.uid() = created_by_id) with check (auth.uid() = created_by_id);

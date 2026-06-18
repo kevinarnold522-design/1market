@@ -99,6 +99,20 @@ const entities = Object.fromEntries(entityNames.map(name => [name, makeEntity(na
 export const supabaseCompat = {
   entities,
   auth: {
+    async ensureProfile(authUser) {
+      const db = requireSupabase();
+      const profile = {
+        id: authUser.id,
+        email: authUser.email,
+        full_name: authUser.user_metadata?.full_name || authUser.email?.split('@')[0] || 'Member',
+        role: authUser.user_metadata?.role || 'user',
+        user_type: authUser.user_metadata?.user_type || 'customer',
+        updated_at: new Date().toISOString()
+      };
+      const { data, error } = await db.from('users').upsert(profile, { onConflict: 'id' }).select('*').single();
+      if (error) return profile;
+      return data;
+    },
     async me() {
       const db = requireSupabase();
       const { data: sessionData, error: sessionError } = await db.auth.getUser();
@@ -106,12 +120,72 @@ export const supabaseCompat = {
       const authUser = sessionData?.user;
       if (!authUser) throw new Error('Not authenticated');
       const { data } = await db.from('users').select('*').eq('id', authUser.id).maybeSingle();
-      return data || { id: authUser.id, email: authUser.email, full_name: authUser.user_metadata?.full_name || authUser.email, role: 'user' };
+      return data || this.ensureProfile(authUser);
     },
     async isAuthenticated() {
       const db = requireSupabase();
       const { data } = await db.auth.getSession();
       return !!data?.session;
+    },
+    async loginViaEmailPassword(email, password) {
+      const db = requireSupabase();
+      const { data, error } = await db.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      if (data?.user) await this.ensureProfile(data.user);
+      return data;
+    },
+    async register({ email, password, full_name }) {
+      const db = requireSupabase();
+      const { data, error } = await db.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: full_name || email?.split('@')[0] || 'Member' },
+          emailRedirectTo: `${window.location.origin}/login`
+        }
+      });
+      if (error) throw error;
+      if (data?.user) await this.ensureProfile(data.user);
+      return data;
+    },
+    async verifyOtp({ email, otpCode }) {
+      const db = requireSupabase();
+      const { data, error } = await db.auth.verifyOtp({ email, token: otpCode, type: 'signup' });
+      if (error) throw error;
+      if (data?.user) await this.ensureProfile(data.user);
+      return data?.session || data;
+    },
+    async resendOtp(email) {
+      const db = requireSupabase();
+      const { data, error } = await db.auth.resend({ type: 'signup', email });
+      if (error) throw error;
+      return data;
+    },
+    async loginWithProvider(provider, redirectTo = '/') {
+      const db = requireSupabase();
+      const { data, error } = await db.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: `${window.location.origin}${redirectTo}` }
+      });
+      if (error) throw error;
+      return data;
+    },
+    async resetPasswordRequest(email) {
+      const db = requireSupabase();
+      const { data, error } = await db.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`
+      });
+      if (error) throw error;
+      return data;
+    },
+    async resetPassword({ newPassword }) {
+      const db = requireSupabase();
+      const { data, error } = await db.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      return data;
+    },
+    setToken() {
+      return true;
     },
     async updateMe(patch) {
       const db = requireSupabase();

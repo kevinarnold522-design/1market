@@ -92,4 +92,4 @@ Manual step required:
 
 ## Important recommendation
 
-Do not remove Base44 dependencies from the live app until the Vercel deployment passes end-to-end tests. The current app can still run in Base44 by leaving `VITE_BACKEND_PROVIDER` unset. The Vercel version switches to Supabase by setting `VITE_BACKEND_PROVIDER=supabase`.
+Do not remove Base44 dependencies from the live app until the Vercel deployment passes end-to-end tests. The current app can still run in Base44 by leaving `VITE_BACKEND_PROVIDER` unset. The Vercel version switches to Supabase by setting `VITE_BACKEND_PROVIDER=supabase`. Supabase still requires your project URL plus the publishable and secret keys in Vercel environment variables.

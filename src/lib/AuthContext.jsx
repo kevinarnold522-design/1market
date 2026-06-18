@@ -50,37 +50,40 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      const appClient = createAxiosClient({
-        baseURL: `/api/apps/public`,
-        headers: { 'X-App-Id': appParams.appId },
-        token: appParams.token,
-        interceptResponses: true
-      });
+      let publicSettings = { app_access: 'public', login_required: false };
+      let currentUser = null;
 
-      // Run public settings + auth check in parallel when token exists
-      const settingsPromise = appClient.get(`/prod/public-settings/by-id/${appParams.appId}`);
-      const authPromise = appParams.token ? base44.auth.me().catch(() => null) : Promise.resolve(null);
+      if (import.meta.env.VITE_BACKEND_PROVIDER === 'supabase') {
+        currentUser = activeGhost || await base44.auth.me().catch(() => null);
+      } else {
+        const appClient = createAxiosClient({
+          baseURL: `/api/apps/public`,
+          headers: { 'X-App-Id': appParams.appId },
+          token: appParams.token,
+          interceptResponses: true
+        });
 
-      let publicSettings, currentUser;
-      try {
-        [publicSettings, currentUser] = await Promise.all([settingsPromise, authPromise]);
-        
-        // Check for Ghost account session. Ghost identity fully overrides the real admin/user session.
-        const impersonated = getGhostSession();
-        if (impersonated) {
-          currentUser = impersonated;
+        const settingsPromise = appClient.get(`/prod/public-settings/by-id/${appParams.appId}`);
+        const authPromise = appParams.token ? base44.auth.me().catch(() => null) : Promise.resolve(null);
+
+        try {
+          [publicSettings, currentUser] = await Promise.all([settingsPromise, authPromise]);
+          const impersonated = getGhostSession();
+          if (impersonated) {
+            currentUser = impersonated;
+          }
+        } catch (appError) {
+          console.error('App state check failed:', appError);
+          if (appError.status === 403 && appError.data?.extra_data?.reason) {
+            const reason = appError.data.extra_data.reason;
+            setAuthError({ type: reason, message: appError.message });
+          } else {
+            setAuthError({ type: 'unknown', message: appError.message || 'Failed to load app' });
+          }
+          setIsLoadingPublicSettings(false);
+          setIsLoadingAuth(false);
+          return;
         }
-      } catch (appError) {
-        console.error('App state check failed:', appError);
-        if (appError.status === 403 && appError.data?.extra_data?.reason) {
-          const reason = appError.data.extra_data.reason;
-          setAuthError({ type: reason, message: appError.message });
-        } else {
-          setAuthError({ type: 'unknown', message: appError.message || 'Failed to load app' });
-        }
-        setIsLoadingPublicSettings(false);
-        setIsLoadingAuth(false);
-        return;
       }
 
       _cachedPublicSettings = publicSettings;
