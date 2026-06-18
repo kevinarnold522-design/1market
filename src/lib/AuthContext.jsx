@@ -136,15 +136,12 @@ export const AuthProvider = ({ children }) => {
     _authInitialized = false;
     setUser(null);
     setIsAuthenticated(false);
-    if (shouldRedirect) {
-      base44.auth.logout('/');
-    } else {
-      base44.auth.logout();
-    }
+    base44.auth.logout(shouldRedirect ? '/' : undefined);
   };
 
   const navigateToLogin = () => {
-    base44.auth.redirectToLogin(window.location.href);
+    const next = encodeURIComponent(window.location.href);
+    window.location.href = `/login?next=${next}`;
   };
 
   return (
