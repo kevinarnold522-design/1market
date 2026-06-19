@@ -9,7 +9,7 @@ const providers = [
   { key: 'yahoo', label: 'Yahoo', mark: 'Y!', className: 'text-white bg-[#6001D2]' },
 ];
 
-export default function OAuthOptions({ onError, redirectTo = '/' }) {
+export default function OAuthOptions({ onError, redirectTo = '/', actionLabel = 'Continue with' }) {
   const [loadingProvider, setLoadingProvider] = useState('');
 
   const handleProvider = async (provider) => {
@@ -33,7 +33,7 @@ export default function OAuthOptions({ onError, redirectTo = '/' }) {
             ) : (
               <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${provider.className}`}>{provider.mark}</span>
             )}
-            Continue with {provider.label}
+            {actionLabel} {provider.label}
           </Button>
         ))}
       </div>

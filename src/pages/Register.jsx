@@ -101,7 +101,7 @@ export default function Register() {
         </>
       }
     >
-      <OAuthOptions onError={setError} />
+      <OAuthOptions onError={setError} actionLabel="Sign up with" />
 
       {error && (
         <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
