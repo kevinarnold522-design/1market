@@ -13,6 +13,6 @@ const base44Native = createClient({
   appBaseUrl
 });
 
-export const base44 = import.meta.env.VITE_BACKEND_PROVIDER === 'supabase'
-  ? supabaseCompat
-  : base44Native;
+export const base44 = import.meta.env.VITE_BACKEND_PROVIDER === 'base44'
+  ? base44Native
+  : supabaseCompat;

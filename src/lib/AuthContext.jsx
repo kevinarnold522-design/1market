@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }) => {
       let publicSettings = { app_access: 'public', login_required: false };
       let currentUser = null;
 
-      if (import.meta.env.VITE_BACKEND_PROVIDER === 'supabase') {
+      if (import.meta.env.VITE_BACKEND_PROVIDER !== 'base44') {
         currentUser = activeGhost || await base44.auth.me().catch(() => null);
       } else {
         const appClient = createAxiosClient({

@@ -321,23 +321,25 @@ export const supabaseCompat = {
   },
   functions: {
     async invoke(name, payload = {}) {
-      let vercelError = null;
+      let cloudflareError = null;
+      const functionBase = (import.meta.env.VITE_CLOUDFLARE_FUNCTIONS_URL || '').replace(/\/+$/, '');
+      const functionUrl = functionBase ? `${functionBase}/api/${name}` : `/api/${name}`;
       try {
-        const response = await fetch(`/api/${name}`, {
+        const response = await fetch(functionUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
         const data = await response.json().catch(() => ({}));
         if (response.ok) return { data, status: response.status, headers: response.headers };
-        vercelError = new Error(data.error || `Function ${name} failed`);
+        cloudflareError = new Error(data.error || `Function ${name} failed`);
       } catch (error) {
-        vercelError = error;
+        cloudflareError = error;
       }
       try {
         return await base44Fallback.functions.invoke(name, payload);
       } catch (fallbackError) {
-        throw vercelError || fallbackError;
+        throw cloudflareError || fallbackError;
       }
     }
   },
