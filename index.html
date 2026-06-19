@@ -10,6 +10,24 @@
     <meta property="og:title" content="1Marketph.com — Philippines Marketplace" />
     <meta property="og:description" content="Building Dreams under 1Vision, Together. Buy, sell, travel, food, jobs & more across Manila, Cavite, and nationwide." />
     <meta name="monetag" content="2d9be187af89dbbd338a95a735456276">
+    <script>
+      window.addEventListener('unhandledrejection', function(event) {
+        var reason = event.reason || {};
+        var message = String(reason.message || reason.name || reason || '');
+        if (message.indexOf('IDBDatabase') !== -1 || message.indexOf('InvalidStateError') !== -1 || message.indexOf('database connection is closing') !== -1) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        }
+      }, true);
+      window.addEventListener('error', function(event) {
+        var source = String(event.filename || '');
+        var message = String(event.message || '');
+        if (source.indexOf('tag.min.js') !== -1 || message.indexOf('IDBDatabase') !== -1 || message.indexOf('InvalidStateError') !== -1) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        }
+      }, true);
+    </script>
     <!-- Ad scripts managed via AdManager component -->
     <script>(function(s){s.dataset.zone='11133975',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
   </head>
