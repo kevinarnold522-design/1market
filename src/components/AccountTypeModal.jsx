@@ -146,13 +146,7 @@ export default function AccountTypeModal({ onClose }) {
   const handleContinueToSignup = async () => {
     sessionStorage.setItem('signup_account_type', selectedType);
     sessionStorage.setItem('signup_preferences', JSON.stringify(answers));
-    const cleanUrl = window.location.origin + window.location.pathname;
-    const loginUrl = `/login?next=${encodeURIComponent(cleanUrl)}`;
-    const popup = window.open(loginUrl, 'base44_login', 'width=500,height=650,left=200,top=100');
-    if (!popup) { window.open(loginUrl, '_blank'); return; }
-    const timer = setInterval(() => {
-      if (!popup || popup.closed) { clearInterval(timer); window.location.reload(); }
-    }, 600);
+    window.location.href = '/register';
   };
 
   return (
@@ -281,7 +275,7 @@ export default function AccountTypeModal({ onClose }) {
                   <button onClick={handleContinueToSignup}
                     className="w-full py-3.5 text-white rounded-xl font-body font-bold text-sm flex items-center justify-center gap-2 shadow-lg"
                     style={{ background: 'linear-gradient(135deg,#2563EB,#00D4FF)', boxShadow: '0 0 20px rgba(0,212,255,0.25)' }}>
-                    <Shield className="w-4 h-4" /> Continue with Google / Email
+                    <Shield className="w-4 h-4" /> Continue with Email
                   </button>
                   <button onClick={handleContinueToSignup}
                     className="w-full py-2.5 bg-white/10 border border-white/15 text-white/70 rounded-xl font-body text-sm hover:bg-white/15 transition-colors">

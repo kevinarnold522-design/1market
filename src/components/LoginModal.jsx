@@ -44,7 +44,7 @@ export default function LoginModal({ onClose }) {
             <button
               onClick={handleLogin}
               className="w-full py-3.5 bg-gradient-to-r from-[#2563EB] to-[#00D4FF] text-white rounded-xl font-body font-bold text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25">
-              <Shield className="w-4 h-4" /> Continue with Google / Email →
+              <Shield className="w-4 h-4" /> Continue with Email →
             </button>
 
             <p className="font-body text-[9px] text-white/20 leading-relaxed mt-4">

@@ -1,20 +1,4 @@
-import { createClient } from '@base44/sdk';
 import { requireSupabase } from '@/lib/supabaseClient';
-import { appParams } from '@/lib/app-params';
-
-const base44Fallback = createClient({
-  appId: appParams.appId,
-  token: appParams.token,
-  functionsVersion: appParams.functionsVersion,
-  serverUrl: '',
-  requiresAuth: false,
-  appBaseUrl: appParams.appBaseUrl
-});
-
-const shouldFallbackToBase44 = (error) => {
-  const msg = String(error?.message || '').toLowerCase();
-  return msg.includes('supabase is not configured') || msg.includes('failed to fetch') || msg.includes('relation') || msg.includes('does not exist');
-};
 
 const entityNames = [
   'User','Listing','Business','Order','Cart','Favourite','Review','MenuItem','Group','GroupPost','GroupComment','GroupMember','GroupPostLike','CommunityPost','Notification','VerificationApplication','Follow','Report','ListingHeart','ListingComment','Reservation','ChatMessage','DraftListing','SavedListingTemplate','UserReward','UserTasks'
@@ -53,7 +37,6 @@ const tableName = (name) => tableMap[name] || name.replace(/([a-z])([A-Z])/g, '$
 
 function makeEntity(name) {
   const table = tableName(name);
-  const fallbackEntity = () => base44Fallback.entities[name];
   return {
     async list(sort = '-created_at', limit = 100) {
       try {
@@ -64,7 +47,6 @@ function makeEntity(name) {
         if (error) throw error;
         return data || [];
       } catch (error) {
-        if (shouldFallbackToBase44(error)) return fallbackEntity().list(sort, limit);
         throw error;
       }
     },
@@ -79,7 +61,6 @@ function makeEntity(name) {
         if (error) throw error;
         return data || [];
       } catch (error) {
-        if (shouldFallbackToBase44(error)) return fallbackEntity().filter(filters, sort, limit);
         throw error;
       }
     },
@@ -90,7 +71,6 @@ function makeEntity(name) {
         if (error) throw error;
         return data;
       } catch (error) {
-        if (shouldFallbackToBase44(error)) return fallbackEntity().get(id);
         throw error;
       }
     },
@@ -101,7 +81,6 @@ function makeEntity(name) {
         if (error) throw error;
         return data;
       } catch (error) {
-        if (shouldFallbackToBase44(error)) return fallbackEntity().create(record);
         throw error;
       }
     },
@@ -112,7 +91,6 @@ function makeEntity(name) {
         if (error) throw error;
         return data || [];
       } catch (error) {
-        if (shouldFallbackToBase44(error)) return fallbackEntity().bulkCreate(records);
         throw error;
       }
     },
@@ -123,7 +101,6 @@ function makeEntity(name) {
         if (error) throw error;
         return data;
       } catch (error) {
-        if (shouldFallbackToBase44(error)) return fallbackEntity().update(id, patch);
         throw error;
       }
     },
@@ -134,7 +111,6 @@ function makeEntity(name) {
         if (error) throw error;
         return true;
       } catch (error) {
-        if (shouldFallbackToBase44(error)) return fallbackEntity().delete(id);
         throw error;
       }
     },
@@ -144,7 +120,6 @@ function makeEntity(name) {
         const channel = db.channel(`${table}-changes`).on('postgres_changes', { event: '*', schema: 'public', table }, payload => callback({ type: payload.eventType?.toLowerCase(), data: payload.new, old_data: payload.old })).subscribe();
         return () => db.removeChannel(channel);
       } catch (error) {
-        if (shouldFallbackToBase44(error) && fallbackEntity().subscribe) return fallbackEntity().subscribe(callback);
         return () => {};
       }
     }
@@ -238,22 +213,6 @@ export const supabaseCompat = {
       if (error) throw error;
       return data;
     },
-    async loginWithProvider(provider, redirectTo = '/') {
-      try {
-        const db = requireSupabase();
-        const callbackUrl = typeof window !== 'undefined'
-          ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`
-          : '/auth/callback';
-        const { data, error } = await db.auth.signInWithOAuth({
-          provider,
-          options: { redirectTo: callbackUrl, skipBrowserRedirect: false }
-        });
-        if (error) throw error;
-        return data;
-      } catch (error) {
-        throw error;
-      }
-    },
     async resetPasswordRequest(email) {
       const db = requireSupabase();
       const resetRedirectTo =
@@ -301,39 +260,38 @@ export const supabaseCompat = {
   },
   functions: {
     async invoke(name, payload = {}) {
-      let cloudflareError = null;
-      const functionBase = (import.meta.env.VITE_CLOUDFLARE_FUNCTIONS_URL || '').replace(/\/+$/, '');
+      const functionBase = (import.meta.env.VITE_VERCEL_FUNCTIONS_URL || '').replace(/\/+$/, '');
       const functionUrl = functionBase ? `${functionBase}/api/${name}` : `/api/${name}`;
-      try {
-        const response = await fetch(functionUrl, {
+      const response = await fetch(functionUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `Function ${name} failed`);
+      return { data, status: response.status, headers: response.headers };
+    }
+  },
+  integrations: {
+    Core: new Proxy({}, {
+      get: (_target, endpoint) => async (payload = {}) => {
+        const response = await fetch(`/api/integrations/Core/${String(endpoint)}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
         const data = await response.json().catch(() => ({}));
-        if (response.ok) return { data, status: response.status, headers: response.headers };
-        cloudflareError = new Error(data.error || `Function ${name} failed`);
-      } catch (error) {
-        cloudflareError = error;
+        if (!response.ok) throw new Error(data.error || `${String(endpoint)} failed`);
+        return data;
       }
-      try {
-        return await base44Fallback.functions.invoke(name, payload);
-      } catch (fallbackError) {
-        throw cloudflareError || fallbackError;
-      }
-    }
+    })
   },
-  integrations: { Core: base44Fallback.integrations.Core },
   users: {
     async inviteUser(email, role = 'user') {
-      try {
-        const res = await fetch('/api/inviteUser', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, role }) });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Invite failed');
-        return data;
-      } catch (error) {
-        return base44Fallback.users.inviteUser(email, role);
-      }
+      const res = await fetch('/api/inviteUser', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, role }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Invite failed');
+      return data;
     }
   }
 };

@@ -359,9 +359,9 @@ export default function LeftSidebar({ isMobileHidden = false }) {
               <User className="w-4 h-4 text-[#00D4FF] flex-shrink-0" />
               {!collapsed && <span className="font-body text-xs font-semibold text-[#00D4FF]">Login</span>}
             </Link>
-            <Link to="/login" className="flex items-center gap-2 px-2 py-2 rounded-xl bg-white/10 hover:bg-white/15 transition-colors mt-1">
+            <Link to="/register" className="flex items-center gap-2 px-2 py-2 rounded-xl bg-white/10 hover:bg-white/15 transition-colors mt-1">
               <User className="w-4 h-4 text-white flex-shrink-0" />
-              {!collapsed && <span className="font-body text-xs font-semibold text-white">Continue with Google</span>}
+              {!collapsed && <span className="font-body text-xs font-semibold text-white">Create account</span>}
             </Link>
             <Link to="/register" className="flex items-center gap-2 px-2 py-2 rounded-xl bg-[#00D4FF]/20 hover:bg-[#00D4FF]/30 transition-colors mt-1">
               <User className="w-4 h-4 text-[#00D4FF] flex-shrink-0" />

@@ -1,7 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { appParams } from '@/lib/app-params';
-import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 import { getGhostSession, clearGhostSession } from '@/lib/ghostAccounts';
 
 const AuthContext = createContext();
@@ -50,41 +48,8 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      let publicSettings = { app_access: 'public', login_required: false };
-      let currentUser = null;
-
-      if (import.meta.env.VITE_BACKEND_PROVIDER !== 'base44') {
-        currentUser = activeGhost || await base44.auth.me().catch(() => null);
-      } else {
-        const appClient = createAxiosClient({
-          baseURL: `/api/apps/public`,
-          headers: { 'X-App-Id': appParams.appId },
-          token: appParams.token,
-          interceptResponses: true
-        });
-
-        const settingsPromise = appClient.get(`/prod/public-settings/by-id/${appParams.appId}`);
-        const authPromise = appParams.token ? base44.auth.me().catch(() => null) : Promise.resolve(null);
-
-        try {
-          [publicSettings, currentUser] = await Promise.all([settingsPromise, authPromise]);
-          const impersonated = getGhostSession();
-          if (impersonated) {
-            currentUser = impersonated;
-          }
-        } catch (appError) {
-          console.error('App state check failed:', appError);
-          if (appError.status === 403 && appError.data?.extra_data?.reason) {
-            const reason = appError.data.extra_data.reason;
-            setAuthError({ type: reason, message: appError.message });
-          } else {
-            setAuthError({ type: 'unknown', message: appError.message || 'Failed to load app' });
-          }
-          setIsLoadingPublicSettings(false);
-          setIsLoadingAuth(false);
-          return;
-        }
-      }
+      const publicSettings = { app_access: 'public', login_required: false };
+      const currentUser = activeGhost || await base44.auth.me().catch(() => null);
 
       _cachedPublicSettings = publicSettings;
       _authInitialized = true;

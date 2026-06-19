@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Home, Plane, UtensilsCrossed, ShoppingBag, KeyRound, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, LogOut, Ghost, Globe, Package, BarChart2, Shield, ShoppingCart, Facebook, Instagram, Youtube } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import { base44 } from '@/api/base44Client';
 import { getImpersonatedUser, clearImpersonation } from '@/pages/ConnectedAccounts';
 import MetaVerifiedBadge from './MetaVerifiedBadge';
 import PostListingMenu from './PostListingMenu';
@@ -60,15 +59,6 @@ export default function FloatingNavbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const handleGoogleLogin = async () => {
-    setIsOpen(false);
-    if (base44.auth.loginWithProvider) {
-      await base44.auth.loginWithProvider('google', '/');
-      return;
-    }
-    base44.auth.redirectToLogin(window.location.href);
-  };
 
 return (
     <>
@@ -251,9 +241,9 @@ return (
                     <Link to="/login" onClick={() => setIsOpen(false)} className="block w-full py-2.5 border border-white/20 text-white text-center rounded-xl font-body font-bold text-sm hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
                       Login
                     </Link>
-                    <button onClick={handleGoogleLogin} className="block w-full py-2.5 rounded-xl bg-white/10 border border-white/15 text-white text-center font-body font-bold text-sm hover:bg-white/15 transition-colors">
-                      Continue with Google
-                    </button>
+                    <Link to="/register" onClick={() => setIsOpen(false)} className="block w-full py-2.5 rounded-xl bg-white/10 border border-white/15 text-white text-center font-body font-bold text-sm hover:bg-white/15 transition-colors">
+                      Create account
+                    </Link>
                     <div className="space-y-0.5 border-t border-white/8 pt-2 mt-2">
                       {NAV_ITEMS.map((item) => (
                         <Link key={item.to} to={item.to} onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all hover:bg-white/10 group">
