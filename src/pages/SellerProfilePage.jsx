@@ -5,7 +5,7 @@ import {
   MapPin, MessageSquare, Send, X, UserCheck, UserPlus,
   Facebook, Instagram, Youtube, Globe, Phone,
   Grid, FileText, Heart, Share2, Flag, RotateCcw,
-  MessageCircle, ArrowLeft, Package, Camera, Image, UtensilsCrossed
+  MessageCircle, ArrowLeft, Package, Camera, Image, UtensilsCrossed, Palette, Save
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
@@ -13,6 +13,7 @@ import AISellerTips from '../components/seller/AISellerTips';
 import MenuManager from '../components/seller/MenuManager';
 // Ghost session helpers
 const getGhostSession = () => { try { return JSON.parse(sessionStorage.getItem('1m_ghost_session')); } catch { return null; } };
+const getStoredTheme = (id) => { try { return JSON.parse(localStorage.getItem(`seller_theme_${id}`) || '{}'); } catch { return {}; } };
 
 const SOCIAL_CONFIGS = {
   facebook: { icon: Facebook, color: '#1877f2', bg: 'rgba(24,119,242,0.15)', label: 'Facebook' },
@@ -256,11 +257,24 @@ export default function SellerProfilePage() {
   const [lightboxIdx, setLightboxIdx] = useState(0);
   const [error, setError] = useState(null);
   const [galleryTick, setGalleryTick] = useState(0);
+  const [landingTheme, setLandingTheme] = useState({ layout: 'classic', effect: 'fade', primary: '#0033CC', secondary: '#001a80' });
+  const [themeSaving, setThemeSaving] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setGalleryTick(t => t + 1), 4500);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (!seller?.id) return;
+    const stored = getStoredTheme(seller.id);
+    setLandingTheme({
+      layout: seller.landing_layout || stored.layout || 'classic',
+      effect: seller.landing_theme_effect || stored.effect || 'fade',
+      primary: seller.landing_theme_primary || stored.primary || '#0033CC',
+      secondary: seller.landing_theme_secondary || stored.secondary || '#001a80',
+    });
+  }, [seller?.id]);
 
   useEffect(() => {
     // Get current user
@@ -427,6 +441,30 @@ export default function SellerProfilePage() {
   const isOwnProfile = ghostSess
     ? (ghostSess.id === sellerId || ghostSess.ghost_id === sellerId || ghostSess.id === seller.id || ghostSess.username === sellerId)
     : user?.email === seller.email || user?.id === seller.id || user?.username === sellerId;
+
+  const saveLandingTheme = async () => {
+    setThemeSaving(true);
+    localStorage.setItem(`seller_theme_${seller.id}`, JSON.stringify(landingTheme));
+    try {
+      if (ghostSess) {
+        const next = { ...seller, landing_layout: landingTheme.layout, landing_theme_effect: landingTheme.effect, landing_theme_primary: landingTheme.primary, landing_theme_secondary: landingTheme.secondary };
+        localStorage.setItem('1m_ghost_' + (seller.ghost_id || seller.id), JSON.stringify(next));
+        setSeller(next);
+      } else if (user?.id === seller.id) {
+        await base44.auth.updateMe({ landing_layout: landingTheme.layout, landing_theme_effect: landingTheme.effect, landing_theme_primary: landingTheme.primary, landing_theme_secondary: landingTheme.secondary });
+      } else {
+        await base44.entities.User.update(seller.id, { landing_layout: landingTheme.layout, landing_theme_effect: landingTheme.effect, landing_theme_primary: landingTheme.primary, landing_theme_secondary: landingTheme.secondary });
+      }
+    } catch {}
+    setThemeSaving(false);
+  };
+
+  const pageBackground = landingTheme.effect === 'plain'
+    ? landingTheme.primary
+    : landingTheme.effect === 'mix'
+      ? `radial-gradient(circle at top left, ${landingTheme.primary} 0%, ${landingTheme.secondary} 45%, #070F1A 100%)`
+      : `linear-gradient(180deg, ${landingTheme.primary} 0%, ${landingTheme.secondary} 100%)`;
+
   // Display name: prefer channel_name, then full_name, then username
   const displayName = seller.channel_name || seller.full_name || seller.username || 'Seller';
   // Ghost accounts: NEVER show internal email or ghost-specific flags publicly
@@ -471,7 +509,7 @@ export default function SellerProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
+    <div className="min-h-screen transition-colors duration-700" style={{ background: pageBackground }}>
       {/* Cover Photo */}
       <div className="relative h-52 md:h-64 overflow-hidden">
         <AnimatePresence mode="wait">
@@ -487,7 +525,7 @@ export default function SellerProfilePage() {
         </button>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 -mt-20 relative z-10 pb-16">
+      <div className={`${landingTheme.layout === 'wide' ? 'max-w-6xl' : landingTheme.layout === 'compact' ? 'max-w-3xl' : 'max-w-4xl'} mx-auto px-4 -mt-20 relative z-10 pb-16`}>
         {/* Profile Card */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           className="rounded-2xl p-5 mb-5"
@@ -599,6 +637,31 @@ export default function SellerProfilePage() {
 
           {/* Stats Row — only public/safe stats */}
           {isOwnProfile && <div className="mt-4"><AISellerTips user={seller} listings={listings} /></div>}
+          {isOwnProfile && (
+            <div className="mt-4 p-3 rounded-2xl space-y-3" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <div className="flex items-center gap-2">
+                <Palette className="w-4 h-4 text-[#00D4FF]" />
+                <p className="font-body text-[10px] text-white/45 uppercase tracking-wider font-bold">Landing Page Theme</p>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <select value={landingTheme.layout} onChange={e => setLandingTheme(t => ({ ...t, layout: e.target.value }))} className="bg-white/5 border border-white/10 rounded-xl px-2 py-2 text-xs text-white focus:outline-none focus:border-[#00D4FF]">
+                  <option value="classic" className="bg-[#0D1F3C]">Classic</option>
+                  <option value="wide" className="bg-[#0D1F3C]">Wide</option>
+                  <option value="compact" className="bg-[#0D1F3C]">Compact</option>
+                </select>
+                <select value={landingTheme.effect} onChange={e => setLandingTheme(t => ({ ...t, effect: e.target.value }))} className="bg-white/5 border border-white/10 rounded-xl px-2 py-2 text-xs text-white focus:outline-none focus:border-[#00D4FF]">
+                  <option value="fade" className="bg-[#0D1F3C]">Fade Gradient</option>
+                  <option value="mix" className="bg-[#0D1F3C]">Mixed Colors</option>
+                  <option value="plain" className="bg-[#0D1F3C]">Plain Color</option>
+                </select>
+                <input type="color" value={landingTheme.primary} onChange={e => setLandingTheme(t => ({ ...t, primary: e.target.value }))} className="h-9 w-full rounded-xl bg-white/5 border border-white/10 p-1" />
+                <input type="color" value={landingTheme.secondary} onChange={e => setLandingTheme(t => ({ ...t, secondary: e.target.value }))} className="h-9 w-full rounded-xl bg-white/5 border border-white/10 p-1" />
+              </div>
+              <button onClick={saveLandingTheme} disabled={themeSaving} className="flex items-center gap-1.5 px-3 py-2 rounded-xl font-body text-xs font-bold text-[#0A192F] bg-[#00D4FF] hover:bg-white transition-colors disabled:opacity-50">
+                <Save className="w-3.5 h-3.5" /> {themeSaving ? 'Saving...' : 'Save Landing Theme'}
+              </button>
+            </div>
+          )}
           <div className="grid grid-cols-3 gap-2 mt-5 pt-4 border-t border-white/8">
             <div className="text-center py-2">
               <p className="font-heading font-bold text-xl text-white">{listings.length}</p>

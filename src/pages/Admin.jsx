@@ -300,6 +300,7 @@ export default function Admin() {
   const [editingList, setEditingList] = useState(null);
   const [search, setSearch] = useState('');
   const [sectionFilter, setSectionFilter] = useState('all');
+  const [transferTargetByListing, setTransferTargetByListing] = useState({});
   const [toast, setToast] = useState('');
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
@@ -438,6 +439,22 @@ export default function Admin() {
     if (!window.confirm('Delete this listing?')) return;
     await base44.entities.Listing.delete(id);
     showToast('Listing deleted.');
+    loadAll();
+  };
+
+  const transferListingOwner = async (listing, userId) => {
+    const target = users.find(u => u.id === userId);
+    if (!target) { showToast('Select a user first.'); return; }
+    await base44.entities.Listing.update(listing.id, {
+      created_by_id: target.id,
+      owner_user_id: target.id,
+      owner_email: target.email || '',
+      seller_name: target.channel_name || target.business_name || target.full_name || target.email || listing.seller_name,
+      email_contact: target.email || listing.email_contact || '',
+      approved_channel_name: target.channel_name || target.business_name || target.full_name || '',
+    });
+    setTransferTargetByListing(prev => ({ ...prev, [listing.id]: '' }));
+    showToast('Listing transferred to the selected user.');
     loadAll();
   };
 
@@ -705,7 +722,16 @@ export default function Admin() {
                     <p className="font-body text-xs text-white/40">{item.location} · {item.area} · {item.price_label || `₱${Number(item.price).toLocaleString()}`}</p>
                   </div>
                 </div>
-                <div className="flex gap-2 flex-shrink-0">
+                <div className="flex gap-2 flex-shrink-0 flex-wrap items-center">
+                  <select value={transferTargetByListing[item.id] || ''} onChange={e => setTransferTargetByListing(prev => ({ ...prev, [item.id]: e.target.value }))}
+                    className="border border-[#0A192F]/10 rounded-xl px-2 py-1.5 font-body text-xs text-[#0A192F] bg-white focus:outline-none focus:border-[#2563EB] max-w-[190px]">
+                    <option value="">Transfer owner...</option>
+                    {users.map(u => <option key={u.id} value={u.id}>{u.full_name || u.email}</option>)}
+                  </select>
+                  <button onClick={() => transferListingOwner(item, transferTargetByListing[item.id])}
+                    className="px-3 py-1.5 rounded-xl bg-[#00D4FF] text-[#0A192F] font-body text-xs font-bold hover:bg-white transition-colors">
+                    Transfer
+                  </button>
                   <button onClick={() => { setEditingList(item); setShowListForm(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                     className="p-2 rounded-xl bg-[#F8FAFC] hover:bg-[#EFF6FF] border border-[#0A192F]/10 transition-colors">
                     <Pencil className="w-4 h-4 text-[#2563EB]" />

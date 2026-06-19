@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Phone, Mail, Facebook, Instagram, MessageCircle } from 'lucide-react';
+import { Phone, Mail, Facebook, Instagram, MessageCircle, Globe } from 'lucide-react';
 
 const cleanUrl = (value, prefix) => {
   if (!value) return '';
@@ -42,6 +42,8 @@ export default function ListingContactLinks({ listing = {}, sellerUser = null, c
   const facebook = cleanUrl(listing.social_facebook || sellerUser?.social_facebook, 'https://facebook.com/');
   const instagram = cleanUrl(listing.social_instagram || sellerUser?.social_instagram, 'https://instagram.com/');
   const whatsapp = whatsappUrl(listing.social_whatsapp || sellerUser?.social_whatsapp, phone);
+  const customSite = cleanUrl(listing.custom_site_url, 'https://');
+  const customSiteLabel = listing.custom_site_name || (listing.alternate_site_options || [])[0] || 'Website';
 
   return (
     <div className={compact ? 'grid grid-cols-5 gap-1.5' : 'p-3 rounded-xl'} style={compact ? undefined : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
@@ -52,6 +54,7 @@ export default function ListingContactLinks({ listing = {}, sellerUser = null, c
         <ContactButton available={!!whatsapp} href={whatsapp} icon={MessageCircle} label="WhatsApp" color="#4ade80" />
         <ContactButton available={!!facebook} href={facebook} icon={Facebook} label="Facebook" color="#60a5fa" />
         <ContactButton available={!!instagram} href={instagram} icon={Instagram} label="Instagram" color="#f472b6" />
+        <ContactButton available={!!customSite} href={customSite} icon={Globe} label={customSiteLabel} color="#c084fc" />
       </div>
     </div>
   );

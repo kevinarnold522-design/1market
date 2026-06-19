@@ -228,6 +228,7 @@ const DELIVERY_OPTIONS_FOOD = [
   'Pickup at Store / Kitchen',
   'Meetup / Agreed Location', 'Free Delivery (within area)', 'Cash on Delivery (COD)',
 ];
+const ALTERNATE_SITE_OPTIONS = ['Shopee', 'Lazada', 'TikTok Shop', 'Facebook Marketplace', 'Carousell', 'Instagram Shop', 'Personal Website', 'Other'];
 
 const FOOD_SPICE = ['Mild', 'Medium', 'Spicy', 'Extra Spicy', 'N/A'];
 const FOOD_BUSINESS_TYPES = ['Home Kitchen', 'Karinderia / Carinderia', 'Bakery / Pastry Shop', 'Fast Food Chain', 'Restaurant / Resto Bar', 'Food Stall / Kiosk', 'Catering Service', 'Corporation / Franchise', 'Cloud Kitchen / Online Only', 'Other'];
@@ -282,6 +283,7 @@ const EMPTY_FORM = {
   posting_as: '',
   seller_name: '', phone: '', email_contact: '', apply_link: '',
   social_facebook: '', social_whatsapp: '', social_instagram: '',
+  alternate_site_options: [], custom_site_name: '', custom_site_url: '',
   condition: 'Brand New', image_url: '', extra_images: [], is_active: true,
   slideshow_animation: 'fade',
   tags: '',
@@ -432,6 +434,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       description: form.description, image_url: form.image_url, extra_images: form.extra_images || [],
       phone: form.phone, seller_name: sellerDisplayName, email_contact: contactEmail, apply_link: form.apply_link,
       social_facebook: form.social_facebook, social_whatsapp: form.social_whatsapp, social_instagram: form.social_instagram,
+      alternate_site_options: form.alternate_site_options || [], custom_site_name: form.custom_site_name || '', custom_site_url: form.custom_site_url || '',
       posting_as: form.posting_as || '',
       condition: form.condition, is_active: false,
       approval_status: 'pending',
@@ -499,6 +502,16 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   const totalImages = (form.image_url ? 1 : 0) + (form.extra_images?.length || 0);
   const photosRequired = !isJob;
   const canSubmit = form.title && form.description && dpaAccepted && (isCar ? legalAccepted : true) && (!photosRequired || totalImages >= 3);
+  const prePublishRecommendations = [
+    !form.main_category && 'Choose the correct main category.',
+    !form.subcategory && 'Add a specific subcategory so buyers can find it.',
+    !form.title && 'Add a clear searchable title.',
+    !form.description && 'Add a detailed description with condition, inclusions, and reason for selling.',
+    !hidePrice && !form.price && !form.price_label && 'Add a price or price label.',
+    photosRequired && totalImages < 3 && `Upload at least 3 photos (${totalImages}/3 added).`,
+    !form.phone && !form.email_contact && !form.social_facebook && !form.social_whatsapp && !form.custom_site_url && 'Add at least one contact or external shop link.',
+    !form.tags && 'Add search tags to help buyers discover this listing.',
+  ].filter(Boolean);
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -626,6 +639,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       if (data.title) set('title', data.title);
                       if (data.tags) set('tags', data.tags);
                     }}
+                    onApplyFullDraft={(draft) => setForm(f => ({ ...f, ...draft, ai_generated: true, ai_metadata: { ...(f.ai_metadata || {}), smart_draft: draft } }))}
                   />
 
                   {/* AI PRICE SUGGESTER */}
@@ -1189,6 +1203,25 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                         <input value={form.social_instagram} onChange={e => set('social_instagram', e.target.value)} placeholder="https://instagram.com/yourhandle" className={inputCls} />
                       </div>
                     </div>
+                    <div className="rounded-xl p-3 space-y-3" style={{ background: 'rgba(255,255,255,0.035)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                      <p className="font-body text-[10px] font-bold text-white/50 uppercase tracking-wider">Alternate Site / Shop Links</p>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {ALTERNATE_SITE_OPTIONS.map(site => {
+                          const active = (form.alternate_site_options || []).includes(site);
+                          return <button key={site} type="button" onClick={() => {
+                            const curr = form.alternate_site_options || [];
+                            set('alternate_site_options', active ? curr.filter(s => s !== site) : [...curr, site]);
+                          }} className="px-2.5 py-2 rounded-xl border font-body text-[11px] text-left transition-all"
+                            style={{ borderColor: active ? '#00D4FF' : 'rgba(255,255,255,0.1)', background: active ? 'rgba(0,212,255,0.12)' : 'rgba(255,255,255,0.03)', color: active ? '#00D4FF' : 'rgba(255,255,255,0.45)' }}>
+                            {site}
+                          </button>;
+                        })}
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div><label className="block font-body text-[9px] text-white/30 mb-1">Manual Site Name</label><input value={form.custom_site_name} onChange={e => set('custom_site_name', e.target.value)} placeholder="e.g. My Shopify Store" className={inputCls} /></div>
+                        <div><label className="block font-body text-[9px] text-white/30 mb-1">Manual Site URL</label><input value={form.custom_site_url} onChange={e => set('custom_site_url', e.target.value)} placeholder="https://..." className={inputCls} /></div>
+                      </div>
+                    </div>
                   </div>
 
                   {/* PRICING */}
@@ -1363,6 +1396,13 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       </label>
                     </div>
                   </div>
+
+                  {prePublishRecommendations.length > 0 && (
+                    <div className="rounded-xl p-3 space-y-1.5" style={{ background: 'rgba(251,191,36,0.07)', border: '1px solid rgba(251,191,36,0.25)' }}>
+                      <p className="font-body text-[10px] font-bold text-amber-400 uppercase tracking-wider">Before Publishing, Recommended</p>
+                      {prePublishRecommendations.map((tip, i) => <p key={i} className="font-body text-[10px] text-white/55">• {tip}</p>)}
+                    </div>
+                  )}
 
                   {/* SUBMIT */}
                   <button onClick={handleSubmit} disabled={!canSubmit || submitting}

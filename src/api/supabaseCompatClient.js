@@ -11,6 +11,11 @@ const base44Fallback = createClient({
   appBaseUrl: appParams.appBaseUrl
 });
 
+const shouldFallbackToBase44 = (error) => {
+  const msg = String(error?.message || '').toLowerCase();
+  return msg.includes('supabase is not configured') || msg.includes('failed to fetch') || msg.includes('relation') || msg.includes('does not exist');
+};
+
 const entityNames = [
   'User','Listing','Business','Order','Cart','Favourite','Review','MenuItem','Group','GroupPost','GroupComment','GroupMember','GroupPostLike','CommunityPost','Notification','VerificationApplication','Follow','Report','ListingHeart','ListingComment','Reservation','ChatMessage','DraftListing','SavedListingTemplate','UserReward','UserTasks'
 ];
@@ -48,59 +53,100 @@ const tableName = (name) => tableMap[name] || name.replace(/([a-z])([A-Z])/g, '$
 
 function makeEntity(name) {
   const table = tableName(name);
+  const fallbackEntity = () => base44Fallback.entities[name];
   return {
     async list(sort = '-created_at', limit = 100) {
-      const db = requireSupabase();
-      const descending = String(sort).startsWith('-');
-      const column = String(sort).replace(/^-/, '').replace('created_date', 'created_at').replace('updated_date', 'updated_at');
-      const { data, error } = await db.from(table).select('*').order(column || 'created_at', { ascending: !descending }).limit(limit || 100);
-      if (error) throw error;
-      return data || [];
+      try {
+        const db = requireSupabase();
+        const descending = String(sort).startsWith('-');
+        const column = String(sort).replace(/^-/, '').replace('created_date', 'created_at').replace('updated_date', 'updated_at');
+        const { data, error } = await db.from(table).select('*').order(column || 'created_at', { ascending: !descending }).limit(limit || 100);
+        if (error) throw error;
+        return data || [];
+      } catch (error) {
+        if (shouldFallbackToBase44(error)) return fallbackEntity().list(sort, limit);
+        throw error;
+      }
     },
     async filter(filters = {}, sort = '-created_at', limit = 100) {
-      const db = requireSupabase();
-      let q = db.from(table).select('*');
-      Object.entries(filters || {}).forEach(([key, value]) => { q = q.eq(key, value); });
-      const descending = String(sort).startsWith('-');
-      const column = String(sort).replace(/^-/, '').replace('created_date', 'created_at').replace('updated_date', 'updated_at');
-      const { data, error } = await q.order(column || 'created_at', { ascending: !descending }).limit(limit || 100);
-      if (error) throw error;
-      return data || [];
+      try {
+        const db = requireSupabase();
+        let q = db.from(table).select('*');
+        Object.entries(filters || {}).forEach(([key, value]) => { q = q.eq(key, value); });
+        const descending = String(sort).startsWith('-');
+        const column = String(sort).replace(/^-/, '').replace('created_date', 'created_at').replace('updated_date', 'updated_at');
+        const { data, error } = await q.order(column || 'created_at', { ascending: !descending }).limit(limit || 100);
+        if (error) throw error;
+        return data || [];
+      } catch (error) {
+        if (shouldFallbackToBase44(error)) return fallbackEntity().filter(filters, sort, limit);
+        throw error;
+      }
     },
     async get(id) {
-      const db = requireSupabase();
-      const { data, error } = await db.from(table).select('*').eq('id', id).single();
-      if (error) throw error;
-      return data;
+      try {
+        const db = requireSupabase();
+        const { data, error } = await db.from(table).select('*').eq('id', id).single();
+        if (error) throw error;
+        return data;
+      } catch (error) {
+        if (shouldFallbackToBase44(error)) return fallbackEntity().get(id);
+        throw error;
+      }
     },
     async create(record) {
-      const db = requireSupabase();
-      const { data, error } = await db.from(table).insert(record).select('*').single();
-      if (error) throw error;
-      return data;
+      try {
+        const db = requireSupabase();
+        const { data, error } = await db.from(table).insert(record).select('*').single();
+        if (error) throw error;
+        return data;
+      } catch (error) {
+        if (shouldFallbackToBase44(error)) return fallbackEntity().create(record);
+        throw error;
+      }
     },
     async bulkCreate(records) {
-      const db = requireSupabase();
-      const { data, error } = await db.from(table).insert(records).select('*');
-      if (error) throw error;
-      return data || [];
+      try {
+        const db = requireSupabase();
+        const { data, error } = await db.from(table).insert(records).select('*');
+        if (error) throw error;
+        return data || [];
+      } catch (error) {
+        if (shouldFallbackToBase44(error)) return fallbackEntity().bulkCreate(records);
+        throw error;
+      }
     },
     async update(id, patch) {
-      const db = requireSupabase();
-      const { data, error } = await db.from(table).update({ ...patch, updated_at: new Date().toISOString() }).eq('id', id).select('*').single();
-      if (error) throw error;
-      return data;
+      try {
+        const db = requireSupabase();
+        const { data, error } = await db.from(table).update({ ...patch, updated_at: new Date().toISOString() }).eq('id', id).select('*').single();
+        if (error) throw error;
+        return data;
+      } catch (error) {
+        if (shouldFallbackToBase44(error)) return fallbackEntity().update(id, patch);
+        throw error;
+      }
     },
     async delete(id) {
-      const db = requireSupabase();
-      const { error } = await db.from(table).delete().eq('id', id);
-      if (error) throw error;
-      return true;
+      try {
+        const db = requireSupabase();
+        const { error } = await db.from(table).delete().eq('id', id);
+        if (error) throw error;
+        return true;
+      } catch (error) {
+        if (shouldFallbackToBase44(error)) return fallbackEntity().delete(id);
+        throw error;
+      }
     },
     subscribe(callback) {
-      const db = requireSupabase();
-      const channel = db.channel(`${table}-changes`).on('postgres_changes', { event: '*', schema: 'public', table }, payload => callback({ type: payload.eventType?.toLowerCase(), data: payload.new, old_data: payload.old })).subscribe();
-      return () => db.removeChannel(channel);
+      try {
+        const db = requireSupabase();
+        const channel = db.channel(`${table}-changes`).on('postgres_changes', { event: '*', schema: 'public', table }, payload => callback({ type: payload.eventType?.toLowerCase(), data: payload.new, old_data: payload.old })).subscribe();
+        return () => db.removeChannel(channel);
+      } catch (error) {
+        if (shouldFallbackToBase44(error) && fallbackEntity().subscribe) return fallbackEntity().subscribe(callback);
+        return () => {};
+      }
     }
   };
 }
@@ -122,49 +168,83 @@ export const supabaseCompat = {
       return data;
     },
     async me() {
-      const db = requireSupabase();
-      const { data: sessionData, error: sessionError } = await db.auth.getUser();
-      if (sessionError) throw sessionError;
-      const authUser = sessionData?.user;
-      if (!authUser) throw new Error('Not authenticated');
-      const { data } = await db.from('profiles').select('*').eq('id', authUser.id).maybeSingle();
-      return data || this.ensureProfile(authUser);
+      try {
+        const db = requireSupabase();
+        const { data: sessionData, error: sessionError } = await db.auth.getUser();
+        if (sessionError) throw sessionError;
+        const authUser = sessionData?.user;
+        if (!authUser) throw new Error('Not authenticated');
+        const { data } = await db.from('profiles').select('*').eq('id', authUser.id).maybeSingle();
+        return data || this.ensureProfile(authUser);
+      } catch (error) {
+        if (shouldFallbackToBase44(error)) return base44Fallback.auth.me();
+        throw error;
+      }
     },
     async isAuthenticated() {
-      const db = requireSupabase();
-      const { data } = await db.auth.getSession();
-      return !!data?.session;
+      try {
+        const db = requireSupabase();
+        const { data } = await db.auth.getSession();
+        return !!data?.session;
+      } catch (error) {
+        if (shouldFallbackToBase44(error)) return base44Fallback.auth.isAuthenticated();
+        throw error;
+      }
     },
     async loginViaEmailPassword(email, password) {
-      const db = requireSupabase();
-      const { data, error } = await db.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-      if (data?.user) await this.ensureProfile(data.user);
-      return data;
+      try {
+        const db = requireSupabase();
+        const { data, error } = await db.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        if (data?.user) await this.ensureProfile(data.user);
+        return data;
+      } catch (error) {
+        if (shouldFallbackToBase44(error)) {
+          base44Fallback.auth.redirectToLogin(window.location.href);
+          return { fallback: 'base44' };
+        }
+        throw error;
+      }
     },
     async register({ email, password, full_name }) {
-      const db = requireSupabase();
-      const { data, error } = await db.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { full_name: full_name || email?.split('@')[0] || 'Member' },
-          emailRedirectTo:
-            import.meta.env.VITE_DEV_SUPABASE_REDIRECT_URL ||
-            import.meta.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
-            `${window.location.origin}/login`
+      try {
+        const db = requireSupabase();
+        const { data, error } = await db.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { full_name: full_name || email?.split('@')[0] || 'Member' },
+            emailRedirectTo:
+              import.meta.env.VITE_DEV_SUPABASE_REDIRECT_URL ||
+              import.meta.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
+              `${window.location.origin}/login`
+          }
+        });
+        if (error) throw error;
+        if (data?.user) await this.ensureProfile(data.user);
+        return data;
+      } catch (error) {
+        if (shouldFallbackToBase44(error)) {
+          base44Fallback.auth.redirectToLogin(window.location.href);
+          return { fallback: 'base44' };
         }
-      });
-      if (error) throw error;
-      if (data?.user) await this.ensureProfile(data.user);
-      return data;
+        throw error;
+      }
     },
     async verifyOtp({ email, otpCode }) {
-      const db = requireSupabase();
-      const { data, error } = await db.auth.verifyOtp({ email, token: otpCode, type: 'signup' });
-      if (error) throw error;
-      if (data?.user) await this.ensureProfile(data.user);
-      return data?.session || data;
+      try {
+        const db = requireSupabase();
+        const { data, error } = await db.auth.verifyOtp({ email, token: otpCode, type: 'signup' });
+        if (error) throw error;
+        if (data?.user) await this.ensureProfile(data.user);
+        return data?.session || data;
+      } catch (error) {
+        if (shouldFallbackToBase44(error)) {
+          base44Fallback.auth.redirectToLogin(window.location.href);
+          return { fallback: 'base44' };
+        }
+        throw error;
+      }
     },
     async resendOtp(email) {
       const db = requireSupabase();
@@ -175,24 +255,18 @@ export const supabaseCompat = {
     async loginWithProvider(provider, redirectTo = '/') {
       try {
         const db = requireSupabase();
-        // Redirect to our callback handler which exchanges code for session
-        const callbackUrl =
-          typeof window !== 'undefined'
-            ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`
-            : '/auth/callback';
-        
+        const callbackUrl = typeof window !== 'undefined'
+          ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`
+          : '/auth/callback';
         const { data, error } = await db.auth.signInWithOAuth({
           provider,
-          options: { 
-            redirectTo: callbackUrl,
-            skipBrowserRedirect: false
-          }
+          options: { redirectTo: callbackUrl, skipBrowserRedirect: false }
         });
         if (error) throw error;
         return data;
       } catch (error) {
         const nextUrl = typeof window !== 'undefined'
-          ? `${window.location.origin}${redirectTo.startsWith('/') ? redirectTo : `/${redirectTo}`}`
+          ? `${window.location.origin}${redirectTo.startsWith('/') ? redirectTo : '/' + redirectTo}`
           : redirectTo;
         base44Fallback.auth.redirectToLogin(nextUrl);
         return { fallback: 'base44', error: error.message };
@@ -200,15 +274,11 @@ export const supabaseCompat = {
     },
     async resetPasswordRequest(email) {
       const db = requireSupabase();
-      // Use v0 proxy redirect URL for password reset flow
       const resetRedirectTo =
         import.meta.env.VITE_DEV_SUPABASE_REDIRECT_URL ||
         import.meta.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
         `${window.location.origin}/auth/callback`;
-      
-      const { data, error } = await db.auth.resetPasswordForEmail(email, {
-        redirectTo: resetRedirectTo
-      });
+      const { data, error } = await db.auth.resetPasswordForEmail(email, { redirectTo: resetRedirectTo });
       if (error) throw error;
       return data;
     },
@@ -222,21 +292,31 @@ export const supabaseCompat = {
       return true;
     },
     async updateMe(patch) {
-      const db = requireSupabase();
-      const { data: userData } = await db.auth.getUser();
-      const id = userData?.user?.id;
-      if (!id) throw new Error('Not authenticated');
-      const { data, error } = await db.from('profiles').update({ ...patch, updated_at: new Date().toISOString() }).eq('id', id).select('*').single();
-      if (error) throw error;
-      return data;
+      try {
+        const db = requireSupabase();
+        const { data: userData } = await db.auth.getUser();
+        const id = userData?.user?.id;
+        if (!id) throw new Error('Not authenticated');
+        const { data, error } = await db.from('profiles').update({ ...patch, updated_at: new Date().toISOString() }).eq('id', id).select('*').single();
+        if (error) throw error;
+        return data;
+      } catch (error) {
+        if (shouldFallbackToBase44(error)) return base44Fallback.auth.updateMe(patch);
+        throw error;
+      }
     },
     redirectToLogin(nextUrl = window.location.href) {
       window.location.href = `/login?next=${encodeURIComponent(nextUrl)}`;
     },
     async logout(redirectUrl = '/') {
-      const db = requireSupabase();
-      await db.auth.signOut();
-      window.location.href = redirectUrl;
+      try {
+        const db = requireSupabase();
+        await db.auth.signOut();
+        window.location.href = redirectUrl;
+      } catch (error) {
+        if (shouldFallbackToBase44(error)) return base44Fallback.auth.logout(redirectUrl);
+        throw error;
+      }
     }
   },
   functions: {
@@ -254,7 +334,6 @@ export const supabaseCompat = {
       } catch (error) {
         vercelError = error;
       }
-
       try {
         return await base44Fallback.functions.invoke(name, payload);
       } catch (fallbackError) {
@@ -262,13 +341,17 @@ export const supabaseCompat = {
       }
     }
   },
-  integrations: { Core: {} },
+  integrations: { Core: base44Fallback.integrations.Core },
   users: {
     async inviteUser(email, role = 'user') {
-      const res = await fetch('/api/inviteUser', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, role }) });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Invite failed');
-      return data;
+      try {
+        const res = await fetch('/api/inviteUser', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, role }) });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Invite failed');
+        return data;
+      } catch (error) {
+        return base44Fallback.users.inviteUser(email, role);
+      }
     }
   }
 };
