@@ -177,7 +177,6 @@ export const supabaseCompat = {
         const { data } = await db.from('profiles').select('*').eq('id', authUser.id).maybeSingle();
         return data || this.ensureProfile(authUser);
       } catch (error) {
-        if (shouldFallbackToBase44(error)) return base44Fallback.auth.me();
         throw error;
       }
     },
@@ -187,8 +186,7 @@ export const supabaseCompat = {
         const { data } = await db.auth.getSession();
         return !!data?.session;
       } catch (error) {
-        if (shouldFallbackToBase44(error)) return base44Fallback.auth.isAuthenticated();
-        throw error;
+        return false;
       }
     },
     async loginViaEmailPassword(email, password) {
@@ -199,10 +197,6 @@ export const supabaseCompat = {
         if (data?.user) await this.ensureProfile(data.user);
         return data;
       } catch (error) {
-        if (shouldFallbackToBase44(error)) {
-          base44Fallback.auth.redirectToLogin(window.location.href);
-          return { fallback: 'base44' };
-        }
         throw error;
       }
     },
@@ -224,10 +218,6 @@ export const supabaseCompat = {
         if (data?.user) await this.ensureProfile(data.user);
         return data;
       } catch (error) {
-        if (shouldFallbackToBase44(error)) {
-          base44Fallback.auth.redirectToLogin(window.location.href);
-          return { fallback: 'base44' };
-        }
         throw error;
       }
     },
@@ -239,10 +229,6 @@ export const supabaseCompat = {
         if (data?.user) await this.ensureProfile(data.user);
         return data?.session || data;
       } catch (error) {
-        if (shouldFallbackToBase44(error)) {
-          base44Fallback.auth.redirectToLogin(window.location.href);
-          return { fallback: 'base44' };
-        }
         throw error;
       }
     },
@@ -265,11 +251,7 @@ export const supabaseCompat = {
         if (error) throw error;
         return data;
       } catch (error) {
-        const nextUrl = typeof window !== 'undefined'
-          ? `${window.location.origin}${redirectTo.startsWith('/') ? redirectTo : '/' + redirectTo}`
-          : redirectTo;
-        base44Fallback.auth.redirectToLogin(nextUrl);
-        return { fallback: 'base44', error: error.message };
+        throw error;
       }
     },
     async resetPasswordRequest(email) {
@@ -301,7 +283,6 @@ export const supabaseCompat = {
         if (error) throw error;
         return data;
       } catch (error) {
-        if (shouldFallbackToBase44(error)) return base44Fallback.auth.updateMe(patch);
         throw error;
       }
     },
@@ -314,8 +295,7 @@ export const supabaseCompat = {
         await db.auth.signOut();
         window.location.href = redirectUrl;
       } catch (error) {
-        if (shouldFallbackToBase44(error)) return base44Fallback.auth.logout(redirectUrl);
-        throw error;
+        window.location.href = redirectUrl || '/';
       }
     }
   },
