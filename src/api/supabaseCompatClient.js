@@ -213,6 +213,18 @@ export const supabaseCompat = {
       if (error) throw error;
       return data;
     },
+    async loginWithProvider(provider, redirectTo = '/') {
+      const db = requireSupabase();
+      const callbackUrl = typeof window !== 'undefined'
+        ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`
+        : '/auth/callback';
+      const { data, error } = await db.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: callbackUrl, skipBrowserRedirect: false }
+      });
+      if (error) throw error;
+      return data;
+    },
     async resetPasswordRequest(email) {
       const db = requireSupabase();
       const resetRedirectTo =
