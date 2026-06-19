@@ -211,7 +211,7 @@ export const supabaseCompat = {
             emailRedirectTo:
               import.meta.env.VITE_DEV_SUPABASE_REDIRECT_URL ||
               import.meta.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
-              `${window.location.origin}/login`
+              `${window.location.origin}/auth/callback?next=${encodeURIComponent('/')}`
           }
         });
         if (error) throw error;

@@ -41,9 +41,8 @@ export default function AuthCallback() {
             // Profile should auto-create via trigger, but ensure it exists
             await compat.auth.ensureProfile(data.user);
             
-            // Redirect to home or previous location
-            const next = searchParams.get('next') || '/';
-            window.location.href = next;
+            // Redirect to homepage after authentication
+            window.location.href = '/';
             return;
           }
         }

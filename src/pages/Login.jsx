@@ -22,8 +22,7 @@ export default function Login() {
     setLoading(true);
     try {
       await supabaseCompat.auth.loginViaEmailPassword(email, password);
-      const next = searchParams.get("next") || "/";
-      window.location.href = next;
+      window.location.href = "/";
     } catch (err) {
       console.error("[v0] Login error:", err);
       setError(err.message || "Invalid email or password");
