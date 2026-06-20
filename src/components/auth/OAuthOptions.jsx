@@ -9,7 +9,15 @@ const providers = [
   { key: 'yahoo', label: 'Yahoo', mark: 'Y!', className: 'text-white bg-[#6001D2]' },
 ];
 
-export default function OAuthOptions({ onError, redirectTo = '/', actionLabel = 'Continue with' }) {
+export default function OAuthOptions({
+  onError,
+  redirectTo = '/',
+  actionLabel = 'Continue with',
+  className = 'space-y-3 mb-6',
+  buttonClassName = 'w-full h-11',
+  separatorLineClassName = 'w-full border-t border-border',
+  separatorTextClassName = 'bg-card px-3 text-muted-foreground'
+}) {
   const [loadingProvider, setLoadingProvider] = useState('');
 
   const handleProvider = async (provider) => {
@@ -24,10 +32,10 @@ export default function OAuthOptions({ onError, redirectTo = '/', actionLabel = 
   };
 
   return (
-    <div className="space-y-3 mb-6">
+    <div className={className}>
       <div className="grid grid-cols-1 gap-2">
         {providers.map((provider) => (
-          <Button key={provider.key} type="button" variant="outline" className="w-full h-11" onClick={() => handleProvider(provider)} disabled={!!loadingProvider}>
+          <Button key={provider.key} type="button" variant="outline" className={buttonClassName} onClick={() => handleProvider(provider)} disabled={!!loadingProvider}>
             {loadingProvider === provider.key ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
@@ -38,8 +46,8 @@ export default function OAuthOptions({ onError, redirectTo = '/', actionLabel = 
         ))}
       </div>
       <div className="relative">
-        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
-        <div className="relative flex justify-center text-xs uppercase"><span className="bg-card px-3 text-muted-foreground">or use email</span></div>
+        <div className="absolute inset-0 flex items-center"><div className={separatorLineClassName} /></div>
+        <div className="relative flex justify-center text-xs uppercase"><span className={separatorTextClassName}>or use email</span></div>
       </div>
     </div>
   );

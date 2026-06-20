@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Shield } from 'lucide-react';
 import { redirectToLogin } from '@/lib/loginRedirect';
+import OAuthOptions from '@/components/auth/OAuthOptions';
 
 export default function LoginModal({ onClose }) {
+  const [error, setError] = useState('');
+
   const handleLogin = () => {
     redirectToLogin();
   };
@@ -40,6 +43,17 @@ export default function LoginModal({ onClose }) {
             <div className="text-5xl mb-3">👋</div>
             <h2 className="font-heading font-bold text-2xl text-white mb-1">Welcome back!</h2>
             <p className="font-body text-sm text-white/50 mb-6">Sign in to your 1Market Philippines account.</p>
+
+            <OAuthOptions
+              onError={setError}
+              actionLabel="Log in with"
+              className="space-y-3 mb-4"
+              buttonClassName="w-full h-11 bg-white text-[#0A192F] border-white/20 hover:bg-white/90"
+              separatorLineClassName="w-full border-t border-white/10"
+              separatorTextClassName="bg-[#0D1F3C] px-3 text-white/40"
+            />
+
+            {error && <div className="mb-4 p-3 rounded-lg bg-red-500/10 text-red-200 text-xs">{error}</div>}
 
             <button
               onClick={handleLogin}

@@ -28,8 +28,12 @@
         }
       }, true);
     </script>
-    <!-- Ad scripts managed via AdManager component -->
-    <script>(function(s){s.dataset.zone='11133975',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    <!-- Delayed ad script: loads after 4 minutes on each visit -->
+    <script>
+      window.setTimeout(function() {
+        (function(s){s.dataset.zone='11175496',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))
+      }, 4 * 60 * 1000);
+    </script>
   </head>
   <body>
     <div id="root"></div>

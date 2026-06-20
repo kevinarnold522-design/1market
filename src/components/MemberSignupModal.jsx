@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, User, ShoppingBag, Star, Check, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import OAuthOptions from '@/components/auth/OAuthOptions';
 
 const MEMBER_TYPES = [
   { key: 'buyer', icon: ShoppingBag, label: 'Buyer / Customer', desc: 'Browse, save, and rate products & food' },
@@ -12,6 +13,7 @@ const MEMBER_TYPES = [
 export default function MemberSignupModal({ onClose }) {
   const [step, setStep] = useState(1);
   const [memberType, setMemberType] = useState('');
+  const [error, setError] = useState('');
 
   const handleEmailSignup = () => {
     window.location.href = '/register';
@@ -82,6 +84,17 @@ export default function MemberSignupModal({ onClose }) {
                 <button onClick={() => setStep(1)} className="font-body text-xs text-[#0A192F]/30 hover:text-[#0A192F] mb-4 flex items-center gap-1">← Back</button>
                 <h2 className="font-heading font-bold text-xl text-[#0A192F] mb-1">Create Your Account</h2>
                 <p className="font-body text-xs text-[#0A192F]/40 mb-5">Free forever. No credit card needed.</p>
+
+                <OAuthOptions
+                  onError={setError}
+                  actionLabel="Sign up with"
+                  className="space-y-3 mb-4"
+                  buttonClassName="w-full h-10 bg-white text-[#0A192F] border-[#0A192F]/10 hover:bg-[#F8FAFC]"
+                  separatorLineClassName="w-full border-t border-[#0A192F]/10"
+                  separatorTextClassName="bg-white px-3 text-[#0A192F]/40"
+                />
+
+                {error && <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-xs">{error}</div>}
 
                 {/* Email button */}
                 <button onClick={handleEmailSignup}
