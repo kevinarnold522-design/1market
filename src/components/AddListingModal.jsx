@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload, Trash2, ChevronLeft, Image } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToR2 } from '@/lib/r2Upload';
+import SmartImage from '@/components/media/SmartImage';
 import CategoryIcon from './CategoryIcon';
 import AIPhotoListingCreator from './listing/AIPhotoListingCreator';
 import AIListingAssistant from './listing/AIListingAssistant';
@@ -393,21 +394,28 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   const handleImageUpload = async (e) => {
     const file = e.target.files[0]; if (!file) return;
     setUploading(true);
-    const { file_url } = await uploadMediaFileToR2(file, 'listing-images');
-    set('image_url', file_url);
-    setUploading(false); e.target.value = '';
+    try {
+      const { file_url } = await uploadMediaFileToR2(file, 'listing-images');
+      set('image_url', file_url);
+    } catch {
+      // Toast is shown by the uploader.
+    } finally {
+      setUploading(false); e.target.value = '';
+    }
   };
 
   const handleExtraImageUpload = async (e) => {
     const files = Array.from(e.target.files); if (!files.length) return;
     setUploadingExtra(true);
-    const urls = [];
-    for (const file of files) {
-      const { file_url } = await uploadMediaFileToR2(file, 'listing-images');
-      urls.push(file_url);
+    try {
+      const uploads = await Promise.all(files.map(file => uploadMediaFileToR2(file, 'listing-images')));
+      const urls = uploads.map(upload => upload.file_url).filter(Boolean);
+      set('extra_images', [...(form.extra_images || []), ...urls]);
+    } catch {
+      // Toast is shown by the uploader.
+    } finally {
+      setUploadingExtra(false); e.target.value = '';
     }
-    set('extra_images', [...(form.extra_images || []), ...urls]);
-    setUploadingExtra(false); e.target.value = '';
   };
 
   const removeExtraImage = (idx) => set('extra_images', form.extra_images.filter((_, i) => i !== idx));
@@ -657,31 +665,29 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                   <div>
                     <label className={labelCls}>Photos (Main + Additional)</label>
                     {form.image_url ? (
-                      <div className="relative w-full h-36 rounded-xl overflow-hidden mb-2">
-                        <img src={form.image_url} alt="" className="w-full h-full object-cover" />
-                        <button onClick={() => set('image_url', '')} className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500/90 flex items-center justify-center">
+                      <SmartImage src={form.image_url} alt="Main listing photo" className="w-full h-36 rounded-xl mb-2">
+                        <button onClick={() => set('image_url', '')} className="absolute top-2 right-2 z-20 w-6 h-6 rounded-full bg-red-500/90 flex items-center justify-center">
                           <Trash2 className="w-3 h-3 text-white" />
                         </button>
-                        <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-black/60 text-white text-[9px] font-bold">Main Photo</span>
-                      </div>
+                        <span className="absolute bottom-2 left-2 z-20 px-2 py-0.5 rounded-full bg-black/60 text-white text-[9px] font-bold">Main Photo</span>
+                      </SmartImage>
                     ) : (
                       <label className="flex flex-col items-center justify-center w-full h-24 rounded-xl border-2 border-dashed border-white/15 cursor-pointer hover:border-[#00D4FF]/40 transition-colors mb-2">
                         {uploading
                           ? <div className="w-5 h-5 border-2 border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" />
                           : <><Upload className="w-5 h-5 text-white/25 mb-1" /><span className="font-body text-xs text-white/25">Upload Main Photo from device</span></>}
-                        <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploading} />
+                        <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={handleImageUpload} disabled={uploading} />
                       </label>
                     )}
 
                     {form.extra_images && form.extra_images.length > 0 && (
                       <div className="grid grid-cols-4 gap-2 mb-2">
                         {form.extra_images.map((url, idx) => (
-                          <div key={idx} className="relative aspect-square rounded-xl overflow-hidden">
-                            <img src={url} alt="" className="w-full h-full object-cover" />
-                            <button onClick={() => removeExtraImage(idx)} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500/90 flex items-center justify-center">
+                          <SmartImage key={idx} src={url} alt={`Additional listing photo ${idx + 1}`} className="aspect-square rounded-xl">
+                            <button onClick={() => removeExtraImage(idx)} className="absolute top-1 right-1 z-20 w-5 h-5 rounded-full bg-red-500/90 flex items-center justify-center">
                               <X className="w-2.5 h-2.5 text-white" />
                             </button>
-                          </div>
+                          </SmartImage>
                         ))}
                       </div>
                     )}
@@ -690,7 +696,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       {uploadingExtra
                         ? <div className="w-4 h-4 border-2 border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" />
                         : <><Image className="w-4 h-4 text-white/30" /><span className="font-body text-xs text-white/30">Add More Photos</span></>}
-                      <input type="file" accept="image/*" multiple className="hidden" onChange={handleExtraImageUpload} disabled={uploadingExtra} />
+                      <input type="file" accept="image/png,image/jpeg,image/webp" multiple className="hidden" onChange={handleExtraImageUpload} disabled={uploadingExtra} />
                     </label>
                   </div>
 

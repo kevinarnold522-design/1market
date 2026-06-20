@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload, Briefcase } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToR2 } from '@/lib/r2Upload';
+import SmartImage from '@/components/media/SmartImage';
 
 const PH_LOCATIONS = [
   { group: 'NCR — Metro Manila', cities: ['Manila', 'Quezon City', 'Makati', 'Taguig', 'Pasig', 'Mandaluyong', 'Marikina', 'Parañaque', 'Las Piñas', 'Muntinlupa', 'Caloocan', 'Valenzuela', 'Malabon', 'Navotas', 'San Juan', 'Pasay', 'Pateros'] },
@@ -44,10 +45,15 @@ export default function AddJobModal({ onClose, user, categories = [] }) {
     const file = e.target.files[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await uploadMediaFileToR2(file);
-    set('image_url', file_url);
-    setUploading(false);
-    e.target.value = '';
+    try {
+      const { file_url } = await uploadMediaFileToR2(file);
+      set('image_url', file_url);
+    } catch {
+      // Toast is shown by the uploader.
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
   };
 
   const handleSave = async () => {
@@ -228,7 +234,7 @@ export default function AddJobModal({ onClose, user, categories = [] }) {
                 <label className="block font-body text-xs text-white/50 mb-1 font-semibold">Job Photo (optional — appears on listing page)</label>
                 {form.image_url ? (
                   <div className="relative">
-                    <img src={form.image_url} alt="preview" className="w-full h-40 object-cover rounded-xl" />
+                    <SmartImage src={form.image_url} alt="Job photo preview" className="w-full h-40 rounded-xl" />
                     <button onClick={() => set('image_url', '')}
                       className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/70 flex items-center justify-center hover:bg-red-500/80 transition-colors">
                       <X className="w-3.5 h-3.5 text-white" />
@@ -243,7 +249,7 @@ export default function AddJobModal({ onClose, user, categories = [] }) {
                       <Upload className="w-6 h-6 text-[#3E97F1]/50" />
                     )}
                     <span className="font-body text-xs text-white/30">{uploading ? 'Uploading...' : 'Click to upload job photo'}</span>
-                    <input type="file" className="sr-only" accept="image/*" onChange={handleUpload} disabled={uploading} />
+                    <input type="file" className="sr-only" accept="image/png,image/jpeg,image/webp" onChange={handleUpload} disabled={uploading} />
                   </label>
                 )}
               </div>

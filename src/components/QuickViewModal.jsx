@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Star, MapPin, Heart, ExternalLink, Share2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ListingContactLinks from './ListingContactLinks';
+import SmartImage from '@/components/media/SmartImage';
 
 export default function QuickViewModal({ listing, onClose, user }) {
   const [activeImage, setActiveImage] = useState(0);
@@ -37,9 +38,7 @@ export default function QuickViewModal({ listing, onClose, user }) {
 
           {/* Image */}
           <div className="relative h-52 overflow-hidden">
-            <img src={images[activeImage] || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600'}
-              alt={listing.title} className="w-full h-full object-cover"
-              onError={e => { e.target.src = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600'; }} />
+            <SmartImage src={images[activeImage]} alt={listing.title} className="absolute inset-0" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0D1F3C]/80 to-transparent" />
             <button onClick={onClose}
               className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors">

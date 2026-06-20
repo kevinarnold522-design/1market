@@ -1,4 +1,5 @@
-import { base44 } from '@/api/base44Client';
+import { uploadFileToSupabase, SUPABASE_IMAGE_BUCKET } from '@/lib/supabaseStorage';
+import { toast } from '@/components/ui/use-toast';
 
 export function fileToBase64(file) {
   return new Promise((resolve, reject) => {
@@ -10,12 +11,13 @@ export function fileToBase64(file) {
 }
 
 export async function uploadMediaFileToR2(file, folder = 'media') {
-  const base64_data = await fileToBase64(file);
-  const res = await base44.functions.invoke('uploadMediaToR2', {
-    file_name: file.name,
-    content_type: file.type,
-    base64_data,
-    folder,
-  });
-  return res.data;
+  const notice = toast({ title: 'Uploading image...', description: 'Please wait while we save your file.' });
+  try {
+    const result = await uploadFileToSupabase(file, SUPABASE_IMAGE_BUCKET, folder, { allowPdf: true });
+    notice.update({ title: 'Upload complete', description: 'Your image is ready to use.' });
+    return result;
+  } catch (error) {
+    notice.update({ title: 'Upload failed', description: error.message || 'Please try another image.', variant: 'destructive' });
+    throw error;
+  }
 }

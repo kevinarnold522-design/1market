@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Save, Upload, Plus } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToR2 } from '@/lib/r2Upload';
+import SmartImage from '@/components/media/SmartImage';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const SECTIONS = ['food', 'travel', 'buysell'];
@@ -77,19 +78,25 @@ function ImgUpload({ label, value, onChange }) {
   const handle = async (e) => {
     const file = e.target.files[0]; if (!file) return;
     setUploading(true);
-    const { file_url } = await uploadMediaFileToR2(file);
-    onChange(file_url); setUploading(false); e.target.value = '';
+    try {
+      const { file_url } = await uploadMediaFileToR2(file);
+      onChange(file_url);
+    } catch {
+      // Toast is shown by the uploader.
+    } finally {
+      setUploading(false); e.target.value = '';
+    }
   };
   return (
     <div>
       <label className="block font-body text-[10px] font-semibold text-white/45 mb-1 uppercase tracking-wider">{label}</label>
       {value && (
         <div className="relative inline-block mb-2">
-          <img src={value} alt="" className="h-20 rounded-xl object-cover border border-white/10" />
+          <SmartImage src={value} alt={label} className="h-20 w-28 rounded-xl border border-white/10" />
           <button onClick={() => onChange('')} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center">✕</button>
         </div>
       )}
-      <input ref={ref} type="file" accept="image/*" className="hidden" onChange={handle} />
+      <input ref={ref} type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={handle} />
       <button onClick={() => ref.current?.click()} disabled={uploading}
         className="flex items-center gap-2 px-3 py-2 border-2 border-dashed border-[#00D4FF]/30 hover:border-[#00D4FF]/70 rounded-xl text-[#00D4FF] font-body text-xs font-semibold transition-colors disabled:opacity-50 w-full justify-center">
         {uploading ? <><div className="w-3 h-3 border border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" /> Uploading...</> : <><Upload className="w-3 h-3" /> Upload from Device</>}
@@ -104,9 +111,14 @@ function MultiImgUpload({ label, value, onChange }) {
   const handle = async (e) => {
     const files = Array.from(e.target.files); if (!files.length) return;
     setUploading(true);
-    const urls = await Promise.all(files.map(f => uploadMediaFileToR2(f).then(r => r.file_url)));
-    onChange([...(value || []), ...urls]);
-    setUploading(false); e.target.value = '';
+    try {
+      const urls = await Promise.all(files.map(f => uploadMediaFileToR2(f).then(r => r.file_url)));
+      onChange([...(value || []), ...urls]);
+    } catch {
+      // Toast is shown by the uploader.
+    } finally {
+      setUploading(false); e.target.value = '';
+    }
   };
   return (
     <div>
@@ -114,12 +126,12 @@ function MultiImgUpload({ label, value, onChange }) {
       <div className="flex flex-wrap gap-2 mb-2">
         {(value || []).map((url, i) => (
           <div key={i} className="relative">
-            <img src={url} alt="" className="w-14 h-14 rounded-xl object-cover border border-white/10" />
+            <SmartImage src={url} alt={`Additional photo ${i + 1}`} className="w-14 h-14 rounded-xl border border-white/10" />
             <button onClick={() => onChange(value.filter((_, j) => j !== i))} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center">✕</button>
           </div>
         ))}
       </div>
-      <input ref={ref} type="file" accept="image/*" multiple className="hidden" onChange={handle} />
+      <input ref={ref} type="file" accept="image/png,image/jpeg,image/webp" multiple className="hidden" onChange={handle} />
       <button onClick={() => ref.current?.click()} disabled={uploading}
         className="flex items-center gap-2 px-3 py-2 border-2 border-dashed border-white/15 hover:border-[#00D4FF]/40 rounded-xl text-white/40 font-body text-xs font-semibold transition-colors disabled:opacity-50 w-full justify-center">
         {uploading ? <><div className="w-3 h-3 border border-white/20 border-t-[#00D4FF] rounded-full animate-spin" /> Uploading...</> : <><Upload className="w-3 h-3" /> Add More Photos</>}
