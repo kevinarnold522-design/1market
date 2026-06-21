@@ -59,15 +59,15 @@ export default function MemberSignupModal({ onClose }) {
                 <div className="space-y-2 mb-5">
                   {MEMBER_TYPES.map(mt => (
                     <button key={mt.key} onClick={() => setMemberType(mt.key)}
-                      className={`w-full flex items-center gap-2.5 p-3 rounded-xl border-2 transition-all text-left ${memberType === mt.key ? 'border-[#2563EB] bg-[#EFF6FF]' : 'border-[#0A192F]/8 hover:border-[#0A192F]/15'}`}>
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${memberType === mt.key ? 'bg-[#2563EB] text-white' : 'bg-[#F8FAFC] text-[#0A192F]/30'}`}>
+                      className={`w-full flex items-center gap-2.5 p-3 rounded-xl border-2 transition-all text-left ${memberType === mt.key ? 'border-[#FFD700] bg-[#FFF7CC]' : 'border-[#0A192F]/8 hover:border-[#FFD700]/70'}`}>
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${memberType === mt.key ? 'bg-[#FFD700] text-[#0A192F]' : 'bg-[#F8FAFC] text-[#0A192F]/30'}`}>
                         <mt.icon className="w-4 h-4" />
                       </div>
                       <div>
                         <p className="font-body font-semibold text-xs text-[#0A192F]">{mt.label}</p>
                         <p className="font-body text-[9px] text-[#0A192F]/40">{mt.desc}</p>
                       </div>
-                      {memberType === mt.key && <Check className="w-3.5 h-3.5 text-[#2563EB] ml-auto flex-shrink-0" />}
+                      {memberType === mt.key && <Check className="w-3.5 h-3.5 text-[#FFD700] ml-auto flex-shrink-0" />}
                     </button>
                   ))}
                 </div>

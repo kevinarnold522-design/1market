@@ -62,6 +62,7 @@ export default function PostAdLanding() {
   const [selectedType, setSelectedType] = useState('');
   const [selectedSubcategory, setSelectedSubcategory] = useState('');
   const [selectedPostMode, setSelectedPostMode] = useState('');
+  const [upgradingMode, setUpgradingMode] = useState('');
 
   useEffect(() => {
     const refreshGhost = () => setGhostUser(getGhostSession());
@@ -114,6 +115,21 @@ export default function PostAdLanding() {
     setShowModal(true);
   };
 
+  const enablePostingAccount = async (mode) => {
+    if (!currentUser) {
+      setShowSignup(true);
+      return;
+    }
+    setUpgradingMode(mode);
+    const update = mode === 'business'
+      ? { user_type: 'business', account_type: 'business_owner', is_seller: true }
+      : { user_type: 'seller', is_seller: true };
+    const updatedUser = await base44.auth.updateMe(update);
+    setCurrentUser({ ...currentUser, ...updatedUser, ...update });
+    setSelectedPostMode(mode);
+    setUpgradingMode('');
+  };
+
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#3E97F1 0%,#60A5FA 100%)' }}>
       <StarField />
@@ -134,17 +150,17 @@ export default function PostAdLanding() {
         </motion.div>
 
         {!canPost && (
-          <div className="mb-8 p-5 rounded-2xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)' }}>
+          <div className="mb-8 p-5 rounded-2xl" style={{ background: 'rgba(255,215,0,0.10)', border: '1px solid rgba(255,215,0,0.35)', boxShadow: '0 0 24px rgba(255,215,0,0.14)' }}>
             <p className="font-heading text-lg font-bold text-white text-center mb-2">Choose how you want to post</p>
-            <p className="font-body text-sm text-white/65 text-center mb-4">Post an Ad is available for seller, business, and admin accounts only.</p>
+            <p className="font-body text-sm text-white/75 text-center mb-4">Post an Ad is available for seller, business, and admin accounts.</p>
             <div className="grid sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
-              <button onClick={() => setShowSignup(true)} className="p-4 rounded-2xl border border-white/15 bg-white/8 text-left hover:bg-white/12 transition-all">
-                <p className="font-body text-sm font-bold text-white">Seller Ad</p>
-                <p className="font-body text-xs text-white/55 mt-1">Create or upgrade to a seller account to post items, services, jobs, rent, food, or travel.</p>
+              <button onClick={() => enablePostingAccount('seller')} disabled={upgradingMode === 'seller'} className="p-4 rounded-2xl border text-left transition-all hover:scale-[1.01] disabled:opacity-60" style={{ borderColor: '#FFD700', background: 'rgba(255,215,0,0.18)' }}>
+                <p className="font-body text-sm font-bold text-[#FFD700]">Seller Ad</p>
+                <p className="font-body text-xs text-white/70 mt-1">{currentUser ? 'Enable seller posting now — no extra sign in needed.' : 'Create a seller account to post items, services, jobs, rent, food, or travel.'}</p>
               </button>
-              <button onClick={() => setShowSignup(true)} className="p-4 rounded-2xl border border-white/15 bg-white/8 text-left hover:bg-white/12 transition-all">
-                <p className="font-body text-sm font-bold text-white">Business Ad</p>
-                <p className="font-body text-xs text-white/55 mt-1">Create or upgrade to a business account to post under your brand.</p>
+              <button onClick={() => enablePostingAccount('business')} disabled={upgradingMode === 'business'} className="p-4 rounded-2xl border text-left transition-all hover:scale-[1.01] disabled:opacity-60" style={{ borderColor: '#FFD700', background: 'rgba(255,215,0,0.18)' }}>
+                <p className="font-body text-sm font-bold text-[#FFD700]">Business Ad</p>
+                <p className="font-body text-xs text-white/70 mt-1">{currentUser ? 'Enable business posting now — no extra sign in needed.' : 'Create a business account to post under your brand.'}</p>
               </button>
             </div>
           </div>
@@ -153,10 +169,10 @@ export default function PostAdLanding() {
         {canPost && (
           <>
             <div className="mb-5 rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-5">
-              <p className="font-body text-[10px] uppercase tracking-wider font-bold text-[#00D4FF] mb-2">Choose post type</p>
+              <p className="font-body text-[10px] uppercase tracking-wider font-bold text-[#FFD700] mb-2">Choose post type</p>
               <div className="grid sm:grid-cols-3 gap-3">
                 {postModeOptions.map(option => (
-                  <button key={option.key} onClick={() => setSelectedPostMode(option.key)} className="p-4 rounded-2xl border text-left transition-all hover:scale-[1.01]" style={{ borderColor: activePostMode === option.key ? '#00D4FF' : 'rgba(255,255,255,0.12)', background: activePostMode === option.key ? 'rgba(0,212,255,0.16)' : 'rgba(255,255,255,0.05)' }}>
+                  <button key={option.key} onClick={() => setSelectedPostMode(option.key)} className="p-4 rounded-2xl border text-left transition-all hover:scale-[1.01]" style={{ borderColor: activePostMode === option.key ? '#FFD700' : 'rgba(255,255,255,0.12)', background: activePostMode === option.key ? 'rgba(255,215,0,0.18)' : 'rgba(255,255,255,0.05)' }}>
                     <p className="font-body text-sm font-bold text-white">{option.label}</p>
                     <p className="font-body text-xs text-white/55 mt-1">{option.desc}</p>
                   </button>

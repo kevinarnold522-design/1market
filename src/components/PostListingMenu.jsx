@@ -42,10 +42,10 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
         onClick={() => setOpen(v => !v)}
         className={`flex items-center gap-1.5 font-body font-bold transition-all rounded-xl ${
           compact
-            ? 'px-2.5 py-1.5 text-xs bg-white/8 border border-white/10 text-white/80 hover:text-white hover:border-[#00D4FF]/40'
-            : 'px-4 py-2.5 text-xs bg-[#00D4FF] hover:bg-white text-[#0A192F]'
+            ? 'px-2.5 py-1.5 text-xs bg-white/8 border border-[#FFD700]/30 text-white/80 hover:text-white hover:border-[#FFD700]/70'
+            : 'px-4 py-2.5 text-xs bg-[#FFD700] hover:bg-white text-[#0A192F]'
         }`}
-        style={!compact ? { boxShadow: '0 0 14px rgba(0,212,255,0.3)' } : undefined}
+        style={!compact ? { boxShadow: '0 0 16px rgba(255,215,0,0.42)' } : undefined}
       >
         {!iconOnly && <Plus className="w-3.5 h-3.5" />}
         {iconOnly ? <Plus className="w-4 h-4" /> : 'Post an Ad'}
