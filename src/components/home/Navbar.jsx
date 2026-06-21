@@ -704,7 +704,7 @@ export default function Navbar() {
                   <>
                     <Link to="/post-ad" onClick={() => setMenuOpen(false)}
                       className="block text-[#FFD700] font-body text-sm font-bold py-2 transition-colors">
-                      <Plus className="w-3.5 h-3.5 inline mr-1" /> Post a Listing
+                      <Plus className="w-3.5 h-3.5 inline mr-1" /> Post an Ad
                     </Link>
                     <Link to="/explore" onClick={() => setMenuOpen(false)}
                       className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">

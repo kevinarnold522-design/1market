@@ -572,7 +572,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
               </button>
             )}
             <div>
-              <h2 className="font-heading font-bold text-white text-base">Post a Listing</h2>
+              <h2 className="font-heading font-bold text-white text-base">Post an Ad</h2>
               <p className="font-body text-[10px] text-white/30">
                 {step === 0 ? 'Step 1 — Pick a main category' : step === 1 ? 'Step 2 — Choose type' : 'Step 3 — Listing details'}
               </p>

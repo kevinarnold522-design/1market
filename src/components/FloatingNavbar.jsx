@@ -12,7 +12,7 @@ const OWNER_EMAIL = 'kevinarnold522@gmail.com';
 
 const NAV_ITEMS = [
   { to: '/', icon: Home, label: 'Home', color: '#00D4FF' },
-  { to: '/post-ad', icon: Plus, label: 'Post a Listing', color: '#FFD700' },
+  { to: '/post-ad', icon: Plus, label: 'Post an Ad', color: '#FFD700' },
   { to: '/travel', icon: Plane, label: 'Travel', color: '#0ea5e9' },
   { to: '/food', icon: UtensilsCrossed, label: 'Food', color: '#f97316' },
   { to: '/buysell', icon: ShoppingBag, label: 'Buy & Sell', color: '#8b5cf6' },

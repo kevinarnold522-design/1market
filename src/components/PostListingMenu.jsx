@@ -24,9 +24,9 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
   if (!canPost) return null;
 
   const options = [
-    ...(isSellerAccount ? [{ label: 'Seller Ad', desc: 'Post items, services, jobs, rent or travel', Icon: ShoppingBag, path: '/post-ad?as=seller' }] : []),
-    ...(isBusinessAccount ? [{ label: 'Business Ad', desc: 'Post under your business account', Icon: Building2, path: '/post-ad?as=business' }] : []),
-    ...(isAdmin ? [{ label: 'Admin Post', desc: 'Post as marketplace admin', Icon: Shield, path: '/post-ad?as=admin' }] : []),
+    ...(isSellerAccount ? [{ label: 'Seller Ad', desc: 'Post items, services, jobs, rent or travel', Icon: ShoppingBag, path: '/post-ad' }] : []),
+    ...(isBusinessAccount ? [{ label: 'Business Ad', desc: 'Post under your business account', Icon: Building2, path: '/post-ad' }] : []),
+    ...(isAdmin ? [{ label: 'Admin Post', desc: 'Post as marketplace admin', Icon: Shield, path: '/post-ad' }] : []),
   ];
 
   const handleSelect = (path) => {

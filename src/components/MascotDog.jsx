@@ -134,7 +134,7 @@ const WALKTHROUGHS = {
     { step: 1, text: "Step 1: Click 'Signup' & choose 'Seller' account type ", mode: 'point' },
     { step: 2, text: "Step 2: Sign up & go to Profile → 'Become a Seller' ", mode: 'announce' },
     { step: 3, text: "Step 3: Set your Channel Name & location in Profile ", mode: 'think' },
-    { step: 4, text: "Step 4: Click 'Post a Listing' to add your first item! ", mode: 'point' },
+    { step: 4, text: "Step 4: Click 'Post an Ad' to add your first item! ", mode: 'point' },
     { step: 5, text: "Step 5: Add photos, price, description & contact info! ", mode: 'search' },
     { step: 6, text: "Step 6: Submit for Admin Review — you'll get an email when approved! ️", mode: 'announce' },
     { step: 7, text: "Step 7: Apply for Verified Partner badge for more trust! ", mode: 'thumbsup' },
