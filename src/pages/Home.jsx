@@ -39,10 +39,10 @@ const HERO_IMAGE = '';
 
 export default function Home() {
   return (
-    <div className="min-h-screen overflow-x-hidden relative" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
+    <div className="home-blue-aligned min-h-screen overflow-x-hidden relative" style={{ background: 'linear-gradient(180deg, #3E97F1 0%, #60A5FA 48%, #3E97F1 100%)' }}>
       {/* Permanent royal blue wave background */}
       <RoyalBlueWaves />
-      <div className="fixed inset-0 -z-10" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }} />
+      <div className="fixed inset-0 -z-10" style={{ background: 'linear-gradient(180deg, #3E97F1 0%, #60A5FA 48%, #3E97F1 100%)' }} />
       
       <div className="relative z-10">
         <WelcomeSplash />

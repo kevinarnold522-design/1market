@@ -265,6 +265,46 @@ aside nav button + a {
   color: rgba(15,31,74,0.4) !important;
 }
 
+/* Homepage aligned royal-blue design layer */
+.home-blue-aligned {
+  color: #ffffff;
+}
+.home-blue-aligned section {
+  position: relative;
+}
+.home-blue-aligned section:not(:first-of-type) {
+  border-top: 1px solid rgba(255,255,255,0.14);
+}
+.home-blue-aligned section[class*="bg-[#F8FAFC]"],
+.home-blue-aligned section[class*="bg-white"],
+.home-blue-aligned [class*="bg-[#F8FAFC]"] {
+  background: rgba(255,255,255,0.08) !important;
+  border-color: rgba(255,255,255,0.18) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.home-blue-aligned [class*="text-[#0A192F]"] {
+  color: #ffffff !important;
+}
+.home-blue-aligned [class*="text-[#0A192F]/"] {
+  color: rgba(255,255,255,0.68) !important;
+}
+.home-blue-aligned [class*="text-[#2563EB]"] {
+  color: #dbeafe !important;
+}
+.home-blue-aligned .rounded-2xl,
+.home-blue-aligned .rounded-3xl {
+  border-color: rgba(255,255,255,0.18);
+}
+.home-blue-aligned h1,
+.home-blue-aligned h2,
+.home-blue-aligned h3 {
+  letter-spacing: -0.025em;
+}
+.home-blue-aligned img {
+  image-rendering: auto;
+}
+
 /* Royal blue normalization: replace old dark-blue surfaces with the brand royal blue */
 [style*="#0A192F"],
 [style*="#0D1F3C"],
