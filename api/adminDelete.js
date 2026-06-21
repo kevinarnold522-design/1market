@@ -32,9 +32,12 @@ export default async function handler(req, res) {
     const db = adminClient();
     const table = tableName(entity);
     if (!table) return res.status(400).json({ error: 'Unknown entity' });
-    const { error } = await db.from(table).delete().eq('id', id);
+    const { data, error } = await db.from(table).delete().eq('id', id).select('*');
     if (error) throw error;
-    return res.status(200).json({ success: true });
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: `No ${entity} record was deleted` });
+    }
+    return res.status(200).json({ success: true, deleted: data.length });
   } catch (error) {
     console.error('adminDelete error:', error?.message || error);
     return res.status(500).json({ error: error.message || 'Server error' });

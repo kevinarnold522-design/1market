@@ -216,7 +216,7 @@ export default function ListingDetail() {
       } catch {}
 
       try {
-        const item = await base44.entities.Listing.filter({ id });
+        const item = await base44.entities.Listing.filter({ id, approval_status: 'approved', is_active: true });
         const found = item[0] || null;
         setListing(found);
 

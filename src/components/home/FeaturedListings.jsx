@@ -147,9 +147,9 @@ export default function FeaturedListings() {
     base44.auth.isAuthenticated().then(ok => {
       if (ok) base44.auth.me().then(u => setUser(u)).catch(() => {});
     }).catch(() => {});
-    base44.entities.Listing.filter({ is_active: true }, '-created_date', 20)
+    base44.entities.Listing.filter({ approval_status: 'approved', is_active: true }, '-created_date', 20)
       .then(items => {
-        setListings(items.filter(l => l.is_active !== false));
+        setListings(items.filter(l => l.is_active !== false && l.approval_status === 'approved'));
         setLoading(false);
       })
       .catch(() => setLoading(false));

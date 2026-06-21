@@ -520,6 +520,15 @@ export default function Admin() {
         } catch (fallbackError) {
           console.error('Fallback listing delete failed:', fallbackError);
         }
+        try {
+          await base44.entities.Listing.update(id, { is_active: false, approval_status: 'rejected' });
+          setListings(prev => prev.filter(l => l.id !== id));
+          setPendingListings(prev => prev.filter(l => l.id !== id));
+          showToast('Listing hidden from public pages.');
+          return;
+        } catch (updateFallbackError) {
+          console.error('Fallback listing hide failed:', updateFallbackError);
+        }
       }
       showToast('Failed to delete listing. Please try again.');
     }

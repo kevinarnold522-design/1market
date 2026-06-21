@@ -199,8 +199,8 @@ export default function ExplorePage() {
         const authed = await base44.auth.isAuthenticated();
         if (authed) { const me = await base44.auth.me(); setUser(me); }
       } catch {}
-      const items = await base44.entities.Listing.list('-created_date', 200);
-      setListings(items.filter(l => l.is_active !== false));
+      const items = await base44.entities.Listing.filter({ approval_status: 'approved', is_active: true }, '-created_date', 200);
+      setListings(items);
       setLoading(false);
     };
     init();

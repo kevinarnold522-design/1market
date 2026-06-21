@@ -44,7 +44,7 @@ export default function SmartSearchBar({ placeholder = 'Search listings, food, j
       setLoading(true);
       try {
         // Fetch matching listings
-        const all = await base44.entities.Listing.filter({ is_active: true }, '-view_count', 50);
+        const all = await base44.entities.Listing.filter({ approval_status: 'approved', is_active: true }, '-view_count', 50);
         const q = query.toLowerCase();
         const matched = all.filter(l =>
           l.title?.toLowerCase().includes(q) ||
