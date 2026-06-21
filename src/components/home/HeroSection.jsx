@@ -122,10 +122,22 @@ export default function HeroSection({ heroImage }) {
                       whileHover={{ scale: 1.05 }}>
                       Signup Free →
                     </motion.button>
+                    <motion.a
+                      href="/post-ad"
+                      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl font-body font-bold text-sm text-white border border-[#FFD700]/40 hover:bg-[#FFD700]/10 transition-all"
+                      whileHover={{ scale: 1.05 }}>
+                      Post an Ad
+                    </motion.a>
                   </>
                 ) : (
                   <div className="flex items-center gap-3 flex-wrap">
                     {canPost && <PostListingMenu user={user} />}
+                    <motion.a
+                      href="/post-ad"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-body font-bold text-sm text-white border border-[#FFD700]/40 hover:bg-[#FFD700]/10 transition-all"
+                      whileHover={{ scale: 1.05 }}>
+                      Post an Ad
+                    </motion.a>
                     <motion.a
                       href="/explore"
                       className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
