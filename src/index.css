@@ -192,7 +192,7 @@ aside nav button + a {
 /* White + blue listing detail theme with the royal wave background preserved */
 .listing-blue-white-theme {
   background: linear-gradient(180deg, #ffffff 0%, #eef5ff 52%, #dbeafe 100%) !important;
-  color: #0f1f4a;
+  color: #60a5fa;
 }
 .listing-blue-white-theme > .fixed.inset-0 { opacity: 0.18; }
 .listing-blue-white-theme [style*="rgba(13,31,60"],
@@ -204,7 +204,11 @@ aside nav button + a {
 }
 .listing-blue-white-theme .text-white,
 .listing-blue-white-theme [class*="text-white/"] {
-  color: #0f1f4a !important;
+  color: #60a5fa !important;
+}
+.listing-blue-white-theme .listing-avail-cta,
+.listing-blue-white-theme .listing-avail-cta * {
+  color: #ffffff !important;
 }
 .listing-blue-white-theme .text-\[\#00D4FF\] {
   color: #2563EB !important;

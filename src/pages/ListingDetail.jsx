@@ -858,7 +858,7 @@ export default function ListingDetail() {
                     : 'Avail / Buy';
                   return (
                     <button onClick={() => { if (!user) { base44.auth.redirectToLogin(window.location.href); return; } setShowReceipt(true); }}
-                      className="w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-[1.01]"
+                      className="listing-avail-cta w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-[1.01]"
                       style={{ background: 'linear-gradient(135deg,#2563EB,#00D4FF)', boxShadow: '0 0 20px rgba(37,99,235,0.28)' }}>
                       <ShoppingCart className="w-4 h-4" /> {btnLabel}
                     </button>
