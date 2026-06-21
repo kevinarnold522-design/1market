@@ -53,9 +53,11 @@ export default function GhostAccountMenu({ collapsed = false, compact = false, o
       seller_area: '',
       username: form.username.trim(),
       phone: form.phone.trim(),
+      email_contact: form.email_contact.trim(),
     });
     const newUser = res.data.user;
-    const activeGhost = saveGhostSession({ ...newUser, live_user: true });
+    const linkedEmail = form.email_contact.trim();
+    const activeGhost = saveGhostSession({ ...newUser, email: linkedEmail || newUser.email, linked_email: linkedEmail, ghost_linked: !!linkedEmail, live_user: true });
     localStorage.setItem(STORAGE_PREFIX + (activeGhost.ghost_id || activeGhost.id), JSON.stringify(activeGhost));
     window.dispatchEvent(new CustomEvent('active-user-changed', { detail: activeGhost }));
     setGhost(activeGhost);
@@ -98,6 +100,7 @@ export default function GhostAccountMenu({ collapsed = false, compact = false, o
             <div className="space-y-2 p-2">
               <input value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} placeholder="Created user name" className="w-full bg-white/8 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:outline-none" />
               <input value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value }))} placeholder="Username" className="w-full bg-white/8 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:outline-none" />
+              <input value={form.email_contact} onChange={e => setForm(f => ({ ...f, email_contact: e.target.value }))} placeholder="Linked email (optional)" className="w-full bg-white/8 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:outline-none" />
               <textarea value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))} placeholder="Bio" rows={2} className="w-full bg-white/8 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:outline-none resize-none" />
               <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="Contact number" className="w-full bg-white/8 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:outline-none" />
               <select value={form.user_type} onChange={e => setForm(f => ({ ...f, user_type: e.target.value }))} className="w-full bg-[#15284a] border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">

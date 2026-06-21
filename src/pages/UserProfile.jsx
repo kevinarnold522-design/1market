@@ -24,7 +24,7 @@ export default function UserProfile() {
   const { user: authUser, logout } = useAuth();
   const ghost = getGhostSession();
   const [user, setUser] = useState(null);
-  const [form, setForm] = useState({ full_name: '', username: '', bio: '', phone: '', location: '', channel_name: '', social_facebook: '', social_instagram: '', social_youtube: '', social_tiktok: '' });
+  const [form, setForm] = useState({ full_name: '', username: '', email: '', bio: '', phone: '', location: '', channel_name: '', social_facebook: '', social_instagram: '', social_youtube: '', social_tiktok: '' });
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState('');
   const [toast, setToast] = useState('');
@@ -35,6 +35,7 @@ export default function UserProfile() {
     setForm({
       full_name: me.full_name || '',
       username: me.username || '',
+      email: me.email || '',
       bio: me.bio || '',
       phone: me.phone || '',
       location: me.location || me.seller_location || '',
@@ -52,13 +53,13 @@ export default function UserProfile() {
     if (ghost) {
       const updated = { ...ghost, ...data };
       if (!String(ghost.id || '').startsWith('ghost_')) {
-        await base44.entities.User.update(ghost.id, data);
+        await base44.entities.User.update(ghost.id, data).catch(() => null);
       }
-      saveGhostSession(updated);
-      const localKey = `1m_ghost_${updated.ghost_id || updated.id}`;
-      localStorage.setItem(localKey, JSON.stringify(updated));
-      setUser(updated);
-      window.dispatchEvent(new CustomEvent('active-user-changed', { detail: updated }));
+      const savedGhost = saveGhostSession({ ...updated, linked_email: updated.email, ghost_linked: !!updated.email });
+      const localKey = `1m_ghost_${savedGhost.ghost_id || savedGhost.id}`;
+      localStorage.setItem(localKey, JSON.stringify(savedGhost));
+      setUser(savedGhost);
+      window.dispatchEvent(new CustomEvent('active-user-changed', { detail: savedGhost }));
       return;
     }
     const updated = await base44.auth.updateMe(data);
@@ -70,7 +71,8 @@ export default function UserProfile() {
 
   const saveProfile = async () => {
     setSaving(true);
-    await updateUser(form);
+    const { email, ...regularProfile } = form;
+    await updateUser(ghost ? { ...form, email: email.trim() } : regularProfile);
     setSaving(false);
     setToast('Profile saved');
     setTimeout(() => setToast(''), 1800);
@@ -129,7 +131,7 @@ export default function UserProfile() {
               </div>
               <div className="flex-1">
                 <h1 className="font-heading text-3xl font-bold text-slate-950">{form.full_name || 'My Profile'}</h1>
-                <p className="text-blue-700 font-semibold text-sm">{user.email}</p>
+                <p className="text-blue-700 font-semibold text-sm">{ghost ? (form.email || 'No linked email') : user.email}</p>
               </div>
               <button onClick={() => { if (ghost) { clearGhostSession(); window.location.href = '/'; } else { logout(true); } }} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-red-100 text-red-600 hover:bg-red-50 font-semibold text-sm"><LogOut className="w-4 h-4" /> Sign out</button>
             </div>
@@ -140,7 +142,7 @@ export default function UserProfile() {
                   <label className="text-xs font-bold uppercase tracking-wider text-blue-700 mb-1 block">{label}</label>
                   <div className="relative">
                     <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400" />
-                    <input disabled={key === 'email'} value={key === 'email' ? user.email : form[key] || ''} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} className="w-full pl-10 pr-3 py-3 rounded-xl border border-blue-100 bg-blue-50/40 text-slate-900 focus:outline-none focus:border-blue-500 disabled:opacity-70" />
+                    <input disabled={key === 'email' && !ghost} value={key === 'email' ? (ghost ? form.email || '' : user.email || '') : form[key] || ''} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} placeholder={key === 'email' && ghost ? 'Link any email address' : ''} className="w-full pl-10 pr-3 py-3 rounded-xl border border-blue-100 bg-blue-50/40 text-slate-900 focus:outline-none focus:border-blue-500 disabled:opacity-70" />
                   </div>
                 </div>
               ))}
