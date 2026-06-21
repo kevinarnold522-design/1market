@@ -1,6 +1,6 @@
 import { requireSupabase } from '@/lib/supabaseClient';
 
-export const SUPABASE_IMAGE_BUCKET = '1marketph';
+export const SUPABASE_IMAGE_BUCKET = '1Marketphmediafiles';
 export const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
 export const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 
