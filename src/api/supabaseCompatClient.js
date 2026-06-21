@@ -170,11 +170,17 @@ export const supabaseCompat = {
         const db = requireSupabase();
         const { data, error } = await db.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        if (!data?.session?.access_token) throw new Error('Login did not create a session. Please try again.');
         if (data?.user) await this.ensureProfile(data.user);
         return data;
       } catch (error) {
         throw error;
       }
+    },
+    async onAuthStateChange(callback) {
+      const db = requireSupabase();
+      const { data } = db.auth.onAuthStateChange((_event, session) => callback(session));
+      return data?.subscription;
     },
     async register({ email, password, full_name }) {
       try {

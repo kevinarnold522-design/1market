@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { supabaseCompat } from "@/api/supabaseCompatClient";
+import { clearGhostSession } from "@/lib/ghostAccounts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,6 +10,7 @@ import AuthLayout from "@/components/AuthLayout";
 import OAuthOptions from "@/components/auth/OAuthOptions";
 
 export default function Login() {
+  const [searchParams] = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,8 +21,12 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
+      clearGhostSession();
       await supabaseCompat.auth.loginViaEmailPassword(email, password);
-      window.location.href = "/";
+      await supabaseCompat.auth.me();
+      window.dispatchEvent(new Event('supabase-auth-changed'));
+      const next = searchParams.get('next') || '/';
+      window.location.replace(next.startsWith('/') ? next : '/');
     } catch (err) {
       console.error("[v0] Login error:", err);
       setError(err.message || "Invalid email or password");
@@ -43,7 +49,7 @@ export default function Login() {
         </>
       }
     >
-      <OAuthOptions onError={setError} actionLabel="Log in with" />
+      <OAuthOptions onError={setError} actionLabel="Log in with" redirectTo={searchParams.get('next') || '/'} />
 
       {error && (
         <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">

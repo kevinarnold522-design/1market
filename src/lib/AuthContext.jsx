@@ -20,16 +20,24 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     checkAppState();
-    const refreshGhostSession = () => {
+    const refreshAuthSession = () => {
       _cachedUser = null;
       _authInitialized = false;
       checkAppState();
     };
-    window.addEventListener('ghost-session-changed', refreshGhostSession);
-    window.addEventListener('supabase-auth-changed', refreshGhostSession);
+    let authSubscription = null;
+    const authStatePromise = base44.auth.onAuthStateChange?.(() => refreshAuthSession());
+    authStatePromise?.then?.((subscription) => {
+      authSubscription = subscription;
+    });
+    window.addEventListener('ghost-session-changed', refreshAuthSession);
+    window.addEventListener('supabase-auth-changed', refreshAuthSession);
+    window.addEventListener('focus', refreshAuthSession);
     return () => {
-      window.removeEventListener('ghost-session-changed', refreshGhostSession);
-      window.removeEventListener('supabase-auth-changed', refreshGhostSession);
+      authSubscription?.unsubscribe?.();
+      window.removeEventListener('ghost-session-changed', refreshAuthSession);
+      window.removeEventListener('supabase-auth-changed', refreshAuthSession);
+      window.removeEventListener('focus', refreshAuthSession);
     };
   }, []);
 

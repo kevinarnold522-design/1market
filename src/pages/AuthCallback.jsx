@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { supabaseCompat } from '@/api/supabaseCompatClient';
 import { requireSupabase } from '@/lib/supabaseClient';
+import { clearGhostSession } from '@/lib/ghostAccounts';
 import { Loader2 } from 'lucide-react';
 
 export default function AuthCallback() {
@@ -24,9 +25,19 @@ export default function AuthCallback() {
           return;
         }
 
+        clearGhostSession();
         let user = null;
 
-        if (code) {
+        const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        if (accessToken && refreshToken) {
+          const { data, error: hashError } = await db.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+          if (hashError) throw hashError;
+          user = data?.user || null;
+        }
+
+        if (!user && code) {
           const { data, error: sessionError } = await db.auth.exchangeCodeForSession(code);
           if (sessionError) throw sessionError;
           user = data?.user || null;
