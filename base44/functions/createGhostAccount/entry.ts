@@ -97,7 +97,7 @@ Deno.serve(async (req) => {
       business_categories: []
     });
 
-    return Response.json({ success: true, user, profile_url: `/seller/${user.id}`, message: 'Ghost account created successfully' }, { headers: corsHeaders });
+    return Response.json({ success: true, user, profile_url: `/seller/${user.id}`, message: 'Live user created successfully' }, { headers: corsHeaders });
   } catch (error) {
     console.error('[GHOST_CREATE_ERROR]', error.message);
     return Response.json({ error: 'Failed to create ghost account', details: error.message }, { status: 500, headers: corsHeaders });

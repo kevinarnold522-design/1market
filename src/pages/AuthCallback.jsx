@@ -60,7 +60,25 @@ export default function AuthCallback() {
           return;
         }
 
-        await supabaseCompat.auth.ensureProfile(user);
+        const profile = await supabaseCompat.auth.ensureProfile(user);
+        const selectedType = sessionStorage.getItem('signup_account_type') || '';
+        const preferencesRaw = sessionStorage.getItem('signup_preferences') || '';
+        if (selectedType) {
+          const preferences = preferencesRaw ? JSON.parse(preferencesRaw) : {};
+          const userType = selectedType === 'both' ? 'business' : selectedType === 'buyer' ? 'customer' : selectedType;
+          try {
+            await supabaseCompat.auth.updateMe({
+              user_type: userType,
+              account_type: userType === 'business' ? 'business_owner' : userType,
+              is_seller: userType === 'seller' || userType === 'business',
+              seller_page_enabled: userType === 'seller' || userType === 'business',
+              location: preferences.location || profile?.location || '',
+              seller_location: preferences.location || profile?.seller_location || '',
+            });
+          } catch {}
+          sessionStorage.removeItem('signup_account_type');
+          sessionStorage.removeItem('signup_preferences');
+        }
         window.dispatchEvent(new Event('supabase-auth-changed'));
         window.location.href = next.startsWith('/') ? next : '/';
       } catch (err) {

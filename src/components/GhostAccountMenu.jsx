@@ -55,8 +55,9 @@ export default function GhostAccountMenu({ collapsed = false, compact = false, o
       phone: form.phone.trim(),
     });
     const newUser = res.data.user;
-    const activeGhost = saveGhostSession(newUser);
+    const activeGhost = saveGhostSession({ ...newUser, live_user: true });
     localStorage.setItem(STORAGE_PREFIX + (activeGhost.ghost_id || activeGhost.id), JSON.stringify(activeGhost));
+    window.dispatchEvent(new CustomEvent('active-user-changed', { detail: activeGhost }));
     setGhost(activeGhost);
     setForm(emptyForm);
     close();
@@ -74,7 +75,7 @@ export default function GhostAccountMenu({ collapsed = false, compact = false, o
         onClick={() => setOpen(v => !v)}
         className={buttonClasses}
         style={{ background: ghost ? 'rgba(168,85,247,0.16)' : 'rgba(255,255,255,0.04)', borderColor: ghost ? 'rgba(168,85,247,0.38)' : 'rgba(255,255,255,0.1)', color: ghost ? '#d8b4fe' : 'rgba(255,255,255,0.58)' }}
-        title={collapsed ? 'Created User' : undefined}
+        title={collapsed ? 'Live User' : undefined}
       >
         {ghost?.profile_picture ? (
           <img src={ghost.profile_picture} alt="" className="w-5 h-5 rounded-lg object-cover flex-shrink-0" />
@@ -83,13 +84,13 @@ export default function GhostAccountMenu({ collapsed = false, compact = false, o
         ) : (
           <Ghost className="w-4 h-4 flex-shrink-0" />
         )}
-        {!collapsed && <span className="font-body text-xs font-semibold truncate">{ghost ? name : 'Created User'}</span>}
+        {!collapsed && <span className="font-body text-xs font-semibold truncate">{ghost ? name : 'Live User'}</span>}
       </button>
 
       {open && (
         <div className="absolute left-0 top-full mt-2 w-72 rounded-2xl p-2 shadow-2xl z-[200]" style={{ background: '#0D1F3C', border: '1px solid rgba(168,85,247,0.35)' }}>
           <div className="flex items-center justify-between px-2 py-1">
-            <p className="font-body text-[10px] text-purple-300 uppercase tracking-wider font-bold">Created User</p>
+            <p className="font-body text-[10px] text-purple-300 uppercase tracking-wider font-bold">Live User</p>
             <button onClick={close} className="p-1 rounded-lg hover:bg-white/10"><X className="w-3 h-3 text-white/45" /></button>
           </div>
 
@@ -104,35 +105,35 @@ export default function GhostAccountMenu({ collapsed = false, compact = false, o
                 <option value="business">Business</option>
                 <option value="customer">Customer</option>
               </select>
-              <button onClick={createGhost} className="w-full py-2 rounded-xl bg-purple-600 text-white font-body text-xs font-bold">Create New Created User</button>
+              <button onClick={createGhost} className="w-full py-2 rounded-xl bg-purple-600 text-white font-body text-xs font-bold">Create New Live User</button>
               <button onClick={() => setMode('menu')} className="w-full py-1 text-white/40 font-body text-xs">Back</button>
             </div>
           ) : (
             <>
               {ghost && (
                 <div className="px-3 py-2 mb-1 rounded-xl bg-purple-500/10 border border-purple-500/20">
-                  <p className="font-body text-[9px] text-purple-300 uppercase tracking-wider font-bold">Active Created User</p>
+                  <p className="font-body text-[9px] text-purple-300 uppercase tracking-wider font-bold">Active Live User</p>
                   <p className="font-body text-sm text-white font-bold truncate">{name}</p>
                 </div>
               )}
               <button onClick={() => setMode('switch')} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 font-body text-xs">
-                <LogIn className="w-3.5 h-3.5 text-purple-300" /> Sign In to Created User
+                <LogIn className="w-3.5 h-3.5 text-purple-300" /> Sign In to Live User
               </button>
               <button onClick={() => setMode('create')} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 font-body text-xs">
-                <Plus className="w-3.5 h-3.5 text-cyan-300" /> Create New Created User
+                <Plus className="w-3.5 h-3.5 text-cyan-300" /> Create New Live User
               </button>
               <div className="border-t border-white/8 my-1" />
-              <p className="px-3 py-1 font-body text-[9px] text-white/30 uppercase tracking-wider font-bold">Switch Created User</p>
+              <p className="px-3 py-1 font-body text-[9px] text-white/30 uppercase tracking-wider font-bold">Switch Live User</p>
               {ghosts.length ? ghosts.slice(0, 6).map(g => (
                 <button key={g.ghost_id || g.id} onClick={() => switchGhost(g)} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-white/65 hover:text-white hover:bg-white/10 font-body text-xs text-left">
                   <Repeat className="w-3.5 h-3.5 text-purple-300" /> <span className="truncate">{getGhostDisplayName(g)}</span>
                 </button>
               )) : (
-                <p className="px-3 py-2 font-body text-xs text-white/30">No Created Users yet.</p>
+                <p className="px-3 py-2 font-body text-xs text-white/30">No Live Users yet.</p>
               )}
               <div className="border-t border-white/8 my-1" />
               <button onClick={logoutGhost} disabled={!ghost} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-red-400 hover:bg-red-500/10 font-body text-xs disabled:opacity-40 disabled:cursor-not-allowed">
-                <LogOut className="w-3.5 h-3.5" /> Logout Created User
+                <LogOut className="w-3.5 h-3.5" /> Logout Live User
               </button>
             </>
           )}

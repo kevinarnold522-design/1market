@@ -10,27 +10,29 @@
     --font-body: 'Inter', sans-serif;
     --landing-primary: #0033CC;
     --landing-accent: #00D4FF;
-    --landing-deep: #001a80;
+    --landing-deep: #0033CC;
     --landing-bg-gradient: linear-gradient(180deg, var(--landing-primary) 0%, var(--landing-deep) 100%);
+    --royal-blue: #0033CC;
+    --royal-blue-light: #2563EB;
 
     --background: 221 83% 53%;
     --foreground: 210 40% 98%;
-    --card: 216 50% 18%;
+    --card: 225 100% 40%;
     --card-foreground: 210 40% 98%;
-    --popover: 216 50% 18%;
+    --popover: 225 100% 40%;
     --popover-foreground: 210 40% 98%;
     --primary: 221 83% 53%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 216 50% 14%;
+    --secondary: 225 100% 40%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 216 50% 18%;
+    --muted: 225 100% 40%;
     --muted-foreground: 215 20% 65%;
     --accent: 221 83% 53%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 216 50% 22%;
-    --input: 216 50% 22%;
+    --border: 225 100% 45%;
+    --input: 225 100% 45%;
     --ring: 221 83% 53%;
     --chart-1: 221 83% 53%;
     --chart-2: 190 80% 55%;
@@ -38,48 +40,48 @@
     --chart-4: 340 75% 55%;
     --chart-5: 30 80% 55%;
     --radius: 0.75rem;
-    --sidebar-background: 216 50% 14%;
+    --sidebar-background: 225 100% 40%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 221 83% 53%;
     --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 216 50% 18%;
+    --sidebar-accent: 225 100% 45%;
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 216 50% 22%;
+    --sidebar-border: 225 100% 45%;
     --sidebar-ring: 221 83% 53%;
   }
 
   .dark {
     --background: 221 83% 53%;
     --foreground: 210 40% 98%;
-    --card: 216 50% 18%;
+    --card: 225 100% 40%;
     --card-foreground: 210 40% 98%;
-    --popover: 216 50% 18%;
+    --popover: 225 100% 40%;
     --popover-foreground: 210 40% 98%;
     --primary: 221 83% 53%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 216 50% 14%;
+    --secondary: 225 100% 40%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 216 50% 18%;
+    --muted: 225 100% 40%;
     --muted-foreground: 215 20% 65%;
     --accent: 221 83% 53%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 216 50% 22%;
-    --input: 216 50% 22%;
+    --border: 225 100% 45%;
+    --input: 225 100% 45%;
     --ring: 221 83% 53%;
     --chart-1: 221 83% 53%;
     --chart-2: 190 80% 55%;
     --chart-3: 280 65% 60%;
     --chart-4: 340 75% 55%;
     --chart-5: 30 80% 55%;
-    --sidebar-background: 216 50% 14%;
+    --sidebar-background: 225 100% 40%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 221 83% 53%;
     --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 216 50% 18%;
+    --sidebar-accent: 225 100% 45%;
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 216 50% 22%;
+    --sidebar-border: 225 100% 45%;
     --sidebar-ring: 221 83% 53%;
   }
 }
@@ -237,4 +239,43 @@ aside nav button + a {
 .listing-blue-white-theme input::placeholder,
 .listing-blue-white-theme textarea::placeholder {
   color: rgba(15,31,74,0.4) !important;
+}
+
+/* Royal blue normalization: replace old dark-blue surfaces with the brand royal blue */
+[style*="#0A192F"],
+[style*="#0D1F3C"],
+[style*="#050d2e"],
+[style*="#070F1A"],
+[style*="#001a80"],
+[style*="#000d40"],
+[style*="#001060"],
+[style*="rgba(13,31,60"],
+[style*="rgba(5,10,25"],
+[style*="rgba(7,15,26"],
+[style*="rgba(0,13,64"] {
+  background: linear-gradient(135deg, var(--royal-blue), var(--royal-blue-light)) !important;
+  background-color: var(--royal-blue) !important;
+}
+
+.bg-\[\#0A192F\],
+.bg-\[\#0D1F3C\],
+.bg-\[\#050d2e\],
+.bg-\[\#070F1A\],
+.bg-\[\#001a80\],
+.bg-\[\#000d40\],
+.bg-\[\#001060\] {
+  background-color: var(--royal-blue) !important;
+}
+
+.from-\[\#000d40\], .from-\[\#001060\], .from-\[\#001a80\], .from-\[\#0A192F\], .from-\[\#0D1F3C\] {
+  --tw-gradient-from: var(--royal-blue) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(0 51 204 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+.to-\[\#000d40\], .to-\[\#001060\], .to-\[\#001a80\], .to-\[\#0A192F\], .to-\[\#0D1F3C\] {
+  --tw-gradient-to: var(--royal-blue) var(--tw-gradient-to-position) !important;
+}
+.via-\[\#000d40\], .via-\[\#001060\], .via-\[\#001a80\], .via-\[\#0A192F\], .via-\[\#0D1F3C\] {
+  --tw-gradient-to: rgb(0 51 204 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--royal-blue) var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
 }

@@ -270,14 +270,14 @@ export default function AccountTypeModal({ onClose }) {
                   ))}
                 </div>
 
-                <p className="font-body text-xs text-white/30 mb-6">Create your free account to get started. No credit card needed.</p>
+                <p className="font-body text-xs text-white/30 mb-6">Create your free account with Gmail, Facebook, or Yahoo. No username or password needed.</p>
                 <div className="space-y-2.5 mb-4">
                   <button onClick={handleContinueToSignup}
                     className="w-full py-3.5 text-white rounded-xl font-body font-bold text-sm flex items-center justify-center gap-2 shadow-lg"
                     style={{ background: 'linear-gradient(135deg,#2563EB,#00D4FF)', boxShadow: '0 0 20px rgba(0,212,255,0.25)' }}>
-                    <Shield className="w-4 h-4" /> Continue with Email
+                    <Shield className="w-4 h-4" /> Continue to Connect Account
                   </button>
-                  <button onClick={handleContinueToSignup}
+                  <button onClick={() => { window.location.href = '/login'; }}
                     className="w-full py-2.5 bg-white/10 border border-white/15 text-white/70 rounded-xl font-body text-sm hover:bg-white/15 transition-colors">
                     Sign in to existing account
                   </button>

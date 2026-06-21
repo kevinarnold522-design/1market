@@ -5,7 +5,7 @@ import { supabaseCompat } from '@/api/supabaseCompatClient';
 import { clearGhostSession } from '@/lib/ghostAccounts';
 
 const providers = [
-  { key: 'google', label: 'Google', mark: 'G', className: 'text-blue-600 bg-white' },
+  { key: 'google', label: 'Gmail', mark: 'G', className: 'text-blue-600 bg-white' },
   { key: 'facebook', label: 'Facebook', mark: 'f', className: 'text-white bg-[#1877F2]' },
   { key: 'yahoo', label: 'Yahoo', mark: 'Y!', className: 'text-white bg-[#6001D2]' },
 ];
@@ -17,7 +17,8 @@ export default function OAuthOptions({
   className = 'space-y-3 mb-6',
   buttonClassName = 'w-full h-11',
   separatorLineClassName = 'w-full border-t border-border',
-  separatorTextClassName = 'bg-card px-3 text-muted-foreground'
+  separatorTextClassName = 'bg-card px-3 text-muted-foreground',
+  showSeparator = true
 }) {
   const [loadingProvider, setLoadingProvider] = useState('');
 
@@ -47,10 +48,12 @@ export default function OAuthOptions({
           </Button>
         ))}
       </div>
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center"><div className={separatorLineClassName} /></div>
-        <div className="relative flex justify-center text-xs uppercase"><span className={separatorTextClassName}>or use email</span></div>
-      </div>
+      {showSeparator && (
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center"><div className={separatorLineClassName} /></div>
+          <div className="relative flex justify-center text-xs uppercase"><span className={separatorTextClassName}>or continue another way</span></div>
+        </div>
+      )}
     </div>
   );
 }
