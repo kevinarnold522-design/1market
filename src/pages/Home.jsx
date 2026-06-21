@@ -4,6 +4,8 @@ import MascotDog from '../components/MascotDog';
 import Footer from '../components/home/Footer';
 import WelcomeSplash from '../components/home/WelcomeSplash';
 import CategoryCards from '../components/home/CategoryCards';
+import NewUserAlfieSpotlight from '../components/home/NewUserAlfieSpotlight';
+import ListingOfWeekDashboard from '../components/home/ListingOfWeekDashboard';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
 import RoyalBlueWaves from '../components/RoyalBlueWaves';
@@ -75,6 +77,8 @@ export default function Home() {
         <WelcomeSplash />
         
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>
+        <NewUserAlfieSpotlight />
+        <ListingOfWeekDashboard />
         <CategoryCards />
         <LazyOnVisible minHeight={120}><Suspense fallback={<Spinner />}><CompactOneStopDashboardLazy /></Suspense></LazyOnVisible>
         <LazyOnVisible minHeight={120}><Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense></LazyOnVisible>
