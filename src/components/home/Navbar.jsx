@@ -216,6 +216,12 @@ export default function Navbar() {
           </div>
           {/* Right: 1MarketPH Social Links - ALWAYS VISIBLE */}
           <div className="flex items-center gap-2 flex-shrink-0">
+            <Link to="/about" className="hidden sm:inline-flex px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white/80 hover:text-white hover:bg-white/15 font-body text-[10px] font-bold transition-all">
+              About Us
+            </Link>
+            <Link to="/privacy-policy" className="hidden sm:inline-flex px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white/80 hover:text-white hover:bg-white/15 font-body text-[10px] font-bold transition-all">
+              Privacy Policy
+            </Link>
             <span className="font-body text-[9px] text-white/50 hidden md:block mr-1 uppercase tracking-wider font-bold">Follow us</span>
             <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Follow 1MarketPH on Facebook"
               className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-all hover:scale-110 shadow-lg"
