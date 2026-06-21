@@ -1,88 +1,100 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Star, Award } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Award } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import MetaVerifiedBadge from '../MetaVerifiedBadge';
+import { getAllLocalGhosts, getGhostDisplayName } from '@/lib/ghostAccounts';
+import SellerLeaderboardCard from './SellerLeaderboardCard';
+
+const sellerKey = (listing) => listing.owner_user_id || listing.created_by_id || listing.ghost_owner_id || listing.owner_ghost_id || listing.seller_email || listing.email_contact || listing.seller_name || '';
 
 export default function TopSellersSection() {
   const [sellers, setSellers] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    base44.auth.isAuthenticated().then(async (authed) => {
-      if (authed) {
-        const me = await base44.auth.me();
-        setIsAdmin(me?.role === 'admin');
-      }
-    }).catch(() => {});
-    base44.entities.User.list('-created_date', 12)
-      .then(users => {
-        const s = users.filter(u => u.is_seller || u.account_type === 'business_owner').slice(0, 6);
-        setSellers(s);
-      }).catch(() => {});
+    const loadSellers = async () => {
+      const [users, listings] = await Promise.all([
+        base44.entities.User.list('-created_date', 200).catch(() => []),
+        base44.entities.Listing.list('-created_date', 500).catch(() => []),
+      ]);
+
+      const localGhosts = getAllLocalGhosts();
+      const sellerMap = new Map();
+
+      [...users, ...localGhosts].forEach(user => {
+        const id = user.id || user.ghost_id || user.email;
+        if (!id) return;
+        const isSeller = user.is_seller || user.account_type === 'business_owner' || user.user_type === 'seller' || user.user_type === 'business' || user.is_ghost_account;
+        if (!isSeller) return;
+        sellerMap.set(id, {
+          id,
+          username: user.username || id,
+          name: user.is_ghost_account ? getGhostDisplayName(user) : (user.channel_name || user.business_name || user.full_name || user.email || 'Seller'),
+          avatar: user.profile_picture || '',
+          verified: !!user.is_verified_seller,
+          listings: 0,
+          views: 0,
+          rating: Number(user.rating || 0),
+          ratingCount: Number(user.rating_count || 0),
+        });
+        if (user.ghost_id) sellerMap.set(user.ghost_id, sellerMap.get(id));
+        if (user.email) sellerMap.set(user.email, sellerMap.get(id));
+      });
+
+      listings.filter(item => item.approval_status !== 'rejected' && item.is_active !== false).forEach(item => {
+        const key = sellerKey(item);
+        if (!key) return;
+        const seller = sellerMap.get(key) || {
+          id: key,
+          username: key,
+          name: item.approved_channel_name || item.seller_name || 'Seller',
+          avatar: '',
+          verified: false,
+          listings: 0,
+          views: 0,
+          rating: 0,
+          ratingCount: 0,
+        };
+        seller.listings += 1;
+        seller.views += Number(item.view_count || 0);
+        if (item.rating) seller.rating = Math.max(seller.rating, Number(item.rating || 0));
+        if (item.rating_count) seller.ratingCount += Number(item.rating_count || 0);
+        sellerMap.set(key, seller);
+      });
+
+      const unique = Array.from(new Set(Array.from(sellerMap.values())))
+        .filter(seller => seller.listings > 0)
+        .map(seller => ({
+          ...seller,
+          score: Math.round((seller.listings * 10) + (seller.rating * 8) + (seller.ratingCount * 2) + Math.min(seller.views / 20, 50)),
+        }))
+        .sort((a, b) => b.score - a.score || b.listings - a.listings)
+        .slice(0, 10);
+
+      setSellers(unique);
+    };
+
+    loadSellers();
   }, []);
 
-  // Hidden from all users — admin-only internal tool
-  if (!isAdmin || sellers.length === 0) return null;
+  if (!sellers.length) return null;
 
   return (
     <section className="py-10 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
+      <div className="max-w-7xl mx-auto rounded-3xl border border-white/10 bg-[#001a80]/45 backdrop-blur-xl p-5 sm:p-6 shadow-2xl">
+        <div className="flex items-center justify-between gap-4 mb-5">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg,rgba(255,215,0,0.2),rgba(245,158,11,0.2))', border: '1px solid rgba(255,215,0,0.3)' }}>
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center bg-gradient-to-br from-[#FFD700]/25 to-[#00D4FF]/15 border border-[#FFD700]/30">
               <Award className="w-5 h-5 text-[#FFD700]" />
             </div>
             <div>
-              <h2 className="font-heading font-bold text-lg text-white">Top Sellers</h2>
-              <p className="font-body text-[10px] text-white/40">Verified & trusted members</p>
+              <h2 className="font-heading font-bold text-xl text-white">Seller Leaderboard Top 10</h2>
+              <p className="font-body text-xs text-white/50">Live users, ghost accounts, and regular sellers ranked together</p>
             </div>
           </div>
-          <Link to="/explore" className="font-body text-xs text-[#00D4FF] hover:underline">View all →</Link>
+          <Link to="/explore" className="hidden sm:inline-flex font-body text-xs font-bold text-[#00D4FF] hover:underline">View listings →</Link>
         </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-          {sellers.map((seller, i) => {
-            const initials = (seller.full_name || 'S').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-            return (
-              <motion.div key={seller.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
-                whileHover={{ y: -4 }}>
-                <Link to={`/seller/${seller.username || seller.id}`}
-                  className="flex flex-col items-center gap-2 p-4 rounded-2xl transition-all cursor-pointer"
-                  style={{ background: 'rgba(13,31,60,0.8)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div className="relative">
-                    {seller.profile_picture ? (
-                      <img src={seller.profile_picture} alt={seller.full_name}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-[#00D4FF]/30" />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center font-heading font-bold text-white text-sm">
-                        {initials}
-                      </div>
-                    )}
-                    {seller.is_verified_seller && (
-                      <div className="absolute -bottom-0.5 -right-0.5">
-                        <MetaVerifiedBadge size="xs" label="" />
-                      </div>
-                    )}
-
-                  </div>
-                  <div className="text-center">
-                    <p className="font-body font-bold text-[11px] text-white truncate max-w-full">{seller.full_name?.split(' ')[0] || 'Seller'}</p>
-                    <p className="font-body text-[9px] text-white/40">
-                      {seller.account_type === 'business_owner' ? 'Business' : 'Seller'}
-                    </p>
-
-                  </div>
-                </Link>
-              </motion.div>
-            );
-          })}
+        <div className="grid md:grid-cols-2 gap-3">
+          {sellers.map((seller, index) => <SellerLeaderboardCard key={`${seller.id}-${index}`} seller={seller} rank={index + 1} />)}
         </div>
       </div>
     </section>

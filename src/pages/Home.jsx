@@ -17,6 +17,7 @@ const FlashDealsSection = lazy(() => import('../components/home/FlashDealsSectio
 const PhFlightDeals = lazy(() => import('../components/home/PhFlightDeals'));
 const PhHotelDeals = lazy(() => import('../components/home/PhHotelDeals'));
 const FeaturedListings = lazy(() => import('../components/home/FeaturedListings'));
+const TopSellersSection = lazy(() => import('../components/home/TopSellersSection'));
 
 
 const HowItWorksSection = lazy(() => import('../components/home/HowItWorksSection'));
@@ -53,6 +54,7 @@ export default function Home() {
         <Suspense fallback={<Spinner />}><PhFlightDeals /></Suspense>
         <Suspense fallback={<Spinner />}><PhHotelDeals /></Suspense>
         <Suspense fallback={<Spinner />}><FeaturedListings /></Suspense>
+        <Suspense fallback={<Spinner />}><TopSellersSection /></Suspense>
         <Suspense fallback={<Spinner />}><LiveCategoryDashboards /></Suspense>
         <Suspense fallback={<Spinner />}><HowItWorksSection /></Suspense>
         <Suspense fallback={<Spinner />}><ReviewHighlights /></Suspense>
