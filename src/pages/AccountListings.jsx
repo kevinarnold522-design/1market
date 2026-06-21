@@ -64,6 +64,10 @@ export default function AccountListings() {
           </div>
           <h1 className="font-heading font-bold text-3xl md:text-4xl tracking-tight text-white">{accountName}</h1>
           <p className="font-body text-sm text-white/60 mt-2 max-w-2xl">Manage, review, and polish the listings owned by this account.</p>
+          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/10 border border-white/15">
+            <Package className="w-4 h-4 text-[#00D4FF]" />
+            <span className="font-body text-sm font-bold text-white">Total Listings: {listings.length}</span>
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-3 mb-6">

@@ -5,6 +5,7 @@ import { ArrowLeft, Plus } from 'lucide-react';
 import CategoryIcon from '../components/CategoryIcon';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
+import { getGhostSession } from '@/lib/ghostAccounts';
 import AddListingModal from '../components/AddListingModal';
 import MemberSignupModal from '../components/MemberSignupModal';
 import StarField from '../components/StarField';
@@ -88,7 +89,8 @@ export default function PostAdLanding() {
   const [searchParams] = useSearchParams();
   const preselectedKey = searchParams.get('category');
   const { user } = useAuth();
-  const [currentUser, setCurrentUser] = useState(user);
+  const [ghostUser, setGhostUser] = useState(getGhostSession());
+  const [currentUser, setCurrentUser] = useState(getGhostSession() || user);
 
   const [selectedCat, setSelectedCat] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -97,9 +99,20 @@ export default function PostAdLanding() {
   const [selectedSubcategory, setSelectedSubcategory] = useState('');
 
   useEffect(() => {
+    const refreshGhost = () => setGhostUser(getGhostSession());
+    refreshGhost();
+    window.addEventListener('ghost-session-changed', refreshGhost);
+    return () => window.removeEventListener('ghost-session-changed', refreshGhost);
+  }, []);
+
+  useEffect(() => {
+    if (ghostUser) {
+      setCurrentUser(ghostUser);
+      return;
+    }
     setCurrentUser(user);
     if (user) base44.auth.me().then(setCurrentUser).catch(() => {});
-  }, [user]);
+  }, [user, ghostUser]);
 
   const userType = currentUser?.user_type;
   const isAdmin = currentUser?.role === 'admin' || currentUser?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
@@ -209,7 +222,7 @@ export default function PostAdLanding() {
           ))}
         </div>}
 
-        {!user && (
+        {!currentUser && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
             className="mt-10 text-center p-5 rounded-2xl"
             style={{ background: 'rgba(0,212,255,0.06)', border: '1px solid rgba(0,212,255,0.15)' }}>

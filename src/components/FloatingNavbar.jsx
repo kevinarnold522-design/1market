@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Home, Plane, UtensilsCrossed, ShoppingBag, KeyRound, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, LogOut, Ghost, Globe, Package, BarChart2, Shield, ShoppingCart, Facebook, Instagram, Youtube } from 'lucide-react';
+import { Menu, X, Home, Plane, UtensilsCrossed, ShoppingBag, KeyRound, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, LogOut, Ghost, Globe, Package, BarChart2, Shield, ShoppingCart, Facebook, Instagram, Youtube, Plus } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { getGhostSession, clearGhostSession } from '@/lib/ghostAccounts';
@@ -12,6 +12,7 @@ const OWNER_EMAIL = 'kevinarnold522@gmail.com';
 
 const NAV_ITEMS = [
   { to: '/', icon: Home, label: 'Home', color: '#00D4FF' },
+  { to: '/post-ad', icon: Plus, label: 'Post an Ad', color: '#FFD700' },
   { to: '/travel', icon: Plane, label: 'Travel', color: '#0ea5e9' },
   { to: '/food', icon: UtensilsCrossed, label: 'Food', color: '#f97316' },
   { to: '/buysell', icon: ShoppingBag, label: 'Buy & Sell', color: '#8b5cf6' },
@@ -185,13 +186,13 @@ return (
                         <div className="px-3 py-2">
                           <PostListingMenu user={activeUser} compact />
                         </div>
-                        <Link to="/profile?tab=listings" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-[#00D4FF]">
+                        <Link to="/my-listings" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-[#00D4FF]">
                           <Package className="w-4 h-4 text-[#00D4FF]" /> My Listings
                         </Link>
-                        <Link to="/profile?tab=sellerorders" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400">
+                        <Link to="/seller-orders" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400">
                           <Package className="w-4 h-4 text-green-400" /> Seller Orders
                         </Link>
-                        <Link to="/profile?tab=analytics" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-yellow-400">
+                        <Link to="/my-analytics" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-yellow-400">
                           <BarChart2 className="w-4 h-4 text-yellow-400" /> Statistics Dashboard
                         </Link>
                         <Link to={`/seller/${isGhostSession ? (ghostUser?.username || ghostUser?.id) : (activeUser?.username || activeUser?.id)}`} onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400">

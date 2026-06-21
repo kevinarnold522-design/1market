@@ -500,15 +500,15 @@ export default function Navbar() {
                                 </Link>
                               )}
                               {/* Never show Connected Accounts to non-admin */}
-                              <Link to="/profile?tab=listings" onClick={() => setProfileOpen(false)}
+                              <Link to="/my-listings" onClick={() => setProfileOpen(false)}
                                 className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
                                 <Package className="w-3.5 h-3.5 text-[#00D4FF]" /> My Listings
                               </Link>
-                              <Link to="/profile?tab=sellerorders" onClick={() => setProfileOpen(false)}
+                              <Link to="/seller-orders" onClick={() => setProfileOpen(false)}
                                 className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
                                 <Truck className="w-3.5 h-3.5 text-green-400" /> Seller Orders
                               </Link>
-                              <Link to="/profile?tab=analytics" onClick={() => setProfileOpen(false)}
+                              <Link to="/my-analytics" onClick={() => setProfileOpen(false)}
                                 className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-white font-body text-xs">
                                 <BarChart2 className="w-3.5 h-3.5 text-yellow-400" /> Statistics Dashboard
                               </Link>
@@ -640,11 +640,11 @@ export default function Navbar() {
                         <div className="py-1">
                           <PostListingMenu user={activeUser} compact={true} />
                         </div>
-                        <Link to="/profile?tab=listings" onClick={() => setMenuOpen(false)}
+                        <Link to="/my-listings" onClick={() => setMenuOpen(false)}
                           className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
                           My Listings
                         </Link>
-                        <Link to="/profile?tab=analytics" onClick={() => setMenuOpen(false)}
+                        <Link to="/my-analytics" onClick={() => setMenuOpen(false)}
                           className="block text-yellow-300 font-body text-sm font-medium py-2 transition-colors">
                           Statistics Dashboard
                         </Link>
