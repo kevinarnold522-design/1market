@@ -71,10 +71,8 @@ export default function Navbar() {
       const ghost = getGhostSession();
       setGhostUser(ghost || null);
     };
-    window.addEventListener('focus', handler);
     window.addEventListener('ghost-session-changed', handler);
     return () => {
-      window.removeEventListener('focus', handler);
       window.removeEventListener('ghost-session-changed', handler);
     };
   }, []);
@@ -168,10 +166,10 @@ export default function Navbar() {
       const conflict = existing.find(u => u.id !== user?.id);
       if (conflict) { setNameError('This username is already taken.'); setNameSaving(false); return; }
       await base44.auth.updateMe({ username: clean, username_set: true });
+      await checkUserAuth?.();
       setNameSaved(true);
       setEditingName(false);
       setTimeout(() => setNameSaved(false), 2000);
-      window.location.reload();
     } catch (e) {
       setNameError('Could not save. Try again.');
     }
@@ -736,10 +734,10 @@ export default function Navbar() {
         {showSignup && <AccountTypeModal onClose={() => setShowSignup(false)} />}
         {showRewards && user && <RewardDashboard user={user} onClose={() => setShowRewards(false)} />}
         {showSellerModal && user && (
-          <BecomeSellerModal user={user} onClose={() => setShowSellerModal(false)} onSuccess={() => window.location.reload()} />
+          <BecomeSellerModal user={user} onClose={() => setShowSellerModal(false)} onSuccess={() => { checkUserAuth?.(); setShowSellerModal(false); }} />
         )}
         {showBusinessModal && user && (
-          <BecomeBusinessModal user={user} onClose={() => setShowBusinessModal(false)} onSuccess={() => window.location.reload()} />
+          <BecomeBusinessModal user={user} onClose={() => setShowBusinessModal(false)} onSuccess={() => { checkUserAuth?.(); setShowBusinessModal(false); }} />
         )}
       </AnimatePresence>
 

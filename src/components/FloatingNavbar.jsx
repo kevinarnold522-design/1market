@@ -33,11 +33,9 @@ export default function FloatingNavbar() {
     refreshGhost();
     window.addEventListener('ghost-session-changed', refreshGhost);
     window.addEventListener('storage', refreshGhost);
-    window.addEventListener('focus', refreshGhost);
     return () => {
       window.removeEventListener('ghost-session-changed', refreshGhost);
       window.removeEventListener('storage', refreshGhost);
-      window.removeEventListener('focus', refreshGhost);
     };
   }, []);
 

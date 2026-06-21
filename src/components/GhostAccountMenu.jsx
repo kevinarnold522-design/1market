@@ -21,11 +21,9 @@ export default function GhostAccountMenu({ collapsed = false, compact = false, o
     refresh();
     window.addEventListener('ghost-session-changed', refresh);
     window.addEventListener('storage', refresh);
-    window.addEventListener('focus', refresh);
     return () => {
       window.removeEventListener('ghost-session-changed', refresh);
       window.removeEventListener('storage', refresh);
-      window.removeEventListener('focus', refresh);
     };
   }, []);
 

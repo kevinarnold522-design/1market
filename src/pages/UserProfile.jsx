@@ -59,8 +59,8 @@ export default function UserProfile() {
       setUser(updated);
       return;
     }
-    await base44.auth.updateMe(data);
-    await loadUser();
+    const updated = await base44.auth.updateMe(data);
+    setUser(prev => ({ ...(prev || {}), ...(updated || data) }));
   };
 
   const saveProfile = async () => {

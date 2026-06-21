@@ -22,11 +22,9 @@ export default function AppLayout() {
     refresh();
     window.addEventListener('ghost-session-changed', refresh);
     window.addEventListener('supabase-auth-changed', refresh);
-    window.addEventListener('focus', refresh);
     return () => {
       window.removeEventListener('ghost-session-changed', refresh);
       window.removeEventListener('supabase-auth-changed', refresh);
-      window.removeEventListener('focus', refresh);
     };
   }, []);
 
