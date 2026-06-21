@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
@@ -293,7 +293,10 @@ function ListingForm({ initial, onSave, onCancel }) {
 export default function Admin() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const isAdmin = !!(user?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
+  const isAdmin = !!(
+    user?.email?.toLowerCase() === 'kevinarnold522@gmail.com' ||
+    user?.role === 'admin'
+  );
   const [tab, setTab] = useState('approvals');
   const [pendingJobs, setPendingJobs] = useState([]);
   const [pendingListings, setPendingListings] = useState([]);
@@ -441,20 +444,41 @@ export default function Admin() {
     loadAll();
   };
 
+  const adminDeleteEntity = async (entity, id) => {
+    try {
+      const res = await fetch('/api/adminDelete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ entity, id }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || data.message || `Failed to delete ${entity}`);
+      }
+    } catch (error) {
+      const missingEndpoint = error?.message?.includes('Failed to fetch') || error?.message?.includes('404');
+      if (missingEndpoint) {
+        await base44.entities[entity].delete(id);
+        return;
+      }
+      throw error;
+    }
+  };
+
   const deleteBiz = async (id) => {
     if (!window.confirm('Delete this business?')) return;
     try {
       if (isAdmin) {
-        await fetch('/api/adminDelete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ entity: 'Business', id }) });
+        await adminDeleteEntity('Business', id);
       } else {
         await base44.entities.Business.delete(id);
       }
+      showToast('Business deleted.');
+      loadAll();
     } catch (err) {
       console.error('Delete business error:', err);
-      await base44.entities.Business.delete(id);
+      showToast('Failed to delete business. Please try again.');
     }
-    showToast('Business deleted.');
-    loadAll();
   };
 
   const saveList = async (form) => {
@@ -475,16 +499,26 @@ export default function Admin() {
     if (!window.confirm('Delete this listing?')) return;
     try {
       if (isAdmin) {
-        await fetch('/api/adminDelete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ entity: 'Listing', id }) });
+        await adminDeleteEntity('Listing', id);
       } else {
         await base44.entities.Listing.delete(id);
       }
+      showToast('Listing deleted.');
+      loadAll();
     } catch (err) {
       console.error('Delete listing error:', err);
-      await base44.entities.Listing.delete(id);
+      if (isAdmin) {
+        try {
+          await base44.entities.Listing.delete(id);
+          showToast('Listing deleted.');
+          loadAll();
+          return;
+        } catch (fallbackError) {
+          console.error('Fallback listing delete failed:', fallbackError);
+        }
+      }
+      showToast('Failed to delete listing. Please try again.');
     }
-    showToast('Listing deleted.');
-    loadAll();
   };
 
   const transferListingOwner = async (listing, userId) => {

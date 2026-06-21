@@ -53,8 +53,9 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
     try {
       const { file_url } = await uploadMediaFileToSupabase(file);
       setForm(v => ({ ...v, [key]: file_url }));
-    } catch (e) {
+    } catch (error) {
       alert('Image upload failed. Please try again.');
+      console.error('Image upload failed:', error);
     }
     setUploadingKey(null);
   };

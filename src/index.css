@@ -92,6 +92,32 @@ button, a, input, select, textarea {
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
+@keyframes bubble-float {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.92);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.55;
+  }
+  60% {
+    transform: translate3d(var(--bubble-drift, 0px), -120vh, 0) scale(1);
+    opacity: 0.65;
+  }
+  100% {
+    transform: translate3d(calc(var(--bubble-drift, 0px) * 0.5), -140vh, 0) scale(0.96);
+    opacity: 0;
+  }
+}
+
+.animate-bubble-float {
+  animation-name: bubble-float;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+  will-change: transform, opacity;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
