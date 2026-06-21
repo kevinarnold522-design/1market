@@ -14,7 +14,7 @@ import ListingLandingBrandBar from '@/components/listing/ListingLandingBrandBar'
 
 const CATEGORIES = [
   {
-    key: 'buysell', label: 'Buy & Sell', iconKey: 'buysell', color: '#8b5cf6',
+    key: 'buysell', label: 'Buy & Sell', iconKey: 'buysell', color: '#FFD700',
     desc: 'Products, electronics, cars, homes, appliances and more',
     types: [
       ['product', 'General Product'], ['electronics', 'Electronics'], ['shoes', 'Shoes & Footwear'],
@@ -23,27 +23,27 @@ const CATEGORIES = [
     ]
   },
   {
-    key: 'food', label: 'Food', iconKey: 'food', color: '#f97316',
+    key: 'food', label: 'Food', iconKey: 'food', color: '#FFD700',
     desc: 'Home kitchen, bakery, carinderia, restaurants, drinks and catering',
     types: [['food', 'Food & Beverages']]
   },
   {
-    key: 'travel', label: 'Travel / Hotel', iconKey: 'travel', color: '#0ea5e9',
+    key: 'travel', label: 'Travel / Hotel', iconKey: 'travel', color: '#FFD700',
     desc: 'Hotels, flights, tour packages and vehicle rentals',
     types: [['hotel', 'Hotel / Accommodation'], ['flights', 'Flights / Tour Package'], ['vehicle_rental', 'Vehicle Rental']]
   },
   {
-    key: 'rent', label: 'Rent / For Sale / Lease', iconKey: 'rent', color: '#10b981',
+    key: 'rent', label: 'Rent / For Sale / Lease', iconKey: 'rent', color: '#FFD700',
     desc: 'Rooms, condos, houses, commercial spaces, venues and vehicles',
     types: [['rent_lease', 'Property — Rent / Sale / Lease'], ['vehicle_rental', 'Vehicle Rental']]
   },
   {
-    key: 'services', label: 'Services', iconKey: 'services', color: '#3b82f6',
+    key: 'services', label: 'Services', iconKey: 'services', color: '#FFD700',
     desc: 'Home, tech, creative, beauty, logistics and professional services',
     types: [['services', 'Service Listing']]
   },
   {
-    key: 'jobs', label: 'Jobs', iconKey: 'jobs', color: '#f59e0b',
+    key: 'jobs', label: 'Jobs', iconKey: 'jobs', color: '#FFD700',
     desc: 'Full-time, part-time, freelance, remote and local jobs',
     types: [['jobs', 'Job Posting']]
   },

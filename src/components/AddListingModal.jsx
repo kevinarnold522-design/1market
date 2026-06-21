@@ -13,12 +13,12 @@ import SavedTemplates from './listing/SavedTemplates';
 import { getGhostSession, ghostOwnerFields } from '@/lib/ghostAccounts';
 
 const MAIN_CATEGORIES = [
-  { value: 'travel',   label: 'Travel',                   iconKey: 'travel',   color: '#0ea5e9' },
-  { value: 'food',     label: 'Food',                     iconKey: 'food',     color: '#f97316' },
-  { value: 'buysell',  label: 'Buy & Sell',               iconKey: 'buysell',  color: '#8b5cf6' },
-  { value: 'rent',     label: 'Rent / For Sale / Lease',  iconKey: 'rent',     color: '#10b981' },
-  { value: 'services', label: 'Services',                 iconKey: 'services', color: '#3b82f6' },
-  { value: 'jobs',     label: 'Jobs',                     iconKey: 'jobs',     color: '#f59e0b' },
+  { value: 'travel',   label: 'Travel',                   iconKey: 'travel',   color: '#FFD700' },
+  { value: 'food',     label: 'Food',                     iconKey: 'food',     color: '#FFD700' },
+  { value: 'buysell',  label: 'Buy & Sell',               iconKey: 'buysell',  color: '#FFD700' },
+  { value: 'rent',     label: 'Rent / For Sale / Lease',  iconKey: 'rent',     color: '#FFD700' },
+  { value: 'services', label: 'Services',                 iconKey: 'services', color: '#FFD700' },
+  { value: 'jobs',     label: 'Jobs',                     iconKey: 'jobs',     color: '#FFD700' },
 ];
 
 const TYPES_BY_MAIN = {
@@ -355,7 +355,7 @@ const TYPE_TO_MAIN = {
 const inputCls = 'w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 font-body text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#00D4FF]';
 const labelCls = 'block font-body text-[10px] font-semibold text-white/40 uppercase tracking-wider mb-1';
 
-function PillSelect({ options, value, onChange, color = '#00D4FF' }) {
+function PillSelect({ options, value, onChange, color = '#FFD700' }) {
   return (
     <div className="flex flex-wrap gap-1.5">
       {options.map(o => (
