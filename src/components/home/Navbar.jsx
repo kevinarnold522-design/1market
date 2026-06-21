@@ -110,8 +110,7 @@ export default function Navbar() {
     setUploadingPfp(true);
     try {
       const { file_url } = await uploadProfilePicture(file);
-      const currentPhotos = Array.isArray(activeUser?.profile_photos) ? activeUser.profile_photos : (activeUser?.profile_picture ? [activeUser.profile_picture] : []);
-      await base44.auth.updateMe({ profile_picture: file_url, profile_photos: [...currentPhotos.filter(url => url !== file_url), file_url] });
+      await base44.auth.updateMe({ profile_picture: file_url });
       await checkUserAuth?.();
       showToast('Profile photo saved');
     } catch (err) { 

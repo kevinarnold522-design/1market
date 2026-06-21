@@ -1,4 +1,4 @@
-import { requireSupabase } from '@/lib/supabaseClient';
+import { base44 } from '@/api/base44Client';
 
 export const SUPABASE_IMAGE_BUCKET = '1Marketphmediafiles';
 export const MAX_IMAGE_SIZE_BYTES = 15 * 1024 * 1024;
@@ -31,13 +31,6 @@ function fileToBase64(file) {
   });
 }
 
-function functionBaseUrl() {
-  return (
-    import.meta.env.VITE_SUPABASE_FUNCTIONS_URL ||
-    `${import.meta.env.VITE_SUPABASE_URL || 'https://ksnzljothfoaefifevch.supabase.co'}/functions/v1`
-  ).replace(/\/+$/, '');
-}
-
 export function validateImageFile(file) {
   if (!file) throw new Error('Please choose an image to upload.');
   if (!isImageFile(file)) throw new Error('Please choose a valid image file.');
@@ -53,26 +46,15 @@ export async function uploadFileToSupabase(file, bucket = SUPABASE_IMAGE_BUCKET,
   if (!isImage && !(allowPdf && contentType === 'application/pdf')) throw new Error('Please choose an image file.');
   if (file.size > MAX_IMAGE_SIZE_BYTES) throw new Error('File must be 15MB or smaller.');
 
-  const db = requireSupabase();
-  const { data: sessionData } = await db.auth.getSession();
   const base64_data = await fileToBase64(file);
-  const response = await fetch(`${functionBaseUrl()}/uploadMediaToSupabase`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(sessionData?.session?.access_token ? { Authorization: `Bearer ${sessionData.session.access_token}` } : {})
-    },
-    body: JSON.stringify({
-      file_name: file.name || 'upload',
-      content_type: contentType,
-      base64_data,
-      folder,
-      bucket,
-    })
+  const response = await base44.functions.invoke('uploadMediaToSupabase', {
+    file_name: file.name || 'upload',
+    content_type: contentType,
+    base64_data,
+    folder,
+    bucket,
   });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.error || 'Image upload failed.');
-  return data;
+  return response.data;
 }
 
 export async function uploadImageToSupabase(file, folder = 'images') {

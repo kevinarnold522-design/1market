@@ -77,11 +77,8 @@ export default function UserProfile() {
     setUploading(type);
     try {
       const { file_url } = await uploadMediaFileToSupabase(file, type === 'cover' ? 'profiles/covers' : 'profiles/avatars');
-      const field = type === 'cover' ? 'cover_photos' : 'profile_photos';
       const primary = type === 'cover' ? 'cover_photo' : 'profile_picture';
-      const current = user?.[field] || (user?.[primary] ? [user[primary]] : []);
-      const nextImages = [...current.filter(url => url !== file_url), file_url];
-      await updateUser({ [primary]: file_url, [field]: nextImages });
+      await updateUser({ [primary]: file_url });
       setToast(type === 'cover' ? 'Cover photo uploaded' : 'Profile photo uploaded');
       setTimeout(() => setToast(''), 1800);
     } catch (error) {
@@ -98,8 +95,8 @@ export default function UserProfile() {
   if (!user) return <div className="min-h-screen bg-white flex items-center justify-center"><div className="w-8 h-8 rounded-full border-4 border-blue-100 border-t-blue-600 animate-spin" /></div>;
 
   const initials = (user.full_name || user.email || 'U').split(' ').map(x => x[0]).join('').slice(0, 2).toUpperCase();
-  const profileImages = user.profile_photos || (user.profile_picture ? [user.profile_picture] : []);
-  const coverImages = user.cover_photos || (user.cover_photo ? [user.cover_photo] : []);
+  const profileImages = user.profile_picture ? [user.profile_picture] : [];
+  const coverImages = user.cover_photo ? [user.cover_photo] : [];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white text-slate-900">
