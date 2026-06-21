@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Plane, Waves } from 'lucide-react';
 
 // ─── Helper: burst icons from center ────────────────────────────────────────
 function IconBurst({ icons, bg, label, sublabel }) {
@@ -47,22 +48,34 @@ function IconBurst({ icons, bg, label, sublabel }) {
 }
 
 // ─── Travel subcategory transitions ──────────────────────────────────────────
+function TravelAdventureTransition({ subtype }) {
+  const label = subtype === 'surfing' ? 'Catch the Wave!' : subtype === 'flights' ? 'Ready for Takeoff!' : 'Travel Adventure Awaits!';
+  return (
+    <div className="fixed inset-0 z-[999] flex items-center justify-center overflow-hidden pointer-events-none bg-gradient-to-br from-[#38bdf8] via-[#2563EB] to-[#1e40af]">
+      <motion.div className="absolute top-24 left-[-90px]" animate={{ x: ['0vw', '115vw'], y: [0, -45, 18, -10], rotate: [0, 8, -4, 0] }} transition={{ duration: 1.15, ease: 'easeInOut' }}>
+        <Plane className="w-20 h-20 text-[#FFD700] drop-shadow-2xl" />
+      </motion.div>
+      <motion.div className="absolute bottom-20 left-1/2 text-7xl drop-shadow-2xl" initial={{ x: '-45vw', opacity: 0 }} animate={{ x: ['-45vw', '-5vw', '38vw'], y: [0, -26, 0], opacity: [0, 1, 1, 0], rotate: [-8, 7, -6] }} transition={{ duration: 1.2, ease: 'easeInOut' }}>
+        {'\uD83C\uDFC4\u200D\u2642\uFE0F'}
+      </motion.div>
+      <motion.div className="absolute bottom-0 left-0 right-0 h-32 bg-[#BAE6FD]/35" animate={{ scaleY: [1, 1.18, 1], x: ['-3%', '3%', '-3%'] }} transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }} />
+      <Waves className="absolute bottom-16 left-8 w-14 h-14 text-white/70" />
+      <Waves className="absolute bottom-12 right-16 w-16 h-16 text-white/60" />
+      <motion.div initial={{ opacity: 0, scale: 0.86 }} animate={{ opacity: [0, 1, 1, 0], scale: [0.86, 1.05, 1, 0.95] }} transition={{ duration: 1.15 }} className="relative z-10 text-center">
+        <p className="font-heading font-bold text-3xl text-white drop-shadow-lg">{label}</p>
+        <p className="font-body text-sm text-white/75 mt-1">Opening travel options...</p>
+      </motion.div>
+    </div>
+  );
+}
+
 function TravelTransition({ subtype }) {
+  if (!subtype || subtype === 'flights' || subtype === 'surfing') return <TravelAdventureTransition subtype={subtype} />;
   const configs = {
-    hotels: { icons: ['AI','AI️','AI️','AI','AI','AI','AI','AI','AI','AI️'], bg: 'linear-gradient(135deg,#0a192f,#1d4ed8)', label: 'AI Find Your Perfect Stay!', sub: 'Loading hotels...' },
-    resorts: { icons: ['AI','AI️','AI','AI','AI️','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#042f2e,#0d9488)', label: 'AI Paradise Awaits!', sub: 'Loading resorts...' },
-    flights: { icons: ['AI️','AI','AI','AI️','AI','AI️','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#0a192f,#1d4ed8)', label: 'AI️ Ready for Takeoff!', sub: 'Loading flights...' },
-    ferry: { icons: ['AI️','AI','AI','AI','AI','AI','AI','AI','AI️','AI️'], bg: 'linear-gradient(135deg,#0c1445,#1e40af)', label: 'AI️ Smooth Sailing!', sub: 'Loading ferry & bus routes...' },
-    car: { icons: ['AI','AI','AI','AI️','AI','AI️','AI','AI️','AI','AI'], bg: 'linear-gradient(135deg,#1a0a00,#92400e)', label: 'AI Hit the Road!', sub: 'Loading car rentals...' },
-    van: { icons: ['AI','AI‍AI‍AI‍AI','AI️','AI️','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#1a0a00,#78350f)', label: 'AI Group Travel Ready!', sub: 'Loading van rentals...' },
-    tours: { icons: ['AI️','AI','AI️','AI','AI','AI️','AI','AI','AI','AI️'], bg: 'linear-gradient(135deg,#1c1407,#a16207)', label: 'AI️ Adventure Time!', sub: 'Loading tours...' },
-    island: { icons: ['AI️','AI','AI','AI','AI','AI','AI️','AI','AI','AI'], bg: 'linear-gradient(135deg,#042f2e,#0891b2)', label: 'AI️ Island Hopping Time!', sub: 'Loading island tours...' },
-    camping: { icons: ['AI','AI','AI','AI','⭐','AI','AI','AI️','AI','AI'], bg: 'linear-gradient(135deg,#052e16,#166534)', label: 'AI Into the Wild!', sub: 'Loading camping spots...' },
-    diving: { icons: ['AI','AI','AI','AI','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#0c1445,#0284c7)', label: 'AI Dive In!', sub: 'Loading dive packages...' },
-    surfing: { icons: ['AI','AI','AI','AI','AI️','AI','AI️','AI','AI','AI️'], bg: 'linear-gradient(135deg,#0c4a6e,#0ea5e9)', label: 'AI Catch the Wave!', sub: 'Loading surf spots...' },
-    hiking: { icons: ['AI','AI️','AI','AI','AI','AI','AI️','AI','AI','AI'], bg: 'linear-gradient(135deg,#052e16,#4d7c0f)', label: 'AI Trail Awaits!', sub: 'Loading hike trails...' },
-    cruise: { icons: ['AI','AI','AI','AI','AI','AI','AI️','AI','AI','AI'], bg: 'linear-gradient(135deg,#0a192f,#4338ca)', label: 'AI Bon Voyage!', sub: 'Loading cruises...' },
-    default: { icons: ['AI️','AI','AI','AI','AI️','AI️','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#0a192f,#1d4ed8)', label: 'AI️ Discover the Philippines!', sub: 'Loading travel options...' },
+    hotels: { icons: ['🏨','🛎️','🛏️','⭐','🏝️','🏖️'], bg: 'linear-gradient(135deg,#38bdf8,#2563EB)', label: 'Find Your Perfect Stay!', sub: 'Loading hotels...' },
+    resorts: { icons: ['🏝️','🌴','🌊','☀️','🏖️','⭐'], bg: 'linear-gradient(135deg,#38bdf8,#0ea5e9)', label: 'Paradise Awaits!', sub: 'Loading resorts...' },
+    island: { icons: ['🏝️','🚤','🌊','🐠','☀️','🏖️'], bg: 'linear-gradient(135deg,#38bdf8,#0891b2)', label: 'Island Hopping Time!', sub: 'Loading island tours...' },
+    default: { icons: ['✈️','🏄‍♂️','🌊','🏝️','☀️','🧳'], bg: 'linear-gradient(135deg,#38bdf8,#2563EB)', label: 'Discover the Philippines!', sub: 'Loading travel options...' },
   };
   const c = configs[subtype] || configs.default;
   return <IconBurst icons={c.icons} bg={c.bg} label={c.label} sublabel={c.sub} />;

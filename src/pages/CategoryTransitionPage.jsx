@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, CheckCircle, ShoppingBag, Briefcase, UtensilsCrossed, Home, Wrench, Plane, Package, Smartphone, Shirt, Footprints, Building2, Zap, Settings, MoreHorizontal, Hotel, Car, Building, BedDouble } from 'lucide-react';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal';
+import CategoryCreationAnimation from '@/components/transitions/CategoryCreationAnimation';
 import { base44 } from '@/api/base44Client';
 
 const CATEGORY_CONFIG = {
@@ -127,7 +128,7 @@ export default function CategoryTransitionPage() {
 
   if (!catConfig) {
     return (
-      <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001060 100%)' }}>
+      <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#38bdf8 0%,#2563EB 100%)' }}>
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-white mb-2">Category not found</h1>
@@ -140,7 +141,7 @@ export default function CategoryTransitionPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001060 100%)' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(180deg,#38bdf8 0%,#2563EB 100%)' }}>
         <div className="w-8 h-8 border-4 border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" />
       </div>
     );
@@ -149,7 +150,8 @@ export default function CategoryTransitionPage() {
   const isAuthorized = user && (user.role === 'admin' || user.user_type === 'seller' || user.user_type === 'business' || user.account_type === 'business_owner');
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001060 100%)' }}>
+    <div className="relative min-h-screen overflow-hidden" style={{ background: 'linear-gradient(180deg,#38bdf8 0%,#2563EB 100%)' }}>
+      <CategoryCreationAnimation category={category} />
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 pt-28 pb-20">
         <Link to="/" className="inline-flex items-center gap-2 text-white/50 hover:text-white font-body text-sm mb-8 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Home

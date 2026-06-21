@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFireTransition, FireOverlay } from './FireTransition';
-import CategoryTransitionOverlay, { getTransitionTypeForHref } from '../transitions/CategoryTransitionOverlay';
+import CategoryTransitionOverlay, { getTransitionTypeForHref, getSubtypeForSubcategory } from '../transitions/CategoryTransitionOverlay';
 import OceanCategoryBackdrop from './OceanCategoryBackdrop';
 import { useNavigate } from 'react-router-dom';
 import { Plane, UtensilsCrossed, ShoppingBag, Home, Wrench, Briefcase, ArrowLeft, X, Hotel, Palmtree, Ship, Car, Bus, Waves, Tent, Mountain, Anchor, Headphones, Laptop, Heart, DollarSign, FolderOpen, HardHat, Palette, ChefHat, Settings, BookOpen, Wifi, ClipboardList, Croissant, Coffee, Candy, ShoppingCart, Salad, Smartphone, CarFront, Shirt, Footprints, Sofa, Building2, Package, MoreHorizontal, BedDouble, Building, TreePine, Warehouse, Sparkles, Zap, CalendarCheck, Camera, GraduationCap, Truck, Search } from 'lucide-react';
@@ -305,7 +305,7 @@ function SubCard({ sc, index, onClick }) {
   );
 }
 
-function SubcategoryPicker({ href, onClose, navigate }) {
+function SubcategoryPicker({ href, onClose, navigate, setTransition }) {
   const subs = CATEGORY_SUBS[href] || [];
   const title = CATEGORY_TITLES[href] || 'Choose a category';
   const [filter, setFilter] = useState('');
@@ -316,6 +316,13 @@ function SubcategoryPicker({ href, onClose, navigate }) {
 
   const handleSelect = (sub) => {
     onClose();
+    const type = getTransitionTypeForHref(sub.href);
+    const subtype = getSubtypeForSubcategory(type, sub.label);
+    if (type) {
+      setTransition({ type, subtype });
+      setTimeout(() => { navigate(`${sub.href}?type=${sub.key}&sub=${encodeURIComponent(sub.label)}`); setTransition(null); }, 1150);
+      return;
+    }
     navigate(`${sub.href}?type=${sub.key}&sub=${encodeURIComponent(sub.label)}`);
   };
 
@@ -409,7 +416,7 @@ export default function CategoryCards() {
     } else {
       const type = getTransitionTypeForHref(href);
       if (type) {
-        setTransition(type);
+        setTransition({ type, subtype: null });
         setTimeout(() => { navigate(href); setTransition(null); }, 1100);
       } else {
         fireNavigate(href);
@@ -420,14 +427,15 @@ export default function CategoryCards() {
   return (
     <>
       <FireOverlay firing={firing} />
-      <CategoryTransitionOverlay type={transition} subtype={null} />
+      <CategoryTransitionOverlay type={transition?.type} subtype={transition?.subtype || null} />
 
       <AnimatePresence>
         {pickerHref && (
           <SubcategoryPicker
-            href={pickerHref}
-            onClose={() => setPickerHref(null)}
-            navigate={navigate}
+          href={pickerHref}
+          onClose={() => setPickerHref(null)}
+          navigate={navigate}
+          setTransition={setTransition}
           />
         )}
       </AnimatePresence>
