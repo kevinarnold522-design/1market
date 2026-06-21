@@ -306,8 +306,25 @@ export default function ListingDetail() {
     ? (comments.reduce((s, c) => s + (c.rating || 0), 0) / comments.filter(c => c.rating > 0).length || 0).toFixed(1)
     : listing.rating || 0;
 
+  const handleChatSeller = async (message) => {
+    if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
+    if (listing.email_contact) {
+      await base44.entities.ChatMessage.create({
+        listing_id: listing.id,
+        listing_title: listing.title,
+        seller_email: listing.email_contact,
+        buyer_email: user.email,
+        sender_email: user.email,
+        sender_name: user.full_name || user.email,
+        message,
+        chat_type: 'listing'
+      });
+      window.location.href = '/messages';
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#050d2e]">
+    <div className="listing-blue-white-theme min-h-screen bg-white">
       <RoyalBlueWaves />
       <StarField />
       <BlueHeartAnimation show={showHeartAnim} />
@@ -833,22 +850,17 @@ export default function ListingDetail() {
                   );
                 }
 
-                // Buy & Sell → Chat Seller
+                // Buy & Sell → Buy/Avail action, with chat as its own button below
                 if (isBuySell) {
-                  const btnLabel = listing.subcategory?.toLowerCase().includes('electronics') || listing.type === 'electronics' ? 'Buy Now — Chat Seller'
-                    : listing.subcategory?.toLowerCase().includes('shoes') || listing.type === 'shoes' ? 'Buy Now — Chat Seller'
-                    : listing.subcategory?.toLowerCase().includes('clothing') || listing.type === 'clothing' ? 'Shop Now — Chat Seller'
-                    : 'Avail / Buy — Chat Seller';
+                  const btnLabel = listing.subcategory?.toLowerCase().includes('electronics') || listing.type === 'electronics' ? 'Buy Now'
+                    : listing.subcategory?.toLowerCase().includes('shoes') || listing.type === 'shoes' ? 'Buy Now'
+                    : listing.subcategory?.toLowerCase().includes('clothing') || listing.type === 'clothing' ? 'Shop Now'
+                    : 'Avail / Buy';
                   return (
-                    <button onClick={async () => {
-                      if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
-                      if (listing.email_contact) {
-                        await base44.entities.ChatMessage.create({ listing_id: listing.id, listing_title: listing.title, seller_email: listing.email_contact, buyer_email: user.email, sender_email: user.email, sender_name: user.full_name || user.email, message: `Hi! I'm interested in: ${listing.title}. Is it available?`, chat_type: 'listing' });
-                        window.location.href = '/messages';
-                      }
-                    }} className="w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-[1.01]"
-                      style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 20px rgba(0,212,255,0.3)' }}>
-                      <MessageSquare className="w-4 h-4" /> {btnLabel}
+                    <button onClick={() => { if (!user) { base44.auth.redirectToLogin(window.location.href); return; } setShowReceipt(true); }}
+                      className="w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-[1.01]"
+                      style={{ background: 'linear-gradient(135deg,#2563EB,#00D4FF)', boxShadow: '0 0 20px rgba(37,99,235,0.28)' }}>
+                      <ShoppingCart className="w-4 h-4" /> {btnLabel}
                     </button>
                   );
                 }
@@ -868,6 +880,13 @@ export default function ListingDetail() {
                   </button>
                 );
               })()}
+
+              {listing.email_contact && (!user || user.email !== listing.email_contact) && (
+                <button onClick={() => handleChatSeller(`Hi! I'm interested in: ${listing.title}. Is it available?`)}
+                  className="w-full mb-3 flex items-center justify-center gap-2 py-3 rounded-xl font-body font-bold text-sm text-[#2563EB] bg-white border border-[#2563EB]/30 hover:bg-blue-50 transition-all hover:scale-[1.01]">
+                  <MessageSquare className="w-4 h-4" /> Chat Seller
+                </button>
+              )}
 
               {/* Hotel Room Selector */}
               {listing.type === 'hotel' && listing.hotel_rooms && listing.hotel_rooms.length > 0 && (
@@ -970,25 +989,7 @@ export default function ListingDetail() {
                     </div>
                   </div>
                 )}
-                {user && listing.email_contact && user.email !== listing.email_contact && (
-                  <button
-                    onClick={async () => {
-                      await base44.entities.ChatMessage.create({
-                        listing_id: listing.id,
-                        listing_title: listing.title,
-                        seller_email: listing.email_contact,
-                        buyer_email: user.email,
-                        sender_email: user.email,
-                        sender_name: user.full_name || user.email,
-                        message: 'Hi! I am interested in your listing: ' + listing.title,
-                        chat_type: 'listing',
-                      });
-                      window.location.href = '/messages';
-                    }}
-                    className="mt-3 w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-[#00D4FF]/30 text-[#00D4FF] font-body text-xs font-bold hover:bg-[#00D4FF]/10 transition-all">
-                    <MessageSquare className="w-3.5 h-3.5" /> Message Seller
-                  </button>
-                )}
+
               </div>
             )}
           </div>

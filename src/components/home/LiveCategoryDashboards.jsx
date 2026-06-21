@@ -18,7 +18,7 @@ function MiniCard({ item, color }) {
   return (
     <Link to={`/listing/${item.id}`}
       className="flex-shrink-0 w-40 rounded-xl overflow-hidden transition-all hover:scale-[1.03] group"
-      style={{ background: 'rgba(13,31,60,0.9)', border: `1.5px solid ${color}40` }}>
+      style={{ background: 'rgba(255,255,255,0.96)', border: `1.5px solid ${color || '#2563EB'}60`, boxShadow: '0 8px 22px rgba(37,99,235,0.12)' }}>
       <div className="relative h-24 overflow-hidden">
         <img
           src={item.image_url || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=60'}
@@ -26,7 +26,7 @@ function MiniCard({ item, color }) {
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           onError={e => { e.target.src = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=60'; }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0D1F3C]/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#2563EB]/35 to-transparent" />
         {price && (
           <span className="absolute bottom-1.5 left-2 font-heading font-bold text-[11px]" style={{ color }}>
             {price}
@@ -34,8 +34,8 @@ function MiniCard({ item, color }) {
         )}
       </div>
       <div className="p-2">
-        <p className="font-body font-semibold text-[11px] text-white leading-tight line-clamp-2">{item.title}</p>
-        <p className="font-body text-[9px] text-white/35 mt-0.5 truncate">{item.area || item.location}</p>
+        <p className="font-body font-semibold text-[11px] text-[#0f1f4a] leading-tight line-clamp-2">{item.title}</p>
+        <p className="font-body text-[9px] text-[#2563EB]/70 mt-0.5 truncate">{item.area || item.location}</p>
       </div>
     </Link>
   );

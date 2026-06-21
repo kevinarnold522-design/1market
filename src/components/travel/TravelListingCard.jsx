@@ -16,10 +16,10 @@ export default function TravelListingCard({ item, activeTab, index, onClick }) {
       <motion.div
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }}
         whileHover={{ y: -4, boxShadow: '0 0 25px rgba(37,99,235,0.3)' }}
-        className="group relative bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border transition-all duration-300 cursor-pointer"
+        className="group relative bg-white backdrop-blur-sm rounded-2xl overflow-hidden border transition-all duration-300 cursor-pointer"
         style={{ 
-          border: '1px solid rgba(37,99,235,0.25)',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
+          border: '1px solid rgba(37,99,235,0.28)',
+          boxShadow: '0 8px 24px rgba(37,99,235,0.16)'
         }}
         onClick={() => onClick && onClick(item)}>
 
@@ -28,7 +28,7 @@ export default function TravelListingCard({ item, activeTab, index, onClick }) {
           <img src={item.image} alt={title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             onError={e => { e.target.src = 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80'; }} />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#070F1A]/80 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#2563EB]/45 via-transparent to-transparent" />
           {/* Tag */}
           {item.tag && (
             <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-body font-bold text-[#0A192F] bg-white/95">
@@ -67,10 +67,10 @@ export default function TravelListingCard({ item, activeTab, index, onClick }) {
 
         {/* Content */}
         <div className="p-4">
-          <h3 className="font-heading font-bold text-sm text-white leading-tight mb-1 line-clamp-2 group-hover:text-[#00D4FF] transition-colors">
+          <h3 className="font-heading font-bold text-sm text-[#0f1f4a] leading-tight mb-1 line-clamp-2 group-hover:text-[#2563EB] transition-colors">
             {title}
           </h3>
-          <p className="font-body text-xs text-white/40 mb-3 flex items-center gap-1 line-clamp-1">
+          <p className="font-body text-xs text-[#2563EB]/70 mb-3 flex items-center gap-1 line-clamp-1">
             <MapPin className="w-3 h-3 flex-shrink-0" /> {sub}
             {item.duration ? ` · ${item.duration}` : ''}
             {item.seats ? ` · ${item.seats} seats` : ''}

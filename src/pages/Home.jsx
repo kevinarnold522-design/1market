@@ -7,6 +7,7 @@ import CategoryCards from '../components/home/CategoryCards';
 import CompactOneStopDashboard from '../components/home/OneStopShopDashboard';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
+import RoyalBlueWaves from '../components/RoyalBlueWaves';
 
 // Lazy-load heavy/below-fold sections
 const LiveCategoryDashboards = lazy(() => import('../components/home/LiveCategoryDashboards'));
@@ -38,7 +39,8 @@ const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c
 export default function Home() {
   return (
     <div className="min-h-screen overflow-x-hidden relative" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
-      {/* Permanent royal blue background */}
+      {/* Permanent royal blue wave background */}
+      <RoyalBlueWaves />
       <div className="fixed inset-0 -z-10" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }} />
       
       <div className="relative z-10">

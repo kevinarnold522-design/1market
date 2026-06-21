@@ -250,14 +250,14 @@ export default function FlashDealsSection() {
                   transition={{ delay: i * 0.08 }}
                   whileHover={{ y: -4 }}
                   className="rounded-2xl overflow-hidden cursor-pointer group relative"
-                  style={{ background: '#0D1F3C', border: '1px solid rgba(249,115,22,0.2)' }}>
+                  style={{ background: 'rgba(255,255,255,0.96)', border: '1px solid rgba(37,99,235,0.24)', boxShadow: '0 8px 22px rgba(37,99,235,0.12)' }}>
                   <Link to={`/listing/${item.id}`}>
                     <div className="relative h-32 overflow-hidden">
                       {item.image_url
                         ? <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         : <div className="w-full h-full bg-orange-500/10 flex items-center justify-center"><Zap className="w-8 h-8 text-orange-400/30" /></div>
                       }
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0D1F3C] to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#2563EB]/45 to-transparent" />
                       {discount !== null && (
                         <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full font-heading font-bold text-[10px] text-white"
                           style={{ background: 'linear-gradient(135deg,#f97316,#ef4444)' }}>
@@ -269,7 +269,7 @@ export default function FlashDealsSection() {
                       </div>
                     </div>
                     <div className="p-3">
-                      <p className="font-body text-[11px] text-white leading-tight line-clamp-2 mb-1.5">{item.title}</p>
+                      <p className="font-body text-[11px] text-[#0f1f4a] leading-tight line-clamp-2 mb-1.5">{item.title}</p>
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-heading font-bold text-sm text-[#FFD700]">
                           ₱{Number(item.price).toLocaleString()}

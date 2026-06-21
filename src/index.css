@@ -188,3 +188,45 @@ aside nav button + a {
 *::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.85);
 }
+
+/* White + blue listing detail theme with the royal wave background preserved */
+.listing-blue-white-theme {
+  background: linear-gradient(180deg, #ffffff 0%, #eef5ff 52%, #dbeafe 100%) !important;
+  color: #0f1f4a;
+}
+.listing-blue-white-theme > .fixed.inset-0 { opacity: 0.18; }
+.listing-blue-white-theme [style*="rgba(13,31,60"],
+.listing-blue-white-theme [style*="#0D1F3C"],
+.listing-blue-white-theme [style*="#050d2e"] {
+  background: rgba(255,255,255,0.94) !important;
+  border-color: rgba(37,99,235,0.22) !important;
+  box-shadow: 0 10px 30px rgba(37,99,235,0.12) !important;
+}
+.listing-blue-white-theme .text-white,
+.listing-blue-white-theme [class*="text-white/"] {
+  color: #0f1f4a !important;
+}
+.listing-blue-white-theme .text-\[\#00D4FF\] {
+  color: #2563EB !important;
+}
+.listing-blue-white-theme .border-white\/10,
+.listing-blue-white-theme .border-white\/15,
+.listing-blue-white-theme .border-white\/20 {
+  border-color: rgba(37,99,235,0.18) !important;
+}
+.listing-blue-white-theme .bg-white\/5,
+.listing-blue-white-theme .bg-white\/8,
+.listing-blue-white-theme .bg-white\/10 {
+  background-color: rgba(37,99,235,0.06) !important;
+}
+.listing-blue-white-theme input,
+.listing-blue-white-theme textarea,
+.listing-blue-white-theme select {
+  background: rgba(255,255,255,0.92) !important;
+  color: #0f1f4a !important;
+  border-color: rgba(37,99,235,0.22) !important;
+}
+.listing-blue-white-theme input::placeholder,
+.listing-blue-white-theme textarea::placeholder {
+  color: rgba(15,31,74,0.4) !important;
+}

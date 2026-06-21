@@ -94,9 +94,9 @@ function ListingCard({ item, user }) {
       whileHover={{ y: -4, boxShadow: `0 0 25px ${borderColor}60` }}
       className="flex-shrink-0 w-52 rounded-2xl overflow-hidden transition-all duration-300 group"
       style={{ 
-        background: 'rgba(13,31,60,0.95)', 
-        border: `2px solid ${borderColor}`,
-        boxShadow: `0 4px 15px ${borderColor}30`
+        background: 'rgba(255,255,255,0.96)', 
+        border: `2px solid ${borderColor || '#2563EB'}`,
+        boxShadow: `0 8px 24px rgba(37,99,235,0.16)`
       }}
     >
       <Link to={`/listing/${item.id}`} className="block">
@@ -107,14 +107,14 @@ function ListingCard({ item, user }) {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             onError={e => { e.target.src = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=70'; }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0033CC]/70 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0033CC]/35 to-transparent pointer-events-none" />
           <span className={`absolute top-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-sm ${colorClass}`}>
             {icon} {item.type}
           </span>
         </div>
         <div className="p-3 pb-1">
-          <p className="font-heading font-bold text-sm text-white leading-tight line-clamp-2 mb-1">{item.title}</p>
-          <p className="font-body text-[10px] text-white/40 mb-1">{item.area || item.location}</p>
+          <p className="font-heading font-bold text-sm text-[#0f1f4a] leading-tight line-clamp-2 mb-1">{item.title}</p>
+          <p className="font-body text-[10px] text-[#2563EB]/70 mb-1">{item.area || item.location}</p>
           {price && <p className="font-heading font-bold text-base text-[#00D4FF]">{price}</p>}
         </div>
       </Link>
