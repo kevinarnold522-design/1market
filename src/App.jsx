@@ -37,6 +37,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import AuthCallback from './pages/AuthCallback';
 import GlowInteraction from './components/GlowInteraction';
+import BubbleBackground from './components/BubbleBackground';
 import AdminRoute from './components/AdminRoute';
 import RiderOnboarding from './pages/RiderOnboarding';
 import AccountCart from './pages/AccountCart';
@@ -124,6 +125,7 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
+          <BubbleBackground />
           <AuthenticatedApp />
         </Router>
         <GlowInteraction />
