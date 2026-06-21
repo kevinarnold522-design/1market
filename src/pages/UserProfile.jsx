@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Camera, Mail, MapPin, Phone, Save, User, Facebook, Instagram, Youtube, Music, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { uploadMediaFileToR2 } from '@/lib/r2Upload';
+import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import { useAuth } from '@/lib/AuthContext';
 import { clearGhostSession, getGhostSession, saveGhostSession } from '@/lib/ghostAccounts';
 
@@ -76,7 +76,7 @@ export default function UserProfile() {
     if (!file) return;
     setUploading(type);
     try {
-      const { file_url } = await uploadMediaFileToR2(file, type === 'cover' ? 'profiles/covers' : 'profiles/avatars');
+      const { file_url } = await uploadMediaFileToSupabase(file, type === 'cover' ? 'profiles/covers' : 'profiles/avatars');
       const field = type === 'cover' ? 'cover_photos' : 'profile_photos';
       const primary = type === 'cover' ? 'cover_photo' : 'profile_picture';
       const current = user?.[field] || (user?.[primary] ? [user[primary]] : []);

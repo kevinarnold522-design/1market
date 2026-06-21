@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Check, Upload, AlertCircle, Clock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { uploadMediaFileToR2 } from '@/lib/r2Upload';
+import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import OneCheckmark from './OneCheckmark';
 
 // Document requirements differ by account type
@@ -49,7 +49,7 @@ function DocUpload({ doc: docInfo, value, onChange }) {
     const file = e.target.files[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await uploadMediaFileToR2(file);
+    const { file_url } = await uploadMediaFileToSupabase(file);
     onChange({ url: file_url, label: docInfo.label });
     setUploading(false);
     e.target.value = '';

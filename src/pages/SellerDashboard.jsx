@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { uploadMediaFileToR2 } from '@/lib/r2Upload';
+import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus, Pencil, Trash2, X, Save, ArrowLeft, Package, MapPin, Store, Search,
@@ -68,7 +68,7 @@ function ImageUploader({ images, onAdd, onRemove }) {
     const file = e.target.files[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await uploadMediaFileToR2(file);
+    const { file_url } = await uploadMediaFileToSupabase(file);
     onAdd(file_url);
     setUploading(false);
     e.target.value = '';
@@ -99,7 +99,7 @@ function QuickImageUpload({ itemId, onUploaded }) {
   const handle = async (e) => {
     const file = e.target.files[0]; if (!file) return;
     setUploading(true);
-    const { file_url } = await uploadMediaFileToR2(file);
+    const { file_url } = await uploadMediaFileToSupabase(file);
     await base44.entities.Listing.update(itemId, { image_url: file_url });
     onUploaded(file_url);
     setUploading(false);

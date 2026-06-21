@@ -4,7 +4,7 @@ import { Zap, Clock, Tag, Plus, X, Upload, Trash2 } from 'lucide-react';
 import { useAdDelay } from '@/hooks/useAdDelay';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { uploadMediaFileToR2 } from '@/lib/r2Upload';
+import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 
 function Countdown({ endTime }) {
   const calc = () => {
@@ -39,7 +39,7 @@ function CreateFlashDealModal({ user, onClose, onCreated }) {
   const handleUpload = async (e) => {
     const file = e.target.files[0]; if (!file) return;
     setUploading(true);
-    const { file_url } = await uploadMediaFileToR2(file);
+    const { file_url } = await uploadMediaFileToSupabase(file);
     set('image_url', file_url);
     setUploading(false);
     e.target.value = '';

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Pencil, X, Save, Trash2, Upload } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { uploadMediaFileToR2 } from '@/lib/r2Upload';
+import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import { getAdminEditMode } from './home/Navbar';
 
 function useGlobalEditMode() {
@@ -51,7 +51,7 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
     if (!file) return;
     setUploadingKey(key);
     try {
-      const { file_url } = await uploadMediaFileToR2(file);
+      const { file_url } = await uploadMediaFileToSupabase(file);
       setForm(v => ({ ...v, [key]: file_url }));
     } catch (e) {
       alert('Image upload failed. Please try again.');
@@ -187,7 +187,7 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
                             const files = Array.from(e.target.files);
                             if (!files.length) return;
                             setUploadingKey(f.key);
-                            const urls = await Promise.all(files.map(file => uploadMediaFileToR2(file).then(r => r.file_url)));
+                            const urls = await Promise.all(files.map(file => uploadMediaFileToSupabase(file).then(r => r.file_url)));
                             setForm(v => ({ ...v, [f.key]: [...(v[f.key] || []), ...urls] }));
                             setUploadingKey(null);
                             e.target.value = '';

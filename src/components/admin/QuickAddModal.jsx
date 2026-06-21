@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Save, Upload, Plus } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { uploadMediaFileToR2 } from '@/lib/r2Upload';
+import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import SmartImage from '@/components/media/SmartImage';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -79,7 +79,7 @@ function ImgUpload({ label, value, onChange }) {
     const file = e.target.files[0]; if (!file) return;
     setUploading(true);
     try {
-      const { file_url } = await uploadMediaFileToR2(file);
+      const { file_url } = await uploadMediaFileToSupabase(file);
       onChange(file_url);
     } catch {
       // Toast is shown by the uploader.
@@ -112,7 +112,7 @@ function MultiImgUpload({ label, value, onChange }) {
     const files = Array.from(e.target.files); if (!files.length) return;
     setUploading(true);
     try {
-      const urls = await Promise.all(files.map(f => uploadMediaFileToR2(f).then(r => r.file_url)));
+      const urls = await Promise.all(files.map(f => uploadMediaFileToSupabase(f).then(r => r.file_url)));
       onChange([...(value || []), ...urls]);
     } catch {
       // Toast is shown by the uploader.

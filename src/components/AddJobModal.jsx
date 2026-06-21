@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload, Briefcase } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { uploadMediaFileToR2 } from '@/lib/r2Upload';
+import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import SmartImage from '@/components/media/SmartImage';
 
 const PH_LOCATIONS = [
@@ -46,7 +46,7 @@ export default function AddJobModal({ onClose, user, categories = [] }) {
     if (!file) return;
     setUploading(true);
     try {
-      const { file_url } = await uploadMediaFileToR2(file);
+      const { file_url } = await uploadMediaFileToSupabase(file);
       set('image_url', file_url);
     } catch {
       // Toast is shown by the uploader.

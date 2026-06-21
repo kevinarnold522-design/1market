@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import OneCheckmark from '../components/OneCheckmark';
 import { base44 } from '@/api/base44Client';
-import { uploadMediaFileToR2 } from '@/lib/r2Upload';
+import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 
 const LOCATIONS = ['Manila', 'Cavite', 'Nationwide'];
 const AREAS = {
@@ -72,7 +72,7 @@ export default function SellerOnboarding() {
     const file = e.target.files[0];
     if (!file) return;
     setUploadingImg(true);
-    const { file_url } = await uploadMediaFileToR2(file);
+    const { file_url } = await uploadMediaFileToSupabase(file);
     set('profile_picture', file_url);
     setUploadingImg(false);
     e.target.value = '';

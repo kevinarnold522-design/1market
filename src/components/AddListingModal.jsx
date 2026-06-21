@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload, Trash2, ChevronLeft, Image } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { uploadMediaFileToR2 } from '@/lib/r2Upload';
+import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import SmartImage from '@/components/media/SmartImage';
 import CategoryIcon from './CategoryIcon';
 import AIPhotoListingCreator from './listing/AIPhotoListingCreator';
@@ -395,7 +395,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
     const file = e.target.files[0]; if (!file) return;
     setUploading(true);
     try {
-      const { file_url } = await uploadMediaFileToR2(file, 'listing-images');
+      const { file_url } = await uploadMediaFileToSupabase(file, 'listing-images');
       set('image_url', file_url);
     } catch {
       // Toast is shown by the uploader.
@@ -408,7 +408,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
     const files = Array.from(e.target.files); if (!files.length) return;
     setUploadingExtra(true);
     try {
-      const uploads = await Promise.all(files.map(file => uploadMediaFileToR2(file, 'listing-images')));
+      const uploads = await Promise.all(files.map(file => uploadMediaFileToSupabase(file, 'listing-images')));
       const urls = uploads.map(upload => upload.file_url).filter(Boolean);
       set('extra_images', [...(form.extra_images || []), ...urls]);
     } catch {

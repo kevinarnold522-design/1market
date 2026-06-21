@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload, Star, MapPin, Clock, Users, Wifi, Eye } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { uploadMediaFileToR2 } from '@/lib/r2Upload';
+import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import HotelRoomManager from './HotelRoomManager';
 
 const TRAVEL_TYPES = [
@@ -159,7 +159,7 @@ export default function TravelPostModal({ user, onClose, onSuccess }) {
     if (!file) return;
     setUploading(true);
     try {
-      const { file_url } = await uploadMediaFileToR2(file);
+      const { file_url } = await uploadMediaFileToSupabase(file);
       update('image_url', file_url);
     } catch { } finally { setUploading(false); }
   };

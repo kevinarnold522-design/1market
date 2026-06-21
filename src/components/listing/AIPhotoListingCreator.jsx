@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Camera, Sparkles, Upload, ShieldCheck } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { uploadMediaFileToR2 } from '@/lib/r2Upload';
+import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 
 const allowed = ['image/jpeg', 'image/png', 'image/webp'];
 
@@ -19,7 +19,7 @@ export default function AIPhotoListingCreator({ onApplyListing }) {
     setBusy(true); setError(''); setStatus('Uploading photos to Supabase Storage...');
     try {
       const uploads = [];
-      for (const file of files) uploads.push(await uploadMediaFileToR2(file, 'listing-images'));
+      for (const file of files) uploads.push(await uploadMediaFileToSupabase(file, 'listing-images'));
       const urls = uploads.map(u => u.file_url).filter(Boolean);
       setStatus('AI is scanning photos and generating your listing...');
       const res = await base44.functions.invoke('analyzeListingImages', { image_urls: urls });

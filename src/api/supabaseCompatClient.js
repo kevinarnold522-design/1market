@@ -77,44 +77,20 @@ function makeEntity(name) {
       }
     },
     async create(record) {
-      try {
-        const db = requireSupabase();
-        const { data, error } = await db.from(table).insert(record).select('*').single();
-        if (error) throw error;
-        return data;
-      } catch (error) {
-        throw error;
-      }
+      const response = await supabaseCompat.functions.invoke('supabaseEntityWrite', { entity: name, action: 'create', record });
+      return response.data.data;
     },
     async bulkCreate(records) {
-      try {
-        const db = requireSupabase();
-        const { data, error } = await db.from(table).insert(records).select('*');
-        if (error) throw error;
-        return data || [];
-      } catch (error) {
-        throw error;
-      }
+      const response = await supabaseCompat.functions.invoke('supabaseEntityWrite', { entity: name, action: 'bulkCreate', records });
+      return response.data.data || [];
     },
     async update(id, patch) {
-      try {
-        const db = requireSupabase();
-        const { data, error } = await db.from(table).update({ ...patch, updated_at: new Date().toISOString() }).eq('id', id).select('*').single();
-        if (error) throw error;
-        return data;
-      } catch (error) {
-        throw error;
-      }
+      const response = await supabaseCompat.functions.invoke('supabaseEntityWrite', { entity: name, action: 'update', id, patch });
+      return response.data.data;
     },
     async delete(id) {
-      try {
-        const db = requireSupabase();
-        const { error } = await db.from(table).delete().eq('id', id);
-        if (error) throw error;
-        return true;
-      } catch (error) {
-        throw error;
-      }
+      await supabaseCompat.functions.invoke('supabaseEntityWrite', { entity: name, action: 'delete', id });
+      return true;
     },
     subscribe(callback) {
       try {
@@ -247,17 +223,8 @@ export const supabaseCompat = {
       return true;
     },
     async updateMe(patch) {
-      try {
-        const db = requireSupabase();
-        const { data: userData } = await db.auth.getUser();
-        const id = userData?.user?.id;
-        if (!id) throw new Error('Not authenticated');
-        const { data, error } = await db.from('users').update({ ...patch, updated_at: new Date().toISOString() }).eq('id', id).select('*').single();
-        if (error) throw error;
-        return data;
-      } catch (error) {
-        throw error;
-      }
+      const response = await supabaseCompat.functions.invoke('updateMyProfile', { patch });
+      return response.data.user;
     },
     redirectToLogin(nextUrl = window.location.href) {
       window.location.href = `/login?next=${encodeURIComponent(nextUrl)}`;
