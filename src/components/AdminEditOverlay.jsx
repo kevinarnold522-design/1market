@@ -144,7 +144,7 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
                         {form[f.key] && (
                           <div className="relative rounded-xl overflow-hidden bg-white/5">
                             <img src={form[f.key]} alt="preview" className="w-full h-40 object-cover rounded-xl" />
-                            <button onClick={() => setForm(v => ({ ...v, [f.key]: '' }))}
+                            <button type="button" onClick={() => setForm(v => ({ ...v, [f.key]: '' }))}
                               className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500/80 flex items-center justify-center">
                               <X className="w-3 h-3 text-white"/>
                             </button>
@@ -158,6 +158,7 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
                           onChange={e => handleImageUpload(f.key, e.target.files[0])}
                         />
                         <button
+                          type="button"
                           onClick={() => fileRefs.current[f.key]?.click()}
                           disabled={uploadingKey === f.key}
                           className="w-full py-3 border-2 border-dashed border-[#00D4FF]/40 hover:border-[#00D4FF]/80 rounded-xl text-[#00D4FF] font-body text-xs font-semibold flex items-center justify-center gap-2 transition-colors">
@@ -172,7 +173,7 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
                           {(form[f.key] || []).map((url, i) => (
                             <div key={i} className="relative">
                               <img src={url} alt="" className="w-16 h-16 rounded-xl object-cover border border-white/10" />
-                              <button onClick={() => setForm(v => ({ ...v, [f.key]: v[f.key].filter((_, j) => j !== i) }))}
+                              <button type="button" onClick={() => setForm(v => ({ ...v, [f.key]: v[f.key].filter((_, j) => j !== i) }))}
                                 className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center">AI</button>
                             </div>
                           ))}
@@ -194,6 +195,7 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
                           }}
                         />
                         <button
+                          type="button"
                           onClick={() => fileRefs.current[f.key]?.click()}
                           disabled={uploadingKey === f.key}
                           className="w-full py-2.5 border-2 border-dashed border-white/20 hover:border-[#00D4FF]/60 rounded-xl text-white/50 font-body text-xs font-semibold flex items-center justify-center gap-2 transition-colors">

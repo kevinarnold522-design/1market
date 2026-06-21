@@ -93,11 +93,11 @@ function ImgUpload({ label, value, onChange }) {
       {value && (
         <div className="relative inline-block mb-2">
           <SmartImage src={value} alt={label} className="h-20 w-28 rounded-xl border border-white/10" />
-          <button onClick={() => onChange('')} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center">AI</button>
+          <button type="button" onClick={() => onChange('')} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center">AI</button>
         </div>
       )}
       <input ref={ref} type="file" accept="image/*" className="hidden" onChange={handle} />
-      <button onClick={() => ref.current?.click()} disabled={uploading}
+      <button type="button" onClick={() => ref.current?.click()} disabled={uploading}
         className="flex items-center gap-2 px-3 py-2 border-2 border-dashed border-[#00D4FF]/30 hover:border-[#00D4FF]/70 rounded-xl text-[#00D4FF] font-body text-xs font-semibold transition-colors disabled:opacity-50 w-full justify-center">
         {uploading ? <><div className="w-3 h-3 border border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" /> Uploading...</> : <><Upload className="w-3 h-3" /> Upload from Device</>}
       </button>
@@ -127,12 +127,12 @@ function MultiImgUpload({ label, value, onChange }) {
         {(value || []).map((url, i) => (
           <div key={i} className="relative">
             <SmartImage src={url} alt={`Additional photo ${i + 1}`} className="w-14 h-14 rounded-xl border border-white/10" />
-            <button onClick={() => onChange(value.filter((_, j) => j !== i))} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center">AI</button>
+            <button type="button" onClick={() => onChange(value.filter((_, j) => j !== i))} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center">AI</button>
           </div>
         ))}
       </div>
       <input ref={ref} type="file" accept="image/*" multiple className="hidden" onChange={handle} />
-      <button onClick={() => ref.current?.click()} disabled={uploading}
+      <button type="button" onClick={() => ref.current?.click()} disabled={uploading}
         className="flex items-center gap-2 px-3 py-2 border-2 border-dashed border-white/15 hover:border-[#00D4FF]/40 rounded-xl text-white/40 font-body text-xs font-semibold transition-colors disabled:opacity-50 w-full justify-center">
         {uploading ? <><div className="w-3 h-3 border border-white/20 border-t-[#00D4FF] rounded-full animate-spin" /> Uploading...</> : <><Upload className="w-3 h-3" /> Add More Photos</>}
       </button>

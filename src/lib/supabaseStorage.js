@@ -1,6 +1,5 @@
-import { base44 } from '@/api/base44Client';
-
 export const SUPABASE_IMAGE_BUCKET = '1Marketphmediafiles';
+const SUPABASE_FUNCTIONS_URL = 'https://ksnzljothfoaefifevch.supabase.co/functions/v1';
 export const MAX_IMAGE_SIZE_BYTES = 15 * 1024 * 1024;
 export const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif', 'image/heic', 'image/heif'];
 
@@ -47,14 +46,20 @@ export async function uploadFileToSupabase(file, bucket = SUPABASE_IMAGE_BUCKET,
   if (file.size > MAX_IMAGE_SIZE_BYTES) throw new Error('File must be 15MB or smaller.');
 
   const base64_data = await fileToBase64(file);
-  const response = await base44.functions.invoke('uploadMediaToSupabase', {
-    file_name: file.name || 'upload',
-    content_type: contentType,
-    base64_data,
-    folder,
-    bucket,
+  const response = await fetch(`${SUPABASE_FUNCTIONS_URL}/uploadMediaToSupabase`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      file_name: file.name || 'upload',
+      content_type: contentType,
+      base64_data,
+      folder,
+      bucket,
+    }),
   });
-  return response.data;
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || 'Image upload failed.');
+  return data;
 }
 
 export async function uploadImageToSupabase(file, folder = 'images') {

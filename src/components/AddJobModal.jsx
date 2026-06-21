@@ -107,7 +107,7 @@ export default function AddJobModal({ onClose, user, categories = [] }) {
                 <p className="font-body text-xs text-white/50">Pending admin approval before going live</p>
               </div>
             </div>
-            <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">
+            <button type="button" onClick={onClose} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">
               <X className="w-4 h-4 text-white/60" />
             </button>
           </div>
@@ -235,7 +235,7 @@ export default function AddJobModal({ onClose, user, categories = [] }) {
                 {form.image_url ? (
                   <div className="relative">
                     <SmartImage src={form.image_url} alt="Job photo preview" className="w-full h-40 rounded-xl" />
-                    <button onClick={() => set('image_url', '')}
+                    <button type="button" onClick={() => set('image_url', '')}
                       className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/70 flex items-center justify-center hover:bg-red-500/80 transition-colors">
                       <X className="w-3.5 h-3.5 text-white" />
                     </button>
@@ -264,11 +264,11 @@ export default function AddJobModal({ onClose, user, categories = [] }) {
 
               {/* Actions */}
               <div className="flex gap-3 pt-2">
-                <button onClick={onClose}
+                <button type="button" onClick={onClose}
                   className="flex-1 py-3 rounded-xl font-body font-bold text-sm text-white/50 border border-white/10 hover:bg-white/5 transition-colors">
                   Cancel
                 </button>
-                <button onClick={handleSave} disabled={!form.title || !form.location || saving || !dpaAccepted}
+                <button type="button" onClick={handleSave} disabled={!form.title || !form.location || saving || !dpaAccepted}
                   className="flex-1 py-3 rounded-xl font-body font-bold text-sm text-white transition-all disabled:opacity-40 hover:scale-105"
                   style={{ background: 'linear-gradient(135deg, #0033C4, #3E97F1)', boxShadow: '0 0 16px rgba(62,151,241,0.4)' }}>
                   {saving ? 'Submitting...' : 'Submit Job Listing'}

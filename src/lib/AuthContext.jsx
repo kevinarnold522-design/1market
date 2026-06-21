@@ -32,12 +32,10 @@ export const AuthProvider = ({ children }) => {
     });
     window.addEventListener('ghost-session-changed', refreshAuthSession);
     window.addEventListener('supabase-auth-changed', refreshAuthSession);
-    window.addEventListener('focus', refreshAuthSession);
     return () => {
       authSubscription?.unsubscribe?.();
       window.removeEventListener('ghost-session-changed', refreshAuthSession);
       window.removeEventListener('supabase-auth-changed', refreshAuthSession);
-      window.removeEventListener('focus', refreshAuthSession);
     };
   }, []);
 
