@@ -6,6 +6,7 @@ import LoginModal from '@/components/LoginModal';
 import { base44 } from '@/api/base44Client';
 import SmartSearchBar from '../SmartSearchBar';
 import PostListingMenu from '../PostListingMenu';
+import { ALFIE_CAR, MARKETPH_LOGO } from '@/lib/brandAssets';
 
 export default function HeroSection({ heroImage }) {
   const [isAuth, setIsAuth] = useState(false);
@@ -50,7 +51,7 @@ export default function HeroSection({ heroImage }) {
               <div className="flex items-center gap-3">
                 <a href="/" className="inline-flex flex-shrink-0" aria-label="Go to homepage">
                   <img
-                    src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%230033CC%22/%3E%3Ctext x=%2232%22 y=%2241%22 font-family=%22Arial%22 font-size=%2224%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22white%22%3E1M%3C/text%3E%3C/svg%3E"
+                    src={MARKETPH_LOGO}
                     alt="1Market Philippines"
                     className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover shadow-2xl"
                     style={{ boxShadow: '0 0 24px rgba(255,215,0,0.35)' }}
@@ -136,7 +137,7 @@ export default function HeroSection({ heroImage }) {
             transition={{ duration: 1, delay: 0.5 }}
             className="relative order-first lg:order-last flex items-center justify-center">
             <img 
-              src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 420 260%22%3E%3Crect width=%22420%22 height=%22260%22 rx=%2236%22 fill=%22%23001060%22/%3E%3Cpath d=%22M55 165h245l45 45H95z%22 fill=%22%230033CC%22/%3E%3Ccircle cx=%22120%22 cy=%22210%22 r=%2226%22 fill=%22%230A192F%22/%3E%3Ccircle cx=%22292%22 cy=%22210%22 r=%2226%22 fill=%22%230A192F%22/%3E%3Cpath d=%22M90 112h150l45 53H55z%22 fill=%22%2300D4FF%22/%3E%3Ctext x=%22210%22 y=%2282%22 font-family=%22Arial%22 font-size=%2234%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22white%22%3E1MarketPH%3C/text%3E%3C/svg%3E"
+              src={ALFIE_CAR}
               alt="1Market Philippines mascot car"
               className="w-full max-w-[18rem] sm:max-w-[36rem] lg:max-w-[44rem] drop-shadow-2xl"
               style={{ filter: 'drop-shadow(0 18px 36px rgba(0,212,255,0.25))' }}

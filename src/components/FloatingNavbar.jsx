@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { getImpersonatedUser, clearImpersonation } from '@/pages/ConnectedAccounts';
 import MetaVerifiedBadge from './MetaVerifiedBadge';
 import PostListingMenu from './PostListingMenu';
+import { MARKETPH_LOGO } from '@/lib/brandAssets';
 const OWNER_EMAIL = 'kevinarnold522@gmail.com';
 
 const NAV_ITEMS = [
@@ -107,7 +108,7 @@ return (
               <div className="flex items-center gap-3 px-4 py-3 border-b border-white/10">
                 <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-3 flex-1 min-w-0" aria-label="Go to homepage">
                   <img
-                    src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%230033CC%22/%3E%3Ctext x=%2232%22 y=%2241%22 font-family=%22Arial%22 font-size=%2224%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22white%22%3E1M%3C/text%3E%3C/svg%3E"
+                    src={MARKETPH_LOGO}
                     alt="1MarketPH"
                     className="w-8 h-8 rounded-lg object-cover"
                   />
