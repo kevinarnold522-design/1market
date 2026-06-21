@@ -29,6 +29,20 @@ function extensionFromType(contentType = '') {
   return 'bin';
 }
 
+function inferContentType(name = '', contentType = '') {
+  const explicit = String(contentType || '').trim();
+  if (explicit && explicit !== 'application/octet-stream') return explicit;
+  const lower = String(name || '').toLowerCase();
+  if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) return 'image/jpeg';
+  if (lower.endsWith('.png')) return 'image/png';
+  if (lower.endsWith('.webp')) return 'image/webp';
+  if (lower.endsWith('.gif')) return 'image/gif';
+  if (lower.endsWith('.heic')) return 'image/heic';
+  if (lower.endsWith('.heif')) return 'image/heif';
+  if (lower.endsWith('.pdf')) return 'application/pdf';
+  return explicit || 'application/octet-stream';
+}
+
 function safeName(name = 'upload', contentType = '') {
   const cleaned = String(name || 'upload').toLowerCase().replace(/[^a-z0-9._-]/g, '-').slice(-90) || 'upload';
   if (cleaned.includes('.')) return cleaned;
@@ -42,7 +56,7 @@ Deno.serve(async (req) => {
     if (req.method !== 'POST') return Response.json({ error: 'Method not allowed' }, { status: 405, headers: corsHeaders });
 
     const { file_name, content_type, base64_data, folder = 'media' } = await req.json();
-    const contentType = content_type || 'application/octet-stream';
+    const contentType = inferContentType(file_name, content_type);
     const allowed = contentType.startsWith('image/') || contentType === 'application/pdf';
     if (!file_name || !base64_data) return Response.json({ error: 'Missing file data' }, { status: 400, headers: corsHeaders });
     if (!allowed) return Response.json({ error: 'Please choose a valid image file' }, { status: 400, headers: corsHeaders });

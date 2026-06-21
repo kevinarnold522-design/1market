@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 
 const maxImageSize = 15 * 1024 * 1024;
+const imageExtPattern = /\.(jpe?g|png|webp|gif|heic|heif)$/i;
 
 export default function AIPhotoListingCreator({ onApplyListing }) {
   const [busy, setBusy] = useState(false);
@@ -14,7 +15,7 @@ export default function AIPhotoListingCreator({ onApplyListing }) {
     const files = Array.from(e.target.files || []).slice(0, 10);
     e.target.value = '';
     if (!files.length) return;
-    const bad = files.find(f => !String(f.type || '').startsWith('image/') || f.size > maxImageSize);
+    const bad = files.find(f => !(String(f.type || '').startsWith('image/') || imageExtPattern.test(f.name || '')) || f.size > maxImageSize);
     if (bad) { setError('Please upload image files up to 15MB each.'); return; }
     setBusy(true); setError(''); setStatus('Uploading photos...');
     try {
