@@ -8,6 +8,7 @@ import {
   MessageCircle, ArrowLeft, Package, Camera, Image, UtensilsCrossed, Palette, Save
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import TikTokIcon from '../components/icons/TikTokIcon';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
 import AISellerTips from '../components/seller/AISellerTips';
 import MenuManager from '../components/seller/MenuManager';
@@ -19,7 +20,7 @@ const SOCIAL_CONFIGS = {
   facebook: { icon: Facebook, color: '#1877f2', bg: 'rgba(24,119,242,0.15)', label: 'Facebook' },
   instagram: { icon: Instagram, color: '#e1306c', bg: 'rgba(225,48,108,0.15)', label: 'Instagram' },
   youtube: { icon: Youtube, color: '#ff0000', bg: 'rgba(255,0,0,0.15)', label: 'YouTube' },
-  tiktok: { icon: Globe, color: '#69c9d0', bg: 'rgba(105,201,208,0.15)', label: 'TikTok' },
+  tiktok: { icon: TikTokIcon, color: '#69c9d0', bg: 'rgba(105,201,208,0.15)', label: 'TikTok' },
   viber: { icon: Phone, color: '#7360f2', bg: 'rgba(115,96,242,0.15)', label: 'Viber' },
 };
 

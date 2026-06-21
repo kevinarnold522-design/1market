@@ -1,6 +1,7 @@
 import React from 'react';
 import { Facebook, Instagram, Youtube, Lock, CheckCircle, Zap, MessageCircle, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import TikTokIcon from '@/components/icons/TikTokIcon';
 
 const TRUST_BADGES = [
   { icon: Lock, label: 'SSL Secured', color: '#00D4FF' },
@@ -55,7 +56,7 @@ export default function TopBanner() {
             <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
               className="flex flex-col items-center px-1.5 py-0.5 rounded-sm font-body text-[9px] font-bold text-white/70 hover:text-white transition-colors"
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)' }}>
-              <span>TikTok</span>
+              <div className="flex items-center gap-1"><TikTokIcon className="w-2.5 h-2.5 text-white" /><span>TikTok</span></div>
               <span className="text-[8px] text-white/40 mt-0.5">@1MarketPH</span>
             </a>
             <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"

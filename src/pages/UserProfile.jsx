@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Camera, Mail, MapPin, Phone, Save, User, Facebook, Instagram, Youtube, Music, LogOut } from 'lucide-react';
+import { ArrowLeft, Camera, Mail, MapPin, Phone, Save, User, Facebook, Instagram, Youtube, LogOut } from 'lucide-react';
+import TikTokIcon from '@/components/icons/TikTokIcon';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
@@ -146,7 +147,7 @@ export default function UserProfile() {
                 <label className="text-xs font-bold uppercase tracking-wider text-blue-700 mb-1 block">Bio</label>
                 <textarea value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))} rows={4} className="w-full px-3 py-3 rounded-xl border border-blue-100 bg-blue-50/40 text-slate-900 focus:outline-none focus:border-blue-500 resize-none" />
               </div>
-              {[['social_facebook','Facebook', Facebook], ['social_instagram','Instagram', Instagram], ['social_youtube','YouTube', Youtube], ['social_tiktok','TikTok', Music]].map(([key, label, Icon]) => (
+              {[['social_facebook','Facebook', Facebook], ['social_instagram','Instagram', Instagram], ['social_youtube','YouTube', Youtube], ['social_tiktok','TikTok', TikTokIcon]].map(([key, label, Icon]) => (
                 <div key={key}>
                   <label className="text-xs font-bold uppercase tracking-wider text-blue-700 mb-1 block">{label}</label>
                   <div className="relative"><Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400" /><input value={form[key] || ''} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} placeholder="https://" className="w-full pl-10 pr-3 py-3 rounded-xl border border-blue-100 bg-blue-50/40 text-slate-900 focus:outline-none focus:border-blue-500" /></div>

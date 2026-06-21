@@ -7,6 +7,7 @@ import { getGhostSession, clearGhostSession } from '@/lib/ghostAccounts';
 import MetaVerifiedBadge from './MetaVerifiedBadge';
 import PostListingMenu from './PostListingMenu';
 import { MARKETPH_LOGO } from '@/lib/brandAssets';
+import TikTokIcon from '@/components/icons/TikTokIcon';
 const OWNER_EMAIL = 'kevinarnold522@gmail.com';
 
 const NAV_ITEMS = [
@@ -273,7 +274,7 @@ return (
                   <div className="flex items-center gap-2 px-3">
                     <a href="https://www.facebook.com/share/18Neew76Yo/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-body font-bold"><Facebook className="w-3.5 h-3.5" /> FB</a>
                     <a href="https://instagram.com/1marketph" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl bg-pink-500/10 border border-pink-500/20 text-pink-300 text-xs font-body font-bold"><Instagram className="w-3.5 h-3.5" /> IG</a>
-                    <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center px-2 py-2 rounded-xl bg-white/5 border border-white/10 text-white/70 text-xs font-body font-bold">TikTok</a>
+                    <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl bg-white/5 border border-white/10 text-white/70 text-xs font-body font-bold"><TikTokIcon className="w-3.5 h-3.5 text-white" /> TikTok</a>
                     <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-xs font-body font-bold"><Youtube className="w-3.5 h-3.5" /> YT</a>
                   </div>
                 </div>

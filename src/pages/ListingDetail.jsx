@@ -3,7 +3,8 @@ import MascotDog from '../components/MascotDog';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock, ShoppingCart, Play, X, ExternalLink, Send, Briefcase, Utensils, Home, Car, Wrench, Plane, Tag, Package, Music, Link2, Store, MessageCircle, Smartphone, Hourglass, Ban } from 'lucide-react';
+import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock, ShoppingCart, Play, X, ExternalLink, Send, Briefcase, Utensils, Home, Car, Wrench, Plane, Tag, Package, Link2, Store, MessageCircle, Smartphone, Hourglass, Ban } from 'lucide-react';
+import TikTokIcon from '../components/icons/TikTokIcon';
 import ReportModal from '../components/ReportModal';
 import ReceiptModal from '../components/ReceiptModal';
 import AIReviewSummary from '../components/listing/AIReviewSummary';
@@ -1021,7 +1022,7 @@ export default function ListingDetail() {
             </a>
             <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 text-white font-body text-xs font-bold hover:bg-white/20 transition-colors border border-white/15">
-              <Music className="w-3.5 h-3.5" /> TikTok
+              <TikTokIcon className="w-3.5 h-3.5 text-white" /> TikTok
             </a>
             <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600/20 text-red-400 font-body text-xs font-bold hover:bg-red-600/35 transition-colors border border-red-600/25">

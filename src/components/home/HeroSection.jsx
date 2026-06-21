@@ -7,6 +7,7 @@ import { base44 } from '@/api/base44Client';
 import SmartSearchBar from '../SmartSearchBar';
 import PostListingMenu from '../PostListingMenu';
 import { ALFIE_CAR, MARKETPH_LOGO } from '@/lib/brandAssets';
+import TikTokIcon from '@/components/icons/TikTokIcon';
 
 export default function HeroSection({ heroImage }) {
   const [isAuth, setIsAuth] = useState(false);
@@ -42,7 +43,7 @@ export default function HeroSection({ heroImage }) {
           <Instagram className="w-4 h-4" />
         </a>
         <a href="https://www.tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="w-8 h-8 rounded-full flex items-center justify-center text-white font-heading text-sm font-black hover:scale-110 transition-transform" style={{ background: 'linear-gradient(135deg,#010101,#25F4EE,#FE2C55)' }}>
-          ♪
+          <TikTokIcon className="w-4 h-4 text-white" />
         </a>
         <a href="https://www.youtube.com/@1marketph" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="w-8 h-8 rounded-full bg-[#FF0000] flex items-center justify-center text-white hover:scale-110 transition-transform">
           <Youtube className="w-4 h-4" />

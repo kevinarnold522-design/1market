@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Youtube, Lock, CheckCircle, Zap, MessageCircle, Globe } from 'lucide-react';
+import TikTokIcon from '@/components/icons/TikTokIcon';
 
 const TRUST_BADGES = [
   { icon: Lock, label: 'SSL Secured', color: '#00D4FF' },
@@ -70,7 +71,7 @@ export default function Footer() {
             <a href="https://tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-body text-xs font-bold text-white/80 transition-all hover:scale-105"
               style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)' }}>
-              TikTok
+              <TikTokIcon className="w-4 h-4 text-white" /> TikTok
             </a>
             <a href="https://youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-body text-xs font-bold text-red-400 transition-all hover:scale-105"
