@@ -1,10 +1,9 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
 
 import MascotDog from '../components/MascotDog';
 import Footer from '../components/home/Footer';
 import WelcomeSplash from '../components/home/WelcomeSplash';
 import CategoryCards from '../components/home/CategoryCards';
-import CompactOneStopDashboard from '../components/home/OneStopShopDashboard';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
 import RoyalBlueWaves from '../components/RoyalBlueWaves';
@@ -25,8 +24,6 @@ const ReviewHighlights = lazy(() => import('../components/home/ReviewHighlights'
 const CommunityAnimation = lazy(() => import('../components/home/CommunityAnimation'));
 const RecentlyViewed = lazy(() => import('../components/home/RecentlyViewed'));
 const SuggestionBox = lazy(() => import('../components/home/SuggestionBox'));
-const BrandingBanner = lazy(() => import('../components/home/BrandingBanner'));
-
 const CustomerSupportButton = lazy(() => import('../components/CustomerSupportButton'));
 // AdminQuickAddFAB replaced by PostListingMenu in navbar
 const AdManager = lazy(() => import('../components/AdManager'));
@@ -36,6 +33,34 @@ const PhilippinesTravelBanner = lazy(() => import('../components/home/Philippine
 
 const Spinner = () => null; // silent fallback — no layout shift
 const HERO_IMAGE = '';
+
+function LazyOnVisible({ children, minHeight = 80 }) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setVisible(true);
+        observer.disconnect();
+      }
+    }, { rootMargin: '500px 0px' });
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return <div ref={ref} style={{ minHeight: visible ? 0 : minHeight }}>{visible ? children : null}</div>;
+}
+
+function DeferredMount({ children }) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    const run = () => setReady(true);
+    const id = window.requestIdleCallback ? window.requestIdleCallback(run) : window.setTimeout(run, 1200);
+    return () => window.cancelIdleCallback ? window.cancelIdleCallback(id) : window.clearTimeout(id);
+  }, []);
+  return ready ? children : null;
+}
 
 export default function Home() {
   return (
@@ -49,25 +74,25 @@ export default function Home() {
         
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>
         <CategoryCards />
-        <Suspense fallback={<Spinner />}><CompactOneStopDashboardLazy /></Suspense>
-        <Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense>
-        <Suspense fallback={<Spinner />}><PhFlightDeals /></Suspense>
-        <Suspense fallback={<Spinner />}><PhHotelDeals /></Suspense>
-        <Suspense fallback={<Spinner />}><FeaturedListings /></Suspense>
-        <Suspense fallback={<Spinner />}><TopSellersSection /></Suspense>
-        <Suspense fallback={<Spinner />}><LiveCategoryDashboards /></Suspense>
-        <Suspense fallback={<Spinner />}><HowItWorksSection /></Suspense>
-        <Suspense fallback={<Spinner />}><ReviewHighlights /></Suspense>
-        <Suspense fallback={<Spinner />}><CommunityAnimation /></Suspense>
-        <Suspense fallback={<Spinner />}><RecentlyViewed /></Suspense>
+        <LazyOnVisible minHeight={120}><Suspense fallback={<Spinner />}><CompactOneStopDashboardLazy /></Suspense></LazyOnVisible>
+        <LazyOnVisible minHeight={120}><Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense></LazyOnVisible>
+        <LazyOnVisible minHeight={120}><Suspense fallback={<Spinner />}><PhFlightDeals /></Suspense></LazyOnVisible>
+        <LazyOnVisible minHeight={120}><Suspense fallback={<Spinner />}><PhHotelDeals /></Suspense></LazyOnVisible>
+        <LazyOnVisible minHeight={160}><Suspense fallback={<Spinner />}><FeaturedListings /></Suspense></LazyOnVisible>
+        <LazyOnVisible minHeight={120}><Suspense fallback={<Spinner />}><TopSellersSection /></Suspense></LazyOnVisible>
+        <LazyOnVisible minHeight={160}><Suspense fallback={<Spinner />}><LiveCategoryDashboards /></Suspense></LazyOnVisible>
+        <LazyOnVisible minHeight={120}><Suspense fallback={<Spinner />}><HowItWorksSection /></Suspense></LazyOnVisible>
+        <LazyOnVisible minHeight={120}><Suspense fallback={<Spinner />}><ReviewHighlights /></Suspense></LazyOnVisible>
+        <LazyOnVisible minHeight={120}><Suspense fallback={<Spinner />}><CommunityAnimation /></Suspense></LazyOnVisible>
+        <LazyOnVisible minHeight={80}><Suspense fallback={<Spinner />}><RecentlyViewed /></Suspense></LazyOnVisible>
         <Footer />
-        <Suspense fallback={<Spinner />}><SuggestionBox /></Suspense>
+        <DeferredMount><Suspense fallback={<Spinner />}><SuggestionBox /></Suspense></DeferredMount>
       </div>
 
-      <Suspense fallback={<Spinner />}><PhilippinesTravelBanner /></Suspense>
-      <Suspense fallback={<Spinner />}><CustomerSupportButton /></Suspense>
-      <Suspense fallback={<Spinner />}><AdManager /></Suspense>
-      <Suspense fallback={<Spinner />}><GetStartedButton /></Suspense>
+      <DeferredMount><Suspense fallback={<Spinner />}><PhilippinesTravelBanner /></Suspense></DeferredMount>
+      <DeferredMount><Suspense fallback={<Spinner />}><CustomerSupportButton /></Suspense></DeferredMount>
+      <DeferredMount><Suspense fallback={<Spinner />}><AdManager /></Suspense></DeferredMount>
+      <DeferredMount><Suspense fallback={<Spinner />}><GetStartedButton /></Suspense></DeferredMount>
       <MascotDog page="home" />
       <ScrollToTop />
       <CookieBanner />

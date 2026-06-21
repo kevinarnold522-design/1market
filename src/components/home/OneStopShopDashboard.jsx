@@ -23,7 +23,7 @@ const BUSINESS_VISION = {
   subtitle: 'Grow Your Reach, Zero Commission Fees',
   points: [
     'Unlimited Free Product Listings',
-    'Access 10K+ Daily Active Buyers',
+    'Reach Local Buyers Nationwide',
     'Built-in Marketing Tools',
     'Real-time Sales Analytics',
     'Verified Business Badges'
@@ -192,7 +192,7 @@ export default function CompactOneStopDashboard() {
           {[
             { icon: Zap, label: '100% Free Listings', color: '#10b981' },
             { icon: Globe, label: 'Nationwide Coverage', color: '#00D4FF' },
-            { icon: TrendingUp, label: '10K+ Daily Visitors', color: '#FFD700' },
+            { icon: TrendingUp, label: 'Growing Marketplace', color: '#FFD700' },
             { icon: CheckCircle, label: 'Verified Sellers', color: '#a855f7' },
           ].map(({ icon: Icon, label, color }, idx) => (
             <div key={idx} className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)', border: `1px solid ${color}30` }}>
