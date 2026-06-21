@@ -6,6 +6,7 @@ import WelcomeSplash from '../components/home/WelcomeSplash';
 import CategoryCards from '../components/home/CategoryCards';
 import NewUserAlfieSpotlight from '../components/home/NewUserAlfieSpotlight';
 import ListingOfWeekDashboard from '../components/home/ListingOfWeekDashboard';
+import MonthlyTop10Dashboard from '../components/home/MonthlyTop10Dashboard';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
 import RoyalBlueWaves from '../components/RoyalBlueWaves';
@@ -79,6 +80,7 @@ export default function Home() {
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>
         <NewUserAlfieSpotlight />
         <ListingOfWeekDashboard />
+        <MonthlyTop10Dashboard />
         <CategoryCards />
         <LazyOnVisible minHeight={120}><Suspense fallback={<Spinner />}><CompactOneStopDashboardLazy /></Suspense></LazyOnVisible>
         <LazyOnVisible minHeight={120}><Suspense fallback={<Spinner />}><FlashDealsSection /></Suspense></LazyOnVisible>
