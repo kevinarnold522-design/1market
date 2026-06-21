@@ -86,6 +86,12 @@
   }
 }
 
+/* Improve mobile tap responsiveness and disable tap highlight */
+button, a, input, select, textarea {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

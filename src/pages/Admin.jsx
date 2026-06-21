@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import { isOwnerAccount } from '@/lib/adminAuth';
@@ -291,6 +292,8 @@ function ListingForm({ initial, onSave, onCancel }) {
 
 export default function Admin() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isAdmin = !!(user?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
   const [tab, setTab] = useState('approvals');
   const [pendingJobs, setPendingJobs] = useState([]);
   const [pendingListings, setPendingListings] = useState([]);
@@ -440,7 +443,16 @@ export default function Admin() {
 
   const deleteBiz = async (id) => {
     if (!window.confirm('Delete this business?')) return;
-    await base44.entities.Business.delete(id);
+    try {
+      if (isAdmin) {
+        await fetch('/api/adminDelete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ entity: 'Business', id }) });
+      } else {
+        await base44.entities.Business.delete(id);
+      }
+    } catch (err) {
+      console.error('Delete business error:', err);
+      await base44.entities.Business.delete(id);
+    }
     showToast('Business deleted.');
     loadAll();
   };
@@ -461,7 +473,16 @@ export default function Admin() {
 
   const deleteList = async (id) => {
     if (!window.confirm('Delete this listing?')) return;
-    await base44.entities.Listing.delete(id);
+    try {
+      if (isAdmin) {
+        await fetch('/api/adminDelete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ entity: 'Listing', id }) });
+      } else {
+        await base44.entities.Listing.delete(id);
+      }
+    } catch (err) {
+      console.error('Delete listing error:', err);
+      await base44.entities.Listing.delete(id);
+    }
     showToast('Listing deleted.');
     loadAll();
   };

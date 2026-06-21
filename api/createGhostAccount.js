@@ -1,8 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
 function adminClient() {
-  if (!process.env.SUPABASE_URL || !(process.env.SUPABASE_SECRET_KEY || (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY))) throw new Error('Supabase service role is not configured');
-  return createClient(process.env.SUPABASE_URL, (process.env.SUPABASE_SECRET_KEY || (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY)));
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_ANON_KEY;
+  if (!url || !key) throw new Error('Supabase service role is not configured');
+  return createClient(url, key);
 }
 
 export default async function handler(req, res) {
@@ -14,8 +16,8 @@ export default async function handler(req, res) {
 
     const timestamp = Date.now();
     const randomStr = Math.random().toString(36).slice(2, 8);
-    const ghostId = `created_${timestamp}_${randomStr}`;
-    const email = `${ghostId}@1marketph-created.internal`;
+    const ghostId = `ghost_${timestamp}_${randomStr}`;
+    const email = `${ghostId}@1marketph-ghost.internal`;
     const userPayload = {
       email,
       email_confirm: true,
@@ -24,13 +26,15 @@ export default async function handler(req, res) {
     const { data: authData, error: authError } = await db.auth.admin.createUser(userPayload);
     if (authError) throw authError;
     const id = authData.user.id;
+    const usernameBase = (req.body.username || channel_name || full_name || ghostId).toString();
+    const usernameSlug = usernameBase.toLowerCase().replace(/[^a-z0-9_]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '').slice(0, 22) || 'ghost';
     const profile = {
       id,
       full_name: full_name.trim(),
       channel_name: channel_name?.trim() || full_name.trim(),
       email,
       role: 'user',
-      username: ghostId.toLowerCase().replace(/[^a-z0-9_]/g, ''),
+      username: `${usernameSlug}_${randomStr}`,
       username_set: true,
       user_type,
       is_seller: user_type !== 'customer',
@@ -42,6 +46,7 @@ export default async function handler(req, res) {
       seller_page_enabled: user_type !== 'customer',
       is_ghost_account: true,
       is_connected_account: true,
+      ghost_linked: false,
       ghost_id: ghostId,
       created_by_admin_id,
       created_by_admin_email,

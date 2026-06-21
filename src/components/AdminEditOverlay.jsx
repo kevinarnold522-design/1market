@@ -77,10 +77,25 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
   const handleDelete = async () => {
     if (!window.confirm(`Delete this ${entity}? This cannot be undone.`)) return;
     setDeleting(true);
-    await base44.entities[entity].delete(record.id);
+    try {
+      if (globalEditMode) {
+        const res = await fetch('/api/adminDelete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ entity, id: record.id })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || data.message || 'Admin delete failed');
+      } else {
+        await base44.entities[entity].delete(record.id);
+      }
+      setOpen(false);
+      if (onDeleted) onDeleted(record.id);
+    } catch (err) {
+      console.error('Delete error:', err);
+      alert(err.message || 'Delete failed');
+    }
     setDeleting(false);
-    setOpen(false);
-    if (onDeleted) onDeleted(record.id);
   };
 
   return (
@@ -88,14 +103,14 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
       <div className="relative" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
         {children}
         <AnimatePresence>
-          {(hovered && (globalEditMode || isOwner)) && (
+          {(globalEditMode || isOwner || hovered) && (
             <motion.button
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               onClick={openModal}
               className="absolute top-2 right-2 z-30 w-8 h-8 rounded-full flex items-center justify-center shadow-lg gap-1"
-              style={{ background: isOwner ? 'rgba(37,99,235,0.92)' : 'rgba(0,212,255,0.9)', backdropFilter: 'blur(4px)' }}
+              style={{ background: isOwner ? 'rgba(37,99,235,0.92)' : 'rgba(0,212,255,0.9)', backdropFilter: 'blur(4px)', touchAction: 'manipulation' }}
               title={isOwner ? 'Edit Your Item' : 'Admin Edit'}
             >
               <Pencil className="w-3.5 h-3.5 text-white"/>

@@ -43,7 +43,9 @@ export default function GhostAccountMenu({ collapsed = false, compact = false, o
 
   const createGhost = async () => {
     if (!form.full_name.trim()) return;
-    const res = await base44.functions.invoke('createGhostAccount', {
+    let res;
+    try {
+      res = await base44.functions.invoke('createGhostAccount', {
       full_name: form.full_name.trim(),
       channel_name: form.full_name.trim(),
       user_type: form.user_type,
@@ -55,6 +57,26 @@ export default function GhostAccountMenu({ collapsed = false, compact = false, o
       phone: form.phone.trim(),
       email_contact: form.email_contact.trim(),
     });
+    } catch (err) {
+      // fallback to local API route if Supabase Function is not available
+      const r = await fetch('/api/createGhostAccount', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          full_name: form.full_name.trim(),
+          channel_name: form.full_name.trim(),
+          user_type: form.user_type,
+          business_name: form.user_type === 'business' ? form.full_name.trim() : '',
+          location: 'Manila',
+          bio: form.bio.trim(),
+          seller_area: '',
+          username: form.username.trim(),
+          phone: form.phone.trim(),
+          email_contact: form.email_contact.trim(),
+        })
+      });
+      if (!r.ok) throw new Error('Could not create ghost account');
+      res = { data: await r.json() };
+    }
     const newUser = res.data.user;
     const linkedEmail = form.email_contact.trim();
     const activeGhost = saveGhostSession({ ...newUser, email: linkedEmail || newUser.email, linked_email: linkedEmail, ghost_linked: !!linkedEmail, live_user: true });
