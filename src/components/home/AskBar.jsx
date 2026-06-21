@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
-const ALFIE_IMG = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/dba602fee_5C2B4377-0629-406D-97F0-9485947B48FD.png';
+const ALFIE_IMG = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 160 160%22%3E%3Ccircle cx=%2280%22 cy=%2280%22 r=%2274%22 fill=%22%23fff7ed%22/%3E%3Ccircle cx=%2256%22 cy=%2268%22 r=%2210%22 fill=%22%230A192F%22/%3E%3Ccircle cx=%22104%22 cy=%2268%22 r=%2210%22 fill=%22%230A192F%22/%3E%3Cellipse cx=%2280%22 cy=%2294%22 rx=%2218%22 ry=%2213%22 fill=%22%230A192F%22/%3E%3Cpath d=%22M58 110 Q80 132 102 110%22 stroke=%22%230033CC%22 stroke-width=%228%22 fill=%22none%22 stroke-linecap=%22round%22/%3E%3C/svg%3E';
 
 export default function AskBar() {
   const [query, setQuery] = useState('');

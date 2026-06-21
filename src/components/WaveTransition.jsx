@@ -85,7 +85,7 @@ export default function WaveTransition({ active }) {
           >
             <div className="flex items-center gap-3">
               <img
-                src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
+                src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%230033CC%22/%3E%3Ctext x=%2232%22 y=%2241%22 font-family=%22Arial%22 font-size=%2224%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22white%22%3E1M%3C/text%3E%3C/svg%3E"
                 alt="1MarketPH"
                 className="w-10 h-10 rounded-xl object-cover"
                 style={{ boxShadow: '0 0 20px rgba(0,212,255,0.5)' }}

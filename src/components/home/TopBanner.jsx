@@ -18,7 +18,7 @@ export default function TopBanner() {
         <div className="flex flex-row items-center justify-center gap-3 flex-wrap">
           {/* Logo */}
           <div className="flex items-center gap-1.5">
-            <img src="https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/e75a169ec_59E45701-6C10-4FA1-9279-AED5F6B2A6DE.jpg"
+            <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%230033CC%22/%3E%3Ctext x=%2232%22 y=%2241%22 font-family=%22Arial%22 font-size=%2224%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22white%22%3E1M%3C/text%3E%3C/svg%3E"
               alt="1Market PH" className="w-6 h-6 rounded-md object-cover" />
             <p className="font-heading font-bold text-white text-xs tracking-tight">
               1Market<span style={{ color: '#FFD700' }}>PH</span><span className="text-white/40">.com</span>

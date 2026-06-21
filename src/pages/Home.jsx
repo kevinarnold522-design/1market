@@ -34,7 +34,7 @@ const PhilippinesTravelBanner = lazy(() => import('../components/home/Philippine
 // LiveStatsBar removed
 
 const Spinner = () => null; // silent fallback — no layout shift
-const HERO_IMAGE = 'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/be5b76b23_generated_1fcae122.png';
+const HERO_IMAGE = '';
 
 export default function Home() {
   return (

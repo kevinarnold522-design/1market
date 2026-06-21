@@ -1,6 +1,6 @@
-import base44 from "@base44/vite-plugin"
 import react from '@vitejs/plugin-react'
 import { defineConfig, loadEnv } from 'vite'
+import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -14,19 +14,15 @@ export default defineConfig(({ mode }) => {
   return {
     logLevel: 'error', // Suppress warnings, only show errors
     plugins: [
-      base44({
-        // Support for legacy code that imports the base44 SDK with @/integrations, @/entities, etc.
-        // can be removed if the code has been updated to use the new SDK imports from @base44/sdk
-        legacySDKImports: env.BASE44_LEGACY_SDK_IMPORTS === 'true',
-        hmrNotifier: true,
-        navigationNotifier: true,
-        analyticsTracker: true,
-        visualEditAgent: true
-      }),
       react(),
     ],
     // Bridge non-VITE_ prefixed env vars into import.meta.env so Supabase client works.
     // Vite only auto-exposes VITE_ prefixed variables; we explicitly map the others here.
+    resolve: {
+      alias: {
+        '@': path.resolve(process.cwd(), 'src'),
+      },
+    },
     define: {
       'import.meta.env.VITE_BACKEND_PROVIDER': JSON.stringify(
         env.VITE_BACKEND_PROVIDER || 'supabase'

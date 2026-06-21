@@ -1,24 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-// All 8 Alfie frames in animation order:
-// 1. Standing neutral (idle)
-// 2. Standing smile (happy idle)
-// 3. Eyes closed big smile (laughing)
-// 4. Waving paw up, wink (wave)
-// 5. Eyes closed laughing, hands down (joy)
-// 6. Waving paw high, eyes closed (big wave)
-// 7. Thumbs up, sparkle (thumbsup)
-// 8. Waving paw, eyes closed, big smile (celebrate)
-const FRAMES = [
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/3381e60c0_5C2B4377-0629-406D-97F0-9485947B48FD.png',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/db25c1e66_F967D53C-C973-4B61-B904-E86EF40A0253.png',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/2554e74df_2C920F49-47BC-4226-9978-C7C1F8684E43.png',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/2ec4ebb46_E91BD35A-AC32-4503-8AE3-1E347A75BF16.png',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/f49ae5716_75ABF842-AD98-4B8E-A707-DC07A571C93F.png',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/7bad8acc8_FD0BE7EF-FB56-4DF2-8309-30E2E1FDB839.png',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/75a7a2f9f_169BE7A2-8E8B-4469-9B17-BA57B7B48892.png',
-  'https://media.base44.com/images/public/6a0bd24ab498f7341650c2a0/07ee1738b_C61443FC-7AC9-4973-9A7F-765A8CA1917B.png',
-];
+const ALFIE_LOCAL_FRAME = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 160 160%22%3E%3Ccircle cx=%2280%22 cy=%2280%22 r=%2274%22 fill=%22%23fff7ed%22/%3E%3Ccircle cx=%2256%22 cy=%2268%22 r=%2210%22 fill=%22%230A192F%22/%3E%3Ccircle cx=%22104%22 cy=%2268%22 r=%2210%22 fill=%22%230A192F%22/%3E%3Cellipse cx=%2280%22 cy=%2294%22 rx=%2218%22 ry=%2213%22 fill=%22%230A192F%22/%3E%3Cpath d=%22M58 110 Q80 132 102 110%22 stroke=%22%230033CC%22 stroke-width=%228%22 fill=%22none%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M28 38 Q20 8 54 26%22 fill=%22%23f59e0b%22/%3E%3Cpath d=%22M132 38 Q140 8 106 26%22 fill=%22%23f59e0b%22/%3E%3C/svg%3E";
+const FRAMES = Array(8).fill(ALFIE_LOCAL_FRAME);
 
 // How long each frame stays visible (ms) before crossfading to the next
 // Frames with action (wave, thumbsup) hold a bit longer for effect
