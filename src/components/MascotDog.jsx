@@ -7,7 +7,7 @@ import AlfieCharacter from './AlfieCharacter';
 const PAGE_CONFIG = {
   home: {
     messages: [
-      { text: "Welcome to 1MarketPH! 🐶 The #1 Filipino marketplace.", mode: 'wave' },
+      { text: "Welcome to 1MarketPH! AI The #1 Filipino marketplace.", mode: 'wave' },
       { text: "Browse local food, travel, services & more! AI️", mode: 'point' },
       { text: "Over 1,000+ listings from sellers across the Philippines! AI", mode: 'announce' },
       { text: "Tap 'Get Started' to create your free account! AI", mode: 'point' },
@@ -17,7 +17,7 @@ const PAGE_CONFIG = {
       { text: "Sellers: List your products for FREE today! AI", mode: 'point' },
     ],
     entryMode: 'wave',
-    entryMsg: "Welcome to 1MarketPH! 🐶 I'm Alfie, your guide!",
+    entryMsg: "Welcome to 1MarketPH! AI I'm Alfie, your guide!",
     returningMsg: "Hey, welcome back! Great deals await you today! AIAI",
   },
   travel: {
