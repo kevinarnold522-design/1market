@@ -50,8 +50,12 @@ export default function UserProfile() {
   const updateUser = async (data) => {
     if (ghost) {
       const updated = { ...ghost, ...data };
-      await base44.entities.User.update(ghost.id, data);
+      if (!String(ghost.id || '').startsWith('ghost_')) {
+        await base44.entities.User.update(ghost.id, data);
+      }
       saveGhostSession(updated);
+      const localKey = `1m_ghost_${updated.ghost_id || updated.id}`;
+      localStorage.setItem(localKey, JSON.stringify(updated));
       setUser(updated);
       return;
     }
@@ -71,11 +75,19 @@ export default function UserProfile() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(type);
-    const { file_url } = await uploadMediaFileToR2(file);
-    const field = type === 'cover' ? 'cover_photos' : 'profile_photos';
-    const primary = type === 'cover' ? 'cover_photo' : 'profile_picture';
-    const current = user?.[field] || (user?.[primary] ? [user[primary]] : []);
-    await updateUser({ [primary]: user?.[primary] || file_url, [field]: [...current, file_url] });
+    try {
+      const { file_url } = await uploadMediaFileToR2(file, type === 'cover' ? 'profiles/covers' : 'profiles/avatars');
+      const field = type === 'cover' ? 'cover_photos' : 'profile_photos';
+      const primary = type === 'cover' ? 'cover_photo' : 'profile_picture';
+      const current = user?.[field] || (user?.[primary] ? [user[primary]] : []);
+      const nextImages = [...current.filter(url => url !== file_url), file_url];
+      await updateUser({ [primary]: file_url, [field]: nextImages });
+      setToast(type === 'cover' ? 'Cover photo uploaded' : 'Profile photo uploaded');
+      setTimeout(() => setToast(''), 1800);
+    } catch (error) {
+      setToast(error.message || 'Upload failed');
+      setTimeout(() => setToast(''), 2200);
+    }
     setUploading('');
     e.target.value = '';
   };
@@ -99,7 +111,7 @@ export default function UserProfile() {
             <div className="absolute inset-0 bg-gradient-to-t from-blue-950/45 to-transparent" />
             <label className="absolute right-4 bottom-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-blue-700 font-bold text-sm cursor-pointer shadow-lg">
               <Camera className="w-4 h-4" /> {uploading === 'cover' ? 'Uploading...' : 'Add cover photo'}
-              <input type="file" accept="image/*" className="hidden" onChange={e => uploadImage(e, 'cover')} />
+              <input type="file" accept="image/*" className="hidden" onChange={e => uploadImage(e, 'cover')} disabled={uploading === 'cover'} />
             </label>
           </div>
           <div className="p-6 md:p-8">
@@ -108,7 +120,7 @@ export default function UserProfile() {
                 {profileImages.length ? <RotatingImage images={profileImages} alt="Profile" className="absolute inset-0 w-full h-full object-cover" /> : initials}
                 <label className="absolute bottom-2 right-2 w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center cursor-pointer border-2 border-white">
                   <Camera className="w-4 h-4 text-white" />
-                  <input type="file" accept="image/*" className="hidden" onChange={e => uploadImage(e, 'profile')} />
+                  <input type="file" accept="image/*" className="hidden" onChange={e => uploadImage(e, 'profile')} disabled={uploading === 'profile'} />
                 </label>
               </div>
               <div className="flex-1">
