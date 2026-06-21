@@ -1,8 +1,6 @@
 import { requireSupabase } from '@/lib/supabaseClient';
-import { createClient } from '@base44/sdk';
 import { uploadFileToSupabase, SUPABASE_IMAGE_BUCKET } from '@/lib/supabaseStorage';
 import { localListingAI } from '@/lib/localListingAI';
-import { appParams } from '@/lib/app-params';
 
 const entityNames = [
   'User','Listing','Business','Order','Cart','Favourite','Review','MenuItem','Group','GroupPost','GroupComment','GroupMember','GroupPostLike','CommunityPost','Notification','VerificationApplication','Follow','Report','ListingHeart','ListingComment','Reservation','ChatMessage','DraftListing','SavedListingTemplate','UserReward','UserTasks'
@@ -38,17 +36,34 @@ const tableMap = {
 };
 
 const tableName = (name) => tableMap[name] || name.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
-const realBase44 = appParams.appId ? createClient({
-  appId: appParams.appId,
-  appBaseUrl: appParams.appBaseUrl,
-  functionsVersion: appParams.functionsVersion,
-  requiresAuth: false,
-}) : null;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_uHaBIgBzuhgPuUe0cTK0Qw_PDktWO2c';
 const normalizeRecord = (record) => record && typeof record === 'object'
   ? { ...(record.metadata && typeof record.metadata === 'object' ? record.metadata : {}), ...record }
   : record;
 const normalizeRecords = (records) => Array.isArray(records) ? records.map(normalizeRecord) : [];
+
+const writableColumns = {
+  Listing: new Set([
+    'title','main_category','type','approval_status','border_color','subcategory','extra_subcategories','business_id','price','original_price',
+    'price_label','quantity','flash_deal_active','flash_deal_end','location','area','meetup_location','seller_name','seller_email','phone',
+    'email_contact','apply_link','description','image_url','extra_images','video_url','preview_media','condition','brand','model','year',
+    'mileage','transmission','size','is_active','view_count','rating','rating_count','delivery_options','metadata'
+  ])
+};
+
+function sanitizeRecord(entity, input = {}) {
+  const allowed = writableColumns[entity];
+  if (!allowed) return input || {};
+  const clean = {};
+  const extras = {};
+  Object.entries(input || {}).forEach(([key, value]) => {
+    if (key === 'id' || key === 'created_at' || key === 'created_date' || key === 'updated_at' || key === 'updated_date' || key === 'created_by_id') return;
+    if (allowed.has(key)) clean[key] = value;
+    else if (value !== undefined) extras[key] = value;
+  });
+  if (Object.keys(extras).length) clean.metadata = { ...(clean.metadata || {}), ...extras };
+  return clean;
+}
 
 function makeEntity(name) {
   const table = tableName(name);
@@ -90,19 +105,27 @@ function makeEntity(name) {
       }
     },
     async create(record) {
-      const response = await supabaseCompat.functions.invoke('supabaseEntityWrite', { entity: name, action: 'create', record });
-      return normalizeRecord(response.data.data);
+      const db = requireSupabase();
+      const { data, error } = await db.from(table).insert(sanitizeRecord(name, record)).select('*').single();
+      if (error) throw error;
+      return normalizeRecord(data);
     },
     async bulkCreate(records) {
-      const response = await supabaseCompat.functions.invoke('supabaseEntityWrite', { entity: name, action: 'bulkCreate', records });
-      return normalizeRecords(response.data.data);
+      const db = requireSupabase();
+      const { data, error } = await db.from(table).insert((records || []).map(item => sanitizeRecord(name, item))).select('*');
+      if (error) throw error;
+      return normalizeRecords(data);
     },
     async update(id, patch) {
-      const response = await supabaseCompat.functions.invoke('supabaseEntityWrite', { entity: name, action: 'update', id, patch });
-      return normalizeRecord(response.data.data);
+      const db = requireSupabase();
+      const { data, error } = await db.from(table).update(sanitizeRecord(name, patch)).eq('id', id).select('*').single();
+      if (error) throw error;
+      return normalizeRecord(data);
     },
     async delete(id) {
-      await supabaseCompat.functions.invoke('supabaseEntityWrite', { entity: name, action: 'delete', id });
+      const db = requireSupabase();
+      const { error } = await db.from(table).delete().eq('id', id);
+      if (error) throw error;
       return true;
     },
     subscribe(callback) {
@@ -236,8 +259,14 @@ export const supabaseCompat = {
       return true;
     },
     async updateMe(patch) {
-      const response = await supabaseCompat.functions.invoke('updateMyProfile', { patch });
-      return response.data.user;
+      const db = requireSupabase();
+      const { data: sessionData, error: sessionError } = await db.auth.getUser();
+      if (sessionError) throw sessionError;
+      const userId = sessionData?.user?.id;
+      if (!userId) throw new Error('Not authenticated');
+      const { data, error } = await db.from('users').update(patch || {}).eq('id', userId).select('*').single();
+      if (error) throw error;
+      return data;
     },
     redirectToLogin(nextUrl = window.location.href) {
       window.location.href = `/login?next=${encodeURIComponent(nextUrl)}`;
@@ -254,8 +283,6 @@ export const supabaseCompat = {
   },
   functions: {
     async invoke(name, payload = {}) {
-      if (realBase44) return realBase44.functions.invoke(name, payload);
-
       const db = requireSupabase();
       const { data: sessionData } = await db.auth.getSession();
       const functionBase = (

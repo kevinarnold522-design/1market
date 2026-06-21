@@ -1,14 +1,5 @@
-import { createClient } from '@base44/sdk';
-import { appParams } from '@/lib/app-params';
-
 export const SUPABASE_IMAGE_BUCKET = '1Marketphmediafiles';
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_uHaBIgBzuhgPuUe0cTK0Qw_PDktWO2c';
-const realBase44 = appParams.appId ? createClient({
-  appId: appParams.appId,
-  appBaseUrl: appParams.appBaseUrl,
-  functionsVersion: appParams.functionsVersion,
-  requiresAuth: false,
-}) : null;
 export const MAX_IMAGE_SIZE_BYTES = 15 * 1024 * 1024;
 export const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif', 'image/heic', 'image/heif'];
 
@@ -28,15 +19,6 @@ function inferContentType(file) {
 
 function isImageFile(file) {
   return inferContentType(file).startsWith('image/');
-}
-
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result).split(',')[1] || '');
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
 }
 
 function safeFolder(folder = 'uploads') {
@@ -64,19 +46,6 @@ export async function uploadFileToSupabase(file, bucket = SUPABASE_IMAGE_BUCKET,
   const isImage = contentType.startsWith('image/');
   if (!isImage && !(allowPdf && contentType === 'application/pdf')) throw new Error('Please choose an image file.');
   if (file.size > MAX_IMAGE_SIZE_BYTES) throw new Error('File must be 15MB or smaller.');
-
-  const base64_data = await fileToBase64(file);
-
-  if (realBase44) {
-    const result = await realBase44.functions.invoke('uploadMediaToSupabase', {
-      file_name: file.name || 'upload',
-      content_type: contentType,
-      base64_data,
-      folder,
-      bucket,
-    });
-    if (result?.data?.file_url) return result.data;
-  }
 
   const path = `${safeFolder(folder)}/${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}-${safeFileName(file, contentType)}`;
   const encodedPath = path.split('/').map(encodeURIComponent).join('/');
