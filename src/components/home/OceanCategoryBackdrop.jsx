@@ -3,11 +3,15 @@ import { motion } from 'framer-motion';
 
 const seaLife = [
   { icon: '🐟', label: 'fish', top: '23%', size: 'text-2xl', duration: 18, delay: 0, dir: 1 },
-  { icon: '🐠', label: 'fish', top: '58%', size: 'text-xl', duration: 21, delay: 2, dir: -1 },
+  { icon: '🐠', label: 'tropical fish', top: '58%', size: 'text-xl', duration: 21, delay: 2, dir: -1 },
   { icon: '🐬', label: 'dolphin', top: '35%', size: 'text-4xl', duration: 24, delay: 1, dir: 1 },
   { icon: '🦈', label: 'shark', top: '68%', size: 'text-4xl', duration: 29, delay: 4, dir: -1 },
-  { icon: '🐙', label: 'octopus', top: '76%', size: 'text-3xl', duration: 26, delay: 6, dir: 1 },
-  { icon: '🐋', label: 'whale shark', top: '84%', size: 'text-5xl', duration: 34, delay: 3, dir: -1 },
+  { icon: '🐙', label: 'squid', top: '76%', size: 'text-3xl', duration: 26, delay: 6, dir: 1 },
+  { icon: '🐋', label: 'whale', top: '84%', size: 'text-5xl', duration: 34, delay: 3, dir: -1 },
+  { icon: '🐋', label: 'whale shark', top: '18%', size: 'text-6xl', duration: 42, delay: 5, dir: -1 },
+  { icon: '🦑', label: 'squid', top: '48%', size: 'text-4xl', duration: 28, delay: 7, dir: 1 },
+  { icon: '🦭', label: 'seal', top: '62%', size: 'text-4xl', duration: 31, delay: 8, dir: 1 },
+  { icon: '⚫⚪', label: 'orca', top: '40%', size: 'text-3xl', duration: 36, delay: 10, dir: -1 },
 ];
 
 export default function OceanCategoryBackdrop({ global = false }) {
