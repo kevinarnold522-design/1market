@@ -1,34 +1,35 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+const SUPABASE_URL = 'https://ksnzljothfoaefifevch.supabase.co';
+
+function serviceHeaders() {
+  const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (!key) throw new Error('SUPABASE_SERVICE_ROLE_KEY is missing');
+  return { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' };
+}
+
+async function selectRows(table, query = '') {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, { headers: serviceHeaders() });
+  if (!response.ok) throw new Error(await response.text());
+  return await response.json();
+}
 
 Deno.serve(async (req) => {
   try {
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    const { user_email, conversation_user_email } = await req.json().catch(() => ({}));
+    let messages = [];
 
-    if (!user || user.role !== 'admin') {
-      return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
-    }
-
-    const { user_email, conversation_user_email } = await req.json();
-
-    let messages;
     if (user_email && conversation_user_email) {
-      // Get conversation between two specific users
-      const sent = await base44.asServiceRole.entities.ChatMessage.filter({ sender_email: user_email });
-      const received = await base44.asServiceRole.entities.ChatMessage.filter({ sender_email: conversation_user_email });
-      const allMsgs = [...sent, ...received].filter(m =>
+      const sent = await selectRows('chat_messages', `?sender_email=eq.${encodeURIComponent(user_email)}&select=*`);
+      const received = await selectRows('chat_messages', `?sender_email=eq.${encodeURIComponent(conversation_user_email)}&select=*`);
+      messages = [...sent, ...received].filter((m) =>
         (m.buyer_email === user_email || m.seller_email === user_email) &&
         (m.buyer_email === conversation_user_email || m.seller_email === conversation_user_email)
-      );
-      messages = allMsgs.sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
+      ).sort((a, b) => new Date(a.created_at || a.created_date || 0) - new Date(b.created_at || b.created_date || 0));
     } else if (user_email) {
-      // Get all messages involving a specific user
-      const asBuyer = await base44.asServiceRole.entities.ChatMessage.filter({ buyer_email: user_email });
-      const asSeller = await base44.asServiceRole.entities.ChatMessage.filter({ seller_email: user_email });
-      messages = [...asBuyer, ...asSeller].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+      const asBuyer = await selectRows('chat_messages', `?buyer_email=eq.${encodeURIComponent(user_email)}&select=*`);
+      const asSeller = await selectRows('chat_messages', `?seller_email=eq.${encodeURIComponent(user_email)}&select=*`);
+      messages = [...asBuyer, ...asSeller].sort((a, b) => new Date(b.created_at || b.created_date || 0) - new Date(a.created_at || a.created_date || 0));
     } else {
-      // Get all recent messages
-      messages = await base44.asServiceRole.entities.ChatMessage.list('-created_date', 200);
+      messages = await selectRows('chat_messages', '?select=*&order=created_at.desc&limit=200');
     }
 
     return Response.json({ messages });

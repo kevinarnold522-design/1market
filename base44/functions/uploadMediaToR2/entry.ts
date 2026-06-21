@@ -12,12 +12,12 @@ Deno.serve(async (req) => {
     const bytes = Uint8Array.from(atob(base64_data), c => c.charCodeAt(0));
     if (bytes.byteLength > 25 * 1024 * 1024) return Response.json({ error: 'File must be 25MB or smaller' }, { status: 400 });
 
-    const s3ApiUrl = 'https://f9559f35122ab25fb52ed96e81ca17a4.r2.cloudflarestorage.com/1marketphmedia';
+    const s3ApiUrl = 'https://f9559f35122ab25fb52ed96e81ca17a4.r2.cloudflarestorage.com/1marketph';
     const endpointUrl = new URL(s3ApiUrl);
     const bucketFromUrl = endpointUrl.pathname.replace(/^\/+|\/+$/g, '');
     endpointUrl.pathname = '';
 
-    const bucket = Deno.env.get('CLOUDFLARE_R2_BUCKET_NAME') || bucketFromUrl || '1marketphmedia';
+    const bucket = Deno.env.get('CLOUDFLARE_R2_BUCKET_NAME') || bucketFromUrl || '1marketph';
     const accessKeyId = Deno.env.get('CLOUDFLARE_R2_ACCESS_KEY_ID');
     const secretAccessKey = Deno.env.get('CLOUDFLARE_R2_SECRET_ACCESS_KEY');
     const publicBaseUrl = 'https://pub-c5291a58afce46c98ac829d295c54bc3.r2.dev';
