@@ -319,12 +319,22 @@ aside nav button + a {
 [style*="#011640"],
 [style*="#0f172a"],
 [style*="#1e293b"],
+[style*="#020617"],
+[style*="#030712"],
+[style*="#09090b"],
+[style*="#0a0a0a"],
+[style*="#000000"],
+[style*="#000"],
+[style*="black"],
 [style*="rgba(13,31,60"],
 [style*="rgba(5,10,25"],
 [style*="rgba(7,15,26"],
 [style*="rgba(0,13,64"],
 [style*="rgba(0,26,128"],
-[style*="rgba(0,51,204"] {
+[style*="rgba(0,51,204"],
+[style*="rgba(0,0,0"],
+[style*="rgba(2,6,23"],
+[style*="rgba(3,7,18"] {
   background: linear-gradient(135deg, var(--royal-blue), var(--royal-blue-light)) !important;
   background-color: var(--royal-blue) !important;
 }
@@ -341,19 +351,39 @@ aside nav button + a {
 .bg-\[\#0033C4\],
 .bg-\[\#011640\],
 .bg-\[\#0f172a\],
-.bg-\[\#1e293b\] {
+.bg-\[\#1e293b\],
+.bg-\[\#020617\],
+.bg-\[\#030712\],
+.bg-\[\#09090b\],
+.bg-\[\#0a0a0a\],
+.bg-\[\#000000\],
+.bg-black,
+.bg-slate-950,
+.bg-slate-900,
+.bg-gray-950,
+.bg-gray-900,
+.bg-zinc-950,
+.bg-zinc-900,
+.bg-neutral-950,
+.bg-neutral-900,
+[class*="bg-black/"],
+[class*="bg-slate-9"],
+[class*="bg-gray-9"],
+[class*="bg-zinc-9"],
+[class*="bg-neutral-9"] {
+  background: linear-gradient(135deg, var(--royal-blue), var(--royal-blue-light)) !important;
   background-color: var(--royal-blue) !important;
 }
 
-.from-\[\#000d40\], .from-\[\#001060\], .from-\[\#001a80\], .from-\[\#0A192F\], .from-\[\#0D1F3C\], .from-\[\#0033CC\], .from-\[\#0040D0\], .from-\[\#0033C4\], .from-\[\#011640\], .from-\[\#0f172a\], .from-\[\#1e293b\] {
+.from-\[\#000d40\], .from-\[\#001060\], .from-\[\#001a80\], .from-\[\#0A192F\], .from-\[\#0D1F3C\], .from-\[\#0033CC\], .from-\[\#0040D0\], .from-\[\#0033C4\], .from-\[\#011640\], .from-\[\#0f172a\], .from-\[\#1e293b\], .from-\[\#020617\], .from-\[\#030712\], .from-black, .from-slate-950, .from-gray-950, .from-zinc-950, .from-neutral-950 {
   --tw-gradient-from: var(--royal-blue) var(--tw-gradient-from-position) !important;
   --tw-gradient-to: rgb(0 51 204 / 0) var(--tw-gradient-to-position) !important;
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
 }
-.to-\[\#000d40\], .to-\[\#001060\], .to-\[\#001a80\], .to-\[\#0A192F\], .to-\[\#0D1F3C\], .to-\[\#0033CC\], .to-\[\#0040D0\], .to-\[\#0033C4\], .to-\[\#011640\], .to-\[\#0f172a\], .to-\[\#1e293b\] {
+.to-\[\#000d40\], .to-\[\#001060\], .to-\[\#001a80\], .to-\[\#0A192F\], .to-\[\#0D1F3C\], .to-\[\#0033CC\], .to-\[\#0040D0\], .to-\[\#0033C4\], .to-\[\#011640\], .to-\[\#0f172a\], .to-\[\#1e293b\], .to-\[\#020617\], .to-\[\#030712\], .to-black, .to-slate-950, .to-gray-950, .to-zinc-950, .to-neutral-950 {
   --tw-gradient-to: var(--royal-blue) var(--tw-gradient-to-position) !important;
 }
-.via-\[\#000d40\], .via-\[\#001060\], .via-\[\#001a80\], .via-\[\#0A192F\], .via-\[\#0D1F3C\], .via-\[\#0033CC\], .via-\[\#0040D0\], .via-\[\#0033C4\], .via-\[\#011640\], .via-\[\#0f172a\], .via-\[\#1e293b\] {
+.via-\[\#000d40\], .via-\[\#001060\], .via-\[\#001a80\], .via-\[\#0A192F\], .via-\[\#0D1F3C\], .via-\[\#0033CC\], .via-\[\#0040D0\], .via-\[\#0033C4\], .via-\[\#011640\], .via-\[\#0f172a\], .via-\[\#1e293b\], .via-\[\#020617\], .via-\[\#030712\], .via-black, .via-slate-950, .via-gray-950, .via-zinc-950, .via-neutral-950 {
   --tw-gradient-to: rgb(0 51 204 / 0) var(--tw-gradient-to-position) !important;
   --tw-gradient-stops: var(--tw-gradient-from), var(--royal-blue) var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
 }
