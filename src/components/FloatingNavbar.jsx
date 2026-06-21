@@ -34,9 +34,11 @@ export default function FloatingNavbar() {
     const refreshGhost = () => setGhostUser(getGhostSession() || null);
     refreshGhost();
     window.addEventListener('ghost-session-changed', refreshGhost);
+    window.addEventListener('active-user-changed', refreshGhost);
     window.addEventListener('storage', refreshGhost);
     return () => {
       window.removeEventListener('ghost-session-changed', refreshGhost);
+      window.removeEventListener('active-user-changed', refreshGhost);
       window.removeEventListener('storage', refreshGhost);
     };
   }, []);

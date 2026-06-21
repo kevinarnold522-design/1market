@@ -67,13 +67,16 @@ export default function Navbar() {
 
   // Also re-read ghost session whenever the window gains focus (after refresh)
   useEffect(() => {
-    const handler = () => {
+    const handler = (event) => {
       const ghost = getGhostSession();
       setGhostUser(ghost || null);
+      if (!ghost && event?.detail) checkUserAuth?.();
     };
     window.addEventListener('ghost-session-changed', handler);
+    window.addEventListener('active-user-changed', handler);
     return () => {
       window.removeEventListener('ghost-session-changed', handler);
+      window.removeEventListener('active-user-changed', handler);
     };
   }, []);
   

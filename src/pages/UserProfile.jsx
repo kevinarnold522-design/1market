@@ -58,6 +58,7 @@ export default function UserProfile() {
       const localKey = `1m_ghost_${updated.ghost_id || updated.id}`;
       localStorage.setItem(localKey, JSON.stringify(updated));
       setUser(updated);
+      window.dispatchEvent(new CustomEvent('active-user-changed', { detail: updated }));
       return;
     }
     const updated = await base44.auth.updateMe(data);
@@ -82,8 +83,8 @@ export default function UserProfile() {
     try {
       const { file_url } = await uploadMediaFileToSupabase(file, type === 'cover' ? 'profiles/covers' : 'profiles/avatars');
       const patch = type === 'cover'
-        ? { cover_photo: file_url, cover_photos: [file_url, ...(user.cover_photos || []).filter(Boolean)].slice(0, 6) }
-        : { profile_picture: file_url, profile_photos: [file_url, ...(user.profile_photos || []).filter(Boolean)].slice(0, 6) };
+        ? { cover_photo: file_url }
+        : { profile_picture: file_url };
       await updateUser(patch);
       setToast(type === 'cover' ? 'Cover photo uploaded' : 'Profile photo uploaded');
       setTimeout(() => setToast(''), 1800);
