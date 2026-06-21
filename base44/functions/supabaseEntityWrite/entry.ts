@@ -8,6 +8,31 @@ const tableMap = {
   ChatMessage: 'chat_messages', DraftListing: 'draft_listings', SavedListingTemplate: 'saved_listing_templates', UserReward: 'user_rewards', UserTasks: 'user_tasks'
 };
 
+const writableColumns = {
+  Listing: new Set([
+    'title','main_category','type','approval_status','border_color','subcategory','extra_subcategories','business_id','price','original_price',
+    'price_label','quantity','flash_deal_active','flash_deal_end','location','area','meetup_location','seller_name','seller_email','phone',
+    'email_contact','apply_link','description','image_url','extra_images','video_url','preview_media','condition','brand','model','year',
+    'mileage','transmission','size','is_active','view_count','rating','rating_count','delivery_options','metadata'
+  ])
+};
+
+function sanitizeRecord(entity, input = {}) {
+  const allowed = writableColumns[entity];
+  if (!allowed) return input || {};
+  const clean = {};
+  const extras = {};
+  for (const [key, value] of Object.entries(input || {})) {
+    if (key === 'id' || key === 'created_at' || key === 'created_date' || key === 'updated_at' || key === 'updated_date' || key === 'created_by_id') continue;
+    if (allowed.has(key)) clean[key] = value;
+    else if (value !== undefined) extras[key] = value;
+  }
+  if (Object.keys(extras).length) {
+    clean.metadata = { ...(typeof clean.metadata === 'object' && clean.metadata ? clean.metadata : {}), ...extras };
+  }
+  return clean;
+}
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -42,16 +67,18 @@ Deno.serve(async (req) => {
     let response;
 
     if (action === 'create') {
+      const safeRecord = sanitizeRecord(entity, record || {});
       response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
-        method: 'POST', headers: serviceHeaders({ Prefer: 'return=representation' }), body: JSON.stringify(record || {}),
+        method: 'POST', headers: serviceHeaders({ Prefer: 'return=representation' }), body: JSON.stringify(safeRecord),
       });
       const rows = await readJson(response);
       return Response.json({ success: true, data: rows?.[0] || null }, { headers: corsHeaders });
     }
 
     if (action === 'bulkCreate') {
+      const safeRecords = (records || []).map(item => sanitizeRecord(entity, item));
       response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
-        method: 'POST', headers: serviceHeaders({ Prefer: 'return=representation' }), body: JSON.stringify(records || []),
+        method: 'POST', headers: serviceHeaders({ Prefer: 'return=representation' }), body: JSON.stringify(safeRecords),
       });
       const rows = await readJson(response);
       return Response.json({ success: true, data: rows || [] }, { headers: corsHeaders });
@@ -59,8 +86,9 @@ Deno.serve(async (req) => {
 
     if (action === 'update') {
       if (!id) return Response.json({ error: 'Missing record ID' }, { status: 400, headers: corsHeaders });
+      const safePatch = { ...sanitizeRecord(entity, patch || {}), updated_at: new Date().toISOString() };
       response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}&select=*`, {
-        method: 'PATCH', headers: serviceHeaders({ Prefer: 'return=representation' }), body: JSON.stringify({ ...(patch || {}), updated_at: new Date().toISOString() }),
+        method: 'PATCH', headers: serviceHeaders({ Prefer: 'return=representation' }), body: JSON.stringify(safePatch),
       });
       const rows = await readJson(response);
       return Response.json({ success: true, data: rows?.[0] || null }, { headers: corsHeaders });

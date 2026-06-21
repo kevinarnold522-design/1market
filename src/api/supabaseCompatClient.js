@@ -1,6 +1,8 @@
 import { requireSupabase } from '@/lib/supabaseClient';
+import { createClient } from '@base44/sdk';
 import { uploadFileToSupabase, SUPABASE_IMAGE_BUCKET } from '@/lib/supabaseStorage';
 import { localListingAI } from '@/lib/localListingAI';
+import { appParams } from '@/lib/app-params';
 
 const entityNames = [
   'User','Listing','Business','Order','Cart','Favourite','Review','MenuItem','Group','GroupPost','GroupComment','GroupMember','GroupPostLike','CommunityPost','Notification','VerificationApplication','Follow','Report','ListingHeart','ListingComment','Reservation','ChatMessage','DraftListing','SavedListingTemplate','UserReward','UserTasks'
@@ -36,6 +38,17 @@ const tableMap = {
 };
 
 const tableName = (name) => tableMap[name] || name.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
+const realBase44 = appParams.appId ? createClient({
+  appId: appParams.appId,
+  appBaseUrl: appParams.appBaseUrl,
+  functionsVersion: appParams.functionsVersion,
+  requiresAuth: false,
+}) : null;
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_uHaBIgBzuhgPuUe0cTK0Qw_PDktWO2c';
+const normalizeRecord = (record) => record && typeof record === 'object'
+  ? { ...(record.metadata && typeof record.metadata === 'object' ? record.metadata : {}), ...record }
+  : record;
+const normalizeRecords = (records) => Array.isArray(records) ? records.map(normalizeRecord) : [];
 
 function makeEntity(name) {
   const table = tableName(name);
@@ -47,7 +60,7 @@ function makeEntity(name) {
         const column = String(sort).replace(/^-/, '').replace('created_date', 'created_at').replace('updated_date', 'updated_at');
         const { data, error } = await db.from(table).select('*').order(column || 'created_at', { ascending: !descending }).limit(limit || 100);
         if (error) throw error;
-        return data || [];
+        return normalizeRecords(data);
       } catch (error) {
         throw error;
       }
@@ -61,7 +74,7 @@ function makeEntity(name) {
         const column = String(sort).replace(/^-/, '').replace('created_date', 'created_at').replace('updated_date', 'updated_at');
         const { data, error } = await q.order(column || 'created_at', { ascending: !descending }).limit(limit || 100);
         if (error) throw error;
-        return data || [];
+        return normalizeRecords(data);
       } catch (error) {
         throw error;
       }
@@ -71,22 +84,22 @@ function makeEntity(name) {
         const db = requireSupabase();
         const { data, error } = await db.from(table).select('*').eq('id', id).single();
         if (error) throw error;
-        return data;
+        return normalizeRecord(data);
       } catch (error) {
         throw error;
       }
     },
     async create(record) {
       const response = await supabaseCompat.functions.invoke('supabaseEntityWrite', { entity: name, action: 'create', record });
-      return response.data.data;
+      return normalizeRecord(response.data.data);
     },
     async bulkCreate(records) {
       const response = await supabaseCompat.functions.invoke('supabaseEntityWrite', { entity: name, action: 'bulkCreate', records });
-      return response.data.data || [];
+      return normalizeRecords(response.data.data);
     },
     async update(id, patch) {
       const response = await supabaseCompat.functions.invoke('supabaseEntityWrite', { entity: name, action: 'update', id, patch });
-      return response.data.data;
+      return normalizeRecord(response.data.data);
     },
     async delete(id) {
       await supabaseCompat.functions.invoke('supabaseEntityWrite', { entity: name, action: 'delete', id });
@@ -241,6 +254,8 @@ export const supabaseCompat = {
   },
   functions: {
     async invoke(name, payload = {}) {
+      if (realBase44) return realBase44.functions.invoke(name, payload);
+
       const db = requireSupabase();
       const { data: sessionData } = await db.auth.getSession();
       const functionBase = (
@@ -251,12 +266,13 @@ export const supabaseCompat = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(sessionData?.session?.access_token ? { Authorization: `Bearer ${sessionData.session.access_token}` } : {})
+          apikey: SUPABASE_PUBLISHABLE_KEY,
+          Authorization: `Bearer ${sessionData?.session?.access_token || SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify(payload)
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || `Function ${name} failed`);
+      if (!response.ok) throw new Error(data.error || data.message || `Function ${name} failed`);
       return { data, status: response.status, headers: response.headers };
     }
   },
