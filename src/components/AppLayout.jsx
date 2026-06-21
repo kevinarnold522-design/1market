@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import FloatingNavbar from './FloatingNavbar';
 import WaveTransition from './WaveTransition';
 import UserTasks from './UserTasks';
@@ -13,6 +13,8 @@ export default function AppLayout() {
   const [waveActive, setWaveActive] = useState(isWaveActive());
   useEffect(() => subscribeWave(setWaveActive), []);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isLandingPage = location.pathname.startsWith('/listing/') || location.pathname.startsWith('/seller/') || location.pathname.startsWith('/seller-profile/');
   const [appUser, setAppUser] = useState(null);
   useEffect(() => {
     const refresh = () => {
@@ -46,9 +48,9 @@ export default function AppLayout() {
 
 
   return (
-    <div data-app-shell className="relative flex min-h-screen overflow-hidden" style={{ background: 'transparent' }}>
-      <OceanCategoryBackdrop global />
-      <main className="relative z-10 flex-1 min-w-0 overflow-x-hidden" style={{ background: 'transparent' }}>
+    <div data-app-shell className={`relative flex min-h-screen overflow-hidden ${isLandingPage ? '' : 'site-ocean-theme'}`} style={{ background: isLandingPage ? 'var(--landing-bg-gradient)' : 'transparent' }}>
+      {!isLandingPage && <OceanCategoryBackdrop global />}
+      <main className="relative z-10 flex-1 min-w-0 overflow-x-hidden" style={{ background: isLandingPage ? 'var(--landing-bg-gradient)' : 'transparent' }}>
         <FloatingNavbar />
         <Outlet />
       </main>

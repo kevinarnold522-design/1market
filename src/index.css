@@ -232,6 +232,32 @@ aside nav button + a {
   background: rgba(255, 255, 255, 0.85);
 }
 
+/* Site-wide ocean background for normal pages, excluding listing landing/detail pages */
+.site-ocean-theme,
+.site-ocean-theme main,
+.site-ocean-theme [class*="bg-[#0A192F]"],
+.site-ocean-theme [class*="bg-[#0D1F3C]"],
+.site-ocean-theme [class*="bg-[#050d2e]"],
+.site-ocean-theme [class*="bg-[#070F1A]"],
+.site-ocean-theme [class*="bg-black"],
+.site-ocean-theme [class*="bg-slate-9"],
+.site-ocean-theme [class*="bg-gray-9"],
+.site-ocean-theme section[class*="bg-[#0A192F]"],
+.site-ocean-theme section[class*="bg-[#0D1F3C]"],
+.site-ocean-theme section[class*="bg-[#050d2e]"] {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+.site-ocean-theme section,
+.site-ocean-theme .home-blue-aligned,
+.site-ocean-theme [data-page],
+.site-ocean-theme [data-app-page] {
+  background-color: transparent !important;
+}
+.site-ocean-theme .fixed.inset-0.-z-10 {
+  background: transparent !important;
+}
+
 /* White + blue listing detail theme with the royal wave background preserved */
 .listing-blue-white-theme {
   background: linear-gradient(180deg, #ffffff 0%, #eef5ff 52%, #dbeafe 100%) !important;
