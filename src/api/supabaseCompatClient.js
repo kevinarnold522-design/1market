@@ -1,5 +1,6 @@
 import { requireSupabase } from '@/lib/supabaseClient';
 import { uploadFileToSupabase, SUPABASE_IMAGE_BUCKET } from '@/lib/supabaseStorage';
+import { localListingAI } from '@/lib/localListingAI';
 
 const entityNames = [
   'User','Listing','Business','Order','Cart','Favourite','Review','MenuItem','Group','GroupPost','GroupComment','GroupMember','GroupPostLike','CommunityPost','Notification','VerificationApplication','Follow','Report','ListingHeart','ListingComment','Reservation','ChatMessage','DraftListing','SavedListingTemplate','UserReward','UserTasks'
@@ -314,8 +315,8 @@ export const supabaseCompat = {
         if (error) throw error;
         return { success: true, queued: true, data };
       },
-      async InvokeLLM() {
-        throw new Error('AI calls now need a Supabase Edge Function backed by your chosen AI provider.');
+      async InvokeLLM(payload = {}) {
+        return localListingAI(payload);
       }
     }
   },

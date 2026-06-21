@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import FloatingNavbar from './FloatingNavbar';
 import WaveTransition from './WaveTransition';
 import UserTasks from './UserTasks';
+import ThemeCustomizer from './ThemeCustomizer';
 import { subscribeWave, isWaveActive, triggerWave } from '@/lib/waveTransition';
 import { base44 } from '@/api/base44Client';
 import { getGhostSession } from '@/lib/ghostAccounts';
@@ -16,11 +17,17 @@ export default function AppLayout() {
     const refresh = () => {
       const ghost = getGhostSession();
       if (ghost) { setAppUser(null); return; }
-      base44.auth.me().then(setAppUser).catch(() => {});
+      base44.auth.me().then(setAppUser).catch(() => setAppUser(null));
     };
     refresh();
     window.addEventListener('ghost-session-changed', refresh);
-    return () => window.removeEventListener('ghost-session-changed', refresh);
+    window.addEventListener('supabase-auth-changed', refresh);
+    window.addEventListener('focus', refresh);
+    return () => {
+      window.removeEventListener('ghost-session-changed', refresh);
+      window.removeEventListener('supabase-auth-changed', refresh);
+      window.removeEventListener('focus', refresh);
+    };
   }, []);
 
   // Global wave interceptor for listing navigation
@@ -40,8 +47,8 @@ export default function AppLayout() {
 
 
   return (
-    <div className="flex min-h-screen bg-[#0033CC]" style={{ background: 'linear-gradient(180deg,#0033CC 0%,#001a80 100%)' }}>
-      <main className="flex-1 min-w-0 overflow-x-hidden bg-[#0033CC]">
+    <div data-app-shell className="flex min-h-screen" style={{ background: 'var(--landing-bg-gradient)' }}>
+      <main className="flex-1 min-w-0 overflow-x-hidden" style={{ background: 'var(--landing-bg-gradient)' }}>
         <FloatingNavbar />
         <Outlet />
       </main>
@@ -50,6 +57,7 @@ export default function AppLayout() {
       <WaveTransition active={waveActive} />
       {/* User tasks widget */}
       {appUser && <UserTasks user={appUser} />}
+      <ThemeCustomizer />
     </div>
   );
 }

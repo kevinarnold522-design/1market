@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabaseCompat } from '@/api/supabaseCompatClient';
+import { clearGhostSession } from '@/lib/ghostAccounts';
 
 const providers = [
   { key: 'google', label: 'Google', mark: 'G', className: 'text-blue-600 bg-white' },
@@ -24,6 +25,7 @@ export default function OAuthOptions({
     setLoadingProvider(provider.key);
     onError?.('');
     try {
+      clearGhostSession();
       await supabaseCompat.auth.loginWithProvider(provider.key, redirectTo);
     } catch (error) {
       setLoadingProvider('');

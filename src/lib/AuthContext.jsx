@@ -48,12 +48,10 @@ export const AuthProvider = ({ children }) => {
 
       const activeGhost = getGhostSession();
       // Use cached values for fast subsequent loads, unless a Ghost session is active/changed
-      if (_authInitialized && _cachedPublicSettings && !activeGhost) {
+      if (_authInitialized && _cachedPublicSettings && _cachedUser && !activeGhost) {
         setAppPublicSettings(_cachedPublicSettings);
-        if (_cachedUser) {
-          setUser(_cachedUser);
-          setIsAuthenticated(true);
-        }
+        setUser(_cachedUser);
+        setIsAuthenticated(true);
         setIsLoadingPublicSettings(false);
         setIsLoadingAuth(false);
         setAuthChecked(true);
