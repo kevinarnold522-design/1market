@@ -107,7 +107,7 @@ return (
               <div className="flex items-center gap-3 px-4 py-3 border-b border-white/10">
                 <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-3 flex-1 min-w-0" aria-label="Go to homepage">
                   <img
-                    src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%230033CC%22/%3E%3Ctext x=%2232%22 y=%2241%22 font-family=%22Arial%22 font-size=%2224%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22white%22%3E1M%3C/text%3E%3C/svg%3E"
+                    src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 160 160%22%3E%3Crect width=%22160%22 height=%22160%22 rx=%2228%22 fill=%22%230033CC%22/%3E%3Crect x=%2218%22 y=%2218%22 width=%22124%22 height=%22124%22 rx=%2218%22 fill=%22none%22 stroke=%22%23FFD700%22 stroke-width=%226%22 stroke-dasharray=%2210 8%22/%3E%3Ctext x=%2280%22 y=%2274%22 font-family=%22Arial%22 font-size=%2224%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22white%22%3ELOGO%3C/text%3E%3Ctext x=%2280%22 y=%22102%22 font-family=%22Arial%22 font-size=%2216%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22%23FFD700%22%3EPLACEHOLDER%3C/text%3E%3C/svg%3E"
                     alt="1MarketPH"
                     className="w-8 h-8 rounded-lg object-cover"
                   />
