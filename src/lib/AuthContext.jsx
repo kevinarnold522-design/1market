@@ -20,7 +20,32 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     checkAppState();
-    const refreshAuthSession = () => {
+    const refreshAuthSession = async (event) => {
+      const payload = event?.detail;
+      if (event?.type === 'active-user-changed' && payload) {
+        _cachedUser = payload;
+        setUser(payload);
+        setIsAuthenticated(true);
+        return;
+      }
+      if (event?.type === 'ghost-session-changed') {
+        if (!payload) {
+          _cachedUser = null;
+          _authInitialized = false;
+          await checkAppState();
+          return;
+        }
+        _cachedUser = payload;
+        setUser(payload);
+        setIsAuthenticated(true);
+        return;
+      }
+      if (event?.type === 'supabase-auth-changed' && payload) {
+        _cachedUser = payload;
+        setUser(payload);
+        setIsAuthenticated(true);
+        return;
+      }
       _cachedUser = null;
       _authInitialized = false;
       checkAppState();
@@ -30,20 +55,14 @@ export const AuthProvider = ({ children }) => {
     authStatePromise?.then?.((subscription) => {
       authSubscription = subscription;
     });
-    const applyActiveUserChange = (event) => {
-      if (!event.detail) return refreshAuthSession();
-      _cachedUser = event.detail;
-      setUser(event.detail);
-      setIsAuthenticated(true);
-    };
     window.addEventListener('ghost-session-changed', refreshAuthSession);
     window.addEventListener('supabase-auth-changed', refreshAuthSession);
-    window.addEventListener('active-user-changed', applyActiveUserChange);
+    window.addEventListener('active-user-changed', refreshAuthSession);
     return () => {
       authSubscription?.unsubscribe?.();
       window.removeEventListener('ghost-session-changed', refreshAuthSession);
       window.removeEventListener('supabase-auth-changed', refreshAuthSession);
-      window.removeEventListener('active-user-changed', applyActiveUserChange);
+      window.removeEventListener('active-user-changed', refreshAuthSession);
     };
   }, []);
 

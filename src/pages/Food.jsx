@@ -295,7 +295,7 @@ export default function Food() {
 
   useEffect(() => {
     base44.auth.me().then(setCurrentUser).catch(() => {});
-    const t = setInterval(() => setAdminMode(getAdminEditMode()), 300);
+    const t = setInterval(() => setAdminMode(getAdminEditMode()), 1000);
     return () => clearInterval(t);
   }, []);
 

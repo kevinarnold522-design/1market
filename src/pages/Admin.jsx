@@ -473,8 +473,10 @@ export default function Admin() {
       } else {
         await base44.entities.Business.delete(id);
       }
+      setBusinesses(prev => prev.filter(b => b.id !== id));
+      setListings(prev => prev.filter(l => l.business_id !== id));
+      setPendingListings(prev => prev.filter(p => p.business_id !== id && p.id !== id));
       showToast('Business deleted.');
-      loadAll();
     } catch (err) {
       console.error('Delete business error:', err);
       showToast('Failed to delete business. Please try again.');
@@ -503,15 +505,17 @@ export default function Admin() {
       } else {
         await base44.entities.Listing.delete(id);
       }
+      setListings(prev => prev.filter(l => l.id !== id));
+      setPendingListings(prev => prev.filter(l => l.id !== id));
       showToast('Listing deleted.');
-      loadAll();
     } catch (err) {
       console.error('Delete listing error:', err);
       if (isAdmin) {
         try {
           await base44.entities.Listing.delete(id);
+          setListings(prev => prev.filter(l => l.id !== id));
+          setPendingListings(prev => prev.filter(l => l.id !== id));
           showToast('Listing deleted.');
-          loadAll();
           return;
         } catch (fallbackError) {
           console.error('Fallback listing delete failed:', fallbackError);

@@ -8,8 +8,8 @@ import { getAdminEditMode } from './home/Navbar';
 function useGlobalEditMode() {
   const [mode, setMode] = useState(getAdminEditMode());
   useEffect(() => {
-    // poll every 300ms — lightweight enough
-    const t = setInterval(() => setMode(getAdminEditMode()), 300);
+    // poll less frequently to reduce CPU on mobile — 1s is enough
+    const t = setInterval(() => setMode(getAdminEditMode()), 1000);
     return () => clearInterval(t);
   }, []);
   return mode;

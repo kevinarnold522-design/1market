@@ -1,20 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 const seaLife = [
-  { icon: '🐟', label: 'fish', top: '23%', size: 'text-2xl', duration: 18, delay: 0, dir: 1 },
-  { icon: '🐠', label: 'tropical fish', top: '58%', size: 'text-xl', duration: 21, delay: 2, dir: -1 },
-  { icon: '🐬', label: 'dolphin', top: '35%', size: 'text-4xl', duration: 24, delay: 1, dir: 1 },
-  { icon: '🦈', label: 'shark', top: '68%', size: 'text-4xl', duration: 29, delay: 4, dir: -1 },
-  { icon: '🐙', label: 'squid', top: '76%', size: 'text-3xl', duration: 26, delay: 6, dir: 1 },
-  { icon: '🐋', label: 'whale', top: '84%', size: 'text-5xl', duration: 34, delay: 3, dir: -1 },
-  { icon: '🐋', label: 'whale shark', top: '18%', size: 'text-6xl', duration: 42, delay: 5, dir: -1 },
-  { icon: '🦑', label: 'squid', top: '48%', size: 'text-4xl', duration: 28, delay: 7, dir: 1 },
-  { icon: '🦭', label: 'seal', top: '62%', size: 'text-4xl', duration: 31, delay: 8, dir: 1 },
-  { icon: '⚫⚪', label: 'orca', top: '40%', size: 'text-3xl', duration: 36, delay: 10, dir: -1 },
+  { icon: '🐠', label: 'tropical fish', top: '14%', size: 'text-2xl', duration: 18, delay: 0, dir: 1 },
+  { icon: '🐡', label: 'puffer fish', top: '28%', size: 'text-2xl', duration: 20, delay: 1.2, dir: -1 },
+  { icon: '🐟', label: 'school of fish', top: '22%', size: 'text-3xl', duration: 22, delay: 0.8, dir: 1 },
+  { icon: '🐬', label: 'dolphin', top: '38%', size: 'text-4xl', duration: 24, delay: 1.6, dir: 1 },
+  { icon: '🦑', label: 'squid', top: '48%', size: 'text-4xl', duration: 26, delay: 2.2, dir: -1 },
+  { icon: '🐢', label: 'sea turtle', top: '34%', size: 'text-4xl', duration: 30, delay: 2.4, dir: -1 },
+  { icon: '🐠', label: 'clownfish', top: '54%', size: 'text-2xl', duration: 20, delay: 2.8, dir: 1 },
+  { icon: '🦈', label: 'shark', top: '66%', size: 'text-4xl', duration: 28, delay: 3.4, dir: -1 },
+  { icon: '🐋', label: 'whale', top: '78%', size: 'text-5xl', duration: 34, delay: 3.8, dir: 1 },
+  { icon: '🦭', label: 'seal', top: '62%', size: 'text-4xl', duration: 30, delay: 4.2, dir: 1 },
+  { icon: '🐙', label: 'octopus', top: '74%', size: 'text-3xl', duration: 32, delay: 4.8, dir: -1 },
+  { icon: '🐡', label: 'blowfish', top: '82%', size: 'text-3xl', duration: 36, delay: 5.4, dir: 1 },
+  { icon: '🐋', label: 'whale shark', top: '18%', size: 'text-6xl', duration: 42, delay: 5.8, dir: -1 },
 ];
 
 export default function OceanCategoryBackdrop({ global = false }) {
+  const [showBubbles, setShowBubbles] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const coarse = window.matchMedia('(pointer: coarse), (max-width: 900px)');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setShowBubbles(!coarse.matches && !reduceMotion.matches);
+    update();
+    if (typeof coarse.addEventListener === 'function') coarse.addEventListener('change', update); else coarse.addListener(update);
+    if (typeof reduceMotion.addEventListener === 'function') reduceMotion.addEventListener('change', update); else reduceMotion.addListener(update);
+    return () => {
+      if (typeof coarse.removeEventListener === 'function') coarse.removeEventListener('change', update); else coarse.removeListener(update);
+      if (typeof reduceMotion.removeEventListener === 'function') reduceMotion.removeEventListener('change', update); else reduceMotion.removeListener(update);
+    };
+  }, []);
   const shellClass = global
     ? 'fixed inset-0 overflow-hidden pointer-events-none bg-gradient-to-b from-[#38bdf8] via-[#2563EB] to-[#0ea5e9]'
     : 'absolute inset-0 overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#38bdf8] via-[#2563EB] to-[#0ea5e9]';
@@ -59,6 +77,28 @@ export default function OceanCategoryBackdrop({ global = false }) {
             initial={{ x: start, scaleX: item.dir }} animate={{ x: [start, '28vw', '62vw', end], y: [0, -18, 14, -8, 0], rotate: [0, -5, 6, -3, 0] }}
             transition={{ duration: item.duration, repeat: Infinity, ease: 'easeInOut', delay: item.delay }}>
             {item.icon}
+
+            {/* Bubbles that float upward near each creature (CSS-driven for performance) */}
+            {showBubbles && [0,1,2].map(i => {
+              const size = 6 + (i % 3) * 4; // px
+              const delay = item.delay + i * 0.4;
+              const dur = Math.max(6, (item.duration * 0.6) - i * 1.5);
+              const left = 6 + i * 10;
+              return (
+                <div key={i}
+                  className="absolute rounded-full bg-white/50 animate-bubble-float"
+                  style={{
+                    width: `${size}px`,
+                    height: `${size}px`,
+                    left: `${left}%`,
+                    bottom: -size - 2,
+                    animationDelay: `${delay}s`,
+                    animationDuration: `${dur}s`,
+                    '--bubble-drift': `${(i % 2 === 0 ? -1 : 1) * (6 + i * 2)}px`
+                  }}
+                />
+              );
+            })}
           </motion.div>
         );
       })}

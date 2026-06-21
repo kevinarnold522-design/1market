@@ -6,8 +6,7 @@ import UserTasks from './UserTasks';
 import ThemeCustomizer from './ThemeCustomizer';
 import OceanCategoryBackdrop from './home/OceanCategoryBackdrop';
 import { subscribeWave, isWaveActive, triggerWave } from '@/lib/waveTransition';
-import { base44 } from '@/api/base44Client';
-import { getGhostSession } from '@/lib/ghostAccounts';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function AppLayout() {
   const [waveActive, setWaveActive] = useState(isWaveActive());
@@ -15,21 +14,7 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const isLandingPage = location.pathname.startsWith('/listing/') || location.pathname.startsWith('/seller/') || location.pathname.startsWith('/seller-profile/');
-  const [appUser, setAppUser] = useState(null);
-  useEffect(() => {
-    const refresh = () => {
-      const ghost = getGhostSession();
-      if (ghost) { setAppUser(null); return; }
-      base44.auth.me().then(setAppUser).catch(() => setAppUser(null));
-    };
-    refresh();
-    window.addEventListener('ghost-session-changed', refresh);
-    window.addEventListener('supabase-auth-changed', refresh);
-    return () => {
-      window.removeEventListener('ghost-session-changed', refresh);
-      window.removeEventListener('supabase-auth-changed', refresh);
-    };
-  }, []);
+  const { user } = useAuth();
 
   // Global wave interceptor for listing navigation
   useEffect(() => {
@@ -58,7 +43,7 @@ export default function AppLayout() {
       {/* Wave overlay */}
       <WaveTransition active={waveActive} />
       {/* User tasks widget */}
-      {appUser && <UserTasks user={appUser} />}
+      {user && <UserTasks user={user} />}
       <ThemeCustomizer />
     </div>
   );
