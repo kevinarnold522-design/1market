@@ -676,7 +676,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                         {uploading
                           ? <div className="w-5 h-5 border-2 border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" />
                           : <><Upload className="w-5 h-5 text-white/25 mb-1" /><span className="font-body text-xs text-white/25">Upload Main Photo from device</span></>}
-                        <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={handleImageUpload} disabled={uploading} />
+                        <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploading} />
                       </label>
                     )}
 
@@ -696,7 +696,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       {uploadingExtra
                         ? <div className="w-4 h-4 border-2 border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" />
                         : <><Image className="w-4 h-4 text-white/30" /><span className="font-body text-xs text-white/30">Add More Photos</span></>}
-                      <input type="file" accept="image/png,image/jpeg,image/webp" multiple className="hidden" onChange={handleExtraImageUpload} disabled={uploadingExtra} />
+                      <input type="file" accept="image/*" multiple className="hidden" onChange={handleExtraImageUpload} disabled={uploadingExtra} />
                     </label>
                   </div>
 

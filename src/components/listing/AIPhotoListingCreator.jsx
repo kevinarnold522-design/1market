@@ -3,7 +3,7 @@ import { Camera, Sparkles, Upload, ShieldCheck } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 
-const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+const maxImageSize = 15 * 1024 * 1024;
 
 export default function AIPhotoListingCreator({ onApplyListing }) {
   const [busy, setBusy] = useState(false);
@@ -14,9 +14,9 @@ export default function AIPhotoListingCreator({ onApplyListing }) {
     const files = Array.from(e.target.files || []).slice(0, 10);
     e.target.value = '';
     if (!files.length) return;
-    const bad = files.find(f => !allowed.includes(f.type) || f.size > 5 * 1024 * 1024);
-    if (bad) { setError('Only PNG, JPG, and WEBP images up to 5MB are allowed.'); return; }
-    setBusy(true); setError(''); setStatus('Uploading photos to Supabase Storage...');
+    const bad = files.find(f => !String(f.type || '').startsWith('image/') || f.size > maxImageSize);
+    if (bad) { setError('Please upload image files up to 15MB each.'); return; }
+    setBusy(true); setError(''); setStatus('Uploading photos...');
     try {
       const uploads = [];
       for (const file of files) uploads.push(await uploadMediaFileToSupabase(file, 'listing-images'));
@@ -47,7 +47,7 @@ export default function AIPhotoListingCreator({ onApplyListing }) {
       <label className="flex items-center justify-center gap-2 w-full py-3 rounded-xl cursor-pointer font-body font-bold text-sm text-[#06163a] transition-all hover:scale-[1.01]" style={{ background: 'linear-gradient(135deg,#00D4FF,#60a5fa)' }}>
         {busy ? <div className="w-4 h-4 border-2 border-[#06163a]/30 border-t-[#06163a] rounded-full animate-spin" /> : <><Camera className="w-4 h-4" /><Upload className="w-4 h-4" /></>}
         {busy ? 'Generating AI Listing...' : 'Scan Photos & Generate Listing'}
-        <input type="file" accept="image/png,image/jpeg,image/webp" multiple className="hidden" onChange={handleFiles} disabled={busy} />
+        <input type="file" accept="image/*" multiple className="hidden" onChange={handleFiles} disabled={busy} />
       </label>
       {status && <p className="font-body text-[11px] text-[#00D4FF] flex items-center gap-1"><ShieldCheck className="w-3 h-3" />{status}</p>}
       {error && <p className="font-body text-[11px] text-amber-300">{error}</p>}

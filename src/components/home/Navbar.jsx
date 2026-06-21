@@ -110,17 +110,11 @@ export default function Navbar() {
     setUploadingPfp(true);
     try {
       const { file_url } = await uploadProfilePicture(file);
-      await supabaseCompat.auth.updateMe({ full_name: activeUser?.full_name || '' });
-      // Update profile picture via direct profile update
-      const db = (await import('@/lib/supabaseClient')).requireSupabase();
-      const { data: userData } = await db.auth.getUser();
-      if (userData?.user) {
-        await db.from('profiles').update({ profile_picture: file_url }).eq('id', userData.user.id);
-      }
+      await base44.auth.updateMe({ profile_picture: file_url, profile_photos: [...(activeUser?.profile_photos || []), file_url] });
       window.location.reload();
     } catch (err) { 
       console.error('[v0] Profile picture upload error:', err);
-      showToast('Upload failed'); 
+      showToast(err.message || 'Upload failed'); 
     }
     setUploadingPfp(false);
     e.target.value = '';

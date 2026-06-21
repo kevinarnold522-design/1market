@@ -249,7 +249,7 @@ export default function AddJobModal({ onClose, user, categories = [] }) {
                       <Upload className="w-6 h-6 text-[#3E97F1]/50" />
                     )}
                     <span className="font-body text-xs text-white/30">{uploading ? 'Uploading...' : 'Click to upload job photo'}</span>
-                    <input type="file" className="sr-only" accept="image/png,image/jpeg,image/webp" onChange={handleUpload} disabled={uploading} />
+                    <input type="file" className="sr-only" accept="image/*" onChange={handleUpload} disabled={uploading} />
                   </label>
                 )}
               </div>
