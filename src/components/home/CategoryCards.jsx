@@ -108,12 +108,12 @@ const CATEGORY_TITLES = {
 // ── Casino card for main categories ──────────────────────────────────────────
 
 const CATEGORIES = [
-  { label: 'Travel',       href: '/travel',   Icon: Plane,           desc: 'Hotels, Tours & Transport',    accent: '#60a5fa', suit: 'AI', gradient: 'linear-gradient(135deg,#0f2050,#1d4ed8)' },
-  { label: 'Food',         href: '/food',     Icon: UtensilsCrossed, desc: 'Restaurants, Cafes & Home Cooks', accent: '#f87171', suit: 'AI', gradient: 'linear-gradient(135deg,#3b0000,#b91c1c)' },
-  { label: 'Buy & Sell',   href: '/buysell',  Icon: ShoppingBag,     desc: 'Shoes, Cars, Gadgets & More',  accent: '#c084fc', suit: 'AI', gradient: 'linear-gradient(135deg,#1e0050,#7e22ce)' },
-  { label: 'Rent & Lease', href: '/rent',     Icon: Home,            desc: 'Homes, Vehicles & Equipment',  accent: '#4ade80', suit: 'AI', gradient: 'linear-gradient(135deg,#002a00,#15803d)' },
-  { label: 'Services',     href: '/services', Icon: Wrench,          desc: 'Plumbers, Tutors & Freelancers',accent: '#fb923c', suit: 'AI', gradient: 'linear-gradient(135deg,#2a1000,#c2410c)' },
-  { label: 'Jobs',         href: '/jobs',     Icon: Briefcase,       desc: 'Hiring, Freelance & Remote Work',accent: '#fbbf24', suit: 'AI', gradient: 'linear-gradient(135deg,#1a1000,#b45309)' },
+  { label: 'Travel',       href: '/travel',   Icon: Plane,           desc: 'Hotels, Tours & Transport',    accent: '#60a5fa', gradient: 'linear-gradient(135deg,#0f2050,#1d4ed8)' },
+  { label: 'Food',         href: '/food',     Icon: UtensilsCrossed, desc: 'Restaurants, Cafes & Home Cooks', accent: '#f87171', gradient: 'linear-gradient(135deg,#3b0000,#b91c1c)' },
+  { label: 'Buy & Sell',   href: '/buysell',  Icon: ShoppingBag,     desc: 'Shoes, Cars, Gadgets & More',  accent: '#c084fc', gradient: 'linear-gradient(135deg,#1e0050,#7e22ce)' },
+  { label: 'Rent & Lease', href: '/rent',     Icon: Home,            desc: 'Homes, Vehicles & Equipment',  accent: '#4ade80', gradient: 'linear-gradient(135deg,#002a00,#15803d)' },
+  { label: 'Services',     href: '/services', Icon: Wrench,          desc: 'Plumbers, Tutors & Freelancers',accent: '#fb923c', gradient: 'linear-gradient(135deg,#2a1000,#c2410c)' },
+  { label: 'Jobs',         href: '/jobs',     Icon: Briefcase,       desc: 'Hiring, Freelance & Remote Work',accent: '#fbbf24', gradient: 'linear-gradient(135deg,#1a1000,#b45309)' },
 ];
 
 const CARD_VALUES = ['A', 'K', 'Q', 'J', '10', '9'];
@@ -123,7 +123,6 @@ function CasinoCategoryCard({ cat, index, onClick }) {
   const [flipped, setFlipped] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [cardIdx, setCardIdx] = useState(index % CARD_VALUES.length);
-  const isRed = cat.suit === 'AI' || cat.suit === 'AI';
 
   useEffect(() => {
     const t = setInterval(() => setCardIdx(i => (i + 1) % CARD_VALUES.length), 800);
@@ -175,11 +174,9 @@ function CasinoCategoryCard({ cat, index, onClick }) {
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
             <div className="absolute top-2 left-2.5 text-[9px] font-black leading-none" style={{ color: cat.accent }}>
               <div>{CARD_VALUES[cardIdx]}</div>
-              <div>{cat.suit}</div>
             </div>
             <div className="absolute bottom-2 right-2.5 text-[9px] font-black leading-none rotate-180" style={{ color: cat.accent }}>
               <div>{CARD_VALUES[cardIdx]}</div>
-              <div>{cat.suit}</div>
             </div>
             <div className="relative z-10 flex flex-col items-center justify-center h-full p-5">
               <div className="mb-3 p-3 rounded-2xl" style={{ background: `${cat.accent}22` }}>
@@ -208,7 +205,6 @@ function CasinoCategoryCard({ cat, index, onClick }) {
                   transition={{ duration: 0.22 }}
                   className="text-center">
                   <p className="font-heading font-black text-5xl text-white drop-shadow-lg">{CARD_VALUES[cardIdx]}</p>
-                  <p className="text-2xl" style={{ color: isRed ? '#f87171' : '#f8fafc' }}>{cat.suit}</p>
                 </motion.div>
               </AnimatePresence>
               <p className="font-body text-xs font-bold text-white/60 mt-1">{cat.label}</p>
@@ -217,7 +213,6 @@ function CasinoCategoryCard({ cat, index, onClick }) {
             {['tl', 'br'].map(pos => (
               <div key={pos} className={`absolute ${pos === 'tl' ? 'top-2 left-3' : 'bottom-2 right-3 rotate-180'}`}>
                 <p className="font-heading font-black text-xs" style={{ color: cat.accent }}>{CARD_VALUES[cardIdx]}</p>
-                <p className="text-xs" style={{ color: isRed ? '#f87171' : '#f8fafc' }}>{cat.suit}</p>
               </div>
             ))}
           </div>
@@ -229,7 +224,6 @@ function CasinoCategoryCard({ cat, index, onClick }) {
 
 // ── Subcategory picker overlay ────────────────────────────────────────────────
 
-const SUITS_SUB = ['AI', 'AI', 'AI', 'AI'];
 const VALS_SUB  = ['A', 'K', 'Q', 'J', '10', '9'];
 const GRADS_SUB = [
   'linear-gradient(135deg,#1a1a2e,#16213e)',
@@ -247,9 +241,7 @@ const ACCENTS_SUB = ['#60a5fa','#f87171','#34d399','#c084fc','#38bdf8','#fbbf24'
 function SubCard({ sc, index, onClick }) {
   const [flipped, setFlipped] = useState(false);
   const accent = ACCENTS_SUB[index % ACCENTS_SUB.length];
-  const suit   = SUITS_SUB[index % SUITS_SUB.length];
   const [vIdx, setVIdx] = useState(index % VALS_SUB.length);
-  const isRed = suit === 'AI' || suit === 'AI';
 
   useEffect(() => {
     const t = setInterval(() => setVIdx(i => (i + 1) % VALS_SUB.length), 850);
@@ -283,8 +275,8 @@ function SubCard({ sc, index, onClick }) {
             boxShadow: `0 4px 16px rgba(0,0,0,0.4)`,
           }}>
           <div className="absolute inset-0 bg-gradient-to-br from-white/8 to-transparent pointer-events-none" />
-          <div className="absolute top-1.5 left-2 text-[8px] font-black" style={{ color: accent }}><div>{VALS_SUB[vIdx]}</div><div>{suit}</div></div>
-          <div className="absolute bottom-1.5 right-2 text-[8px] font-black rotate-180" style={{ color: accent }}><div>{VALS_SUB[vIdx]}</div><div>{suit}</div></div>
+          <div className="absolute top-1.5 left-2 text-[8px] font-black" style={{ color: accent }}><div>{VALS_SUB[vIdx]}</div></div>
+          <div className="absolute bottom-1.5 right-2 text-[8px] font-black rotate-180" style={{ color: accent }}><div>{VALS_SUB[vIdx]}</div></div>
           <div className="relative z-10 flex flex-col items-center justify-center h-full p-2">
             <div className="mb-1 p-1.5 rounded-xl" style={{ background: `${accent}22` }}>
               {sc.Icon && <sc.Icon className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: accent }} />}
@@ -304,7 +296,6 @@ function SubCard({ sc, index, onClick }) {
             style={{ background: 'repeating-linear-gradient(45deg,rgba(255,255,255,0.015) 0,rgba(255,255,255,0.015) 2px,transparent 2px,transparent 10px)' }} />
           <div className="relative z-10 text-center">
             <p className="font-heading font-black text-2xl text-white">{VALS_SUB[vIdx]}</p>
-            <p className="text-lg" style={{ color: isRed ? '#f87171' : '#f8fafc' }}>{suit}</p>
             <p className="font-body text-[8px] mt-0.5" style={{ color: accent }}>{sc.label}</p>
           </div>
         </div>

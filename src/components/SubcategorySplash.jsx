@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, X } from 'lucide-react';
 import CategoryTransitionOverlay, { getSubtypeForSubcategory } from './transitions/CategoryTransitionOverlay';
 
-const SUITS = ['AI', 'AI', 'AI', 'AI'];
 const VALUES = ['A', 'K', 'Q', 'J', '10', '9'];
 
 const GRADIENTS = [
@@ -31,9 +30,7 @@ function CasinoCard({ sc, index, isActive, onClick }) {
 
   const gradient = GRADIENTS[index % GRADIENTS.length];
   const accent = ACCENT_COLORS[index % ACCENT_COLORS.length];
-  const suit = SUITS[index % SUITS.length];
   const val = VALUES[cardIdx % VALUES.length];
-  const isRed = suit === 'AI' || suit === 'AI';
 
   useEffect(() => {
     const t = setInterval(() => setCardIdx(i => (i + 1) % VALUES.length), 900);
@@ -88,11 +85,9 @@ function CasinoCard({ sc, index, isActive, onClick }) {
           {/* Card filigree corners */}
           <div className="absolute top-1.5 left-2 text-[9px] font-black" style={{ color: accent }}>
             <div>{val}</div>
-            <div>{suit}</div>
           </div>
           <div className="absolute bottom-1.5 right-2 text-[9px] font-black rotate-180" style={{ color: accent }}>
             <div>{val}</div>
-            <div>{suit}</div>
           </div>
           {/* Shine */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none rounded-2xl" />
@@ -127,16 +122,15 @@ function CasinoCard({ sc, index, isActive, onClick }) {
                 className="text-center"
               >
                 <p className="font-heading font-black text-3xl text-white drop-shadow">{VALUES[cardIdx]}</p>
-                <p className="text-xl" style={{ color: isRed ? '#f87171' : '#f8fafc' }}>{suit}</p>
               </motion.div>
             </AnimatePresence>
             <p className="font-body text-[9px] font-bold mt-0.5" style={{ color: accent }}>{sc.label}</p>
           </div>
           <div className="absolute top-1.5 left-2 text-[9px] font-black" style={{ color: accent }}>
-            <div>{VALUES[cardIdx]}</div><div style={{ color: isRed ? '#f87171' : '#f8fafc' }}>{suit}</div>
+            <div>{VALUES[cardIdx]}</div>
           </div>
           <div className="absolute bottom-1.5 right-2 text-[9px] font-black rotate-180" style={{ color: accent }}>
-            <div>{VALUES[cardIdx]}</div><div style={{ color: isRed ? '#f87171' : '#f8fafc' }}>{suit}</div>
+            <div>{VALUES[cardIdx]}</div>
           </div>
         </div>
       </motion.div>

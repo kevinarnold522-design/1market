@@ -5,12 +5,12 @@ import { base44 } from '@/api/base44Client';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 
 const CATEGORIES = [
-  { key: 'food',     label: 'Food & Dining',   color: '#f97316', emoji: 'AI️',  route: '/food',     filter: { main_category: 'food' } },
-  { key: 'buysell',  label: 'Buy & Sell',       color: '#8b5cf6', emoji: 'AI️',  route: '/buysell',  filter: { main_category: 'buysell' } },
-  { key: 'jobs',     label: 'Jobs',             color: '#f59e0b', emoji: 'AI',  route: '/jobs',     filter: { type: 'jobs' } },
-  { key: 'rent',     label: 'Rent / For Sale',  color: '#10b981', emoji: 'AI',  route: '/rent',     filter: { main_category: 'rent' } },
-  { key: 'services', label: 'Services',         color: '#3b82f6', emoji: 'AI',  route: '/services', filter: { type: 'services' } },
-  { key: 'travel',   label: 'Travel & Hotel',   color: '#0ea5e9', emoji: 'AI️',  route: '/travel',   filter: { main_category: 'travel' } },
+  { key: 'food',     label: 'Food & Dining',   color: '#f97316', route: '/food',     filter: { main_category: 'food' } },
+  { key: 'buysell',  label: 'Buy & Sell',       color: '#8b5cf6', route: '/buysell',  filter: { main_category: 'buysell' } },
+  { key: 'jobs',     label: 'Jobs',             color: '#f59e0b', route: '/jobs',     filter: { type: 'jobs' } },
+  { key: 'rent',     label: 'Rent / For Sale',  color: '#10b981', route: '/rent',     filter: { main_category: 'rent' } },
+  { key: 'services', label: 'Services',         color: '#3b82f6', route: '/services', filter: { type: 'services' } },
+  { key: 'travel',   label: 'Travel & Hotel',   color: '#0ea5e9', route: '/travel',   filter: { main_category: 'travel' } },
 ];
 
 function MiniCard({ item, color }) {
@@ -57,7 +57,6 @@ function CategoryPanel({ cat, listings, active }) {
       <div className="flex items-center justify-between px-4 py-3"
         style={{ background: `linear-gradient(90deg, ${cat.color}18, transparent)` }}>
         <div className="flex items-center gap-2">
-          <span className="text-xl">{cat.emoji}</span>
           <div>
             <h3 className="font-heading font-bold text-sm text-white">{cat.label}</h3>
             <p className="font-body text-[9px]" style={{ color: cat.color }}>{listings.length} live listings</p>
@@ -169,8 +168,7 @@ export default function LiveCategoryDashboards() {
                   border: `1.5px solid ${activeIdx === i ? cat.color + '60' : 'rgba(255,255,255,0.1)'}`,
                   color: activeIdx === i ? cat.color : 'rgba(255,255,255,0.45)',
                 }}>
-                <span>{cat.emoji}</span>
-                <span className="hidden sm:inline">{cat.label}</span>
+                <span>{cat.label}</span>
               </button>
             ))}
           </div>
