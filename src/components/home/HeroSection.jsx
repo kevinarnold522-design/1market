@@ -48,12 +48,12 @@ export default function HeroSection({ heroImage }) {
               </motion.div>
 
               {/* Brand Logo */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 -ml-3 sm:ml-0">
                 <a href="/" className="inline-flex flex-shrink-0" aria-label="Go to homepage">
                   <img
                     src={MARKETPH_LOGO}
                     alt="1Market Philippines"
-                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover shadow-2xl"
+                    className="w-20 h-20 sm:w-20 sm:h-20 rounded-xl object-cover shadow-2xl"
                     style={{ boxShadow: '0 0 24px rgba(255,215,0,0.35)' }}
                   />
                 </a>
@@ -130,16 +130,16 @@ export default function HeroSection({ heroImage }) {
             </div>
           </motion.div>
 
-          {/* Right: Mascot Car Image - 4x Bigger */}
+          {/* Right: Original mascot car image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.5 }}
-            className="relative order-first lg:order-last flex items-center justify-center">
+            className="relative order-first lg:order-last flex items-center justify-center lg:justify-end lg:-mr-8">
             <img 
               src={ALFIE_CAR}
               alt="1Market Philippines mascot car"
-              className="w-full max-w-[18rem] sm:max-w-[36rem] lg:max-w-[44rem] drop-shadow-2xl"
+              className="w-full max-w-[19rem] sm:max-w-[38rem] lg:max-w-[47rem] drop-shadow-2xl"
               style={{ filter: 'drop-shadow(0 18px 36px rgba(0,212,255,0.25))' }}
             />
           </motion.div>
