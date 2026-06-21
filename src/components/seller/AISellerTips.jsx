@@ -1,13 +1,13 @@
 /**
- * AISellerTips — Daily AI-powered selling tips for sellers
+ * AISellerTips — Daily premium selling tips for sellers
  * Shows on SellerDashboard / UserProfile seller tabs
  */
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lightbulb, Loader2, RefreshCw, TrendingUp, Target, Zap } from 'lucide-react';
+import { Lightbulb, Loader2, RefreshCw, TrendingUp, Target, Sparkles } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
-const TIP_ICONS = [TrendingUp, Target, Zap, Lightbulb];
+const TIP_ICONS = [TrendingUp, Target, Sparkles, Lightbulb];
 
 export default function AISellerTips({ user, listings = [] }) {
   const [tips, setTips] = useState(null);
@@ -91,8 +91,8 @@ Each tip should be actionable in under 5 minutes.`,
               <Lightbulb className="w-4 h-4 text-white" />
             </div>
             <div>
-              <p className="font-heading font-bold text-sm text-amber-400">AI Seller Tips</p>
-              <p className="font-body text-[10px] text-white/40">Personalized advice just for you</p>
+              <p className="font-heading font-bold text-sm text-amber-300 tracking-tight">Seller Growth Tips</p>
+              <p className="font-body text-[10px] text-white/45">Premium listing advice for you</p>
             </div>
           </div>
           <button
@@ -112,8 +112,8 @@ Each tip should be actionable in under 5 minutes.`,
         <div className="rounded-2xl p-4 flex items-center gap-3" style={{ background: 'rgba(251,191,36,0.07)', border: '1px solid rgba(251,191,36,0.2)' }}>
           <Loader2 className="w-5 h-5 text-amber-400 animate-spin" />
           <div>
-            <p className="font-body font-bold text-sm text-amber-400">Analyzing your store...</p>
-            <p className="font-body text-[10px] text-white/40">AI is reviewing your listings</p>
+            <p className="font-body font-bold text-sm text-amber-300">Reviewing your store...</p>
+            <p className="font-body text-[10px] text-white/45">Preparing listing recommendations</p>
           </div>
         </div>
       ) : tips && (
@@ -126,7 +126,7 @@ Each tip should be actionable in under 5 minutes.`,
                 <Lightbulb className="w-4 h-4 text-white" />
               </div>
               <div>
-                <p className="font-heading font-bold text-sm text-amber-400">AI Seller Tips</p>
+                <p className="font-heading font-bold text-sm text-amber-300 tracking-tight">Seller Growth Tips</p>
                 {tips.greeting && <p className="font-body text-[10px] text-white/50">{tips.greeting}</p>}
               </div>
             </div>
@@ -166,7 +166,7 @@ Each tip should be actionable in under 5 minutes.`,
 
           {tips.motivation && (
             <div className="px-3 py-2 rounded-xl text-center" style={{ background: 'rgba(251,191,36,0.08)' }}>
-              <p className="font-body text-[11px] text-amber-400/80 italic">AI {tips.motivation}</p>
+              <p className="font-body text-[11px] text-amber-300/85 italic">{tips.motivation}</p>
             </div>
           )}
         </motion.div>

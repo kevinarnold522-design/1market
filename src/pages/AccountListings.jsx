@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Package, Pencil, Trash2, Eye, Clock, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Package, Pencil, Trash2, Eye, Clock, CheckCircle2, Crown } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { getGhostSession, getGhostDisplayName, isGhostOwnedRecord } from '@/lib/ghostAccounts';
 
@@ -54,13 +54,16 @@ export default function AccountListings() {
   const accountName = ghost ? getGhostDisplayName(ghost) : (user?.full_name || 'My Account');
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0033CC] to-[#001a80] px-4 py-8 text-white">
-      <div className="max-w-5xl mx-auto">
-        <button onClick={() => window.history.back()} className="inline-flex items-center gap-2 text-white/70 hover:text-white mb-6"><ArrowLeft className="w-4 h-4" /> Back</button>
-        <div className="rounded-3xl p-6 mb-6" style={{ background: 'rgba(13,31,60,0.85)', border: '1px solid rgba(255,255,255,0.12)' }}>
-          <p className="font-body text-xs text-white/45 uppercase tracking-wider font-bold">{ghost ? 'Ghost Account Dashboard' : 'Account Dashboard'}</p>
-          <h1 className="font-heading font-bold text-3xl mt-1">{accountName}</h1>
-          <p className="font-body text-sm text-white/55 mt-2">Only listings owned by this account are shown here.</p>
+    <div className="min-h-screen bg-gradient-to-b from-[#07123d] via-[#0033CC] to-[#001a80] px-4 py-8 text-white font-body">
+      <div className="max-w-6xl mx-auto">
+        <button onClick={() => window.history.back()} className="inline-flex items-center gap-2 text-white/65 hover:text-white mb-6 font-body text-sm"><ArrowLeft className="w-4 h-4" /> Back</button>
+        <div className="rounded-[2rem] p-6 md:p-8 mb-6 shadow-2xl" style={{ background: 'linear-gradient(135deg,rgba(255,255,255,0.13),rgba(13,31,60,0.88))', border: '1px solid rgba(255,215,0,0.22)', boxShadow: '0 24px 70px rgba(0,0,0,0.26)' }}>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3" style={{ background: 'rgba(255,215,0,0.11)', border: '1px solid rgba(255,215,0,0.24)' }}>
+            <Crown className="w-3.5 h-3.5 text-amber-300" />
+            <p className="font-body text-[10px] text-amber-200 uppercase tracking-[0.22em] font-bold">{ghost ? 'Test Account Listings' : 'Premium Listings Dashboard'}</p>
+          </div>
+          <h1 className="font-heading font-bold text-3xl md:text-4xl tracking-tight text-white">{accountName}</h1>
+          <p className="font-body text-sm text-white/60 mt-2 max-w-2xl">Manage, review, and polish the listings owned by this account.</p>
         </div>
 
         <div className="grid grid-cols-3 gap-3 mb-6">
@@ -69,10 +72,10 @@ export default function AccountListings() {
             const active = activeTab === tab.key;
             const count = tab.key === 'all' ? listings.length : listings.filter(item => item.approval_status === tab.key).length;
             return (
-              <button key={tab.key} onClick={() => setActiveTab(tab.key)} className="rounded-2xl p-4 text-left transition-all" style={{ background: active ? 'rgba(0,212,255,0.16)' : 'rgba(255,255,255,0.06)', border: `1px solid ${active ? 'rgba(0,212,255,0.45)' : 'rgba(255,255,255,0.1)'}` }}>
-                <Icon className="w-5 h-5 text-[#00D4FF] mb-2" />
-                <p className="font-body text-xs text-white/55">{tab.label}</p>
-                <p className="font-heading font-bold text-2xl">{count}</p>
+              <button key={tab.key} onClick={() => setActiveTab(tab.key)} className="rounded-2xl p-4 text-left transition-all hover:-translate-y-0.5" style={{ background: active ? 'linear-gradient(135deg,rgba(255,215,0,0.18),rgba(0,212,255,0.13))' : 'rgba(255,255,255,0.07)', border: `1px solid ${active ? 'rgba(255,215,0,0.42)' : 'rgba(255,255,255,0.12)'}`, boxShadow: active ? '0 14px 34px rgba(255,215,0,0.12)' : 'none' }}>
+                <Icon className="w-5 h-5 text-amber-300 mb-2" />
+                <p className="font-body text-xs text-white/60 font-semibold">{tab.label}</p>
+                <p className="font-heading font-bold text-2xl tracking-tight">{count}</p>
               </button>
             );
           })}
@@ -81,26 +84,26 @@ export default function AccountListings() {
         {loading ? (
           <div className="py-20 flex justify-center"><div className="w-8 h-8 border-4 border-white/20 border-t-[#00D4FF] rounded-full animate-spin" /></div>
         ) : filtered.length === 0 ? (
-          <div className="bg-white text-slate-900 rounded-3xl p-8 shadow-xl text-center">
-            <Package className="w-12 h-12 text-blue-600 mx-auto mb-3" />
-            <h2 className="font-heading font-bold text-2xl mb-2">No listings found</h2>
-            <p className="text-slate-500 mb-5">Listings created by this account will appear here and remain isolated.</p>
-            <Link to="/post-ad" className="px-5 py-2 rounded-xl bg-blue-600 text-white font-bold">Create listing</Link>
+          <div className="bg-white text-slate-950 rounded-[2rem] p-8 shadow-2xl text-center border border-amber-200/60">
+            <Package className="w-12 h-12 text-amber-500 mx-auto mb-3" />
+            <h2 className="font-heading font-bold text-2xl mb-2 tracking-tight">No listings found</h2>
+            <p className="text-slate-500 mb-5 font-body">Listings created by this account will appear here.</p>
+            <Link to="/post-ad" className="px-5 py-2.5 rounded-xl bg-slate-950 text-amber-200 font-bold shadow-lg">Create listing</Link>
           </div>
         ) : (
           <div className="space-y-3">
             {filtered.map(item => (
-              <div key={item.id} className="rounded-2xl p-4 flex items-center gap-4" style={{ background: 'rgba(13,31,60,0.86)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                <img src={item.image_url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=120&h=120&fit=crop'} alt="" className="w-16 h-16 rounded-xl object-cover" />
+              <div key={item.id} className="rounded-2xl p-4 flex items-center gap-4 shadow-xl transition-all hover:-translate-y-0.5" style={{ background: 'linear-gradient(135deg,rgba(255,255,255,0.12),rgba(13,31,60,0.88))', border: '1px solid rgba(255,255,255,0.14)' }}>
+                <img src={item.image_url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=120&h=120&fit=crop'} alt="" className="w-16 h-16 rounded-2xl object-cover ring-1 ring-amber-200/30" />
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-heading font-bold text-white truncate">{item.title}</h3>
-                  <p className="font-body text-xs text-white/45 truncate">{item.location || 'No location'} · {item.price_label || (item.price ? `₱${Number(item.price).toLocaleString()}` : 'Price on request')}</p>
-                  <span className="inline-flex mt-2 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase" style={{ background: item.approval_status === 'approved' ? 'rgba(16,185,129,0.16)' : 'rgba(245,158,11,0.16)', color: item.approval_status === 'approved' ? '#6ee7b7' : '#fbbf24' }}>{item.approval_status || 'pending'}</span>
+                  <h3 className="font-heading font-bold text-white truncate tracking-tight">{item.title}</h3>
+                  <p className="font-body text-xs text-white/50 truncate">{item.location || 'No location'} · {item.price_label || (item.price ? `₱${Number(item.price).toLocaleString()}` : 'Price on request')}</p>
+                  <span className="inline-flex mt-2 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider" style={{ background: item.approval_status === 'approved' ? 'rgba(16,185,129,0.16)' : 'rgba(255,215,0,0.14)', color: item.approval_status === 'approved' ? '#6ee7b7' : '#fcd34d' }}>{item.approval_status || 'pending'}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Link to={`/listing/${item.id}`} className="p-2 rounded-xl bg-white/8 hover:bg-white/15"><Eye className="w-4 h-4 text-white/65" /></Link>
-                  <Link to={`/profile?tab=listings&edit=${item.id}`} className="p-2 rounded-xl bg-white/8 hover:bg-white/15"><Pencil className="w-4 h-4 text-[#00D4FF]" /></Link>
-                  <button onClick={() => deleteListing(item)} className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20"><Trash2 className="w-4 h-4 text-red-400" /></button>
+                  <Link to={`/listing/${item.id}`} className="p-2 rounded-xl bg-white/8 hover:bg-white/15 border border-white/10"><Eye className="w-4 h-4 text-white/70" /></Link>
+                  <Link to={`/profile?tab=listings&edit=${item.id}`} className="p-2 rounded-xl bg-amber-300/10 hover:bg-amber-300/20 border border-amber-300/20"><Pencil className="w-4 h-4 text-amber-300" /></Link>
+                  <button onClick={() => deleteListing(item)} className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20"><Trash2 className="w-4 h-4 text-red-400" /></button>
                 </div>
               </div>
             ))}
