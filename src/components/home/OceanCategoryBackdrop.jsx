@@ -25,11 +25,31 @@ export default function OceanCategoryBackdrop({ global = false }) {
       <motion.div className="absolute inset-x-0 top-8 h-20 opacity-35" animate={{ x: ['-8%', '8%', '-8%'], scaleY: [1, 1.14, 1] }} transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}>
         <div className="h-full bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.58),transparent_64%)]" />
       </motion.div>
+      <div className="absolute left-4 sm:left-12 bottom-0 w-48 h-28 opacity-90">
+        <div className="absolute bottom-0 left-4 w-36 h-14 rounded-t-full bg-[#fde68a] shadow-2xl" />
+        <div className="absolute bottom-12 left-20 w-2.5 h-12 bg-[#8B5A2B] rounded-full -rotate-6" />
+        <div className="absolute bottom-21 left-12 w-20 h-8 rounded-full bg-[#22c55e] -rotate-12" />
+        <div className="absolute bottom-21 left-20 w-20 h-8 rounded-full bg-[#16a34a] rotate-12" />
+        <div className="absolute bottom-12 left-8 w-2 h-9 bg-[#7c4a1f] rounded-full rotate-12" />
+        <div className="absolute bottom-18 left-2 w-16 h-7 rounded-full bg-[#65a30d] rotate-12" />
+        <div className="absolute bottom-18 left-9 w-16 h-7 rounded-full bg-[#84cc16] -rotate-12" />
+      </div>
       <div className="absolute right-4 sm:right-16 bottom-0 w-64 h-36 opacity-95">
         <div className="absolute bottom-0 left-8 w-44 h-20 rounded-t-full bg-[#facc15] shadow-2xl" />
         <div className="absolute bottom-16 left-24 w-3 h-16 bg-[#8B5A2B] rounded-full rotate-6" />
         <div className="absolute bottom-28 left-12 w-28 h-12 rounded-full bg-[#22c55e] -rotate-12" />
         <div className="absolute bottom-25 left-26 w-28 h-12 rounded-full bg-[#16a34a] rotate-12" />
+        <div className="absolute bottom-14 left-42 w-2.5 h-14 bg-[#7c4a1f] rounded-full -rotate-12" />
+        <div className="absolute bottom-25 left-34 w-24 h-10 rounded-full bg-[#15803d] rotate-24" />
+        <div className="absolute bottom-25 left-44 w-24 h-10 rounded-full bg-[#22c55e] -rotate-24" />
+      </div>
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-1 w-56 h-24 opacity-80 hidden md:block">
+        <div className="absolute bottom-0 left-8 w-40 h-12 rounded-t-full bg-[#fbbf24] shadow-xl" />
+        <div className="absolute bottom-10 left-18 w-2 h-10 bg-[#8B5A2B] rounded-full rotate-3" />
+        <div className="absolute bottom-17 left-10 w-20 h-7 rounded-full bg-[#4ade80] -rotate-12" />
+        <div className="absolute bottom-17 left-18 w-20 h-7 rounded-full bg-[#16a34a] rotate-12" />
+        <div className="absolute bottom-8 left-30 w-8 h-12 rounded-t-full bg-[#166534]" />
+        <div className="absolute bottom-14 left-28 w-12 h-6 rounded-full bg-[#22c55e]" />
       </div>
       {seaLife.map(item => {
         const start = item.dir === 1 ? '-18vw' : '112vw';
