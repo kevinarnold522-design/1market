@@ -9,6 +9,7 @@ import AddListingModal from '../components/AddListingModal.jsx';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import SmartFilterChips from '../components/SmartFilterChips';
 import ListingContactLinks from '../components/ListingContactLinks';
+import ListingLandingBrandBar from '@/components/listing/ListingLandingBrandBar';
 import { base44 } from '@/api/base44Client';
 
 const SUBCATEGORIES = [
@@ -274,6 +275,7 @@ export default function Services() {
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
       <StarField />
+      <ListingLandingBrandBar />
       {!splashDismissed && (
         <SubcategorySplash
           subcategories={SUBCATEGORIES}
@@ -358,6 +360,8 @@ export default function Services() {
         {!currentUser && <BecomeSellerBanner className="mt-8 mb-4" />}
 
       </div>
+
+      <ListingLandingBrandBar />
 
       <AnimatePresence>
         {contactItem && <ContactModal item={contactItem} onClose={() => setContactItem(null)} />}

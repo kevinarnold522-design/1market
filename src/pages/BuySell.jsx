@@ -9,6 +9,7 @@ import AddListingModal from '@/components/AddListingModal';
 import BecomeSellerBanner from '@/components/BecomeSelllerBanner';
 import SmartFilterChips from '@/components/SmartFilterChips';
 import ListingContactLinks from '@/components/ListingContactLinks';
+import ListingLandingBrandBar from '@/components/listing/ListingLandingBrandBar';
 
 const CONDITIONS = ['Brand New', 'Like New', 'Good as New', 'Lightly Used', 'Used', 'Heavily Used'];
 const DELIVERY_OPTS = ['LBC', 'J&T Express', 'Shopee Express', 'Lalamove', 'GrabExpress', 'Flash Express', 'Meetup at Location', 'Pickup at My Address', 'Cash on Delivery (COD)'];
@@ -224,6 +225,7 @@ export default function BuySell() {
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
+      <ListingLandingBrandBar />
       {/* Header */}
       <div className="sticky top-0 z-30 backdrop-blur-xl border-b border-white/8 px-4 py-3"
         style={{ background: 'rgba(0,13,64,0.9)' }}>
@@ -363,6 +365,8 @@ export default function BuySell() {
           )}
         </div>
       </div>
+
+      <ListingLandingBrandBar />
 
       {/* Mobile Filter Drawer */}
       <AnimatePresence>

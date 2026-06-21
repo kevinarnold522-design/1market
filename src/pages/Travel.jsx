@@ -11,6 +11,7 @@ import ScrollToTop from '../components/ScrollToTop';
 import MascotDog from '../components/MascotDog';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import SmartFilterChips from '../components/SmartFilterChips';
+import ListingLandingBrandBar from '@/components/listing/ListingLandingBrandBar';
 
 const TRAVEL_CATEGORIES = [
   { key: 'hotel',       label: 'Hotels',         icon: <Hotel className="w-4 h-4" />, color: '#6366f1' },
@@ -259,6 +260,7 @@ export default function Travel() {
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
       <ParticleBackground />
+      <ListingLandingBrandBar />
 
       {/* Hero */}
       <div className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg,#0033CC 0%,#1a4de8 60%,#0044cc 100%)' }}>
@@ -335,6 +337,8 @@ export default function Travel() {
         )}
 
       </div>
+
+      <ListingLandingBrandBar />
 
       {!currentUser && (
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pb-4">

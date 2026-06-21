@@ -8,6 +8,7 @@ import MemberSignupModal from '../components/MemberSignupModal';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import SmartFilterChips from '../components/SmartFilterChips';
 import ListingContactLinks from '../components/ListingContactLinks';
+import ListingLandingBrandBar from '@/components/listing/ListingLandingBrandBar';
 import { base44 } from '@/api/base44Client';
 
 // Royal Blue theme colors
@@ -313,6 +314,7 @@ export default function Jobs() {
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
       <ParticleBackground />
+      <ListingLandingBrandBar />
 
       {/* Header */}
       <div className="relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${THEME.primaryDark} 0%, ${THEME.primary} 100%)` }}>
@@ -400,6 +402,8 @@ export default function Jobs() {
 
         {!currentUser && <BecomeSellerBanner className="mt-8 mb-4" />}
       </div>
+
+      <ListingLandingBrandBar />
 
       <AnimatePresence>
         {applyJob && <ApplyModal job={applyJob} onClose={() => setApplyJob(null)} />}

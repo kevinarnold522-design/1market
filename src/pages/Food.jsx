@@ -13,6 +13,7 @@ import { getAdminEditMode } from '../components/home/Navbar';
 import MascotDog from '../components/MascotDog';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import SmartFilterChips from '../components/SmartFilterChips';
+import ListingLandingBrandBar from '@/components/listing/ListingLandingBrandBar';
 
 const KNOWN_LOGOS = {
   'Jollibee': 'https://upload.wikimedia.org/wikipedia/en/thumb/8/84/Jollibee_logo.svg/220px-Jollibee_logo.svg.png',
@@ -324,6 +325,7 @@ export default function Food() {
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
       <StarField />
+      <ListingLandingBrandBar />
       <SubcategorySplash
         subcategories={FOOD_SUBCATEGORIES}
         activeKey={selectedSubcat}
@@ -492,6 +494,8 @@ export default function Food() {
           </motion.div>
         )}
       </div>
+
+      <ListingLandingBrandBar />
 
       <AnimatePresence>
         {ratingBiz && <RateModal biz={ratingBiz} onClose={() => setRatingBiz(null)} />}

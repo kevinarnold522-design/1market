@@ -11,6 +11,7 @@ import MascotDog from '../components/MascotDog';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import SmartFilterChips from '../components/SmartFilterChips';
 import ListingContactLinks from '../components/ListingContactLinks';
+import ListingLandingBrandBar from '@/components/listing/ListingLandingBrandBar';
 
 // Multi-icon renderer for the section header
 function MultiIcon({ color }) {
@@ -212,6 +213,7 @@ export default function ForRent() {
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
       <ParticleBackground />
+      <ListingLandingBrandBar />
       <SubcategorySplash
         subcategories={SUBCATEGORIES}
         activeKey={activeCategory}
@@ -320,6 +322,8 @@ export default function ForRent() {
         {!user && <BecomeSellerBanner className="mt-8 mb-4" />}
 
       </div>
+
+      <ListingLandingBrandBar />
 
       <AnimatePresence>
         {contactItem && <ContactModal item={contactItem} onClose={() => setContactItem(null)} />}
