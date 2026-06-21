@@ -4,6 +4,7 @@ import FloatingNavbar from './FloatingNavbar';
 import WaveTransition from './WaveTransition';
 import UserTasks from './UserTasks';
 import ThemeCustomizer from './ThemeCustomizer';
+import OceanCategoryBackdrop from './home/OceanCategoryBackdrop';
 import { subscribeWave, isWaveActive, triggerWave } from '@/lib/waveTransition';
 import { base44 } from '@/api/base44Client';
 import { getGhostSession } from '@/lib/ghostAccounts';
@@ -45,8 +46,9 @@ export default function AppLayout() {
 
 
   return (
-    <div data-app-shell className="flex min-h-screen" style={{ background: 'var(--landing-bg-gradient)' }}>
-      <main className="flex-1 min-w-0 overflow-x-hidden" style={{ background: 'var(--landing-bg-gradient)' }}>
+    <div data-app-shell className="relative flex min-h-screen overflow-hidden" style={{ background: 'transparent' }}>
+      <OceanCategoryBackdrop global />
+      <main className="relative z-10 flex-1 min-w-0 overflow-x-hidden" style={{ background: 'transparent' }}>
         <FloatingNavbar />
         <Outlet />
       </main>

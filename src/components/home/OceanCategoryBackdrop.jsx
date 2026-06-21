@@ -2,35 +2,43 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const seaLife = [
-  { icon: '🐟', label: 'fish', top: '24%', size: 'text-2xl', duration: 15, delay: 0 },
-  { icon: '🐠', label: 'fish', top: '62%', size: 'text-xl', duration: 18, delay: 2 },
-  { icon: '🐬', label: 'dolphin', top: '34%', size: 'text-4xl', duration: 20, delay: 1 },
-  { icon: '🦈', label: 'shark', top: '72%', size: 'text-4xl', duration: 24, delay: 3 },
-  { icon: '🐙', label: 'octopus', top: '50%', size: 'text-3xl', duration: 22, delay: 5 },
-  { icon: '🐋', label: 'whale shark', top: '82%', size: 'text-5xl', duration: 28, delay: 4 },
+  { icon: '🐟', label: 'fish', top: '23%', size: 'text-2xl', duration: 18, delay: 0, dir: 1 },
+  { icon: '🐠', label: 'fish', top: '58%', size: 'text-xl', duration: 21, delay: 2, dir: -1 },
+  { icon: '🐬', label: 'dolphin', top: '35%', size: 'text-4xl', duration: 24, delay: 1, dir: 1 },
+  { icon: '🦈', label: 'shark', top: '68%', size: 'text-4xl', duration: 29, delay: 4, dir: -1 },
+  { icon: '🐙', label: 'octopus', top: '76%', size: 'text-3xl', duration: 26, delay: 6, dir: 1 },
+  { icon: '🐋', label: 'whale shark', top: '84%', size: 'text-5xl', duration: 34, delay: 3, dir: -1 },
 ];
 
-export default function OceanCategoryBackdrop() {
+export default function OceanCategoryBackdrop({ global = false }) {
+  const shellClass = global
+    ? 'fixed inset-0 overflow-hidden pointer-events-none bg-gradient-to-b from-[#38bdf8] via-[#2563EB] to-[#0ea5e9]'
+    : 'absolute inset-0 overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#38bdf8] via-[#2563EB] to-[#0ea5e9]';
+
   return (
-    <div className="absolute inset-0 overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#38bdf8] via-[#2563EB] to-[#0ea5e9]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(255,255,255,0.28),transparent_34%),linear-gradient(115deg,rgba(186,230,253,0.18),transparent_45%)]" />
-      <motion.div className="absolute inset-x-0 top-5 h-16 opacity-35" animate={{ x: ['-10%', '10%', '-10%'] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}>
-        <div className="h-full bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.55),transparent_62%)]" />
+    <div className={shellClass}>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(255,255,255,0.32),transparent_32%),linear-gradient(115deg,rgba(186,230,253,0.2),transparent_48%)]" />
+      <motion.div className="absolute inset-x-0 top-8 h-20 opacity-35" animate={{ x: ['-8%', '8%', '-8%'], scaleY: [1, 1.14, 1] }} transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}>
+        <div className="h-full bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.58),transparent_64%)]" />
       </motion.div>
-      <div className="absolute right-4 sm:right-16 bottom-0 w-64 h-36">
+      <div className="absolute right-4 sm:right-16 bottom-0 w-64 h-36 opacity-95">
         <div className="absolute bottom-0 left-8 w-44 h-20 rounded-t-full bg-[#facc15] shadow-2xl" />
         <div className="absolute bottom-16 left-24 w-3 h-16 bg-[#8B5A2B] rounded-full rotate-6" />
         <div className="absolute bottom-28 left-12 w-28 h-12 rounded-full bg-[#22c55e] -rotate-12" />
         <div className="absolute bottom-25 left-26 w-28 h-12 rounded-full bg-[#16a34a] rotate-12" />
       </div>
-      {seaLife.map(item => (
-        <motion.div key={item.label + item.top} className={`absolute ${item.size} drop-shadow-lg`} style={{ top: item.top }} aria-label={item.label}
-          initial={{ x: '-15vw', scaleX: 1 }} animate={{ x: '110vw', y: [0, -12, 10, 0], rotate: [0, 4, -3, 0] }}
-          transition={{ duration: item.duration, repeat: Infinity, ease: 'linear', delay: item.delay }}>
-          {item.icon}
-        </motion.div>
-      ))}
-      <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0f8bd8]/70 to-transparent" />
+      {seaLife.map(item => {
+        const start = item.dir === 1 ? '-18vw' : '112vw';
+        const end = item.dir === 1 ? '112vw' : '-18vw';
+        return (
+          <motion.div key={item.label + item.top} className={`absolute ${item.size} drop-shadow-lg`} style={{ top: item.top }} aria-label={item.label}
+            initial={{ x: start, scaleX: item.dir }} animate={{ x: [start, '28vw', '62vw', end], y: [0, -18, 14, -8, 0], rotate: [0, -5, 6, -3, 0] }}
+            transition={{ duration: item.duration, repeat: Infinity, ease: 'easeInOut', delay: item.delay }}>
+            {item.icon}
+          </motion.div>
+        );
+      })}
+      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0f8bd8]/75 to-transparent" />
     </div>
   );
 }
