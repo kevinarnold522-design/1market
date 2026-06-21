@@ -266,7 +266,12 @@ export const supabaseCompat = {
       if (!userId) throw new Error('Not authenticated');
       const { data, error } = await db.from('users').update(patch || {}).eq('id', userId).select('*').single();
       if (error) throw error;
-      return data;
+      const updated = normalizeRecord(data);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('active-user-changed', { detail: updated }));
+        window.dispatchEvent(new CustomEvent('supabase-auth-changed', { detail: updated }));
+      }
+      return updated;
     },
     redirectToLogin(nextUrl = window.location.href) {
       window.location.href = `/login?next=${encodeURIComponent(nextUrl)}`;

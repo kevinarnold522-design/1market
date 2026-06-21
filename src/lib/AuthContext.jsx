@@ -30,12 +30,20 @@ export const AuthProvider = ({ children }) => {
     authStatePromise?.then?.((subscription) => {
       authSubscription = subscription;
     });
+    const applyActiveUserChange = (event) => {
+      if (!event.detail) return refreshAuthSession();
+      _cachedUser = event.detail;
+      setUser(event.detail);
+      setIsAuthenticated(true);
+    };
     window.addEventListener('ghost-session-changed', refreshAuthSession);
     window.addEventListener('supabase-auth-changed', refreshAuthSession);
+    window.addEventListener('active-user-changed', applyActiveUserChange);
     return () => {
       authSubscription?.unsubscribe?.();
       window.removeEventListener('ghost-session-changed', refreshAuthSession);
       window.removeEventListener('supabase-auth-changed', refreshAuthSession);
+      window.removeEventListener('active-user-changed', applyActiveUserChange);
     };
   }, []);
 

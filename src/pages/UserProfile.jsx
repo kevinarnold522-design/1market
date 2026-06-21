@@ -60,7 +60,10 @@ export default function UserProfile() {
       return;
     }
     const updated = await base44.auth.updateMe(data);
-    setUser(prev => ({ ...(prev || {}), ...(updated || data) }));
+    const merged = { ...(user || {}), ...(updated || data) };
+    setUser(merged);
+    window.dispatchEvent(new CustomEvent('active-user-changed', { detail: merged }));
+    window.dispatchEvent(new CustomEvent('supabase-auth-changed', { detail: merged }));
   };
 
   const saveProfile = async () => {
@@ -77,8 +80,10 @@ export default function UserProfile() {
     setUploading(type);
     try {
       const { file_url } = await uploadMediaFileToSupabase(file, type === 'cover' ? 'profiles/covers' : 'profiles/avatars');
-      const primary = type === 'cover' ? 'cover_photo' : 'profile_picture';
-      await updateUser({ [primary]: file_url });
+      const patch = type === 'cover'
+        ? { cover_photo: file_url, cover_photos: [file_url, ...(user.cover_photos || []).filter(Boolean)].slice(0, 6) }
+        : { profile_picture: file_url, profile_photos: [file_url, ...(user.profile_photos || []).filter(Boolean)].slice(0, 6) };
+      await updateUser(patch);
       setToast(type === 'cover' ? 'Cover photo uploaded' : 'Profile photo uploaded');
       setTimeout(() => setToast(''), 1800);
     } catch (error) {
@@ -95,8 +100,8 @@ export default function UserProfile() {
   if (!user) return <div className="min-h-screen bg-white flex items-center justify-center"><div className="w-8 h-8 rounded-full border-4 border-blue-100 border-t-blue-600 animate-spin" /></div>;
 
   const initials = (user.full_name || user.email || 'U').split(' ').map(x => x[0]).join('').slice(0, 2).toUpperCase();
-  const profileImages = user.profile_picture ? [user.profile_picture] : [];
-  const coverImages = user.cover_photo ? [user.cover_photo] : [];
+  const profileImages = [user.profile_picture, ...(user.profile_photos || [])].filter(Boolean);
+  const coverImages = [user.cover_photo, ...(user.cover_photos || [])].filter(Boolean);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white text-slate-900">
