@@ -101,6 +101,19 @@
   }
 }
 
+/* Royal blue primary actions — prevents dark navy/black buttons in preview/auth screens */
+button[type="submit"],
+button[class*="bg-[#111827]"],
+button[class*="bg-[#0f172a]"],
+button[class*="bg-slate-900"],
+button[class*="bg-gray-900"],
+button[class*="bg-black"] {
+  background: linear-gradient(135deg, var(--royal-blue), var(--royal-blue-light)) !important;
+  background-color: var(--royal-blue) !important;
+  color: #ffffff !important;
+  border-color: rgba(255,255,255,0.24) !important;
+}
+
 /* Glass boxes between every navbar option */
 nav a,
 nav button,
