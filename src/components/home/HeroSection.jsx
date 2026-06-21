@@ -127,7 +127,7 @@ export default function HeroSection({ heroImage }) {
                       href="/post-ad"
                       className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl font-body font-bold text-sm text-white border border-[#FFD700]/40 hover:bg-[#FFD700]/10 transition-all"
                       whileHover={{ scale: 1.05 }}>
-                      Post an Ad
+                      Post a Listing
                     </motion.a>
                   </>
                 ) : (
@@ -137,7 +137,7 @@ export default function HeroSection({ heroImage }) {
                       href="/post-ad"
                       className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-body font-bold text-sm text-white border border-[#FFD700]/40 hover:bg-[#FFD700]/10 transition-all"
                       whileHover={{ scale: 1.05 }}>
-                      Post an Ad
+                      Post a Listing
                     </motion.a>
                     <motion.a
                       href="/explore"

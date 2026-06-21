@@ -255,7 +255,7 @@ export default function Navbar() {
             <Link to="/post-ad" className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all group"
               style={{ background: 'linear-gradient(135deg,rgba(255,215,0,0.22),rgba(255,165,0,0.14))', border: '1px solid rgba(255,215,0,0.35)' }}>
               <Plus className="w-3.5 h-3.5 text-[#FFD700]" />
-              <span className="font-body text-xs font-bold text-[#FFD700] group-hover:text-white">Post an Ad</span>
+              <span className="font-body text-xs font-bold text-[#FFD700] group-hover:text-white">Post a Listing</span>
             </Link>
 
             {isAdmin && !isGhostSession && (
@@ -628,7 +628,7 @@ export default function Navbar() {
                   <>
                     <Link to="/post-ad" onClick={() => setMenuOpen(false)}
                       className="block text-[#FFD700] font-body text-sm font-bold py-2 transition-colors">
-                      <Plus className="w-3.5 h-3.5 inline mr-1" /> Post an Ad
+                      <Plus className="w-3.5 h-3.5 inline mr-1" /> Post a Listing
                     </Link>
                     <Link to="/messages" onClick={() => setMenuOpen(false)}
                       className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
@@ -708,7 +708,7 @@ export default function Navbar() {
                   <>
                     <Link to="/post-ad" onClick={() => setMenuOpen(false)}
                       className="block text-[#FFD700] font-body text-sm font-bold py-2 transition-colors">
-                      <Plus className="w-3.5 h-3.5 inline mr-1" /> Post an Ad
+                      <Plus className="w-3.5 h-3.5 inline mr-1" /> Post a Listing
                     </Link>
                     <Link to="/explore" onClick={() => setMenuOpen(false)}
                       className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
