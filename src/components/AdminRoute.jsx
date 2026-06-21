@@ -2,8 +2,7 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { getImpersonatedUser } from '@/pages/ConnectedAccounts';
-
-const OWNER_EMAIL = 'kevinarnold522@gmail.com';
+import { isAdminAccount } from '@/lib/adminAuth';
 
 export default function AdminRoute({ children }) {
   const { user, isLoadingAuth, isAuthenticated } = useAuth();
@@ -11,10 +10,9 @@ export default function AdminRoute({ children }) {
   if (isLoadingAuth) return null;
 
   const ghost = getImpersonatedUser();
-  // Never allow ghost sessions or non-owner emails
-  const isOwner = !ghost && isAuthenticated && user?.email?.toLowerCase() === OWNER_EMAIL;
+  const hasAdminAccess = isAuthenticated && isAdminAccount(user, ghost);
 
-  if (!isOwner) {
+  if (!hasAdminAccess) {
     return <Navigate to="/" replace />;
   }
 

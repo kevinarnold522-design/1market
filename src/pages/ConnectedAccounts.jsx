@@ -32,7 +32,7 @@ const getAllGhostsLocal = () => {
       try { ghosts.push(JSON.parse(localStorage.getItem(key))); } catch {}
     }
   }
-  return ghosts.sort((a, b) => b.created_at - a.created_at);
+  return ghosts.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
 };
 const deleteGhostLocal = (id) => localStorage.removeItem(STORAGE_PREFIX + id);
 
@@ -219,8 +219,44 @@ export default function ConnectedAccounts() {
     }
   };
 
-  const handleSubmit = async () => {
+  const saveEditedGhost = async () => {
+    if (!editing) return;
+    setSaving(true);
+    const patch = {
+      full_name: form.full_name.trim(),
+      channel_name: form.channel_name.trim() || form.full_name.trim(),
+      user_type: form.user_type,
+      is_seller: form.user_type !== 'customer',
+      account_type: form.user_type !== 'customer' ? 'business_owner' : 'customer',
+      business_name: form.business_name.trim() || form.full_name.trim(),
+      seller_location: form.location,
+      location: form.location,
+      seller_area: form.seller_area,
+      seller_page_enabled: form.user_type !== 'customer',
+      bio: form.bio || '',
+      seller_bio: form.bio || '',
+    };
+
     if (activeTab === 'database') {
+      await base44.entities.User.update(editing.id, patch);
+      await loadDbGhosts();
+    } else {
+      const updated = { ...editing, ...patch };
+      saveGhostLocal(updated);
+      loadLocalGhosts();
+    }
+
+    setSaving(false);
+    setEditing(null);
+    setShowForm(false);
+    setForm(EMPTY_FORM);
+    showToast('Created user updated');
+  };
+
+  const handleSubmit = async () => {
+    if (editing) {
+      await saveEditedGhost();
+    } else if (activeTab === 'database') {
       await createDbGhost();
     } else {
       await createLocalGhost();

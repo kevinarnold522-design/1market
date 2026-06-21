@@ -53,6 +53,8 @@ export default function GhostAccountMenu({ collapsed = false, compact = false, o
       location: 'Manila',
       bio: form.bio.trim(),
       seller_area: '',
+      username: form.username.trim(),
+      phone: form.phone.trim(),
     });
     const newUser = res.data.user;
     localStorage.setItem(STORAGE_PREFIX + (newUser.ghost_id || newUser.id), JSON.stringify(newUser));
