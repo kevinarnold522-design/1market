@@ -22,7 +22,7 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
       }`}
       style={!compact ? { boxShadow: '0 0 14px rgba(0,212,255,0.3)' } : undefined}
     >
-      {iconOnly ? null : 'Post a Listing'}
+      {iconOnly ? null : 'Post an Ad'}
     </button>
   );
 }
