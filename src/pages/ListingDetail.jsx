@@ -307,6 +307,27 @@ export default function ListingDetail() {
     ? (comments.reduce((s, c) => s + (c.rating || 0), 0) / comments.filter(c => c.rating > 0).length || 0).toFixed(1)
     : listing.rating || 0;
 
+  const themePrimary = listing.landing_theme_color || listing.border_color || '#3E97F1';
+  const themeSecondary = listing.landing_secondary_color || '#60A5FA';
+  const galleryEffect = listing.transition_effect || listing.slideshow_animation || 'fade';
+  const bgStyles = {
+    royal_blue: `linear-gradient(180deg, ${themePrimary} 0%, ${themeSecondary} 100%)`,
+    glass: `linear-gradient(180deg, #ffffff 0%, ${themeSecondary} 58%, #dbeafe 100%)`,
+    neon: `radial-gradient(circle at top, ${themeSecondary}66, transparent 38%), linear-gradient(180deg, ${themePrimary} 0%, #38bdf8 100%)`,
+    sunset: 'linear-gradient(180deg, #fb923c 0%, #60A5FA 100%)',
+    emerald: 'linear-gradient(180deg, #10b981 0%, #60A5FA 100%)',
+    purple: 'linear-gradient(180deg, #8b5cf6 0%, #60A5FA 100%)',
+  };
+  const glowOpacity = listing.glow_effect === 'none' ? 0 : listing.glow_effect === 'neon' ? 0.42 : listing.glow_effect === 'strong' ? 0.32 : 0.2;
+  const glowBlur = listing.glow_effect === 'neon' ? 80 : listing.glow_effect === 'strong' ? 62 : 44;
+  const pageAnimation = listing.animation_style === 'float'
+    ? { y: [0, -8, 0] }
+    : listing.animation_style === 'pulse'
+      ? { scale: [1, 1.006, 1] }
+      : listing.animation_style === 'shimmer'
+        ? { opacity: [0.72, 1, 0.72] }
+        : {};
+
   const handleChatSeller = async (message) => {
     if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
     if (listing.email_contact) {
@@ -325,9 +346,15 @@ export default function ListingDetail() {
   };
 
   return (
-    <div className="listing-blue-white-theme min-h-screen bg-white">
+    <div className="listing-blue-white-theme min-h-screen" style={{ background: bgStyles[listing.landing_bg_style || 'royal_blue'] || bgStyles.royal_blue }}>
       <RoyalBlueWaves />
       <StarField />
+      <motion.div
+        className="fixed inset-0 pointer-events-none z-[1]"
+        style={{ opacity: glowOpacity, filter: `blur(${glowBlur}px)`, background: `radial-gradient(circle at 22% 18%, ${themePrimary}, transparent 32%), radial-gradient(circle at 82% 32%, ${themeSecondary}, transparent 28%)` }}
+        animate={pageAnimation}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+      />
       <BlueHeartAnimation show={showHeartAnim} />
 
       {showReport && <ReportModal listing={listing} user={user} onClose={() => setShowReport(false)} />}
@@ -372,37 +399,40 @@ export default function ListingDetail() {
           {/* Left: Images */}
           <div className="lg:col-span-3 space-y-3">
           <div className="rounded-2xl overflow-hidden aspect-[4/3] relative"
-            style={{ boxShadow: '0 0 40px rgba(0,212,255,0.08)' }}>
+            style={{ boxShadow: listing.glow_effect === 'none' ? '0 8px 24px rgba(37,99,235,0.14)' : `0 0 ${listing.glow_effect === 'strong' || listing.glow_effect === 'neon' ? 56 : 34}px ${themePrimary}66`, border: `2px solid ${themePrimary}55` }}>
             <AnimatePresence mode="wait">
               <motion.img
                 key={activeImage}
                 src={images[activeImage] || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800'}
                 alt={listing.title}
                 initial={
-                  listing.slideshow_animation === 'slide' ? { opacity: 0, x: 60 } :
-                  listing.slideshow_animation === 'zoom' ? { opacity: 0, scale: 1.18 } :
-                  listing.slideshow_animation === 'flip' ? { opacity: 0, rotateY: 90 } :
-                  listing.slideshow_animation === 'bounce' ? { opacity: 0, y: 40, scale: 0.9 } :
+                  galleryEffect === 'slide' ? { opacity: 0, x: 60 } :
+                  galleryEffect === 'zoom' ? { opacity: 0, scale: 1.18 } :
+                  galleryEffect === 'flip' ? { opacity: 0, rotateY: 90 } :
+                  galleryEffect === 'bounce' ? { opacity: 0, y: 40, scale: 0.9 } :
+                  galleryEffect === 'glow' ? { opacity: 0, scale: 0.96, filter: 'brightness(1.45) saturate(1.3)' } :
                   { opacity: 0, scale: 1.04 }
                 }
                 animate={
-                  listing.slideshow_animation === 'slide' ? { opacity: 1, x: 0 } :
-                  listing.slideshow_animation === 'zoom' ? { opacity: 1, scale: 1 } :
-                  listing.slideshow_animation === 'flip' ? { opacity: 1, rotateY: 0 } :
-                  listing.slideshow_animation === 'bounce' ? { opacity: 1, y: 0, scale: 1 } :
+                  galleryEffect === 'slide' ? { opacity: 1, x: 0 } :
+                  galleryEffect === 'zoom' ? { opacity: 1, scale: 1 } :
+                  galleryEffect === 'flip' ? { opacity: 1, rotateY: 0 } :
+                  galleryEffect === 'bounce' ? { opacity: 1, y: 0, scale: 1 } :
+                  galleryEffect === 'glow' ? { opacity: 1, scale: 1, filter: 'brightness(1) saturate(1)' } :
                   { opacity: 1, scale: 1 }
                 }
                 exit={
-                  listing.slideshow_animation === 'slide' ? { opacity: 0, x: -60 } :
-                  listing.slideshow_animation === 'zoom' ? { opacity: 0, scale: 0.85 } :
-                  listing.slideshow_animation === 'flip' ? { opacity: 0, rotateY: -90 } :
-                  listing.slideshow_animation === 'bounce' ? { opacity: 0, y: -20, scale: 0.95 } :
+                  galleryEffect === 'slide' ? { opacity: 0, x: -60 } :
+                  galleryEffect === 'zoom' ? { opacity: 0, scale: 0.85 } :
+                  galleryEffect === 'flip' ? { opacity: 0, rotateY: -90 } :
+                  galleryEffect === 'bounce' ? { opacity: 0, y: -20, scale: 0.95 } :
+                  galleryEffect === 'glow' ? { opacity: 0, scale: 1.05, filter: 'brightness(1.5) saturate(1.35)' } :
                   { opacity: 0, scale: 0.97 }
                 }
                 transition={
-                  listing.slideshow_animation === 'bounce'
+                  galleryEffect === 'bounce'
                     ? { type: 'spring', stiffness: 300, damping: 20 }
-                    : { duration: 0.38, ease: 'easeInOut' }
+                    : { duration: galleryEffect === 'glow' ? 0.52 : 0.38, ease: 'easeInOut' }
                 }
                 className="absolute inset-0 w-full h-full object-cover"
               />
@@ -417,7 +447,7 @@ export default function ListingDetail() {
                   <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
                     {images.map((_, i) => (
                       <button key={i} onClick={() => setActiveImage(i)}
-                        className={`w-1.5 h-1.5 rounded-full transition-all ${i === activeImage ? 'bg-[#00D4FF] w-4' : 'bg-white/40'}`} />
+                        className={`w-1.5 h-1.5 rounded-full transition-all ${i === activeImage ? 'w-4' : 'bg-white/40'}`} style={i === activeImage ? { background: themePrimary } : {}} />
                     ))}
                   </div>
                 </>

@@ -214,6 +214,31 @@ const SLIDESHOW_ANIMATIONS = [
   { value: 'zoom',   label: 'Zoom',   emoji: 'zoom', desc: 'Zoom in/out' },
   { value: 'flip',   label: 'Flip',   emoji: 'flip', desc: '3D flip' },
   { value: 'bounce', label: 'Bounce', emoji: 'bounce', desc: 'Bouncy' },
+  { value: 'glow',   label: 'Glow',   emoji: 'glow', desc: 'Glow pop' },
+];
+
+const LANDING_THEME_COLORS = [
+  '#3E97F1', '#60A5FA', '#00D4FF', '#8B5CF6', '#F97316', '#10B981', '#F59E0B', '#EC4899', '#EF4444', '#FFFFFF'
+];
+const LANDING_BG_STYLES = [
+  { value: 'royal_blue', label: 'Royal Blue' },
+  { value: 'glass', label: 'Glass Light' },
+  { value: 'neon', label: 'Neon Blue' },
+  { value: 'sunset', label: 'Sunset' },
+  { value: 'emerald', label: 'Emerald' },
+  { value: 'purple', label: 'Purple' },
+];
+const GLOW_EFFECTS = [
+  { value: 'soft', label: 'Soft Glow' },
+  { value: 'strong', label: 'Strong Glow' },
+  { value: 'neon', label: 'Neon Glow' },
+  { value: 'none', label: 'No Glow' },
+];
+const ANIMATION_STYLES = [
+  { value: 'none', label: 'None' },
+  { value: 'float', label: 'Float' },
+  { value: 'pulse', label: 'Pulse' },
+  { value: 'shimmer', label: 'Shimmer' },
 ];
 
 const DELIVERY_OPTIONS_BUYSELL = [
@@ -287,6 +312,8 @@ const EMPTY_FORM = {
   alternate_site_options: [], custom_site_name: '', custom_site_url: '',
   condition: 'Brand New', image_url: '', extra_images: [], is_active: true,
   slideshow_animation: 'fade',
+  landing_theme_color: '#3E97F1', landing_secondary_color: '#60A5FA', landing_bg_style: 'royal_blue',
+  transition_effect: 'fade', glow_effect: 'soft', animation_style: 'none',
   tags: '',
   brand: '', model: '', specs: '', ai_confidence_score: 0, ai_metadata: {}, ai_generated: false,
   custom_product_name: '',
@@ -455,6 +482,12 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       ai_metadata: form.ai_metadata || {},
       specs: [form.specs, form.custom_product_name, form.custom_service_name].filter(Boolean).join(' | ') || undefined,
       slideshow_animation: form.slideshow_animation || 'fade',
+      landing_theme_color: form.landing_theme_color || '#3E97F1',
+      landing_secondary_color: form.landing_secondary_color || '#60A5FA',
+      landing_bg_style: form.landing_bg_style || 'royal_blue',
+      transition_effect: form.transition_effect || form.slideshow_animation || 'fade',
+      glow_effect: form.glow_effect || 'soft',
+      animation_style: form.animation_style || 'none',
       ...(form.type === 'food' ? { food_serving: form.food_serving, food_dietary: form.food_dietary, food_spice_level: form.food_spice_level, food_allergens: form.food_allergens, food_business_type: form.food_business_type, food_type: form.food_type, delivery_options: form.delivery_options, meetup_details: form.meetup_details } : {}),
       ...(form.main_category === 'buysell' ? { delivery_options: form.delivery_options, meetup_details: form.meetup_details } : {}),
       ...(form.type === 'jobs' ? { company_hiring: form.company_hiring || '', job_poster_role: form.job_poster_role || '', job_employment_type: form.job_employment_type, job_experience: form.job_experience, job_salary_min: Number(form.job_salary_min) || 0, job_salary_max: Number(form.job_salary_max) || 0, job_benefits: form.job_benefits } : {}),
@@ -1359,21 +1392,63 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                     <p className="font-body text-[9px] text-white/25 mt-1">Add keywords to help buyers find your listing faster</p>
                   </div>
 
-                  {/* SLIDESHOW ANIMATION */}
-                  <div>
-                    <label className={labelCls}>Image Gallery Animation</label>
-                    <div className="grid grid-cols-5 gap-1.5">
-                      {SLIDESHOW_ANIMATIONS.map(a => (
-                        <button key={a.value} type="button" onClick={() => set('slideshow_animation', a.value)}
-                          className="flex flex-col items-center gap-0.5 p-2 rounded-xl border transition-all text-center"
-                          style={{
-                            borderColor: form.slideshow_animation === a.value ? '#00D4FF' : 'rgba(255,255,255,0.1)',
-                            background: form.slideshow_animation === a.value ? 'rgba(0,212,255,0.12)' : 'rgba(255,255,255,0.04)',
-                          }}>
-                          <span className="font-body text-[10px] font-bold text-white/70">{a.label}</span>
-                          <span className="font-body text-[9px] text-white/30 leading-tight">{a.desc}</span>
-                        </button>
-                      ))}
+                  {/* LANDING PAGE THEME */}
+                  <div className="rounded-xl p-3 space-y-3" style={{ background: 'rgba(62,151,241,0.08)', border: '1px solid rgba(186,230,253,0.24)' }}>
+                    <p className="font-body text-[10px] font-bold text-[#BAE6FD] uppercase tracking-wider">Landing Page Theme Customisation</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className={labelCls}>Main Glow Color</label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {LANDING_THEME_COLORS.map(color => (
+                            <button key={color} type="button" onClick={() => set('landing_theme_color', color)} className="w-7 h-7 rounded-full border-2 transition-all" style={{ background: color, borderColor: form.landing_theme_color === color ? '#ffffff' : 'rgba(255,255,255,0.2)', boxShadow: form.landing_theme_color === color ? `0 0 14px ${color}` : 'none' }} />
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <label className={labelCls}>Secondary Color</label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {LANDING_THEME_COLORS.map(color => (
+                            <button key={color} type="button" onClick={() => set('landing_secondary_color', color)} className="w-7 h-7 rounded-full border-2 transition-all" style={{ background: color, borderColor: form.landing_secondary_color === color ? '#ffffff' : 'rgba(255,255,255,0.2)', boxShadow: form.landing_secondary_color === color ? `0 0 14px ${color}` : 'none' }} />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <label className={labelCls}>Landing Background Style</label>
+                      <div className="grid grid-cols-3 gap-1.5">
+                        {LANDING_BG_STYLES.map(opt => (
+                          <button key={opt.value} type="button" onClick={() => set('landing_bg_style', opt.value)} className="px-2 py-2 rounded-xl border font-body text-[10px] font-bold transition-all" style={{ borderColor: form.landing_bg_style === opt.value ? '#BAE6FD' : 'rgba(255,255,255,0.1)', background: form.landing_bg_style === opt.value ? 'rgba(186,230,253,0.18)' : 'rgba(255,255,255,0.04)', color: form.landing_bg_style === opt.value ? '#ffffff' : 'rgba(255,255,255,0.5)' }}>{opt.label}</button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label className={labelCls}>Transition Effect</label>
+                      <div className="grid grid-cols-6 gap-1.5">
+                        {SLIDESHOW_ANIMATIONS.map(a => (
+                          <button key={a.value} type="button" onClick={() => { set('slideshow_animation', a.value); set('transition_effect', a.value); }} className="flex flex-col items-center gap-0.5 p-2 rounded-xl border transition-all text-center" style={{ borderColor: form.transition_effect === a.value ? '#BAE6FD' : 'rgba(255,255,255,0.1)', background: form.transition_effect === a.value ? 'rgba(186,230,253,0.18)' : 'rgba(255,255,255,0.04)' }}>
+                            <span className="font-body text-[10px] font-bold text-white/70">{a.label}</span>
+                            <span className="font-body text-[9px] text-white/30 leading-tight">{a.desc}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className={labelCls}>Glow Effect</label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {GLOW_EFFECTS.map(opt => (
+                            <button key={opt.value} type="button" onClick={() => set('glow_effect', opt.value)} className="px-2.5 py-1 rounded-full border font-body text-[10px] font-bold transition-all" style={{ borderColor: form.glow_effect === opt.value ? '#BAE6FD' : 'rgba(255,255,255,0.1)', background: form.glow_effect === opt.value ? 'rgba(186,230,253,0.18)' : 'rgba(255,255,255,0.04)', color: form.glow_effect === opt.value ? '#fff' : 'rgba(255,255,255,0.5)' }}>{opt.label}</button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <label className={labelCls}>Page Animation</label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {ANIMATION_STYLES.map(opt => (
+                            <button key={opt.value} type="button" onClick={() => set('animation_style', opt.value)} className="px-2.5 py-1 rounded-full border font-body text-[10px] font-bold transition-all" style={{ borderColor: form.animation_style === opt.value ? '#BAE6FD' : 'rgba(255,255,255,0.1)', background: form.animation_style === opt.value ? 'rgba(186,230,253,0.18)' : 'rgba(255,255,255,0.04)', color: form.animation_style === opt.value ? '#fff' : 'rgba(255,255,255,0.5)' }}>{opt.label}</button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
 

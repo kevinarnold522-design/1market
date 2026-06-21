@@ -11,6 +11,10 @@ const ROLES = ['user', 'moderator', 'admin'];
 
 const SECTIONS = ['food', 'travel', 'buysell'];
 const TYPES = ['chain', 'carinderia', 'home-kitchen', 'home-baker', 'coffee', 'hotel', 'vehicle-rental', 'shop', 'service'];
+const LISTING_THEME_BG_STYLES = ['royal_blue', 'glass', 'neon', 'sunset', 'emerald', 'purple'];
+const LISTING_TRANSITIONS = ['fade', 'slide', 'zoom', 'flip', 'bounce', 'glow'];
+const LISTING_GLOWS = ['soft', 'strong', 'neon', 'none'];
+const LISTING_ANIMATIONS = ['none', 'float', 'pulse', 'shimmer'];
 const LOCATIONS = ['Manila', 'Cavite', 'Nationwide'];
 
 const EMPTY_BIZ = {
@@ -27,6 +31,8 @@ const EMPTY_LISTING = {
   year: '', mileage: '', transmission: '', size: '',
   property_type: '', lot_size: '', bedrooms: '', bathrooms: '',
   status: '', service_area: '', business_id: '', is_active: true,
+  landing_theme_color: '#3E97F1', landing_secondary_color: '#60A5FA', landing_bg_style: 'royal_blue',
+  transition_effect: 'fade', glow_effect: 'soft', animation_style: 'none',
 };
 
 function FieldInput({ label, value, onChange, type = 'text', placeholder = '' }) {
@@ -248,6 +254,24 @@ function ListingForm({ initial, onSave, onCancel }) {
       <ImageUploadField label="Main Image" value={form.image_url} onChange={v => set('image_url', v)} />
       <MultiImageUploadField label="Additional Photos" value={form.extra_images} onChange={v => set('extra_images', v)} />
       <FieldInput label="Description" value={form.description} onChange={v => set('description', v)} type="textarea" />
+
+      <div className="rounded-2xl border border-[#2563EB]/15 bg-blue-50 p-4 space-y-3">
+        <p className="font-heading font-bold text-sm text-[#0A192F]">Landing Page Theme</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block font-body text-xs font-semibold text-[#0A192F]/60 mb-1">Main Glow Color</label>
+            <input type="color" value={form.landing_theme_color || '#3E97F1'} onChange={e => set('landing_theme_color', e.target.value)} className="w-full h-10 rounded-xl border border-[#0A192F]/10 bg-white p-1" />
+          </div>
+          <div>
+            <label className="block font-body text-xs font-semibold text-[#0A192F]/60 mb-1">Secondary Color</label>
+            <input type="color" value={form.landing_secondary_color || '#60A5FA'} onChange={e => set('landing_secondary_color', e.target.value)} className="w-full h-10 rounded-xl border border-[#0A192F]/10 bg-white p-1" />
+          </div>
+          <SelectField label="Landing Background" value={form.landing_bg_style || 'royal_blue'} onChange={v => set('landing_bg_style', v)} options={LISTING_THEME_BG_STYLES} />
+          <SelectField label="Transition Effect" value={form.transition_effect || 'fade'} onChange={v => { set('transition_effect', v); set('slideshow_animation', v); }} options={LISTING_TRANSITIONS} />
+          <SelectField label="Glow Effect" value={form.glow_effect || 'soft'} onChange={v => set('glow_effect', v)} options={LISTING_GLOWS} />
+          <SelectField label="Page Animation" value={form.animation_style || 'none'} onChange={v => set('animation_style', v)} options={LISTING_ANIMATIONS} />
+        </div>
+      </div>
 
       <div className="flex items-center gap-3">
         <input type="checkbox" id="list-active" checked={form.is_active} onChange={e => set('is_active', e.target.checked)} className="w-4 h-4" />
@@ -1005,6 +1029,10 @@ export default function Admin() {
                     }}
                     className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-red-50 border border-red-200 text-red-600 font-body text-xs font-bold hover:bg-red-100 transition-colors">
                     <XCircle className="w-3.5 h-3.5" /> Reject
+                  </button>
+                  <button onClick={() => { setEditingList(listing); setShowListForm(false); setTab('listings'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-[#2563EB] font-body text-xs font-bold hover:bg-blue-100 transition-colors">
+                    <Pencil className="w-3.5 h-3.5" /> Instant Edit
                   </button>
                   <button onClick={() => deleteList(listing.id)}
                     className="p-1.5 rounded-xl bg-[#F8FAFC] hover:bg-red-50 border border-[#0A192F]/10 transition-colors">
