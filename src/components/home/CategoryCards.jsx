@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFireTransition, FireOverlay } from './FireTransition';
 import CategoryTransitionOverlay, { getTransitionTypeForHref } from '../transitions/CategoryTransitionOverlay';
+import OceanCategoryBackdrop from './OceanCategoryBackdrop';
 import { useNavigate } from 'react-router-dom';
 import { Plane, UtensilsCrossed, ShoppingBag, Home, Wrench, Briefcase, ArrowLeft, X, Hotel, Palmtree, Ship, Car, Bus, Waves, Tent, Mountain, Anchor, Headphones, Laptop, Heart, DollarSign, FolderOpen, HardHat, Palette, ChefHat, Settings, BookOpen, Wifi, ClipboardList, Croissant, Coffee, Candy, ShoppingCart, Salad, Smartphone, CarFront, Shirt, Footprints, Sofa, Building2, Package, MoreHorizontal, BedDouble, Building, TreePine, Warehouse, Sparkles, Zap, CalendarCheck, Camera, GraduationCap, Truck, Search } from 'lucide-react';
 
@@ -431,13 +432,14 @@ export default function CategoryCards() {
         )}
       </AnimatePresence>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-        <div className="mb-6 text-center">
-          <span className="font-body text-[10px] tracking-[0.2em] uppercase text-[#00D4FF]">Explore 1Marketph.com</span>
-          <h2 className="font-heading font-bold text-2xl sm:text-3xl text-white mt-0.5">Browse by Category</h2>
-          <p className="font-body text-[10px] text-white/40 mt-0.5">Hover to flip • Click to explore</p>
+      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 overflow-hidden rounded-[2rem] my-4">
+        <OceanCategoryBackdrop />
+        <div className="relative z-10 mb-6 text-center">
+          <span className="font-body text-[10px] tracking-[0.2em] uppercase text-[#BAE6FD] drop-shadow">Explore 1Marketph.com</span>
+          <h2 className="font-heading font-bold text-2xl sm:text-3xl text-white mt-0.5 drop-shadow-lg">Browse by Category</h2>
+          <p className="font-body text-[10px] text-white/80 mt-0.5 drop-shadow">Hover to flip • Click to explore</p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+        <div className="relative z-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           {CATEGORIES.map((cat, i) => (
             <CasinoCategoryCard key={cat.label} cat={cat} index={i} onClick={handleCategoryClick} />
           ))}
