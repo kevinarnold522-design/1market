@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Facebook, Instagram, Youtube } from 'lucide-react';
 import FloatingNavbar from './FloatingNavbar';
 import WaveTransition from './WaveTransition';
 import UserTasks from './UserTasks';
@@ -49,6 +50,26 @@ export default function AppLayout() {
   return (
     <div data-app-shell className="flex min-h-screen" style={{ background: 'var(--landing-bg-gradient)' }}>
       <main className="flex-1 min-w-0 overflow-x-hidden" style={{ background: 'var(--landing-bg-gradient)' }}>
+        <div className="fixed top-3 right-4 z-[140] flex items-center gap-2 rounded-full bg-[#001a80]/70 border border-white/15 px-2 py-1.5 backdrop-blur-xl shadow-2xl">
+          <Link to="/about" className="px-2.5 py-1 rounded-full text-[10px] font-bold text-white/85 hover:text-white hover:bg-white/10 transition-all">
+            About Us
+          </Link>
+          <Link to="/privacy-policy" className="px-2.5 py-1 rounded-full text-[10px] font-bold text-white/85 hover:text-white hover:bg-white/10 transition-all">
+            Privacy Policy
+          </Link>
+          <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-8 h-8 rounded-full bg-[#1877F2] flex items-center justify-center text-white hover:scale-110 transition-transform">
+            <Facebook className="w-4 h-4" />
+          </a>
+          <a href="https://www.instagram.com/1marketph/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-8 h-8 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform" style={{ background: 'linear-gradient(135deg,#833AB4,#E1306C,#FCAF45)' }}>
+            <Instagram className="w-4 h-4" />
+          </a>
+          <a href="https://www.tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="w-8 h-8 rounded-full flex items-center justify-center text-white font-heading text-sm font-black hover:scale-110 transition-transform" style={{ background: 'linear-gradient(135deg,#010101,#25F4EE,#FE2C55)' }}>
+            ♪
+          </a>
+          <a href="https://www.youtube.com/@1marketph" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="w-8 h-8 rounded-full bg-[#FF0000] flex items-center justify-center text-white hover:scale-110 transition-transform">
+            <Youtube className="w-4 h-4" />
+          </a>
+        </div>
         <FloatingNavbar />
         <Outlet />
       </main>
