@@ -183,10 +183,7 @@ export const supabaseCompat = {
           password,
           options: {
             data: { full_name: full_name || email?.split('@')[0] || 'Member' },
-            emailRedirectTo:
-              import.meta.env.VITE_DEV_SUPABASE_REDIRECT_URL ||
-              import.meta.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
-              `${window.location.origin}/auth/callback?next=${encodeURIComponent('/')}`
+            emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/')}`
           }
         });
         if (error) throw error;
@@ -227,10 +224,7 @@ export const supabaseCompat = {
     },
     async resetPasswordRequest(email) {
       const db = requireSupabase();
-      const resetRedirectTo =
-        import.meta.env.VITE_DEV_SUPABASE_REDIRECT_URL ||
-        import.meta.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
-        `${window.location.origin}/auth/callback`;
+      const resetRedirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent('/reset-password')}`;
       const { data, error } = await db.auth.resetPasswordForEmail(email, { redirectTo: resetRedirectTo });
       if (error) throw error;
       return data;

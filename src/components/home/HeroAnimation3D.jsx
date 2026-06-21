@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ROLES = [
-  { icon: '🛒', label: 'CUSTOMER', sub: '1 GOAL', color: '#00D4FF' },
-  { icon: '👨‍💼', label: 'SELLER', sub: '1 VISION', color: '#2563EB' },
-  { icon: '📋', label: 'LISTER', sub: '1 MARKET', color: '#7C3AED' },
+  { icon: 'AI', label: 'CUSTOMER', sub: '1 GOAL', color: '#00D4FF' },
+  { icon: 'AI‍AI', label: 'SELLER', sub: '1 VISION', color: '#2563EB' },
+  { icon: 'AI', label: 'LISTER', sub: '1 MARKET', color: '#7C3AED' },
 ];
 
 const SERVICES = [
@@ -106,7 +106,7 @@ export default function HeroAnimation3D() {
           <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4, type: 'spring', stiffness: 180, damping: 14 }}>
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center"
               style={{ background: 'linear-gradient(135deg, #0A192F, #112240)', border: '2px solid #00D4FF', boxShadow: '0 0 14px 2px rgba(0,212,255,0.33)' }}>
-              <span className="text-2xl sm:text-3xl">🛒</span>
+              <span className="text-2xl sm:text-3xl">AI</span>
               <motion.div className="absolute inset-0 rounded-full" animate={{ scale: [1, 1.35, 1], opacity: [0.5, 0, 0.5] }} transition={{ duration: 2.5, repeat: Infinity }}
                 style={{ border: '1px solid #00D4FF' }} />
             </div>
@@ -166,7 +166,7 @@ export default function HeroAnimation3D() {
             </motion.div>
             <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center"
               style={{ background: 'linear-gradient(135deg, #0A192F, #112240)', border: '2px solid #2563EB', boxShadow: '0 0 20px 4px rgba(37,99,235,0.35)' }}>
-              <span className="text-2xl sm:text-3xl">🔄</span>
+              <span className="text-2xl sm:text-3xl">AI</span>
             </div>
           </motion.div>
           <p className="font-heading font-bold text-white text-xs sm:text-sm">CYCLE</p>

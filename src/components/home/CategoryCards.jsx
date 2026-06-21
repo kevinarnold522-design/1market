@@ -108,12 +108,12 @@ const CATEGORY_TITLES = {
 // ── Casino card for main categories ──────────────────────────────────────────
 
 const CATEGORIES = [
-  { label: 'Travel',       href: '/travel',   Icon: Plane,           desc: 'Hotels, Tours & Transport',    accent: '#60a5fa', suit: '♠', gradient: 'linear-gradient(135deg,#0f2050,#1d4ed8)' },
-  { label: 'Food',         href: '/food',     Icon: UtensilsCrossed, desc: 'Restaurants, Cafes & Home Cooks', accent: '#f87171', suit: '♥', gradient: 'linear-gradient(135deg,#3b0000,#b91c1c)' },
-  { label: 'Buy & Sell',   href: '/buysell',  Icon: ShoppingBag,     desc: 'Shoes, Cars, Gadgets & More',  accent: '#c084fc', suit: '♦', gradient: 'linear-gradient(135deg,#1e0050,#7e22ce)' },
-  { label: 'Rent & Lease', href: '/rent',     Icon: Home,            desc: 'Homes, Vehicles & Equipment',  accent: '#4ade80', suit: '♣', gradient: 'linear-gradient(135deg,#002a00,#15803d)' },
-  { label: 'Services',     href: '/services', Icon: Wrench,          desc: 'Plumbers, Tutors & Freelancers',accent: '#fb923c', suit: '♠', gradient: 'linear-gradient(135deg,#2a1000,#c2410c)' },
-  { label: 'Jobs',         href: '/jobs',     Icon: Briefcase,       desc: 'Hiring, Freelance & Remote Work',accent: '#fbbf24', suit: '♦', gradient: 'linear-gradient(135deg,#1a1000,#b45309)' },
+  { label: 'Travel',       href: '/travel',   Icon: Plane,           desc: 'Hotels, Tours & Transport',    accent: '#60a5fa', suit: 'AI', gradient: 'linear-gradient(135deg,#0f2050,#1d4ed8)' },
+  { label: 'Food',         href: '/food',     Icon: UtensilsCrossed, desc: 'Restaurants, Cafes & Home Cooks', accent: '#f87171', suit: 'AI', gradient: 'linear-gradient(135deg,#3b0000,#b91c1c)' },
+  { label: 'Buy & Sell',   href: '/buysell',  Icon: ShoppingBag,     desc: 'Shoes, Cars, Gadgets & More',  accent: '#c084fc', suit: 'AI', gradient: 'linear-gradient(135deg,#1e0050,#7e22ce)' },
+  { label: 'Rent & Lease', href: '/rent',     Icon: Home,            desc: 'Homes, Vehicles & Equipment',  accent: '#4ade80', suit: 'AI', gradient: 'linear-gradient(135deg,#002a00,#15803d)' },
+  { label: 'Services',     href: '/services', Icon: Wrench,          desc: 'Plumbers, Tutors & Freelancers',accent: '#fb923c', suit: 'AI', gradient: 'linear-gradient(135deg,#2a1000,#c2410c)' },
+  { label: 'Jobs',         href: '/jobs',     Icon: Briefcase,       desc: 'Hiring, Freelance & Remote Work',accent: '#fbbf24', suit: 'AI', gradient: 'linear-gradient(135deg,#1a1000,#b45309)' },
 ];
 
 const CARD_VALUES = ['A', 'K', 'Q', 'J', '10', '9'];
@@ -123,7 +123,7 @@ function CasinoCategoryCard({ cat, index, onClick }) {
   const [flipped, setFlipped] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [cardIdx, setCardIdx] = useState(index % CARD_VALUES.length);
-  const isRed = cat.suit === '♥' || cat.suit === '♦';
+  const isRed = cat.suit === 'AI' || cat.suit === 'AI';
 
   useEffect(() => {
     const t = setInterval(() => setCardIdx(i => (i + 1) % CARD_VALUES.length), 800);
@@ -229,7 +229,7 @@ function CasinoCategoryCard({ cat, index, onClick }) {
 
 // ── Subcategory picker overlay ────────────────────────────────────────────────
 
-const SUITS_SUB = ['♠', '♥', '♦', '♣'];
+const SUITS_SUB = ['AI', 'AI', 'AI', 'AI'];
 const VALS_SUB  = ['A', 'K', 'Q', 'J', '10', '9'];
 const GRADS_SUB = [
   'linear-gradient(135deg,#1a1a2e,#16213e)',
@@ -249,7 +249,7 @@ function SubCard({ sc, index, onClick }) {
   const accent = ACCENTS_SUB[index % ACCENTS_SUB.length];
   const suit   = SUITS_SUB[index % SUITS_SUB.length];
   const [vIdx, setVIdx] = useState(index % VALS_SUB.length);
-  const isRed = suit === '♥' || suit === '♦';
+  const isRed = suit === 'AI' || suit === 'AI';
 
   useEffect(() => {
     const t = setInterval(() => setVIdx(i => (i + 1) % VALS_SUB.length), 850);

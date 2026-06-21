@@ -142,7 +142,7 @@ function ContactModal({ item, onClose }) {
         <div className="relative h-24 overflow-hidden">
           <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#070F1A]/90 to-transparent" />
-          <button onClick={onClose} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/15 flex items-center justify-center text-white text-xs hover:bg-white/25">✕</button>
+          <button onClick={onClose} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/15 flex items-center justify-center text-white text-xs hover:bg-white/25">AI</button>
           <p className="absolute bottom-2 left-4 font-heading font-bold text-white text-sm">{item.title}</p>
         </div>
         <div className="p-5 space-y-3">

@@ -110,7 +110,7 @@ Be direct and Filipino-friendly.`,
                       </p>
                       {result.issues.map((issue, i) => (
                         <div key={i} className="flex items-start gap-2 py-1">
-                          <span className="text-red-400 text-[10px] mt-0.5 flex-shrink-0">✗</span>
+                          <span className="text-red-400 text-[10px] mt-0.5 flex-shrink-0">AI</span>
                           <p className="font-body text-[10px] text-white/60">{issue}</p>
                         </div>
                       ))}

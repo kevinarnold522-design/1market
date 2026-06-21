@@ -5,14 +5,14 @@ import { useFireTransition, FireOverlay } from './FireTransition';
 import { base44 } from '@/api/base44Client';
 
 const SUGGESTIONS = [
-  { emoji: '🍜', label: 'Looking for Food?', sub: 'Carinderias & restaurants', href: '/food', color: '#f97316' },
-  { emoji: '🏨', label: 'Looking for a Hotel?', sub: 'Manila & Cavite stays', href: '/travel', color: '#3b82f6' },
-  { emoji: '🔥', label: 'Looking for Deals?', sub: 'Best prices today', href: '/travel', color: '#ef4444' },
-  { emoji: '🏠', label: 'Looking for a Place to Rent?', sub: 'Homes & apartments', href: '/rent', color: '#22c55e' },
-  { emoji: '✈️', label: 'Looking for Plane Tickets?', sub: 'Domestic flights PH', href: '/travel', color: '#8b5cf6' },
-  { emoji: '📱', label: 'Looking for a Phone?', sub: 'Tech & gadget deals', href: '/buysell', color: '#06b6d4' },
-  { emoji: '🔧', label: 'Need a Service?', sub: 'Plumbers, tutors & more', href: '/services', color: '#f59e0b' },
-  { emoji: '🚗', label: 'Looking for a Car?', sub: 'Sedans, SUVs & more', href: '/buysell', color: '#64748b' },
+  { emoji: 'AI', label: 'Looking for Food?', sub: 'Carinderias & restaurants', href: '/food', color: '#f97316' },
+  { emoji: 'AI', label: 'Looking for a Hotel?', sub: 'Manila & Cavite stays', href: '/travel', color: '#3b82f6' },
+  { emoji: 'AI', label: 'Looking for Deals?', sub: 'Best prices today', href: '/travel', color: '#ef4444' },
+  { emoji: 'AI', label: 'Looking for a Place to Rent?', sub: 'Homes & apartments', href: '/rent', color: '#22c55e' },
+  { emoji: 'AI️', label: 'Looking for Plane Tickets?', sub: 'Domestic flights PH', href: '/travel', color: '#8b5cf6' },
+  { emoji: 'AI', label: 'Looking for a Phone?', sub: 'Tech & gadget deals', href: '/buysell', color: '#06b6d4' },
+  { emoji: 'AI', label: 'Need a Service?', sub: 'Plumbers, tutors & more', href: '/services', color: '#f59e0b' },
+  { emoji: 'AI', label: 'Looking for a Car?', sub: 'Sedans, SUVs & more', href: '/buysell', color: '#64748b' },
 ];
 
 export default function SuggestionsBar() {

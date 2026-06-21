@@ -16,7 +16,7 @@ export default function OneCheckmark({ size = 'md', label = 'Verified Partner', 
   const s = sizes[size] || sizes.md;
 
   return (
-    <span className="inline-flex items-center gap-1 one-checkmark-badge" title="1MarketPH Verified Partner ✓">
+    <span className="inline-flex items-center gap-1 one-checkmark-badge" title="1MarketPH Verified Partner AI">
       <span className="relative inline-flex items-center justify-center flex-shrink-0" style={{ width: s.outer, height: s.outer }}>
         {/* Rotating ring */}
         <span className="absolute inset-0 rounded-full" style={{

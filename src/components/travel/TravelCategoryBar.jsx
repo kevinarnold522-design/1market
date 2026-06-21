@@ -2,19 +2,19 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const CATS = [
-  { key: 'Hotels',         icon: '🏨', label: 'Hotels',        color: '#f59e0b' },
-  { key: 'Resorts',        icon: '🌴', label: 'Resorts',       color: '#10b981' },
-  { key: 'Cruise',         icon: '🚢', label: 'Cruise',        color: '#3b82f6' },
-  { key: 'Flights',        icon: '✈️', label: 'Flights',       color: '#0ea5e9' },
-  { key: 'Ferry & Bus',    icon: '⛴️', label: 'Ferry & Bus',  color: '#8b5cf6' },
-  { key: 'Car Rentals',    icon: '🚗', label: 'Car Rentals',   color: '#ec4899' },
-  { key: 'Van Rentals',    icon: '🚐', label: 'Van Rentals',   color: '#f97316' },
-  { key: 'Tours',          icon: '🗺️', label: 'Tours',         color: '#22c55e' },
-  { key: 'Island Hopping', icon: '🏝️', label: 'Islands',       color: '#06b6d4' },
-  { key: 'Camping',        icon: '⛺', label: 'Camping',       color: '#84cc16' },
-  { key: 'Hiking',         icon: '🥾', label: 'Hiking',        color: '#a78bfa' },
-  { key: 'Diving',         icon: '🤿', label: 'Diving',        color: '#38bdf8' },
-  { key: 'Surfing',        icon: '🏄', label: 'Surfing',       color: '#fb923c' },
+  { key: 'Hotels',         icon: 'AI', label: 'Hotels',        color: '#f59e0b' },
+  { key: 'Resorts',        icon: 'AI', label: 'Resorts',       color: '#10b981' },
+  { key: 'Cruise',         icon: 'AI', label: 'Cruise',        color: '#3b82f6' },
+  { key: 'Flights',        icon: 'AI️', label: 'Flights',       color: '#0ea5e9' },
+  { key: 'Ferry & Bus',    icon: 'AI️', label: 'Ferry & Bus',  color: '#8b5cf6' },
+  { key: 'Car Rentals',    icon: 'AI', label: 'Car Rentals',   color: '#ec4899' },
+  { key: 'Van Rentals',    icon: 'AI', label: 'Van Rentals',   color: '#f97316' },
+  { key: 'Tours',          icon: 'AI️', label: 'Tours',         color: '#22c55e' },
+  { key: 'Island Hopping', icon: 'AI️', label: 'Islands',       color: '#06b6d4' },
+  { key: 'Camping',        icon: 'AI', label: 'Camping',       color: '#84cc16' },
+  { key: 'Hiking',         icon: 'AI', label: 'Hiking',        color: '#a78bfa' },
+  { key: 'Diving',         icon: 'AI', label: 'Diving',        color: '#38bdf8' },
+  { key: 'Surfing',        icon: 'AI', label: 'Surfing',       color: '#fb923c' },
 ];
 
 export default function TravelCategoryBar({ active, onSelect }) {

@@ -10,26 +10,26 @@ function getPlatformRatings(bizName, baseRating) {
 
   if (/jollibee|mcdonald|kfc|starbucks|chowking|mang inasal|greenwich|chowking/.test(name)) {
     platforms.push(
-      { name: 'Google', icon: '🔍', color: '#4285F4', rating: (base + 0.1).toFixed(1), count: Math.floor(Math.random() * 3000 + 1000) },
-      { name: 'Zomato', icon: '🍽️', color: '#E23744', rating: (base - 0.1).toFixed(1), count: Math.floor(Math.random() * 500 + 200) },
-      { name: 'Facebook', icon: '📘', color: '#1877F2', rating: (base + 0.2).toFixed(1), count: Math.floor(Math.random() * 1500 + 500) },
+      { name: 'Google', icon: 'AI', color: '#4285F4', rating: (base + 0.1).toFixed(1), count: Math.floor(Math.random() * 3000 + 1000) },
+      { name: 'Zomato', icon: 'AI️', color: '#E23744', rating: (base - 0.1).toFixed(1), count: Math.floor(Math.random() * 500 + 200) },
+      { name: 'Facebook', icon: 'AI', color: '#1877F2', rating: (base + 0.2).toFixed(1), count: Math.floor(Math.random() * 1500 + 500) },
       { name: 'Yelp', icon: '⭐', color: '#AF0606', rating: (base).toFixed(1), count: Math.floor(Math.random() * 300 + 100) },
     );
   } else if (/hotel|resort|inn|suites/.test(name)) {
     platforms.push(
-      { name: 'Booking.com', icon: '🏨', color: '#003580', rating: (base + 0.1).toFixed(1), count: Math.floor(Math.random() * 800 + 200) },
-      { name: 'Agoda', icon: '🛎️', color: '#5392FF', rating: (base - 0.1).toFixed(1), count: Math.floor(Math.random() * 600 + 150) },
-      { name: 'TripAdvisor', icon: '🦉', color: '#34E0A1', rating: (base).toFixed(1), count: Math.floor(Math.random() * 400 + 100) },
-      { name: 'Google', icon: '🔍', color: '#4285F4', rating: (base + 0.2).toFixed(1), count: Math.floor(Math.random() * 1000 + 300) },
+      { name: 'Booking.com', icon: 'AI', color: '#003580', rating: (base + 0.1).toFixed(1), count: Math.floor(Math.random() * 800 + 200) },
+      { name: 'Agoda', icon: 'AI️', color: '#5392FF', rating: (base - 0.1).toFixed(1), count: Math.floor(Math.random() * 600 + 150) },
+      { name: 'TripAdvisor', icon: 'AI', color: '#34E0A1', rating: (base).toFixed(1), count: Math.floor(Math.random() * 400 + 100) },
+      { name: 'Google', icon: 'AI', color: '#4285F4', rating: (base + 0.2).toFixed(1), count: Math.floor(Math.random() * 1000 + 300) },
     );
   } else {
     platforms.push(
-      { name: 'Google', icon: '🔍', color: '#4285F4', rating: (base + 0.1).toFixed(1), count: Math.floor(Math.random() * 500 + 50) },
-      { name: 'Facebook', icon: '📘', color: '#1877F2', rating: (base).toFixed(1), count: Math.floor(Math.random() * 300 + 50) },
+      { name: 'Google', icon: 'AI', color: '#4285F4', rating: (base + 0.1).toFixed(1), count: Math.floor(Math.random() * 500 + 50) },
+      { name: 'Facebook', icon: 'AI', color: '#1877F2', rating: (base).toFixed(1), count: Math.floor(Math.random() * 300 + 50) },
     );
     if (Math.random() > 0.4) {
       platforms.push(
-        { name: 'Zomato', icon: '🍽️', color: '#E23744', rating: (base - 0.15).toFixed(1), count: Math.floor(Math.random() * 100 + 20) }
+        { name: 'Zomato', icon: 'AI️', color: '#E23744', rating: (base - 0.15).toFixed(1), count: Math.floor(Math.random() * 100 + 20) }
       );
     }
   }

@@ -38,7 +38,7 @@ export default function PaymentSettings({ user }) {
         stripe_email: stripeEmail.trim(),
       });
       setStripeLinked(true);
-      showToast('✓ Stripe account linked successfully');
+      showToast('AI Stripe account linked successfully');
       setShowStripeInput(false);
     } catch (err) {
       showToast('Could not link Stripe: ' + (err.message || 'Unknown error'));
@@ -55,7 +55,7 @@ export default function PaymentSettings({ user }) {
         paypal_email: paypalEmail.trim(),
       });
       setPaypalLinked(true);
-      showToast('✓ PayPal account linked successfully');
+      showToast('AI PayPal account linked successfully');
       setShowPaypalInput(false);
     } catch (err) {
       showToast('Could not link PayPal: ' + (err.message || 'Unknown error'));

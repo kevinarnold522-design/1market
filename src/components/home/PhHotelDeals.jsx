@@ -4,7 +4,7 @@ import { ExternalLink, Star, Hotel, MapPin } from 'lucide-react';
 
 const HOTELS = [
   {
-    id: 1, name: 'The Manila Hotel', location: 'Rizal Park, Manila', stars: 5, tag: '🏛️ Heritage Icon',
+    id: 1, name: 'The Manila Hotel', location: 'Rizal Park, Manila', stars: 5, tag: 'AI️ Heritage Icon',
     image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&q=70',
     platforms: [
       { name: 'Agoda', logo: 'https://www.google.com/s2/favicons?domain=agoda.com&sz=128', avgPrice: 9500, bestPrice: 8200, link: 'https://www.agoda.com/the-manila-hotel' },
@@ -13,7 +13,7 @@ const HOTELS = [
     ],
   },
   {
-    id: 2, name: 'Sofitel Philippine Plaza', location: 'CCP Complex, Manila', stars: 5, tag: '🌊 Bay View',
+    id: 2, name: 'Sofitel Philippine Plaza', location: 'CCP Complex, Manila', stars: 5, tag: 'AI Bay View',
     image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&q=70',
     platforms: [
       { name: 'Agoda', logo: 'https://www.google.com/s2/favicons?domain=agoda.com&sz=128', avgPrice: 13000, bestPrice: 11500, link: 'https://www.agoda.com' },
@@ -21,7 +21,7 @@ const HOTELS = [
     ],
   },
   {
-    id: 3, name: 'Canyon Cove Hotel & Spa', location: 'Nasugbu, Cavite', stars: 4, tag: '🏖️ Beach Resort',
+    id: 3, name: 'Canyon Cove Hotel & Spa', location: 'Nasugbu, Cavite', stars: 4, tag: 'AI️ Beach Resort',
     image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=70',
     platforms: [
       { name: 'Agoda', logo: 'https://www.google.com/s2/favicons?domain=agoda.com&sz=128', avgPrice: 4000, bestPrice: 3200, link: 'https://www.agoda.com' },
@@ -30,7 +30,7 @@ const HOTELS = [
     ],
   },
   {
-    id: 4, name: 'Taal Vista Hotel', location: 'Tagaytay, Cavite', stars: 4, tag: '🌋 Volcano View',
+    id: 4, name: 'Taal Vista Hotel', location: 'Tagaytay, Cavite', stars: 4, tag: 'AI Volcano View',
     image: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&q=70',
     platforms: [
       { name: 'Booking.com', logo: 'https://www.google.com/s2/favicons?domain=booking.com&sz=128', avgPrice: 6200, bestPrice: 5500, link: 'https://www.booking.com' },
@@ -38,7 +38,7 @@ const HOTELS = [
     ],
   },
   {
-    id: 5, name: 'Pico Sands Hotel', location: 'Nasugbu, Batangas', stars: 5, tag: '🌴 Beachfront',
+    id: 5, name: 'Pico Sands Hotel', location: 'Nasugbu, Batangas', stars: 5, tag: 'AI Beachfront',
     image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=70',
     platforms: [
       { name: 'Agoda', logo: 'https://www.google.com/s2/favicons?domain=agoda.com&sz=128', avgPrice: 6500, bestPrice: 5800, link: 'https://www.agoda.com' },
@@ -46,7 +46,7 @@ const HOTELS = [
     ],
   },
   {
-    id: 6, name: 'Citystate Tower Hotel', location: 'Ermita, Manila', stars: 4, tag: '🏙️ City Center',
+    id: 6, name: 'Citystate Tower Hotel', location: 'Ermita, Manila', stars: 4, tag: 'AI️ City Center',
     image: 'https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?w=600&q=70',
     platforms: [
       { name: 'Booking.com', logo: 'https://www.google.com/s2/favicons?domain=booking.com&sz=128', avgPrice: 3200, bestPrice: 2700, link: 'https://www.booking.com' },

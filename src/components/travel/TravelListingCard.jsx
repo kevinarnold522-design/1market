@@ -38,7 +38,7 @@ export default function TravelListingCard({ item, activeTab, index, onClick }) {
           {/* Region badge */}
           {item.region && (
             <span className={`absolute top-3 right-10 px-2 py-0.5 rounded-full text-[9px] font-bold ${item.region === 'Manila' ? 'bg-blue-500/80 text-white' : 'bg-emerald-500/80 text-white'}`}>
-              📍 {item.region}
+              AI {item.region}
             </span>
           )}
           {/* Share button */}

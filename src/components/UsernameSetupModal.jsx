@@ -4,12 +4,12 @@ import { User, Check, AlertCircle, Sparkles, ChevronRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const INTERESTS = [
-  { key: 'traveller', label: '✈️ Traveller', desc: 'Hotels, flights, tours & rentals' },
-  { key: 'food', label: '🍴 Food Lover', desc: 'Restaurants, carinderias & home kitchens' },
-  { key: 'shopper', label: '🛍️ Shopper', desc: 'Electronics, clothing & gadgets' },
-  { key: 'services', label: '🔧 Services', desc: 'Plumbers, tutors & freelancers' },
-  { key: 'rent', label: '🏠 Renter', desc: 'Apartments, vehicles & equipment' },
-  { key: 'jobs', label: '💼 Job Seeker', desc: 'Part-time, remote & full-time work' },
+  { key: 'traveller', label: 'AI️ Traveller', desc: 'Hotels, flights, tours & rentals' },
+  { key: 'food', label: 'AI Food Lover', desc: 'Restaurants, carinderias & home kitchens' },
+  { key: 'shopper', label: 'AI️ Shopper', desc: 'Electronics, clothing & gadgets' },
+  { key: 'services', label: 'AI Services', desc: 'Plumbers, tutors & freelancers' },
+  { key: 'rent', label: 'AI Renter', desc: 'Apartments, vehicles & equipment' },
+  { key: 'jobs', label: 'AI Job Seeker', desc: 'Part-time, remote & full-time work' },
 ];
 
 export default function UsernameSetupModal({ user, onComplete }) {
@@ -111,8 +111,8 @@ export default function UsernameSetupModal({ user, onComplete }) {
                 </div>
                 <div className="space-y-2">
                   {[
-                    { key: 'customer', label: '🛍️ Customer Account', desc: 'Browse, save, rate & buy products, food, and services.' },
-                    { key: 'business_owner', label: '🏪 Business Owner Account', desc: 'List your products, food, or services and sell to thousands.' },
+                    { key: 'customer', label: 'AI️ Customer Account', desc: 'Browse, save, rate & buy products, food, and services.' },
+                    { key: 'business_owner', label: 'AI Business Owner Account', desc: 'List your products, food, or services and sell to thousands.' },
                   ].map(t => (
                     <button
                       key={t.key}

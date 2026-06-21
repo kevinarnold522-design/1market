@@ -31,14 +31,14 @@ const HERO_SLIDES = [
 ];
 
 const QUICK_CATS = [
-  { label: 'Hotels', icon: '🏨', tab: 'Hotels' },
-  { label: 'Resorts', icon: '🌴', tab: 'Resorts' },
-  { label: 'Flights', icon: '✈️', tab: 'Flights' },
-  { label: 'Island Hopping', icon: '🏝️', tab: 'Island Hopping' },
-  { label: 'Tours', icon: '🗺️', tab: 'Tours' },
-  { label: 'Diving', icon: '🤿', tab: 'Diving' },
-  { label: 'Surfing', icon: '🏄', tab: 'Surfing' },
-  { label: 'Hiking', icon: '🥾', tab: 'Hiking' },
+  { label: 'Hotels', icon: 'AI', tab: 'Hotels' },
+  { label: 'Resorts', icon: 'AI', tab: 'Resorts' },
+  { label: 'Flights', icon: 'AI️', tab: 'Flights' },
+  { label: 'Island Hopping', icon: 'AI️', tab: 'Island Hopping' },
+  { label: 'Tours', icon: 'AI️', tab: 'Tours' },
+  { label: 'Diving', icon: 'AI', tab: 'Diving' },
+  { label: 'Surfing', icon: 'AI', tab: 'Surfing' },
+  { label: 'Hiking', icon: 'AI', tab: 'Hiking' },
 ];
 
 export default function TravelHero({ onSearch, onCategorySelect }) {

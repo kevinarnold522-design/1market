@@ -5,12 +5,12 @@ import { base44 } from '@/api/base44Client';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 
 const CATEGORIES = [
-  { key: 'food',     label: 'Food & Dining',   color: '#f97316', emoji: '🍽️',  route: '/food',     filter: { main_category: 'food' } },
-  { key: 'buysell',  label: 'Buy & Sell',       color: '#8b5cf6', emoji: '🛍️',  route: '/buysell',  filter: { main_category: 'buysell' } },
-  { key: 'jobs',     label: 'Jobs',             color: '#f59e0b', emoji: '💼',  route: '/jobs',     filter: { type: 'jobs' } },
-  { key: 'rent',     label: 'Rent / For Sale',  color: '#10b981', emoji: '🏠',  route: '/rent',     filter: { main_category: 'rent' } },
-  { key: 'services', label: 'Services',         color: '#3b82f6', emoji: '🔧',  route: '/services', filter: { type: 'services' } },
-  { key: 'travel',   label: 'Travel & Hotel',   color: '#0ea5e9', emoji: '✈️',  route: '/travel',   filter: { main_category: 'travel' } },
+  { key: 'food',     label: 'Food & Dining',   color: '#f97316', emoji: 'AI️',  route: '/food',     filter: { main_category: 'food' } },
+  { key: 'buysell',  label: 'Buy & Sell',       color: '#8b5cf6', emoji: 'AI️',  route: '/buysell',  filter: { main_category: 'buysell' } },
+  { key: 'jobs',     label: 'Jobs',             color: '#f59e0b', emoji: 'AI',  route: '/jobs',     filter: { type: 'jobs' } },
+  { key: 'rent',     label: 'Rent / For Sale',  color: '#10b981', emoji: 'AI',  route: '/rent',     filter: { main_category: 'rent' } },
+  { key: 'services', label: 'Services',         color: '#3b82f6', emoji: 'AI',  route: '/services', filter: { type: 'services' } },
+  { key: 'travel',   label: 'Travel & Hotel',   color: '#0ea5e9', emoji: 'AI️',  route: '/travel',   filter: { main_category: 'travel' } },
 ];
 
 function MiniCard({ item, color }) {

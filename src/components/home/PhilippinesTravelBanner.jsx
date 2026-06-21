@@ -19,7 +19,7 @@ function isProbablyOutsidePhilippines() {
   }
 }
 
-const ISLANDS = ['🏝️ Boracay', '🌋 Mayon Volcano', '🐠 Tubbataha Reef', '🏙️ Manila', '🌊 El Nido', '🦅 Chocolate Hills'];
+const ISLANDS = ['AI️ Boracay', 'AI Mayon Volcano', 'AI Tubbataha Reef', 'AI️ Manila', 'AI El Nido', 'AI Chocolate Hills'];
 
 export default function PhilippinesTravelBanner() {
   const [show, setShow] = useState(false);
@@ -79,7 +79,7 @@ export default function PhilippinesTravelBanner() {
                 transition={{ duration: 2, ease: 'easeOut', repeat: Infinity, repeatDelay: 3 }}
                 className="text-5xl absolute"
                 style={{ filter: 'drop-shadow(0 0 12px rgba(96,165,250,0.8))' }}
-              >✈️</motion.div>
+              >AI️</motion.div>
               {/* Sun/glow */}
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-40 h-20 rounded-full opacity-30"
                 style={{ background: 'radial-gradient(circle,#fbbf24,transparent)', transform: 'translateX(-50%) translateY(50%)' }} />
@@ -88,7 +88,7 @@ export default function PhilippinesTravelBanner() {
                 style={{ background: 'linear-gradient(180deg,rgba(38,198,218,0.6),rgba(0,96,125,0.9))' }} />
               {/* Islands */}
               <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
-                {['🏝️','🌴','🏝️'].map((e, i) => (
+                {['AI️','AI','AI️'].map((e, i) => (
                   <span key={i} className="text-2xl">{e}</span>
                 ))}
               </div>

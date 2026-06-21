@@ -60,7 +60,7 @@ function HeartButton({ listingId, user }) {
     <button onClick={toggle} className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/5 hover:bg-red-500/15 transition-all relative">
       <AnimatePresence>
         {anim && <motion.span initial={{ scale: 1, opacity: 1, y: 0 }} animate={{ scale: 1.8, opacity: 0, y: -18 }}
-          transition={{ duration: 0.6 }} className="absolute -top-2 left-1/2 -translate-x-1/2 text-base pointer-events-none">❤️</motion.span>}
+          transition={{ duration: 0.6 }} className="absolute -top-2 left-1/2 -translate-x-1/2 text-base pointer-events-none">AI️</motion.span>}
       </AnimatePresence>
       <Heart className={`w-3.5 h-3.5 ${hearted ? 'text-red-400 fill-red-400' : 'text-white/40'}`} />
       <span className="font-body text-[10px] text-white/50">{count}</span>
@@ -259,7 +259,7 @@ export default function ExplorePage() {
             onClick={() => base44.auth.redirectToLogin(window.location.href)}
             className="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
             style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 24px rgba(0,212,255,0.45), 0 0 50px rgba(0,212,255,0.2)' }}>
-            ✨ Get Started — Sign In or Sign Up
+            AI Get Started — Sign In or Sign Up
           </motion.button>
         )}
       </div>

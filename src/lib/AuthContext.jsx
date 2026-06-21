@@ -26,7 +26,11 @@ export const AuthProvider = ({ children }) => {
       checkAppState();
     };
     window.addEventListener('ghost-session-changed', refreshGhostSession);
-    return () => window.removeEventListener('ghost-session-changed', refreshGhostSession);
+    window.addEventListener('supabase-auth-changed', refreshGhostSession);
+    return () => {
+      window.removeEventListener('ghost-session-changed', refreshGhostSession);
+      window.removeEventListener('supabase-auth-changed', refreshGhostSession);
+    };
   }, []);
 
   const checkAppState = async () => {

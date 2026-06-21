@@ -89,7 +89,7 @@ export default function ReceiptModal({ listing, user, onClose }) {
           style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-4 h-4 text-[#00D4FF]" />
-            <span className="font-heading font-bold text-white">{placed ? '🧾 Order Receipt' : 'Place Order'}</span>
+            <span className="font-heading font-bold text-white">{placed ? 'AI Order Receipt' : 'Place Order'}</span>
           </div>
           <button onClick={onClose} className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
             <X className="w-3.5 h-3.5 text-white" />
@@ -181,7 +181,7 @@ export default function ReceiptModal({ listing, user, onClose }) {
               <button onClick={handleOrder} disabled={placing || !buyerName.trim() || !buyerEmail.trim()}
                 className="w-full py-3 rounded-xl font-body font-bold text-sm text-[#0A192F] disabled:opacity-40 transition-all flex items-center justify-center gap-2"
                 style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}>
-                {placing ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Placing Order...</> : '📦 Place Order & Get Receipt'}
+                {placing ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Placing Order...</> : 'AI Place Order & Get Receipt'}
               </button>
             </div>
           ) : (

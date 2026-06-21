@@ -80,7 +80,7 @@ function ImageUploader({ images, onAdd, onRemove }) {
         {images.map((url, i) => (
           <div key={i} className="relative group">
             <img src={url} alt="" className="w-14 h-14 rounded-xl object-cover border border-white/10" />
-            <button onClick={() => onRemove(i)} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+            <button onClick={() => onRemove(i)} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">AI</button>
           </div>
         ))}
         <label className={`w-14 h-14 rounded-xl border-2 border-dashed border-white/15 flex flex-col items-center justify-center cursor-pointer hover:border-[#00D4FF]/40 transition-colors ${uploading ? 'opacity-50' : ''}`}>
@@ -208,7 +208,7 @@ function ListingForm({ form, setF, onSave, onSaveDraft, onCancel, editing, isEle
 
       {isElectronics && (
         <div className="rounded-xl p-3 space-y-2.5" style={{ background: 'rgba(0,212,255,0.05)', border: '1px solid rgba(0,212,255,0.2)' }}>
-          <p className="font-body text-[10px] text-[#00D4FF] font-semibold">📱 Electronics — Warranty & Specs Required</p>
+          <p className="font-body text-[10px] text-[#00D4FF] font-semibold">AI Electronics — Warranty & Specs Required</p>
           <Field label="Warranty" value={form.warranty} onChange={v => setF('warranty', v)} placeholder="1 Year Samsung PH Warranty" required />
           <Field label="Full Specifications" value={form.specs} onChange={v => setF('specs', v)} type="textarea" placeholder="6.7&quot; AMOLED, Snapdragon 8 Gen 3..." required />
         </div>
@@ -224,7 +224,7 @@ function ListingForm({ form, setF, onSave, onSaveDraft, onCancel, editing, isEle
       {/* AI Price results */}
       {priceResults && (
         <div className="rounded-xl p-3 space-y-1.5" style={{ background: 'rgba(0,212,255,0.05)', border: '1px solid rgba(0,212,255,0.15)' }}>
-          <p className="font-body text-[10px] text-[#00D4FF] font-bold">💡 Suggested: {priceResults.suggested_price_php}</p>
+          <p className="font-body text-[10px] text-[#00D4FF] font-bold">AI Suggested: {priceResults.suggested_price_php}</p>
           {priceResults.market_insight && <p className="font-body text-[9px] text-white/40">{priceResults.market_insight}</p>}
           {(priceResults.platforms || []).map((p, i) => (
             <div key={i} className="flex justify-between text-[9px]">
@@ -514,7 +514,7 @@ export default function SellerDashboard() {
                 </p>
                 <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
                   <span className="font-body text-[9px] text-white/35">{user.email}</span>
-                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-[#00D4FF]/15 text-[#00D4FF] border border-[#00D4FF]/20">🏪 Seller</span>
+                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-[#00D4FF]/15 text-[#00D4FF] border border-[#00D4FF]/20">AI Seller</span>
                   {isVerified ? (
                     <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-[#2563EB]/20 text-[#60a5fa] border border-[#2563EB]/20 flex items-center gap-1">
                       <BadgeCheck className="w-2.5 h-2.5" /> Verified
@@ -770,7 +770,7 @@ export default function SellerDashboard() {
               <h3 className="font-heading font-bold text-white text-sm mb-3">Account</h3>
               <div className="flex items-center justify-between p-3 rounded-xl mb-2" style={{ background: 'rgba(255,255,255,0.04)' }}>
                 <p className="font-body text-xs text-white/50">{user.email}</p>
-                <span className="text-[9px] text-[#00D4FF] font-bold px-2 py-0.5 rounded-full bg-[#00D4FF]/10">Verified ✓</span>
+                <span className="text-[9px] text-[#00D4FF] font-bold px-2 py-0.5 rounded-full bg-[#00D4FF]/10">Verified AI</span>
               </div>
               <button onClick={() => base44.auth.logout('/')}
                 className="w-full py-2.5 rounded-xl border border-red-500/20 text-red-400 hover:bg-red-500/10 font-body font-semibold text-xs transition-colors flex items-center justify-center gap-2">
@@ -831,7 +831,7 @@ export default function SellerDashboard() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
             className="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-2.5 rounded-xl font-body text-xs shadow-2xl z-50 text-white"
             style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)' }}>
-            ✅ {toast}
+            AI {toast}
           </motion.div>
         )}
       </AnimatePresence>

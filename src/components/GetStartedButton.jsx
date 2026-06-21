@@ -33,7 +33,7 @@ export default function GetStartedButton() {
             className="flex items-center gap-2 px-5 py-3 rounded-2xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105 active:scale-95"
             style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}
           >
-            ✨ Get Started
+            AI Get Started
           </motion.button>
         </motion.div>
       )}

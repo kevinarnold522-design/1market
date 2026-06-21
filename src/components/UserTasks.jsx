@@ -111,7 +111,7 @@ export default function UserTasks({ user }) {
               {allDone && (
                 <div className="text-center pt-2">
                   <p className="font-body text-xs text-emerald-400 font-bold flex items-center justify-center gap-1.5">
-                    🎉 All tasks done! <OneCheckmark size="xs" label="1Checkmark eligible!" />
+                    AI All tasks done! <OneCheckmark size="xs" label="1Checkmark eligible!" />
                   </p>
                 </div>
               )}

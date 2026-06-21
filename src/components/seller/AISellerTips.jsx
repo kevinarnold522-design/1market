@@ -166,7 +166,7 @@ Each tip should be actionable in under 5 minutes.`,
 
           {tips.motivation && (
             <div className="px-3 py-2 rounded-xl text-center" style={{ background: 'rgba(251,191,36,0.08)' }}>
-              <p className="font-body text-[11px] text-amber-400/80 italic">✨ {tips.motivation}</p>
+              <p className="font-body text-[11px] text-amber-400/80 italic">AI {tips.motivation}</p>
             </div>
           )}
         </motion.div>

@@ -7,148 +7,148 @@ import AlfieCharacter from './AlfieCharacter';
 const PAGE_CONFIG = {
   home: {
     messages: [
-      { text: "Welcome to 1MarketPH! 🐾 The #1 Filipino marketplace.", mode: 'wave' },
-      { text: "Browse local food, travel, services & more! 🛍️", mode: 'point' },
-      { text: "Over 1,000+ listings from sellers across the Philippines! 📣", mode: 'announce' },
-      { text: "Tap 'Get Started' to create your free account! 🚀", mode: 'point' },
-      { text: "Looking for the best deals near you? I can help! 🔍", mode: 'search' },
+      { text: "Welcome to 1MarketPH! AI The #1 Filipino marketplace.", mode: 'wave' },
+      { text: "Browse local food, travel, services & more! AI️", mode: 'point' },
+      { text: "Over 1,000+ listings from sellers across the Philippines! AI", mode: 'announce' },
+      { text: "Tap 'Get Started' to create your free account! AI", mode: 'point' },
+      { text: "Looking for the best deals near you? I can help! AI", mode: 'search' },
       { text: "1MarketPH — Buy, Sell & Connect across the Philippines 🇵🇭", mode: 'thumbsup' },
-      { text: "New listings added every day! Don't miss out. 📦", mode: 'announce' },
-      { text: "Sellers: List your products for FREE today! 🏪", mode: 'point' },
+      { text: "New listings added every day! Don't miss out. AI", mode: 'announce' },
+      { text: "Sellers: List your products for FREE today! AI", mode: 'point' },
     ],
     entryMode: 'wave',
-    entryMsg: "Welcome to 1MarketPH! 🐾 I'm Alfie, your guide!",
-    returningMsg: "Hey, welcome back! Great deals await you today! 👋🐾",
+    entryMsg: "Welcome to 1MarketPH! AI I'm Alfie, your guide!",
+    returningMsg: "Hey, welcome back! Great deals await you today! AIAI",
   },
   travel: {
     messages: [
-      { text: "Explore hotels, resorts & tour packages! ✈️", mode: 'travel' },
-      { text: "Book budget hotels in Manila, Cavite & more! 🏨", mode: 'search' },
-      { text: "Looking for a vehicle rental for your trip? 🚗", mode: 'point' },
-      { text: "Find affordable tour packages for the family! 🌴", mode: 'announce' },
-      { text: "Compare hotel prices before booking! 💡", mode: 'think' },
-      { text: "Domestic flights & packages available! 🛫", mode: 'travel' },
-      { text: "Click any listing to see full details & book! 📋", mode: 'point' },
+      { text: "Explore hotels, resorts & tour packages! AI️", mode: 'travel' },
+      { text: "Book budget hotels in Manila, Cavite & more! AI", mode: 'search' },
+      { text: "Looking for a vehicle rental for your trip? AI", mode: 'point' },
+      { text: "Find affordable tour packages for the family! AI", mode: 'announce' },
+      { text: "Compare hotel prices before booking! AI", mode: 'think' },
+      { text: "Domestic flights & packages available! AI", mode: 'travel' },
+      { text: "Click any listing to see full details & book! AI", mode: 'point' },
     ],
     entryMode: 'travel',
-    entryMsg: "Let's find your next adventure! ✈️🌍",
+    entryMsg: "Let's find your next adventure! AI️AI",
   },
   food: {
     messages: [
-      { text: "Find home-cooked meals, bakeries & carinderia near you! 🍜", mode: 'search' },
-      { text: "Order from trusted home kitchens in your area! 🏠", mode: 'point' },
-      { text: "Baked goods, lutong bahay, beverages & more! 🧁", mode: 'announce' },
-      { text: "Check allergen info before ordering! ⚠️", mode: 'think' },
-      { text: "Support local food businesses today! ❤️", mode: 'thumbsup' },
-      { text: "New food listings updated daily! 🍽️", mode: 'announce' },
+      { text: "Find home-cooked meals, bakeries & carinderia near you! AI", mode: 'search' },
+      { text: "Order from trusted home kitchens in your area! AI", mode: 'point' },
+      { text: "Baked goods, lutong bahay, beverages & more! AI", mode: 'announce' },
+      { text: "Check allergen info before ordering! AI️", mode: 'think' },
+      { text: "Support local food businesses today! AI️", mode: 'thumbsup' },
+      { text: "New food listings updated daily! AI️", mode: 'announce' },
     ],
     entryMode: 'wave',
-    entryMsg: "Hungry? Find amazing local food here! 🍜",
+    entryMsg: "Hungry? Find amazing local food here! AI",
   },
   buysell: {
     messages: [
-      { text: "Browse thousands of items from local sellers! 🛍️", mode: 'search' },
-      { text: "Electronics, fashion, furniture & more! 📱", mode: 'point' },
-      { text: "Brand new & pre-loved items available! ✨", mode: 'announce' },
-      { text: "Check item condition before buying! 🔍", mode: 'think' },
-      { text: "Message the seller directly for more details! 💬", mode: 'point' },
-      { text: "List your own items for FREE! 🏪", mode: 'thumbsup' },
-      { text: "Cars, real estate, appliances & more! 🚗", mode: 'announce' },
+      { text: "Browse thousands of items from local sellers! AI️", mode: 'search' },
+      { text: "Electronics, fashion, furniture & more! AI", mode: 'point' },
+      { text: "Brand new & pre-loved items available! AI", mode: 'announce' },
+      { text: "Check item condition before buying! AI", mode: 'think' },
+      { text: "Message the seller directly for more details! AI", mode: 'point' },
+      { text: "List your own items for FREE! AI", mode: 'thumbsup' },
+      { text: "Cars, real estate, appliances & more! AI", mode: 'announce' },
     ],
     entryMode: 'point',
-    entryMsg: "Find great deals from local sellers! 🛍️",
+    entryMsg: "Find great deals from local sellers! AI️",
   },
   jobs: {
     messages: [
-      { text: "Find jobs: full-time, part-time & WFH! 💼", mode: 'thumbsup' },
-      { text: "Customer service, tech, healthcare & more! 🏥", mode: 'point' },
-      { text: "Check salary range & benefits before applying! 💰", mode: 'think' },
-      { text: "Apply directly via the listing's contact info! 📩", mode: 'announce' },
-      { text: "New job postings added every day! 📋", mode: 'search' },
-      { text: "Hiring? Post a job listing for free! 📣", mode: 'point' },
+      { text: "Find jobs: full-time, part-time & WFH! AI", mode: 'thumbsup' },
+      { text: "Customer service, tech, healthcare & more! AI", mode: 'point' },
+      { text: "Check salary range & benefits before applying! AI", mode: 'think' },
+      { text: "Apply directly via the listing's contact info! AI", mode: 'announce' },
+      { text: "New job postings added every day! AI", mode: 'search' },
+      { text: "Hiring? Post a job listing for free! AI", mode: 'point' },
     ],
     entryMode: 'thumbsup',
-    entryMsg: "Your next job opportunity is here! 💼",
+    entryMsg: "Your next job opportunity is here! AI",
   },
   rent: {
     messages: [
-      { text: "Find rooms, condos & houses for rent! 🏠", mode: 'realestate' },
-      { text: "Check furnished vs unfurnished & pet policies! 🐶", mode: 'think' },
-      { text: "Properties for rent, sale & lease available! 🏗️", mode: 'announce' },
-      { text: "Filter by city & area to find nearby listings! 📍", mode: 'search' },
-      { text: "Contact the landlord directly via the listing! 📞", mode: 'point' },
-      { text: "Pre-selling condos & ready-for-occupancy units! 🏢", mode: 'realestate' },
+      { text: "Find rooms, condos & houses for rent! AI", mode: 'realestate' },
+      { text: "Check furnished vs unfurnished & pet policies! AI", mode: 'think' },
+      { text: "Properties for rent, sale & lease available! AI️", mode: 'announce' },
+      { text: "Filter by city & area to find nearby listings! AI", mode: 'search' },
+      { text: "Contact the landlord directly via the listing! AI", mode: 'point' },
+      { text: "Pre-selling condos & ready-for-occupancy units! AI", mode: 'realestate' },
     ],
     entryMode: 'realestate',
-    entryMsg: "Find your perfect home or property! 🏠",
+    entryMsg: "Find your perfect home or property! AI",
   },
   services: {
     messages: [
-      { text: "Find trusted service providers near you! 🔧", mode: 'search' },
-      { text: "Plumbing, electrical, cleaning & more! 🏠", mode: 'point' },
+      { text: "Find trusted service providers near you! AI", mode: 'search' },
+      { text: "Plumbing, electrical, cleaning & more! AI", mode: 'point' },
       { text: "Check ratings & reviews before hiring! ⭐", mode: 'think' },
-      { text: "Web dev, graphic design, VA services & more! 💻", mode: 'announce' },
-      { text: "Ask for a quote directly from the provider! 💬", mode: 'point' },
-      { text: "Verified partners get a blue badge ✅", mode: 'thumbsup' },
+      { text: "Web dev, graphic design, VA services & more! AI", mode: 'announce' },
+      { text: "Ask for a quote directly from the provider! AI", mode: 'point' },
+      { text: "Verified partners get a blue badge AI", mode: 'thumbsup' },
     ],
     entryMode: 'wave',
-    entryMsg: "Find skilled service providers near you! 🔧",
+    entryMsg: "Find skilled service providers near you! AI",
   },
   listing: {
     messages: [
-      { text: "Check all photos before deciding! 📸", mode: 'search' },
-      { text: "Read the full description carefully! 📋", mode: 'think' },
-      { text: "Message the seller to ask questions! 💬", mode: 'point' },
+      { text: "Check all photos before deciding! AI", mode: 'search' },
+      { text: "Read the full description carefully! AI", mode: 'think' },
+      { text: "Message the seller to ask questions! AI", mode: 'point' },
       { text: "Check the seller's rating & reviews! ⭐", mode: 'thumbsup' },
-      { text: "Save this listing to your favourites! ❤️", mode: 'wave' },
-      { text: "Negotiate price by messaging the seller! 💰", mode: 'announce' },
+      { text: "Save this listing to your favourites! AI️", mode: 'wave' },
+      { text: "Negotiate price by messaging the seller! AI", mode: 'announce' },
     ],
     entryMode: 'wave',
-    entryMsg: "Let me help you check this listing! 🏷️",
+    entryMsg: "Let me help you check this listing! AI️",
   },
   profile: {
     messages: [
-      { text: "Complete your profile for more trust! ✅", mode: 'point' },
-      { text: "Add a profile photo to look more professional! 📸", mode: 'announce' },
-      { text: "Set your Channel Name for public listings! 🏪", mode: 'think' },
-      { text: "Apply for Verified Partner for a blue badge! 🏅", mode: 'thumbsup' },
-      { text: "Upload your listings to start selling today! 📦", mode: 'point' },
+      { text: "Complete your profile for more trust! AI", mode: 'point' },
+      { text: "Add a profile photo to look more professional! AI", mode: 'announce' },
+      { text: "Set your Channel Name for public listings! AI", mode: 'think' },
+      { text: "Apply for Verified Partner for a blue badge! AI", mode: 'thumbsup' },
+      { text: "Upload your listings to start selling today! AI", mode: 'point' },
     ],
     entryMode: 'wave',
-    entryMsg: "Let me help you set up your profile! 👤",
+    entryMsg: "Let me help you set up your profile! AI",
   },
 };
 
 // Walkthrough steps
 const WALKTHROUGHS = {
   customer: [
-    { step: 1, text: "Step 1: Click 'Get Started' & choose 'Customer' account type 🛍️", mode: 'point' },
-    { step: 2, text: "Step 2: Sign up with Google or your email 📧", mode: 'announce' },
-    { step: 3, text: "Step 3: Browse categories: Food, Travel, Buy & Sell, Jobs! 🗂️", mode: 'search' },
-    { step: 4, text: "Step 4: Click any listing to see full details 📋", mode: 'think' },
-    { step: 5, text: "Step 5: Message a seller directly from the listing! 💬", mode: 'point' },
-    { step: 6, text: "Step 6: Save your favourites with the ❤️ heart button!", mode: 'thumbsup' },
-    { step: 7, text: "You're all set! Happy shopping on 1MarketPH! 🎉", mode: 'jump' },
+    { step: 1, text: "Step 1: Click 'Get Started' & choose 'Customer' account type AI️", mode: 'point' },
+    { step: 2, text: "Step 2: Sign up with Google or your email AI", mode: 'announce' },
+    { step: 3, text: "Step 3: Browse categories: Food, Travel, Buy & Sell, Jobs! AI️", mode: 'search' },
+    { step: 4, text: "Step 4: Click any listing to see full details AI", mode: 'think' },
+    { step: 5, text: "Step 5: Message a seller directly from the listing! AI", mode: 'point' },
+    { step: 6, text: "Step 6: Save your favourites with the AI️ heart button!", mode: 'thumbsup' },
+    { step: 7, text: "You're all set! Happy shopping on 1MarketPH! AI", mode: 'jump' },
   ],
   seller: [
-    { step: 1, text: "Step 1: Click 'Get Started' & choose 'Seller' account type 🏪", mode: 'point' },
-    { step: 2, text: "Step 2: Sign up & go to Profile → 'Become a Seller' 📝", mode: 'announce' },
-    { step: 3, text: "Step 3: Set your Channel Name & location in Profile 📍", mode: 'think' },
-    { step: 4, text: "Step 4: Click 'Post a Listing' to add your first item! 📦", mode: 'point' },
-    { step: 5, text: "Step 5: Add photos, price, description & contact info! 📸", mode: 'search' },
-    { step: 6, text: "Step 6: Submit for Admin Review — you'll get an email when approved! ✉️", mode: 'announce' },
-    { step: 7, text: "Step 7: Apply for Verified Partner badge for more trust! ✅", mode: 'thumbsup' },
-    { step: 8, text: "You're ready to sell on 1MarketPH! 🎉", mode: 'jump' },
+    { step: 1, text: "Step 1: Click 'Get Started' & choose 'Seller' account type AI", mode: 'point' },
+    { step: 2, text: "Step 2: Sign up & go to Profile → 'Become a Seller' AI", mode: 'announce' },
+    { step: 3, text: "Step 3: Set your Channel Name & location in Profile AI", mode: 'think' },
+    { step: 4, text: "Step 4: Click 'Post a Listing' to add your first item! AI", mode: 'point' },
+    { step: 5, text: "Step 5: Add photos, price, description & contact info! AI", mode: 'search' },
+    { step: 6, text: "Step 6: Submit for Admin Review — you'll get an email when approved! AI️", mode: 'announce' },
+    { step: 7, text: "Step 7: Apply for Verified Partner badge for more trust! AI", mode: 'thumbsup' },
+    { step: 8, text: "You're ready to sell on 1MarketPH! AI", mode: 'jump' },
   ],
   business: [
-    { step: 1, text: "Step 1: Click 'Get Started' & register your Business Account 🏢", mode: 'point' },
-    { step: 2, text: "Step 2: Sign up & go to Profile → 'Register a Business' 📋", mode: 'announce' },
-    { step: 3, text: "Step 3: Submit 3 documents: NBI Clearance, Business Reg. & ITR 📄", mode: 'think' },
+    { step: 1, text: "Step 1: Click 'Get Started' & register your Business Account AI", mode: 'point' },
+    { step: 2, text: "Step 2: Sign up & go to Profile → 'Register a Business' AI", mode: 'announce' },
+    { step: 3, text: "Step 3: Submit 3 documents: NBI Clearance, Business Reg. & ITR AI", mode: 'think' },
     { step: 4, text: "Step 4: Wait for Admin approval (24-48 hrs) ⏳", mode: 'search' },
-    { step: 5, text: "Step 5: Once approved, set your Business Name & profile! 🏪", mode: 'point' },
-    { step: 6, text: "Step 6: Post your products & services under your business name! 📦", mode: 'announce' },
-    { step: 7, text: "Step 7: Your Verified ✅ badge appears after document review! 🏅", mode: 'thumbsup' },
-    { step: 8, text: "Welcome to 1MarketPH Business! You're now a verified partner! 🎉", mode: 'jump' },
+    { step: 5, text: "Step 5: Once approved, set your Business Name & profile! AI", mode: 'point' },
+    { step: 6, text: "Step 6: Post your products & services under your business name! AI", mode: 'announce' },
+    { step: 7, text: "Step 7: Your Verified AI badge appears after document review! AI", mode: 'thumbsup' },
+    { step: 8, text: "Welcome to 1MarketPH Business! You're now a verified partner! AI", mode: 'jump' },
   ],
 };
 
@@ -201,7 +201,7 @@ export default function MascotDog({ page = 'home', onGetStarted }) {
       setDismissed(false);
       setTimeout(() => {
         setWalkthrough('choose');
-        setModeFor('wave', "Great! Let me guide you! Who are you joining as? 🐾", 99999);
+        setModeFor('wave', "Great! Let me guide you! Who are you joining as? AI", 99999);
       }, 600);
     };
     window.addEventListener('alfie-get-started', handler);
@@ -277,9 +277,9 @@ export default function MascotDog({ page = 'home', onGetStarted }) {
     if (walkthrough === 'choose' || walkthrough === 'customer' || walkthrough === 'seller' || walkthrough === 'business') return;
     // Single tap = helpful tip
     const tips = [
-      "Need help? Tap me to start a walkthrough! 🗺️",
-      "I can guide you step by step! 👉",
-      "Tap 'Guide Me' below to get started! 🚀",
+      "Need help? Tap me to start a walkthrough! AI️",
+      "I can guide you step by step! AI",
+      "Tap 'Guide Me' below to get started! AI",
     ];
     setModeFor('wave', tips[Math.floor(Math.random() * tips.length)], 3000);
   };
@@ -298,7 +298,7 @@ export default function MascotDog({ page = 'home', onGetStarted }) {
     if (next >= steps.length) {
       setWalkthrough(null);
       setWalkthroughStep(0);
-      setModeFor('jump', "You're all set! Enjoy 1MarketPH! 🎉", 4000);
+      setModeFor('jump', "You're all set! Enjoy 1MarketPH! AI", 4000);
       return;
     }
     setWalkthroughStep(next);
@@ -316,7 +316,7 @@ export default function MascotDog({ page = 'home', onGetStarted }) {
   const endWalkthrough = () => {
     setWalkthrough(null);
     setWalkthroughStep(0);
-    setModeFor('wave', "Anytime you need help, just tap me! 🐾", 3000);
+    setModeFor('wave', "Anytime you need help, just tap me! AI", 3000);
   };
 
   if (dismissed) return null;
@@ -368,12 +368,12 @@ export default function MascotDog({ page = 'home', onGetStarted }) {
               className="pointer-events-auto -mb-1 rounded-2xl p-3 shadow-2xl"
               style={{ background: '#0D1F3C', border: '1.5px solid rgba(0,212,255,0.4)', maxWidth: 200, marginLeft: -70 }}
             >
-              <p className="font-body text-[10px] font-bold text-[#00D4FF] mb-2 text-center">🐾 I'll guide you! Who are you?</p>
+              <p className="font-body text-[10px] font-bold text-[#00D4FF] mb-2 text-center">AI I'll guide you! Who are you?</p>
               <div className="space-y-1.5">
                 {[
-                  { key: 'customer', label: '🛍️ Customer', color: '#3b82f6' },
-                  { key: 'seller', label: '🏪 Seller', color: '#10b981' },
-                  { key: 'business', label: '🏢 Business Owner', color: '#8b5cf6' },
+                  { key: 'customer', label: 'AI️ Customer', color: '#3b82f6' },
+                  { key: 'seller', label: 'AI Seller', color: '#10b981' },
+                  { key: 'business', label: 'AI Business Owner', color: '#8b5cf6' },
                 ].map(opt => (
                   <button key={opt.key} onClick={() => startWalkthrough(opt.key)}
                     className="w-full px-3 py-1.5 rounded-xl font-body text-xs font-bold text-white text-left flex items-center justify-between transition-all hover:scale-105"
@@ -403,9 +403,9 @@ export default function MascotDog({ page = 'home', onGetStarted }) {
               <button onClick={nextStep}
                 className="px-2 py-0.5 rounded-lg text-[9px] font-bold text-[#0A192F] transition-all hover:scale-105"
                 style={{ background: walkthroughStep === walkthroughSteps.length - 1 ? '#10b981' : '#00D4FF' }}>
-                {walkthroughStep === walkthroughSteps.length - 1 ? 'Done ✓' : 'Next →'}
+                {walkthroughStep === walkthroughSteps.length - 1 ? 'Done AI' : 'Next →'}
               </button>
-              <button onClick={endWalkthrough} className="text-[8px] text-white/20 hover:text-white/50 transition-colors">✕</button>
+              <button onClick={endWalkthrough} className="text-[8px] text-white/20 hover:text-white/50 transition-colors">AI</button>
             </motion.div>
           )}
         </AnimatePresence>

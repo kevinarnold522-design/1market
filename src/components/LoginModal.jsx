@@ -40,7 +40,7 @@ export default function LoginModal({ onClose }) {
           </div>
 
           <div className="px-5 pb-8 text-center">
-            <div className="text-5xl mb-3">👋</div>
+            <div className="text-5xl mb-3">AI</div>
             <h2 className="font-heading font-bold text-2xl text-white mb-1">Welcome back!</h2>
             <p className="font-body text-sm text-white/50 mb-6">Sign in to your 1Market Philippines account.</p>
 

@@ -26,7 +26,11 @@ export default function Register() {
     }
     setLoading(true);
     try {
-      await supabaseCompat.auth.register({ email, password });
+      const data = await supabaseCompat.auth.register({ email, password });
+      if (data?.session) {
+        window.location.href = '/';
+        return;
+      }
       setShowConfirmation(true);
     } catch (err) {
       console.error("[v0] Register error:", err);

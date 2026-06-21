@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { supabaseCompat } from '@/api/supabaseCompatClient';
+import { requireSupabase } from '@/lib/supabaseClient';
 import { Loader2 } from 'lucide-react';
 
 export default function AuthCallback() {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [error, setError] = React.useState('');
   const [loading, setLoading] = React.useState(true);
@@ -12,7 +12,8 @@ export default function AuthCallback() {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Extract the code from the URL (Supabase OAuth/Magic Link flow)
+        const db = requireSupabase();
+        const next = searchParams.get('next') || '/';
         const code = searchParams.get('code');
         const error = searchParams.get('error');
         const errorDescription = searchParams.get('error_description');
@@ -23,33 +24,34 @@ export default function AuthCallback() {
           return;
         }
 
-        if (code) {
-          // Exchange the code for a session
-          const { supabaseCompat: compat } = await import('@/api/supabaseCompatClient');
-          const db = (await import('@/lib/supabaseClient')).requireSupabase();
-          
-          const { data, error: sessionError } = await db.auth.exchangeCodeForSession(code);
-          
-          if (sessionError) {
-            console.error('[v0] Session exchange error:', sessionError);
-            setError(sessionError.message || 'Authentication failed');
-            setLoading(false);
-            return;
-          }
+        let user = null;
 
-          if (data?.user) {
-            // Profile should auto-create via trigger, but ensure it exists
-            await compat.auth.ensureProfile(data.user);
-            
-            // Redirect to homepage after authentication
-            window.location.href = '/';
-            return;
-          }
+        if (code) {
+          const { data, error: sessionError } = await db.auth.exchangeCodeForSession(code);
+          if (sessionError) throw sessionError;
+          user = data?.user || null;
         }
 
-        // If we get here, something went wrong
-        setError('Authentication callback failed. Please try again.');
-        setLoading(false);
+        if (!user) {
+          const { data, error: userError } = await db.auth.getUser();
+          if (userError && userError.name !== 'AuthSessionMissingError') throw userError;
+          user = data?.user || null;
+        }
+
+        if (!user) {
+          const { data } = await db.auth.getSession();
+          user = data?.session?.user || null;
+        }
+
+        if (!user) {
+          setError('Authentication callback failed. Please try logging in again.');
+          setLoading(false);
+          return;
+        }
+
+        await supabaseCompat.auth.ensureProfile(user);
+        window.dispatchEvent(new Event('supabase-auth-changed'));
+        window.location.href = next.startsWith('/') ? next : '/';
       } catch (err) {
         console.error('[v0] Auth callback error:', err);
         setError(err.message || 'An error occurred during authentication');

@@ -10,7 +10,7 @@ export default function MetaVerifiedBadge({ size = 'md', label = 'Verified' }) {
   const s = sizes[size] || sizes.md;
 
   return (
-    <span className="inline-flex items-center gap-1 meta-verified-badge" title="Meta Verified ✓">
+    <span className="inline-flex items-center gap-1 meta-verified-badge" title="Meta Verified AI">
       {/* Animated badge icon */}
       <span className="relative inline-flex items-center justify-center flex-shrink-0" style={{ width: s.badge, height: s.badge }}>
         {/* Outer rotating ring */}

@@ -39,7 +39,7 @@ export default function CookieBanner() {
               <Cookie className="w-4 h-4 text-[#FFD700]" />
             </div>
             <div className="flex-1">
-              <p className="font-heading font-bold text-xs text-white mb-0.5">We use cookies 🍪</p>
+              <p className="font-heading font-bold text-xs text-white mb-0.5">We use cookies AI</p>
               <p className="font-body text-[10px] text-white/50 leading-relaxed">We use cookies to improve your experience, analyze traffic, and personalize content. By continuing, you agree to our Privacy Policy.</p>
               <div className="flex gap-2 mt-3">
                 <button onClick={accept}

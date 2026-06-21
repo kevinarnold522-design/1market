@@ -36,7 +36,7 @@ export default function NewsletterSection() {
             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
               className="flex items-center justify-center gap-2 text-green-400">
               <CheckCircle className="w-5 h-5" />
-              <span className="font-body font-semibold">You're subscribed! Welcome to the community 🎉</span>
+              <span className="font-body font-semibold">You're subscribed! Welcome to the community AI</span>
             </motion.div>
           ) : (
             <form onSubmit={handle} className="flex flex-col sm:flex-row gap-2">

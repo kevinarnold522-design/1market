@@ -118,7 +118,7 @@ function JobCard({ job, onApply }) {
         {isFreelance && (
           <div className="mb-2 flex items-center gap-1 flex-wrap">
             <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
-              🔒 Privacy Protected
+              AI Privacy Protected
             </span>
             {!job.candidate_contact_public && (
               <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
@@ -171,7 +171,7 @@ function ApplyModal({ job, onClose }) {
         <div className="relative h-32 overflow-hidden">
           <img src={job.image || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=500&q=80'} alt={job.title} className="w-full h-full object-cover" />
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #0D1F3C 20%, transparent)' }} />
-          <button onClick={onClose} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/15 flex items-center justify-center text-white hover:bg-white/25 transition-colors">✕</button>
+          <button onClick={onClose} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/15 flex items-center justify-center text-white hover:bg-white/25 transition-colors">AI</button>
           <p className="absolute bottom-3 left-4 font-heading font-bold text-white text-base">{job.title}</p>
         </div>
         <div className="p-5 space-y-4 max-h-[60vh] overflow-y-auto">
@@ -201,13 +201,13 @@ function ApplyModal({ job, onClose }) {
               </p>
               <div className="flex flex-wrap gap-1.5">
                 <span className="px-2 py-0.5 rounded-full text-[9px] font-bold" style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)' }}>
-                  {job.candidate_contact_public || job.candidate_email_public ? '✓ Contact Visible' : '✗ Contact Hidden'}
+                  {job.candidate_contact_public || job.candidate_email_public ? 'AI Contact Visible' : 'AI Contact Hidden'}
                 </span>
                 <span className="px-2 py-0.5 rounded-full text-[9px] font-bold" style={{ background: 'rgba(59,130,246,0.15)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.3)' }}>
-                  {job.candidate_location_public ? '✓ Location Visible' : '✗ Location Hidden'}
+                  {job.candidate_location_public ? 'AI Location Visible' : 'AI Location Hidden'}
                 </span>
                 <span className="px-2 py-0.5 rounded-full text-[9px] font-bold" style={{ background: 'rgba(236,72,153,0.15)', color: '#ec4899', border: '1px solid rgba(236,72,153,0.3)' }}>
-                  {job.candidate_portfolio_public ? '✓ Portfolio Visible' : '✗ Portfolio Hidden'}
+                  {job.candidate_portfolio_public ? 'AI Portfolio Visible' : 'AI Portfolio Hidden'}
                 </span>
               </div>
             </div>

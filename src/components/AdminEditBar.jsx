@@ -26,7 +26,7 @@ export function AdminEditProvider({ isAdmin, children }) {
         >
           <Shield className={`w-4 h-4 ${editMode ? 'text-[#0A192F]' : 'text-amber-400'}`} />
           <span className={`font-body text-xs font-bold ${editMode ? 'text-[#0A192F]' : 'text-amber-300'}`}>
-            {editMode ? '✏️ Edit Mode ON — Click any ✏️ to edit' : '👁️ Admin View'}
+            {editMode ? 'AI️ Edit Mode ON — Click any AI️ to edit' : 'AI️ Admin View'}
           </span>
           <button
             onClick={() => setEditMode(v => !v)}

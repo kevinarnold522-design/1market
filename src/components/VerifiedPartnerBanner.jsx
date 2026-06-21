@@ -68,7 +68,7 @@ function DocUpload({ doc: docInfo, value, onChange }) {
       {value?.url ? (
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-[#00D4FF] font-body font-semibold flex items-center gap-1">
-            <Check className="w-3 h-3" /> Uploaded ✓
+            <Check className="w-3 h-3" /> Uploaded AI
           </span>
           <button onClick={() => onChange(null)} className="text-[9px] text-white/25 hover:text-red-400 transition-colors">Remove</button>
         </div>
@@ -151,7 +151,7 @@ export default function VerifiedPartnerBanner({ user, onClose, onSubmit }) {
             <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} className="space-y-4">
               <div className="rounded-xl p-3 bg-[#2563EB]/10 border border-[#2563EB]/20">
                 <p className="font-body text-xs text-white/70 leading-relaxed">
-                  As a <strong className="text-white">Verified Partner</strong>, your profile gets the official blue ✅ badge,
+                  As a <strong className="text-white">Verified Partner</strong>, your profile gets the official blue AI badge,
                   boosted search placement, and full buyer trust — completely free.
                 </p>
               </div>

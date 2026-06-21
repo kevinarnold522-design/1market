@@ -22,19 +22,19 @@ export default function ShareListingModal({ listing, onClose }) {
   const shareLinks = [
     {
       label: 'Facebook',
-      icon: '📘',
+      icon: 'AI',
       color: '#1877F2',
       href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
     },
     {
       label: 'WhatsApp',
-      icon: '💬',
+      icon: 'AI',
       color: '#25D366',
       href: `https://wa.me/?text=${encodeURIComponent(text)}`,
     },
     {
       label: 'Telegram',
-      icon: '✈️',
+      icon: 'AI️',
       color: '#2AABEE',
       href: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
     },

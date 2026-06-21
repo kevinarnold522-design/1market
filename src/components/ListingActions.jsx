@@ -79,7 +79,7 @@ export default function ListingActions({ listing, user, onReport, onShare }) {
                         star <= rating ? 'text-yellow-400 bg-yellow-400/10' : 'text-white/20 hover:text-yellow-400/50'
                       }`}
                     >
-                      ★
+                      AI
                     </button>
                   ))}
                 </div>

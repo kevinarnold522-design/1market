@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, X } from 'lucide-react';
 import CategoryTransitionOverlay, { getSubtypeForSubcategory } from './transitions/CategoryTransitionOverlay';
 
-const SUITS = ['♠', '♥', '♦', '♣'];
+const SUITS = ['AI', 'AI', 'AI', 'AI'];
 const VALUES = ['A', 'K', 'Q', 'J', '10', '9'];
 
 const GRADIENTS = [
@@ -33,7 +33,7 @@ function CasinoCard({ sc, index, isActive, onClick }) {
   const accent = ACCENT_COLORS[index % ACCENT_COLORS.length];
   const suit = SUITS[index % SUITS.length];
   const val = VALUES[cardIdx % VALUES.length];
-  const isRed = suit === '♥' || suit === '♦';
+  const isRed = suit === 'AI' || suit === 'AI';
 
   useEffect(() => {
     const t = setInterval(() => setCardIdx(i => (i + 1) % VALUES.length), 900);
