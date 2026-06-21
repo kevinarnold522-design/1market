@@ -120,7 +120,7 @@ export default function HeroSection({ heroImage }) {
                       className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
                       style={{ background: 'linear-gradient(135deg,#FFD700,#FFA500)', boxShadow: '0 0 24px rgba(255,215,0,0.4)' }}
                       whileHover={{ scale: 1.05 }}>
-                      Get Started Free →
+                      Signup Free →
                     </motion.button>
                   </>
                 ) : (

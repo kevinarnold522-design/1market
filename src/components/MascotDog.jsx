@@ -10,7 +10,7 @@ const PAGE_CONFIG = {
       { text: "Welcome to 1MarketPH!  The #1 Filipino marketplace.", mode: 'wave' },
       { text: "Browse local food, travel, services & more! ️", mode: 'point' },
       { text: "Over 1,000+ listings from sellers across the Philippines! ", mode: 'announce' },
-      { text: "Tap 'Get Started' to create your free account! ", mode: 'point' },
+      { text: "Tap 'Signup' to create your free account! ", mode: 'point' },
       { text: "Looking for the best deals near you? I can help! ", mode: 'search' },
       { text: "1MarketPH — Buy, Sell & Connect across the Philippines 🇵🇭", mode: 'thumbsup' },
       { text: "New listings added every day! Don't miss out. ", mode: 'announce' },
@@ -122,7 +122,7 @@ const PAGE_CONFIG = {
 // Walkthrough steps
 const WALKTHROUGHS = {
   customer: [
-    { step: 1, text: "Step 1: Click 'Get Started' & choose 'Customer' account type ️", mode: 'point' },
+    { step: 1, text: "Step 1: Click 'Signup' & choose 'Customer' account type ️", mode: 'point' },
     { step: 2, text: "Step 2: Sign up with Google or your email ", mode: 'announce' },
     { step: 3, text: "Step 3: Browse categories: Food, Travel, Buy & Sell, Jobs! ️", mode: 'search' },
     { step: 4, text: "Step 4: Click any listing to see full details ", mode: 'think' },
@@ -131,7 +131,7 @@ const WALKTHROUGHS = {
     { step: 7, text: "You're all set! Happy shopping on 1MarketPH! ", mode: 'jump' },
   ],
   seller: [
-    { step: 1, text: "Step 1: Click 'Get Started' & choose 'Seller' account type ", mode: 'point' },
+    { step: 1, text: "Step 1: Click 'Signup' & choose 'Seller' account type ", mode: 'point' },
     { step: 2, text: "Step 2: Sign up & go to Profile → 'Become a Seller' ", mode: 'announce' },
     { step: 3, text: "Step 3: Set your Channel Name & location in Profile ", mode: 'think' },
     { step: 4, text: "Step 4: Click 'Post a Listing' to add your first item! ", mode: 'point' },
@@ -141,7 +141,7 @@ const WALKTHROUGHS = {
     { step: 8, text: "You're ready to sell on 1MarketPH! ", mode: 'jump' },
   ],
   business: [
-    { step: 1, text: "Step 1: Click 'Get Started' & register your Business Account ", mode: 'point' },
+    { step: 1, text: "Step 1: Click 'Signup' & register your Business Account ", mode: 'point' },
     { step: 2, text: "Step 2: Sign up & go to Profile → 'Register a Business' ", mode: 'announce' },
     { step: 3, text: "Step 3: Submit 3 documents: NBI Clearance, Business Reg. & ITR ", mode: 'think' },
     { step: 4, text: "Step 4: Wait for Admin approval (24-48 hrs) ⏳", mode: 'search' },
@@ -195,7 +195,7 @@ export default function MascotDog({ page = 'home', onGetStarted }) {
     modeTimerRef.current = setTimeout(() => setMode('idle'), dur);
   };
 
-  // Listen for "Get Started" trigger from navbar
+  // Listen for "Signup" trigger from navbar
   useEffect(() => {
     const handler = () => {
       setDismissed(false);
@@ -279,7 +279,7 @@ export default function MascotDog({ page = 'home', onGetStarted }) {
     const tips = [
       "Need help? Tap me to start a walkthrough! ️",
       "I can guide you step by step! ",
-      "Tap 'Guide Me' below to get started! ",
+      "Tap 'Guide Me' below to sign up! ",
     ];
     setModeFor('wave', tips[Math.floor(Math.random() * tips.length)], 3000);
   };

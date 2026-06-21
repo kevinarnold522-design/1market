@@ -569,7 +569,7 @@ export default function Navbar() {
                   <button onClick={() => { setShowSignup(true); window.dispatchEvent(new CustomEvent('alfie-get-started')); }}
                     className="px-4 py-2 rounded-lg font-body font-bold text-xs text-[#0A192F] transition-all hover:scale-105"
                     style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 16px rgba(0,212,255,0.4)' }}>
-                    Get Started
+                    Signup
                   </button>
                 </div>
               )}
@@ -711,7 +711,7 @@ export default function Navbar() {
                       <button onClick={() => { setMenuOpen(false); setShowSignup(true); }}
                         className="flex-1 py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all text-center"
                         style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)', boxShadow: '0 0 14px rgba(0,212,255,0.35)' }}>
-                        Get Started
+                        Signup
                       </button>
                     </div>
                   </>
