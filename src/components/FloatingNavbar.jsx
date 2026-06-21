@@ -83,11 +83,11 @@ return (
           onClick={() => setIsOpen(!isOpen)}
           className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-2xl transition-all hover:scale-105"
           style={{
-            background: scrolled ? 'rgba(13,31,60,0.95)' : 'rgba(13,31,60,0.85)',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            border: '1px solid rgba(0,212,255,0.2)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 20px rgba(0,212,255,0.1)',
+            background: scrolled ? 'linear-gradient(135deg,rgba(0,51,204,0.9),rgba(37,99,235,0.72))' : 'linear-gradient(135deg,rgba(0,51,204,0.76),rgba(37,99,235,0.58))',
+            backdropFilter: 'blur(28px)',
+            WebkitBackdropFilter: 'blur(28px)',
+            border: '1px solid rgba(255,255,255,0.24)',
+            boxShadow: '0 16px 40px rgba(0,51,204,0.38), inset 0 1px 0 rgba(255,255,255,0.2)',
           }}
           data-navbar
         >
@@ -104,11 +104,11 @@ return (
               transition={{ duration: 0.2 }}
               className="absolute top-14 left-0 w-80 rounded-2xl overflow-hidden shadow-2xl mt-2"
               style={{
-                background: 'rgba(13,31,60,0.98)',
-                backdropFilter: 'blur(24px)',
-                WebkitBackdropFilter: 'blur(24px)',
-                border: '1px solid rgba(0,212,255,0.2)',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 20px rgba(0,212,255,0.15)',
+                background: 'linear-gradient(145deg,rgba(0,51,204,0.92),rgba(37,99,235,0.82))',
+                backdropFilter: 'blur(30px)',
+                WebkitBackdropFilter: 'blur(30px)',
+                border: '1px solid rgba(255,255,255,0.22)',
+                boxShadow: '0 24px 60px rgba(0,51,204,0.42), inset 0 1px 0 rgba(255,255,255,0.18)',
               }}
               data-navbar
             >
@@ -121,8 +121,8 @@ return (
                     className="w-8 h-8 rounded-lg object-cover"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="font-heading font-bold text-sm text-white">1Market<span className="text-[#FFD700]">PH</span></p>
-                    <p className="font-body text-[9px] text-white/40">Buy, Sell & Connect</p>
+                    <p className="font-heading font-extrabold tracking-tight text-base text-white">1Market<span className="text-[#FFD700]">PH</span></p>
+                    <p className="font-body text-[9px] text-white/55 font-semibold tracking-wide">Buy, Sell & Connect</p>
                   </div>
                 </Link>
                 {isAuthenticated && activeUser && (

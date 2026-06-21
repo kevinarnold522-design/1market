@@ -192,8 +192,8 @@ export default function Navbar() {
   return (
     <>
       {/* Top Banner - Social Media Links - PERMANENTLY VISIBLE FOR ALL USERS */}
-      <div className={`fixed top-0 left-0 right-0 z-[60] text-white py-2 px-4`}
-        style={{ background: 'linear-gradient(90deg,#0033CC,#1a3de8,#0033CC)', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
+      <div className={`fixed top-0 left-0 right-0 z-[60] text-white py-2 px-4 backdrop-blur-2xl`}
+        style={{ background: 'linear-gradient(90deg,rgba(0,51,204,0.82),rgba(37,99,235,0.72),rgba(0,51,204,0.82))', borderBottom: '1px solid rgba(255,255,255,0.22)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18), 0 8px 28px rgba(0,51,204,0.28)' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           {/* Left: welcome or tagline */}
           <div className="flex-1 min-w-0">
@@ -215,9 +215,9 @@ export default function Navbar() {
         </div>
       </div>
 
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'backdrop-blur-2xl shadow-lg shadow-[#0033CC]/30' : 'backdrop-blur-xl'}`} style={{ background: scrolled ? 'rgba(0,26,128,0.75)' : 'rgba(0,10,64,0.55)', borderBottom: '1px solid rgba(255,255,255,0.08)', WebkitBackdropFilter: 'blur(24px)' }}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 backdrop-blur-2xl ${scrolled ? 'shadow-2xl shadow-[#0033CC]/35' : 'shadow-lg shadow-[#0033CC]/20'}`} style={{ background: scrolled ? 'linear-gradient(135deg,rgba(0,51,204,0.86),rgba(37,99,235,0.72))' : 'linear-gradient(135deg,rgba(0,51,204,0.72),rgba(37,99,235,0.56))', borderBottom: '1px solid rgba(255,255,255,0.2)', WebkitBackdropFilter: 'blur(28px)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18)' }}>
         {/* Category Bar — LEFT aligned */}
-        <div className="hidden md:block border-b border-white/8 bg-[#000d40]/80 backdrop-blur-sm" style={{ overflow: 'visible' }}>
+        <div className="hidden md:block border-b border-white/15 backdrop-blur-2xl" style={{ overflow: 'visible', background: 'linear-gradient(90deg,rgba(0,51,204,0.7),rgba(37,99,235,0.45),rgba(0,51,204,0.7))' }}>
           <div className="max-w-7xl mx-auto px-6 lg:px-8" style={{ paddingLeft: 240, overflow: 'visible' }}>
             <div className="flex items-center gap-2 h-9" style={{ overflow: 'visible' }}>
               <NavCategoryBar />
@@ -360,7 +360,7 @@ export default function Navbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 8, scale: 0.95 }}
                         className="absolute left-0 top-full mt-2 w-72 rounded-2xl overflow-hidden shadow-2xl z-50"
-                        style={{ background: '#0D1F3C', border: '1px solid rgba(168,85,247,0.3)' }}>
+                        style={{ background: 'linear-gradient(135deg,rgba(0,51,204,0.92),rgba(37,99,235,0.82))', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(28px)', WebkitBackdropFilter: 'blur(28px)', boxShadow: '0 24px 60px rgba(0,51,204,0.38), inset 0 1px 0 rgba(255,255,255,0.18)' }}>
 
                         {/* Profile Header */}
                         <div className="p-4 border-b border-white/10">
@@ -592,7 +592,7 @@ export default function Navbar() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-[#0A192F]/95 backdrop-blur-xl border-t border-white/10">
+              className="md:hidden backdrop-blur-2xl border-t border-white/15" style={{ background: 'linear-gradient(135deg,rgba(0,51,204,0.94),rgba(37,99,235,0.84))' }}>
               <div className="px-6 py-4 space-y-3">
                 {isAdmin && !isGhostSession && (
                   <div className="mb-2">
