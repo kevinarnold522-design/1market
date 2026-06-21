@@ -1,4 +1,5 @@
 import { requireSupabase } from '@/lib/supabaseClient';
+import { uploadFileToSupabase, SUPABASE_IMAGE_BUCKET } from '@/lib/supabaseStorage';
 
 const entityNames = [
   'User','Listing','Business','Order','Cart','Favourite','Review','MenuItem','Group','GroupPost','GroupComment','GroupMember','GroupPostLike','CommunityPost','Notification','VerificationApplication','Follow','Report','ListingHeart','ListingComment','Reservation','ChatMessage','DraftListing','SavedListingTemplate','UserReward','UserTasks'
@@ -266,11 +267,18 @@ export const supabaseCompat = {
   },
   functions: {
     async invoke(name, payload = {}) {
-      const functionBase = (import.meta.env.VITE_VERCEL_FUNCTIONS_URL || '').replace(/\/+$/, '');
-      const functionUrl = functionBase ? `${functionBase}/api/${name}` : `/api/${name}`;
-      const response = await fetch(functionUrl, {
+      const db = requireSupabase();
+      const { data: sessionData } = await db.auth.getSession();
+      const functionBase = (
+        import.meta.env.VITE_SUPABASE_FUNCTIONS_URL ||
+        `${import.meta.env.VITE_SUPABASE_URL || 'https://ksnzljothfoaefifevch.supabase.co'}/functions/v1`
+      ).replace(/\/+$/, '');
+      const response = await fetch(`${functionBase}/${name}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(sessionData?.session?.access_token ? { Authorization: `Bearer ${sessionData.session.access_token}` } : {})
+        },
         body: JSON.stringify(payload)
       });
       const data = await response.json().catch(() => ({}));
@@ -279,18 +287,31 @@ export const supabaseCompat = {
     }
   },
   integrations: {
-    Core: new Proxy({}, {
-      get: (_target, endpoint) => async (payload = {}) => {
-        const response = await fetch(`/api/integrations/Core/${String(endpoint)}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(data.error || `${String(endpoint)} failed`);
-        return data;
+    Core: {
+      async UploadFile({ file }) {
+        return uploadFileToSupabase(file, SUPABASE_IMAGE_BUCKET, 'uploads', { allowPdf: true });
+      },
+      async UploadPrivateFile({ file }) {
+        return uploadFileToSupabase(file, SUPABASE_IMAGE_BUCKET, 'private', { allowPdf: true });
+      },
+      async CreateFileSignedUrl({ file_uri }) {
+        return { signed_url: file_uri };
+      },
+      async SendEmail(payload) {
+        const db = requireSupabase();
+        const { data, error } = await db.from('1marketph').insert({
+          entity_name: 'EmailQueue',
+          title: payload.subject || 'Email request',
+          user_email: payload.to || '',
+          data: payload
+        }).select('*').single();
+        if (error) throw error;
+        return { success: true, queued: true, data };
+      },
+      async InvokeLLM() {
+        throw new Error('AI calls now need a Supabase Edge Function backed by your chosen AI provider.');
       }
-    })
+    }
   },
   users: {
     async inviteUser(email, role = 'user') {
