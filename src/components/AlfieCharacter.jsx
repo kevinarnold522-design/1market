@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { ALFIE_FRAMES } from '@/lib/brandAssets';
 
-const ALFIE_LOCAL_FRAME = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 180 180%22%3E%3Ccircle cx=%2290%22 cy=%2290%22 r=%2280%22 fill=%22%23fff7ed%22 stroke=%22%230033CC%22 stroke-width=%226%22 stroke-dasharray=%2212 9%22/%3E%3Ccircle cx=%2264%22 cy=%2274%22 r=%2210%22 fill=%22%230A192F%22/%3E%3Ccircle cx=%22116%22 cy=%2274%22 r=%2210%22 fill=%22%230A192F%22/%3E%3Cellipse cx=%2290%22 cy=%2298%22 rx=%2217%22 ry=%2212%22 fill=%22%230A192F%22/%3E%3Cpath d=%22M66 118 Q90 138 114 118%22 stroke=%22%230033CC%22 stroke-width=%227%22 fill=%22none%22 stroke-linecap=%22round%22/%3E%3Ctext x=%2290%22 y=%22158%22 font-family=%22Arial%22 font-size=%2217%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22%230033CC%22%3EMASCOT%3C/text%3E%3C/svg%3E";
-const FRAMES = Array(8).fill(ALFIE_LOCAL_FRAME);
+const FRAMES = ALFIE_FRAMES;
 
 // How long each frame stays visible (ms) before crossfading to the next
 // Frames with action (wave, thumbsup) hold a bit longer for effect

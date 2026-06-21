@@ -21,6 +21,7 @@ import { uploadProfilePicture } from '@/lib/supabaseStorage';
 import { getGhostSession, clearGhostSession } from '@/lib/ghostAccounts';
 import { supabaseCompat } from '@/api/supabaseCompatClient';
 import GhostAccountMenu from '@/components/GhostAccountMenu';
+import { MARKETPH_LOGO } from '@/lib/brandAssets';
 
 // Global edit mode state
 let _editModeListeners = [];
@@ -263,7 +264,7 @@ export default function Navbar() {
             {/* Logo — LEFT */}
             <a href="/" className="flex items-center gap-2 flex-shrink-0">
               <img
-                src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 160 160%22%3E%3Crect width=%22160%22 height=%22160%22 rx=%2228%22 fill=%22%230033CC%22/%3E%3Crect x=%2218%22 y=%2218%22 width=%22124%22 height=%22124%22 rx=%2218%22 fill=%22none%22 stroke=%22%23FFD700%22 stroke-width=%226%22 stroke-dasharray=%2210 8%22/%3E%3Ctext x=%2280%22 y=%2274%22 font-family=%22Arial%22 font-size=%2224%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22white%22%3ELOGO%3C/text%3E%3Ctext x=%2280%22 y=%22102%22 font-family=%22Arial%22 font-size=%2216%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22%23FFD700%22%3EPLACEHOLDER%3C/text%3E%3C/svg%3E"
+                src={MARKETPH_LOGO}
                 alt="1Market Philippines"
                 className="h-8 w-8 rounded-lg object-cover"
               />
