@@ -108,12 +108,12 @@ const CATEGORY_TITLES = {
 // ── Casino card for main categories ──────────────────────────────────────────
 
 const CATEGORIES = [
-  { label: 'Travel',       href: '/travel',   Icon: Plane,           desc: 'Hotels, Tours & Transport',    accent: '#60a5fa', gradient: 'linear-gradient(135deg,#0f2050,#1d4ed8)' },
-  { label: 'Food',         href: '/food',     Icon: UtensilsCrossed, desc: 'Restaurants, Cafes & Home Cooks', accent: '#f87171', gradient: 'linear-gradient(135deg,#3b0000,#b91c1c)' },
-  { label: 'Buy & Sell',   href: '/buysell',  Icon: ShoppingBag,     desc: 'Shoes, Cars, Gadgets & More',  accent: '#c084fc', gradient: 'linear-gradient(135deg,#1e0050,#7e22ce)' },
-  { label: 'Rent & Lease', href: '/rent',     Icon: Home,            desc: 'Homes, Vehicles & Equipment',  accent: '#4ade80', gradient: 'linear-gradient(135deg,#002a00,#15803d)' },
-  { label: 'Services',     href: '/services', Icon: Wrench,          desc: 'Plumbers, Tutors & Freelancers',accent: '#fb923c', gradient: 'linear-gradient(135deg,#2a1000,#c2410c)' },
-  { label: 'Jobs',         href: '/jobs',     Icon: Briefcase,       desc: 'Hiring, Freelance & Remote Work',accent: '#fbbf24', gradient: 'linear-gradient(135deg,#1a1000,#b45309)' },
+  { label: 'Travel',       href: '/travel',   Icon: Plane,           desc: 'Hotels, Tours & Transport',    accent: '#dbeafe', gradient: 'linear-gradient(135deg,#3E97F1,#60A5FA)' },
+  { label: 'Food',         href: '/food',     Icon: UtensilsCrossed, desc: 'Restaurants, Cafes & Home Cooks', accent: '#e0f2fe', gradient: 'linear-gradient(135deg,#3E97F1,#7dd3fc)' },
+  { label: 'Buy & Sell',   href: '/buysell',  Icon: ShoppingBag,     desc: 'Shoes, Cars, Gadgets & More',  accent: '#bfdbfe', gradient: 'linear-gradient(135deg,#2563EB,#60A5FA)' },
+  { label: 'Rent & Lease', href: '/rent',     Icon: Home,            desc: 'Homes, Vehicles & Equipment',  accent: '#dbeafe', gradient: 'linear-gradient(135deg,#38bdf8,#3E97F1)' },
+  { label: 'Services',     href: '/services', Icon: Wrench,          desc: 'Plumbers, Tutors & Freelancers',accent: '#e0f2fe', gradient: 'linear-gradient(135deg,#60A5FA,#93c5fd)' },
+  { label: 'Jobs',         href: '/jobs',     Icon: Briefcase,       desc: 'Hiring, Freelance & Remote Work',accent: '#bfdbfe', gradient: 'linear-gradient(135deg,#3E97F1,#BAE6FD)' },
 ];
 
 const CARD_VALUES = ['A', 'K', 'Q', 'J', '10', '9'];
@@ -190,7 +190,7 @@ function CasinoCategoryCard({ cat, index, onClick }) {
           {/* BACK — casino */}
           <div className="absolute inset-0 rounded-2xl overflow-hidden flex flex-col items-center justify-center"
             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)',
-              background: 'linear-gradient(135deg,#0f172a,#1e1b4b)',
+              background: 'linear-gradient(135deg,#3E97F1,#60A5FA)',
               border: `1.5px solid ${cat.accent}88`,
               boxShadow: `0 0 30px 8px ${cat.accent}33`,
             }}>
@@ -226,15 +226,15 @@ function CasinoCategoryCard({ cat, index, onClick }) {
 
 const VALS_SUB  = ['A', 'K', 'Q', 'J', '10', '9'];
 const GRADS_SUB = [
-  'linear-gradient(135deg,#1a1a2e,#16213e)',
-  'linear-gradient(135deg,#1a1a2e,#0f3460)',
-  'linear-gradient(135deg,#0d1b2a,#1b4332)',
-  'linear-gradient(135deg,#1a0030,#3b0764)',
-  'linear-gradient(135deg,#1a1a2e,#3a0ca3)',
-  'linear-gradient(135deg,#0a1628,#1d4ed8)',
-  'linear-gradient(135deg,#1a0a00,#78350f)',
-  'linear-gradient(135deg,#0f2027,#203a43)',
-  'linear-gradient(135deg,#1a1a2e,#2d6a4f)',
+  'linear-gradient(135deg,#3E97F1,#60A5FA)',
+  'linear-gradient(135deg,#60A5FA,#93c5fd)',
+  'linear-gradient(135deg,#38bdf8,#3E97F1)',
+  'linear-gradient(135deg,#2563EB,#60A5FA)',
+  'linear-gradient(135deg,#3E97F1,#BAE6FD)',
+  'linear-gradient(135deg,#60A5FA,#dbeafe)',
+  'linear-gradient(135deg,#0ea5e9,#7dd3fc)',
+  'linear-gradient(135deg,#3b82f6,#93c5fd)',
+  'linear-gradient(135deg,#2563EB,#BAE6FD)',
 ];
 const ACCENTS_SUB = ['#60a5fa','#f87171','#34d399','#c084fc','#38bdf8','#fbbf24','#fb923c','#4ade80','#e879f9'];
 
@@ -288,7 +288,7 @@ function SubCard({ sc, index, onClick }) {
         {/* BACK */}
         <div className="absolute inset-0 rounded-2xl overflow-hidden flex items-center justify-center"
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)',
-            background: 'linear-gradient(135deg,#0f172a,#1e1b4b)',
+            background: 'linear-gradient(135deg,#3E97F1,#60A5FA)',
             border: `1.5px solid ${accent}88`,
             boxShadow: `0 0 24px 6px ${accent}33`,
           }}>
@@ -328,7 +328,7 @@ function SubcategoryPicker({ href, onClose, navigate }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-[#070E1A]/92 backdrop-blur-md"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-[#3E97F1]/70 backdrop-blur-md"
       onClick={onClose}
     >
       <motion.div
@@ -338,7 +338,7 @@ function SubcategoryPicker({ href, onClose, navigate }) {
         transition={{ type: 'spring', stiffness: 160, damping: 20 }}
         onClick={e => e.stopPropagation()}
         className="w-full max-w-3xl rounded-3xl p-5 sm:p-7 shadow-2xl relative overflow-hidden max-h-[90vh] flex flex-col"
-        style={{ background: 'linear-gradient(135deg,#0f172a,#1e1b4b)', border: '1px solid rgba(96,165,250,0.2)' }}
+        style={{ background: 'linear-gradient(135deg,#3E97F1,#60A5FA)', border: '1px solid rgba(255,255,255,0.35)' }}
       >
         {/* shimmer bg */}
         <div className="absolute inset-0 pointer-events-none"

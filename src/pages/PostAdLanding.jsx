@@ -108,7 +108,7 @@ export default function PostAdLanding() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001060 100%)' }}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#3E97F1 0%,#60A5FA 100%)' }}>
       <StarField />
       <ListingLandingBrandBar />
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-32 pb-20">
