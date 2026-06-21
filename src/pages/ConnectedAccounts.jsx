@@ -128,16 +128,15 @@ export default function ConnectedAccounts() {
       });
 
       if (response.data.success) {
-        showToast('AI Database ghost created!');
+        showToast('Database created user created!');
+        loginAsDb(response.data.user);
         setTimeout(() => {
           setSaving(false);
           setProgress(0);
           setShowForm(false);
           setForm(EMPTY_FORM);
           loadDbGhosts();
-          // Auto-login to the new ghost
-          loginAsDb(response.data.user);
-        }, 800);
+        }, 300);
       } else {
         throw new Error(response.data.error || 'Creation failed');
       }
@@ -201,16 +200,18 @@ export default function ConnectedAccounts() {
       saveGhostLocal(ghost);
       clearInterval(interval);
       setProgress(100);
-      showToast('AI Local ghost created!');
+      showToast('Local created user created!');
       
+      const activeGhost = saveGhostSession(ghost);
+      setCurrentGhost(activeGhost);
       setTimeout(() => {
         setSaving(false);
         setProgress(0);
         setShowForm(false);
         setForm(EMPTY_FORM);
         loadLocalGhosts();
-        window.location.href = `/seller/${ghost.ghost_id}`;
-      }, 800);
+        navigate('/');
+      }, 300);
     } catch (err) {
       clearInterval(interval);
       setSaving(false);

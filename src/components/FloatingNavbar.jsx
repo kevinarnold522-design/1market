@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Home, Plane, UtensilsCrossed, ShoppingBag, KeyRound, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, LogOut, Ghost, Globe, Package, BarChart2, Shield, ShoppingCart, Facebook, Instagram, Youtube } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import { getImpersonatedUser, clearImpersonation } from '@/pages/ConnectedAccounts';
+import { getGhostSession, clearGhostSession } from '@/lib/ghostAccounts';
 import MetaVerifiedBadge from './MetaVerifiedBadge';
 import PostListingMenu from './PostListingMenu';
 import { MARKETPH_LOGO } from '@/lib/brandAssets';
@@ -27,12 +27,18 @@ export default function FloatingNavbar() {
   const [ghostUser, setGhostUser] = useState(null);
   const navigate = useNavigate();
 
-  // Check for ghost session on mount
+  // Keep navbar synced with created-user sessions
   useEffect(() => {
-    const ghost = getImpersonatedUser();
-    if (ghost) {
-      setGhostUser(ghost);
-    }
+    const refreshGhost = () => setGhostUser(getGhostSession() || null);
+    refreshGhost();
+    window.addEventListener('ghost-session-changed', refreshGhost);
+    window.addEventListener('storage', refreshGhost);
+    window.addEventListener('focus', refreshGhost);
+    return () => {
+      window.removeEventListener('ghost-session-changed', refreshGhost);
+      window.removeEventListener('storage', refreshGhost);
+      window.removeEventListener('focus', refreshGhost);
+    };
   }, []);
 
   // Close menu when clicking outside
@@ -130,7 +136,7 @@ return (
               {/* Navigation Menu */}
               <div className="p-3 max-h-[60vh] overflow-y-scroll" data-navbar-menu style={{ scrollbarGutter: 'stable', minHeight: '420px' }}>
                 {/* Auth Section */}
-                {isAuthenticated && activeUser ? (
+                {(isAuthenticated || isGhostSession) && activeUser ? (
                   <>
                     {/* User Info */}
                     <Link to="/profile" onClick={() => setIsOpen(false)} className="block px-3 py-2 mb-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
@@ -227,8 +233,8 @@ return (
 
                     {/* Sign Out */}
                     {isGhostSession ? (
-                      <button onClick={() => { clearImpersonation(); setIsOpen(false); }} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 transition-colors text-red-300 font-body text-xs font-bold">
-                        <LogOut className="w-4 h-4" /> Sign Out of Ghost
+                      <button onClick={() => { clearGhostSession(); setGhostUser(null); setIsOpen(false); window.location.href = '/'; }} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 transition-colors text-red-300 font-body text-xs font-bold">
+                        <LogOut className="w-4 h-4" /> Sign Out of Created User
                       </button>
                     ) : (
                       <button onClick={() => { logout(true); setIsOpen(false); }} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-500/10 transition-colors text-red-400 font-body text-xs">

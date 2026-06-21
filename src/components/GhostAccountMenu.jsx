@@ -57,11 +57,12 @@ export default function GhostAccountMenu({ collapsed = false, compact = false, o
       phone: form.phone.trim(),
     });
     const newUser = res.data.user;
-    localStorage.setItem(STORAGE_PREFIX + (newUser.ghost_id || newUser.id), JSON.stringify(newUser));
-    saveGhostSession(newUser);
+    const activeGhost = saveGhostSession(newUser);
+    localStorage.setItem(STORAGE_PREFIX + (activeGhost.ghost_id || activeGhost.id), JSON.stringify(activeGhost));
+    setGhost(activeGhost);
     setForm(emptyForm);
     close();
-    window.location.href = '/profile';
+    window.location.href = '/';
   };
 
   const name = getGhostDisplayName(ghost);
