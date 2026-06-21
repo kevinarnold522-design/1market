@@ -138,7 +138,7 @@ export const supabaseCompat = {
         email: authUser.email,
         full_name: authUser.user_metadata?.full_name || authUser.email?.split('@')[0] || 'Member'
       };
-      const { data, error } = await db.from('profiles').upsert(profile, { onConflict: 'id' }).select('*').single();
+      const { data, error } = await db.from('users').upsert(profile, { onConflict: 'id' }).select('*').single();
       if (error) return profile;
       return data;
     },
@@ -149,7 +149,7 @@ export const supabaseCompat = {
         if (sessionError) throw sessionError;
         const authUser = sessionData?.user;
         if (!authUser) throw new Error('Not authenticated');
-        const { data } = await db.from('profiles').select('*').eq('id', authUser.id).maybeSingle();
+        const { data } = await db.from('users').select('*').eq('id', authUser.id).maybeSingle();
         return data || this.ensureProfile(authUser);
       } catch (error) {
         throw error;
@@ -244,7 +244,7 @@ export const supabaseCompat = {
         const { data: userData } = await db.auth.getUser();
         const id = userData?.user?.id;
         if (!id) throw new Error('Not authenticated');
-        const { data, error } = await db.from('profiles').update({ ...patch, updated_at: new Date().toISOString() }).eq('id', id).select('*').single();
+        const { data, error } = await db.from('users').update({ ...patch, updated_at: new Date().toISOString() }).eq('id', id).select('*').single();
         if (error) throw error;
         return data;
       } catch (error) {
