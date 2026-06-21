@@ -215,27 +215,27 @@ export default function Navbar() {
             )}
           </div>
           {/* Right: 1MarketPH Social Links - ALWAYS VISIBLE */}
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            <span className="font-body text-[9px] text-white/40 hidden md:block mr-1">Follow us:</span>
-            <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-body text-xs font-bold text-blue-300 hover:text-blue-100 transition-all hover:scale-105"
-              style={{ background: 'rgba(59,130,246,0.18)', border: '1px solid rgba(59,130,246,0.35)' }}>
-              <Facebook className="w-4 h-4" /><span className="hidden sm:inline font-bold">@1MarketPH</span>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <span className="font-body text-[9px] text-white/50 hidden md:block mr-1 uppercase tracking-wider font-bold">Follow us</span>
+            <a href="https://www.facebook.com/share/17NoRjEgyP/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Follow 1MarketPH on Facebook"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-all hover:scale-110 shadow-lg"
+              style={{ background: 'linear-gradient(135deg,#1877F2,#0b5ed7)', border: '1px solid rgba(255,255,255,0.25)' }}>
+              <Facebook className="w-4.5 h-4.5" />
             </a>
-            <a href="https://www.instagram.com/1marketph/" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-body text-xs font-bold text-pink-300 hover:text-pink-100 transition-all hover:scale-105"
-              style={{ background: 'rgba(236,72,153,0.18)', border: '1px solid rgba(236,72,153,0.35)' }}>
-              <Instagram className="w-4 h-4" /><span className="hidden sm:inline font-bold">@1MarketPH</span>
+            <a href="https://www.instagram.com/1marketph/" target="_blank" rel="noopener noreferrer" aria-label="Follow 1MarketPH on Instagram"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-all hover:scale-110 shadow-lg"
+              style={{ background: 'linear-gradient(135deg,#833AB4,#E1306C,#FCAF45)', border: '1px solid rgba(255,255,255,0.25)' }}>
+              <Instagram className="w-4.5 h-4.5" />
             </a>
-            <a href="https://www.tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1 px-2 py-1 rounded-lg font-body text-[10px] font-bold text-white/70 hover:text-white transition-colors"
-              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)' }}>
-              <span className="hidden sm:inline">TikTok</span><span className="sm:hidden">TT</span>
+            <a href="https://www.tiktok.com/@1marketph" target="_blank" rel="noopener noreferrer" aria-label="Follow 1MarketPH on TikTok"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-all hover:scale-110 shadow-lg font-heading text-sm font-black"
+              style={{ background: 'linear-gradient(135deg,#010101,#25F4EE,#FE2C55)', border: '1px solid rgba(255,255,255,0.25)' }}>
+              ♪
             </a>
-            <a href="https://www.youtube.com/@1marketph" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-2 py-1 rounded-lg font-body text-[10px] font-bold text-red-300 hover:text-red-200 transition-colors"
-              style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.2)' }}>
-              <Youtube className="w-4 h-4" /><span className="hidden sm:inline">YT</span>
+            <a href="https://www.youtube.com/@1marketph" target="_blank" rel="noopener noreferrer" aria-label="Follow 1MarketPH on YouTube"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-all hover:scale-110 shadow-lg"
+              style={{ background: 'linear-gradient(135deg,#FF0000,#b91c1c)', border: '1px solid rgba(255,255,255,0.25)' }}>
+              <Youtube className="w-4.5 h-4.5" />
             </a>
           </div>
         </div>
