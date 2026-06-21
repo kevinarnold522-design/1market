@@ -24,21 +24,21 @@ export default function RoyalBlueWaves() {
         .wave3 { animation: wave3 20s ease-in-out infinite; }
       `}</style>
 
-      {/* Deep base background */}
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, #050d2e 0%, #03091f 100%)' }} />
+      {/* Soft ocean wave overlay */}
+      <div className="absolute inset-0" style={{ background: 'transparent' }} />
 
-      {/* Wave 1 — deep navy */}
+      {/* Wave 1 — clear blue */}
       <svg className="wave1 absolute bottom-0 left-0 w-full" style={{ height: '55vh', minHeight: 300 }}
         viewBox="0 0 1440 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M0,200 C240,280 480,120 720,200 C960,280 1200,120 1440,200 L1440,400 L0,400 Z"
-          fill="rgba(0,20,90,0.55)" />
+          fill="rgba(56,189,248,0.28)" />
       </svg>
 
       {/* Wave 2 — royal blue */}
       <svg className="wave2 absolute bottom-0 left-0 w-full" style={{ height: '45vh', minHeight: 250 }}
         viewBox="0 0 1440 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M0,230 C180,150 360,310 540,230 C720,150 900,310 1080,230 C1260,150 1360,260 1440,220 L1440,400 L0,400 Z"
-          fill="rgba(0,40,160,0.40)" />
+          fill="rgba(96,165,250,0.24)" />
       </svg>
 
       {/* Wave 3 — cyan-blue highlight */}
@@ -50,7 +50,7 @@ export default function RoyalBlueWaves() {
 
       {/* Top subtle radial glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full opacity-20"
-        style={{ background: 'radial-gradient(ellipse at center top, #1a4bcc 0%, transparent 70%)' }} />
+        style={{ background: 'radial-gradient(ellipse at center top, #BAE6FD 0%, transparent 70%)' }} />
     </div>
   );
 }

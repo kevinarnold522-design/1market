@@ -26,10 +26,10 @@ export default function HeroSection({ heroImage }) {
 
   return (
     <section className="relative min-h-[80vh] flex items-center overflow-hidden">
-      {/* Background gradient — royal blue brand */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#000d40] via-[#0033CC] to-[#001a80]" />
+      {/* Transparent so the ocean background shows through */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-[#38bdf8]/10" />
 
-      <div className="absolute top-4 right-4 z-20 flex items-center gap-2 rounded-full bg-[#001a80]/70 border border-white/15 px-2 py-1.5 backdrop-blur-xl shadow-2xl">
+      <div className="absolute top-4 right-4 z-20 flex items-center gap-2 rounded-full bg-[#3E97F1]/45 border border-white/25 px-2 py-1.5 backdrop-blur-xl shadow-2xl">
         <a href="/about" className="px-2.5 py-1 rounded-full text-[10px] font-bold text-white/85 hover:text-white hover:bg-white/10 transition-all">
           About Us
         </a>
@@ -174,8 +174,8 @@ export default function HeroSection({ heroImage }) {
         </div>
       </div>
 
-      {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0033CC] to-transparent" />
+      {/* Bottom ocean fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#38bdf8]/35 to-transparent" />
 
       <AnimatePresence>
         {showSignup && <AccountTypeModal onClose={() => setShowSignup(false)} />}

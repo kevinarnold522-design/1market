@@ -7,6 +7,7 @@ import CategoryCards from '../components/home/CategoryCards';
 import ScrollToTop from '../components/ScrollToTop';
 import CookieBanner from '../components/CookieBanner';
 import RoyalBlueWaves from '../components/RoyalBlueWaves';
+import OceanCategoryBackdrop from '../components/home/OceanCategoryBackdrop';
 
 // Lazy-load heavy/below-fold sections
 const LiveCategoryDashboards = lazy(() => import('../components/home/LiveCategoryDashboards'));
@@ -65,11 +66,12 @@ function DeferredMount({ children }) {
 export default function Home() {
   return (
     <div className="home-blue-aligned min-h-screen overflow-x-hidden relative" style={{ background: 'transparent' }}>
-      {/* Permanent royal blue wave background */}
+      {/* Permanent ocean background */}
+      <OceanCategoryBackdrop global />
       <RoyalBlueWaves />
       <div className="fixed inset-0 -z-10" style={{ background: 'transparent' }} />
       
-      <div className="relative z-10">
+      <div className="relative z-20">
         <WelcomeSplash />
         
         <Suspense fallback={<Spinner />}><HeroSection heroImage={HERO_IMAGE} /></Suspense>
