@@ -54,7 +54,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [showSellerModal, setShowSellerModal] = useState(false);
   const [showBusinessModal, setShowBusinessModal] = useState(false);
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, checkUserAuth } = useAuth();
   const [ghostUser, setGhostUser] = useState(null);
   
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2000); };
@@ -110,14 +110,17 @@ export default function Navbar() {
     setUploadingPfp(true);
     try {
       const { file_url } = await uploadProfilePicture(file);
-      await base44.auth.updateMe({ profile_picture: file_url, profile_photos: [...(activeUser?.profile_photos || []), file_url] });
-      window.location.reload();
+      const currentPhotos = Array.isArray(activeUser?.profile_photos) ? activeUser.profile_photos : (activeUser?.profile_picture ? [activeUser.profile_picture] : []);
+      await base44.auth.updateMe({ profile_picture: file_url, profile_photos: [...currentPhotos.filter(url => url !== file_url), file_url] });
+      await checkUserAuth?.();
+      showToast('Profile photo saved');
     } catch (err) { 
       console.error('[v0] Profile picture upload error:', err);
       showToast(err.message || 'Upload failed'); 
+    } finally {
+      setUploadingPfp(false);
+      e.target.value = '';
     }
-    setUploadingPfp(false);
-    e.target.value = '';
   };
 
   const toggleEditMode = () => {
