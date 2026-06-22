@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Abril+Fatface:wght@400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,7 +7,7 @@
 @layer base {
   :root {
     --font-heading: 'Bricolage Grotesque', sans-serif;
-    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-body: 'Abril Fatface', system-ui;
     --landing-primary: #3E97F1;
     --landing-accent: #BAE6FD;
     --landing-deep: #60A5FA;
