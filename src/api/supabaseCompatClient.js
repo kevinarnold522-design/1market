@@ -124,8 +124,14 @@ function makeEntity(name) {
     },
     async delete(id) {
       const db = requireSupabase();
-      const { error } = await db.from(table).delete().eq('id', id);
+      // Return the deleted rows so we can confirm the delete actually hit Supabase.
+      // With Row Level Security, a forbidden delete succeeds with 0 affected rows and
+      // no error — which would let the UI hide a record that still lives in the DB.
+      const { data, error } = await db.from(table).delete().eq('id', id).select('id');
       if (error) throw error;
+      if (!data || data.length === 0) {
+        throw new Error(`Could not delete ${name} (id: ${id}) from Supabase. The row was not found or you do not have permission (check Row Level Security policies).`);
+      }
       return true;
     },
     subscribe(callback) {

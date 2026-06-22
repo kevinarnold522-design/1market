@@ -38,11 +38,11 @@ export default function OAuthOptions({
     <div className={className}>
       <div className="grid grid-cols-1 gap-2">
         {providers.map((provider) => (
-          <Button key={provider.key} type="button" variant="outline" className={buttonClassName} onClick={() => handleProvider(provider)} disabled={!!loadingProvider}>
+          <Button key={provider.key} type="button" variant="outline" className={`${buttonClassName} text-blue-600 font-semibold`} onClick={() => handleProvider(provider)} disabled={!!loadingProvider}>
             {loadingProvider === provider.key ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : provider.Icon ? (
-              <provider.Icon className="w-5 h-5" />
+              <provider.Icon className="w-8 h-8" />
             ) : (
               <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${provider.className}`}>{provider.mark}</span>
             )}
