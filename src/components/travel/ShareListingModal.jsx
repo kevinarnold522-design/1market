@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Copy, Check, Facebook, Send } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { X, Copy, Check } from 'lucide-react';
 
 export default function ShareListingModal({ listing, onClose }) {
   const [copied, setCopied] = useState(false);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Star, MessageSquare } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Star } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 function StarRow({ rating }) {

@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ParticleBackground from '../components/ParticleBackground';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, ExternalLink, Phone, MessageSquare, AlertCircle, Home, Building2, Car, Wrench, CalendarDays, Grid3X3, Pencil, Trash2, X, Laptop, Bike } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ArrowLeft, Search, ExternalLink, AlertCircle, Home, Building2, Car, CalendarDays, Grid3X3, Pencil, Trash2, X, Laptop, Bike } from 'lucide-react';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';
 import { base44 } from '@/api/base44Client';

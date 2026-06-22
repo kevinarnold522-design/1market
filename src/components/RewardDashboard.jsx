@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Gift, Coins, Flame, X, Star } from 'lucide-react';
+import { Gift, Flame, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 export default function RewardDashboard({ user, onClose }) {

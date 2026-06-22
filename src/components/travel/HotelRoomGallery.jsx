@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Play, X, Star, Users, Clock, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Play, Users, Clock, Check } from 'lucide-react';
 
 function getTransitionVariants(transition) {
   switch (transition) {

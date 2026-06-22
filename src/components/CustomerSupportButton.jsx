@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HelpCircle, X, MessageCircle, Mail, Phone, FileText, ExternalLink, ChevronRight } from 'lucide-react';
+import { HelpCircle, X, MessageCircle, Mail, FileText, ExternalLink, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const FAQ_ITEMS = [

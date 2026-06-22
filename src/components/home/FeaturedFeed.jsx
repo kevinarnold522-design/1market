@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import { ArrowRight, Star, MapPin, Tag, Navigation, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 

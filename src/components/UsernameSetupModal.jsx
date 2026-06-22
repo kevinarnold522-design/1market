@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Check, AlertCircle, Sparkles, ChevronRight } from 'lucide-react';
+import { Check, AlertCircle, Sparkles, ChevronRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const INTERESTS = [

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Globe, Heart, Users, ShoppingBag, Home, Briefcase, Star, Flag, Lock, Sprout } from 'lucide-react';
+import { ArrowLeft, Globe, Users, ShoppingBag, Home, Star, Flag, Lock, Sprout } from 'lucide-react';
 const MILESTONES = [
   { year: '2026', title: 'Founded', desc: 'Kevin Roberto launches 1Marketph.com in Manila with a vision to unite Filipino buyers, sellers, and businesses under one platform.' },
   { year: '2026', title: 'Buy & Sell Marketplace', desc: 'The first feature — a marketplace for shoes, cars, houses, electronics, and services — goes live for Manila and Cavite.' },

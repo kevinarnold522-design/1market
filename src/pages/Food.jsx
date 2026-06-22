@@ -3,7 +3,7 @@ import StarField from '../components/StarField';
 import AdminEditOverlay from '../components/AdminEditOverlay';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, MapPin, Star, Filter, X, UtensilsCrossed, Clock, ExternalLink, Pencil } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, Filter, X, UtensilsCrossed, Clock, Pencil } from 'lucide-react';
 import MultiPlatformRating from '../components/MultiPlatformRating';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';

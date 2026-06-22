@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Tag, MapPin, Star, Heart, MessageSquare, Truck, SlidersHorizontal, X } from 'lucide-react';
+import { Search, Tag, MapPin, Heart, MessageSquare, Truck, SlidersHorizontal, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import FilterSidebar from '@/components/FilterSidebar';
 import { useAuth } from '@/lib/AuthContext';

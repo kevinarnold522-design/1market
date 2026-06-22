@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { X, Flag, AlertTriangle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 

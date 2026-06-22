@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Facebook, Link2, ExternalLink, Video, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 

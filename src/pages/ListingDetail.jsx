@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import MascotDog from '../components/MascotDog';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock, ShoppingCart, Play, X, ExternalLink, Send, Briefcase, Utensils, Home, Car, Wrench, Plane, Tag, Package, Link2, Store, MessageCircle, Smartphone, Hourglass, Ban } from 'lucide-react';
+import { ArrowLeft, Star, Heart, MessageSquare, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock, ShoppingCart, Play, X, Briefcase, Utensils, Home, Car, Wrench, Plane, Tag, Package, Link2, Store, MessageCircle, Hourglass, Ban } from 'lucide-react';
 import TikTokIcon from '../components/icons/TikTokIcon';
 import ReportModal from '../components/ReportModal';
 import ReceiptModal from '../components/ReceiptModal';

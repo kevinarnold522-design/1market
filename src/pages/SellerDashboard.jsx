@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Plus, Pencil, Trash2, X, Save, ArrowLeft, Package, MapPin, Store, Search,
-  ExternalLink, ChevronDown, LogOut, Upload, Heart, BadgeCheck,
+  Plus, Pencil, Trash2, X, Save, ArrowLeft, Package, MapPin, Store, Search, ChevronDown, LogOut, Upload, Heart, BadgeCheck,
   FileText, Eye, Settings, CheckCircle, Truck, User, Globe
 } from 'lucide-react';
 import OrdersTab from '../components/seller/OrdersTab';

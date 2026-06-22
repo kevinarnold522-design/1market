@@ -1,9 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import ParticleBackground from '../components/ParticleBackground';
 import MascotDog from '../components/MascotDog';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, MapPin, Briefcase, ExternalLink, X, Building2, DollarSign, Clock, Users } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Search, MapPin, Briefcase, ExternalLink, Building2, DollarSign, Users } from 'lucide-react';
 import MemberSignupModal from '../components/MemberSignupModal';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import SmartFilterChips from '../components/SmartFilterChips';

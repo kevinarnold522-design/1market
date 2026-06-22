@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Search, Star, Heart, Share2, ChevronRight, MapPin, Hotel, Palmtree, Plane, Ship, Car, Tent, Waves, Mountain, Anchor, Bus } from 'lucide-react';
 import { base44 } from '@/api/base44Client';

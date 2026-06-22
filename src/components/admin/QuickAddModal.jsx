@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { X, Save, Upload, Plus } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { X, Plane, MapPin } from 'lucide-react';
+import { X, Plane } from 'lucide-react';
 import { useAdDelay } from '@/hooks/useAdDelay';
 
 const PH_TZ_OFFSET = 8; // UTC+8

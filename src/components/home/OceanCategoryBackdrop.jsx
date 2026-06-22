@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { SEA_CREATURES } from './SeaCreatures';
 
 const seaLife = [
-  { icon: '🐠', label: 'tropical fish', top: '14%', size: 'text-2xl', duration: 18, delay: 0, dir: 1 },
-  { icon: '🐡', label: 'puffer fish', top: '28%', size: 'text-2xl', duration: 20, delay: 1.2, dir: -1 },
-  { icon: '🐟', label: 'school of fish', top: '22%', size: 'text-3xl', duration: 22, delay: 0.8, dir: 1 },
-  { icon: '🐬', label: 'dolphin', top: '38%', size: 'text-4xl', duration: 24, delay: 1.6, dir: 1 },
-  { icon: '🦑', label: 'squid', top: '48%', size: 'text-4xl', duration: 26, delay: 2.2, dir: -1 },
-  { icon: '🐢', label: 'sea turtle', top: '34%', size: 'text-4xl', duration: 30, delay: 2.4, dir: -1 },
-  { icon: '🐠', label: 'clownfish', top: '54%', size: 'text-2xl', duration: 20, delay: 2.8, dir: 1 },
-  { icon: '🦈', label: 'shark', top: '66%', size: 'text-4xl', duration: 28, delay: 3.4, dir: -1 },
-  { icon: '🐋', label: 'whale', top: '78%', size: 'text-5xl', duration: 34, delay: 3.8, dir: 1 },
-  { icon: '🦭', label: 'seal', top: '62%', size: 'text-4xl', duration: 30, delay: 4.2, dir: 1 },
-  { icon: '🐙', label: 'octopus', top: '74%', size: 'text-3xl', duration: 32, delay: 4.8, dir: -1 },
-  { icon: '🐡', label: 'blowfish', top: '82%', size: 'text-3xl', duration: 36, delay: 5.4, dir: 1 },
-  { icon: '🐋', label: 'whale shark', top: '18%', size: 'text-6xl', duration: 42, delay: 5.8, dir: -1 },
+  { type: 'fish',      label: 'tropical fish', top: '14%', w: 'w-16', duration: 18, delay: 0,   dir: 1 },
+  { type: 'puffer',    label: 'puffer fish',   top: '28%', w: 'w-14', duration: 20, delay: 1.2, dir: -1 },
+  { type: 'clownfish', label: 'clownfish',     top: '22%', w: 'w-16', duration: 22, delay: 0.8, dir: 1 },
+  { type: 'seahorse',  label: 'seahorse',      top: '38%', w: 'w-12', duration: 24, delay: 1.6, dir: 1 },
+  { type: 'jellyfish', label: 'jellyfish',     top: '48%', w: 'w-14', duration: 26, delay: 2.2, dir: -1 },
+  { type: 'turtle',    label: 'sea turtle',    top: '34%', w: 'w-24', duration: 30, delay: 2.4, dir: -1 },
+  { type: 'fish',      label: 'reef fish',     top: '54%', w: 'w-14', duration: 20, delay: 2.8, dir: 1 },
+  { type: 'shark',     label: 'shark',         top: '66%', w: 'w-28', duration: 28, delay: 3.4, dir: -1 },
+  { type: 'whale',     label: 'whale',         top: '78%', w: 'w-40', duration: 34, delay: 3.8, dir: 1 },
+  { type: 'crab',      label: 'crab',          top: '86%', w: 'w-20', duration: 30, delay: 4.2, dir: 1 },
+  { type: 'octopus',   label: 'octopus',       top: '74%', w: 'w-20', duration: 32, delay: 4.8, dir: -1 },
+  { type: 'jellyfish', label: 'jelly',         top: '60%', w: 'w-12', duration: 36, delay: 5.4, dir: 1 },
+  { type: 'whale',     label: 'whale shark',   top: '18%', w: 'w-48', duration: 42, delay: 5.8, dir: -1 },
 ];
 
 export default function OceanCategoryBackdrop({ global = false }) {
@@ -72,11 +73,15 @@ export default function OceanCategoryBackdrop({ global = false }) {
       {seaLife.map(item => {
         const start = item.dir === 1 ? '-18vw' : '112vw';
         const end = item.dir === 1 ? '112vw' : '-18vw';
+        const Creature = SEA_CREATURES[item.type] || SEA_CREATURES.fish;
         return (
-          <motion.div key={item.label + item.top} className={`absolute ${item.size} drop-shadow-lg`} style={{ top: item.top }} aria-label={item.label}
+          <motion.div key={item.label + item.top} className={`absolute ${item.w} drop-shadow-lg pointer-events-auto cursor-pointer`} style={{ top: item.top }} aria-label={item.label}
             initial={{ x: start, scaleX: item.dir }} animate={{ x: [start, '28vw', '62vw', end], y: [0, -18, 14, -8, 0], rotate: [0, -5, 6, -3, 0] }}
+            whileHover={{ scale: 1.3, transition: { duration: 0.25 } }}
             transition={{ duration: item.duration, repeat: Infinity, ease: 'easeInOut', delay: item.delay }}>
-            {item.icon}
+            <motion.div animate={{ rotate: [0, -3, 3, 0] }} transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}>
+              <Creature className="w-full h-auto" />
+            </motion.div>
 
             {/* Bubbles that float upward near each creature (CSS-driven for performance) */}
             {showBubbles && [0,1,2].map(i => {

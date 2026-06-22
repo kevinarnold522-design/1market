@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, Star, MapPin, Clock, Users, Wifi, Eye } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { X, Upload, Star, MapPin, Clock, Users, Eye } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import HotelRoomManager from './HotelRoomManager';

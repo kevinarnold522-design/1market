@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Heart, Share2, Bookmark, MessageCircle, Star } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { triggerWave } from '@/lib/waveTransition';
 
 const STYLE = `
   @keyframes heart-pop {

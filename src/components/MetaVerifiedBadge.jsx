@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 
 export default function MetaVerifiedBadge({ size = 'md', label = 'Verified' }) {
   const sizes = {

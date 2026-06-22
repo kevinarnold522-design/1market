@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Ghost, LogOut, User, Globe } from 'lucide-react';
+import { Ghost, LogOut, Globe } from 'lucide-react';
 import { clearImpersonation } from '@/pages/ConnectedAccounts';
 
 export default function GhostAccountBanner({ ghostUser, onSignOut }) {

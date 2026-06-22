@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle, Printer, ShoppingBag, MapPin, Phone, Mail, Package } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { X, CheckCircle, Printer, ShoppingBag, MapPin } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 export default function ReceiptModal({ listing, user, onClose }) {

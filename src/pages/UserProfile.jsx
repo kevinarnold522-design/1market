@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { ArrowLeft, Camera, Mail, MapPin, Phone, Save, User, Facebook, Instagram, Youtube, LogOut } from 'lucide-react';
 import TikTokIcon from '@/components/icons/TikTokIcon';
 import { motion, AnimatePresence } from 'framer-motion';

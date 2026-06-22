@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import StarField from '../components/StarField';
 import SubcategorySplash from '../components/SubcategorySplash';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, Phone, MessageSquare, Star, AlertCircle, Pencil, Trash2, X, Home, Laptop, Sparkles, Calendar, Briefcase, Truck, Heart, Scale, Coins, GraduationCap, Video, Wrench, Palette, Stethoscope, Utensils, Scissors, Camera, Mic, Bed, Car, Plane, Package } from 'lucide-react';
+import { ArrowLeft, Search, Star, AlertCircle, Pencil, Trash2, X, Home, Laptop, Sparkles, Calendar, Briefcase, Truck, Heart, Scale, Coins, GraduationCap, Video } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberSignupModal from '../components/MemberSignupModal';
 import AddListingModal from '../components/AddListingModal.jsx';

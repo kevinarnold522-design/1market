@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   Shield, Lock, Trash2, Mail, ArrowLeft, CheckCircle,
-  Database, Target, Eye, Scale, Cookie, Link as LinkIcon,
+  Database, Target, Scale, Cookie, Link as LinkIcon,
   Baby, RefreshCw, Phone, Info
 } from 'lucide-react';
 

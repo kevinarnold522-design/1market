@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { TrendingUp, Users, ShoppingBag, MapPin } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { TrendingUp, ShoppingBag } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 export default function LiveStatsBar() {

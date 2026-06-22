@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { redirectToLogin } from '@/lib/loginRedirect';
-import { Menu, X, LogOut, ChevronDown, Store, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Building2, Users, Bell, Facebook, Instagram, Youtube, Ghost, ShoppingBag, Hourglass } from 'lucide-react';
-import GhostAccountBanner from '../GhostAccountBanner';
+import { Menu, X, LogOut, ChevronDown, Shield, MapPin, Mail, Edit2, Check, User, History, Heart, ShoppingCart, Globe, Truck, Pencil, EyeOff, Package, Settings, Gift, MessageSquare, Plus, Camera, BarChart2, Users, Bell, Ghost, ShoppingBag, Hourglass } from 'lucide-react';
 import BecomeSellerModal from '../BecomeSellerModal';
 import BecomeBusinessModal from '../BecomeBusinessModal';
 import NotificationsBell from '../NotificationsBell';
@@ -9,7 +7,6 @@ import PostListingMenu from '../PostListingMenu';
 
 import RewardDashboard from '../RewardDashboard';
 import MetaVerifiedBadge from '../MetaVerifiedBadge';
-import OneCheckmark from '../OneCheckmark';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import AccountTypeModal from '../AccountTypeModal';
@@ -19,7 +16,6 @@ import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 import { uploadProfilePicture } from '@/lib/supabaseStorage';
 import { getGhostSession, clearGhostSession } from '@/lib/ghostAccounts';
-import { supabaseCompat } from '@/api/supabaseCompatClient';
 import GhostAccountMenu from '@/components/GhostAccountMenu';
 import { MARKETPH_LOGO } from '@/lib/brandAssets';
 

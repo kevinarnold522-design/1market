@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, MapPin, Clock, Phone, ExternalLink, Star, Calendar, User, Camera, Upload } from 'lucide-react';
+import { X, MapPin, Clock, Phone, ExternalLink, Calendar, User, Camera, Upload } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import MultiPlatformRating from '../MultiPlatformRating';

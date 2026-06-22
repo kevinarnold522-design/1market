@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingBag, Store, Users, Check, ArrowRight, Shield, Package, Briefcase, Bike } from 'lucide-react';
+import { X, ShoppingBag, Store, Users, Check, ArrowRight, Shield, Bike } from 'lucide-react';
 
 const ACCOUNT_TYPES = [
   {

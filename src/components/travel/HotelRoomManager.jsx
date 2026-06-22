@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Upload, Calendar, Clock, Image, Video, ChevronDown, ChevronUp, X } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { Plus, Trash2, Image, Video, ChevronDown, ChevronUp, X } from 'lucide-react';
 import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 
 const TRANSITIONS = ['Fade', 'Horizontal Slide', 'Zoom', 'Flip'];

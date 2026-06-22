@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CreditCard, Link2, Check, X, ExternalLink, RefreshCw, Shield, AlertCircle } from 'lucide-react';
+import { CreditCard, Link2, Check, X, Shield, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const STRIPE_CONNECT_URL = 'https://connect.stripe.com/express/oauth/authorize';

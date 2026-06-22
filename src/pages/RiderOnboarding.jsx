@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, ChevronLeft, ChevronRight, Upload, Camera, Check, AlertCircle, Bike, FileText, Shield } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Upload, Check, AlertCircle, Bike, Shield } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 

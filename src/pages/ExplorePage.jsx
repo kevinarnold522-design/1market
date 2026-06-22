@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, MapPin, Heart, MessageSquare, Share2, Flag, X, Bookmark, Star, SlidersHorizontal, Grid, List, Eye } from 'lucide-react';
+import { Search, MapPin, Heart, MessageSquare, Share2, Flag, Bookmark, SlidersHorizontal, Grid, List } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import StarField from '../components/StarField';
 import ReportModal from '../components/ReportModal';

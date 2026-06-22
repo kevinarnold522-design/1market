@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
-import { Gift, X, CheckCircle, Clock, Sparkles, Calendar, TrendingUp, Facebook, Package } from 'lucide-react';
+import { Gift, X, CheckCircle, Clock, Sparkles, Facebook, Package } from 'lucide-react';
 
 const DAILY_REWARD_AMOUNT = 500; // 5 pesos in centavos
 const STREAK_BONUS = 100; // 1 peso bonus per streak day

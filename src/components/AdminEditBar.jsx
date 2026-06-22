@@ -1,6 +1,6 @@
 import React, { useState, createContext, useContext } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Eye, EyeOff, Pencil } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Shield, EyeOff, Pencil } from 'lucide-react';
 
 // Context so any component can read editMode
 const AdminEditContext = createContext({ editMode: false });

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Check, Upload, AlertCircle, Clock } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import OneCheckmark from './OneCheckmark';
 

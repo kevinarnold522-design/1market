@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, MessageSquare, Flag, Share2 } from 'lucide-react';
+import { MessageSquare, Flag, Share2 } from 'lucide-react';
 import AnimatedHeartButton from './AnimatedHeartButton';
 import { base44 } from '@/api/base44Client';
 

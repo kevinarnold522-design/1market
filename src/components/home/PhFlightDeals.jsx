@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Star, Plane, Users, MapPin } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ExternalLink, Plane } from 'lucide-react';
 
 const FLIGHTS = [
   {

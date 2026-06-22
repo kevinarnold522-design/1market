@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import {
-  Store, Building2, CheckCircle, ChevronRight, ChevronLeft,
-  MapPin, Phone, Image, FileText, Package, Star, ArrowLeft,
-  Camera, Upload, AlertCircle, Check, Users, Briefcase
+  Store, ChevronRight, ChevronLeft, ArrowLeft,
+  Camera, Upload, AlertCircle, Check
 } from 'lucide-react';
 import OneCheckmark from '../components/OneCheckmark';
 import { base44 } from '@/api/base44Client';

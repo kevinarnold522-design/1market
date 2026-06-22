@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Plane, UtensilsCrossed, ShoppingBag, Car, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, ChevronLeft, ChevronRight, ShoppingCart, Package, BarChart2, Settings, LogOut, Shield, KeyRound, Ghost, HelpCircle, Info, FileText, Layers } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Home, Plane, UtensilsCrossed, ShoppingBag, Wrench, Briefcase, Users, Heart, MessageSquare, Bell, User, ChevronLeft, ChevronRight, ShoppingCart, Package, BarChart2, Shield, KeyRound, HelpCircle, Info, FileText, Layers } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import PostListingMenu from './PostListingMenu';
-import MetaVerifiedBadge from './MetaVerifiedBadge';
 import GhostAccountMenu from './GhostAccountMenu';
 import { getGhostSession } from '@/lib/ghostAccounts';
 

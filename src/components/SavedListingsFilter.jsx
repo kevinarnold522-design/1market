@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Save, Search, Filter } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { X, Save, Search } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 export default function SavedListingsFilter({ onSelect }) {

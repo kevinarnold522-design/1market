@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Users, Lock, Globe, Clock, CheckCircle, X, Image as ImageIcon, Heart, MessageCircle, Share2, Send, ChevronLeft, Layers, Flag, Hourglass } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Plus, Users, Lock, Globe, X, Image as ImageIcon, Heart, MessageCircle, Share2, Send, ChevronLeft, Layers, Flag, Hourglass } from 'lucide-react';
 import DoubleHeartAnimation from '../components/DoubleHeartAnimation';
 
 const OWNER_EMAIL = 'Kevinarnold522@gmail.com';

@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Send, Search, ArrowLeft, User } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { MessageSquare, Send, Search, ArrowLeft } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import AISmartReply from '../components/messages/AISmartReply';
 
