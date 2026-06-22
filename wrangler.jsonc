@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "1marketph-app",
+  "name": "website1marketph",
   "compatibility_date": "2026-06-22",
   "assets": {
     "directory": "./dist",
