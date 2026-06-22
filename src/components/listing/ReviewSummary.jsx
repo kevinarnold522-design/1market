@@ -1,6 +1,6 @@
 /**
  * AIReviewSummary — shown in ListingDetail after 3+ reviews
- * Uses AI to summarize all reviews into a brief pro/con summary.
+ * Uses to summarize all reviews into a brief pro/con summary.
  */
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,7 +24,7 @@ export default function AIReviewSummary({ comments, listing }) {
       ).join('\n');
 
       const res = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are a helpful marketplace AI for 1MarketPH.com (Philippine marketplace).
+        prompt: `You are a helpful marketplace for 1MarketPH.com (Philippine marketplace).
 Analyze these ${ratedComments.length} customer reviews for "${listing.title}" and provide a brief, honest summary.
 
 Reviews:
@@ -61,7 +61,7 @@ Be concise, neutral, and practical. Use simple English/Taglish if appropriate.`,
           className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-body font-bold text-sm transition-all hover:scale-[1.01]"
           style={{ background: 'rgba(0,212,255,0.07)', border: '1px solid rgba(0,212,255,0.25)' }}>
           {loading
-            ? <><Loader2 className="w-4 h-4 text-[#00D4FF] animate-spin" /><span className="text-[#00D4FF]">Reading reviews with AI...</span></>
+            ? <><Loader2 className="w-4 h-4 text-[#00D4FF] animate-spin" /><span className="text-[#00D4FF]">Reading reviews with ...</span></>
             : <><Sparkles className="w-4 h-4 text-[#00D4FF]" /><span className="text-[#00D4FF]">✕ Review Summary ({ratedComments.length} reviews)</span></>}
         </button>
       ) : summary && !summary.error ? (

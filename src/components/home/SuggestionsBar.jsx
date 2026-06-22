@@ -5,14 +5,14 @@ import { useFireTransition, FireOverlay } from './FireTransition';
 import { base44 } from '@/api/base44Client';
 
 const SUGGESTIONS = [
-  { emoji: 'AI', label: 'Looking for Food?', sub: 'Carinderias & restaurants', href: '/food', color: '#f97316' },
-  { emoji: 'AI', label: 'Looking for a Hotel?', sub: 'Manila & Cavite stays', href: '/travel', color: '#3b82f6' },
-  { emoji: 'AI', label: 'Looking for Deals?', sub: 'Best prices today', href: '/travel', color: '#ef4444' },
-  { emoji: 'AI', label: 'Looking for a Place to Rent?', sub: 'Homes & apartments', href: '/rent', color: '#22c55e' },
-  { emoji: 'AI️', label: 'Looking for Plane Tickets?', sub: 'Domestic flights PH', href: '/travel', color: '#8b5cf6' },
-  { emoji: 'AI', label: 'Looking for a Phone?', sub: 'Tech & gadget deals', href: '/buysell', color: '#06b6d4' },
-  { emoji: 'AI', label: 'Need a Service?', sub: 'Plumbers, tutors & more', href: '/services', color: '#f59e0b' },
-  { emoji: 'AI', label: 'Looking for a Car?', sub: 'Sedans, SUVs & more', href: '/buysell', color: '#64748b' },
+  { emoji: '', label: 'Looking for Food?', sub: 'Carinderias & restaurants', href: '/food', color: '#f97316' },
+  { emoji: '', label: 'Looking for a Hotel?', sub: 'Manila & Cavite stays', href: '/travel', color: '#3b82f6' },
+  { emoji: '', label: 'Looking for Deals?', sub: 'Best prices today', href: '/travel', color: '#ef4444' },
+  { emoji: '', label: 'Looking for a Place to Rent?', sub: 'Homes & apartments', href: '/rent', color: '#22c55e' },
+  { emoji: '', label: 'Looking for Plane Tickets?', sub: 'Domestic flights PH', href: '/travel', color: '#8b5cf6' },
+  { emoji: '', label: 'Looking for a Phone?', sub: 'Tech & gadget deals', href: '/buysell', color: '#06b6d4' },
+  { emoji: '', label: 'Need a Service?', sub: 'Plumbers, tutors & more', href: '/services', color: '#f59e0b' },
+  { emoji: '', label: 'Looking for a Car?', sub: 'Sedans, SUVs & more', href: '/buysell', color: '#64748b' },
 ];
 
 export default function SuggestionsBar() {
@@ -29,7 +29,7 @@ export default function SuggestionsBar() {
     setLoading(true);
     setAnswer('');
     const res = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are 1Market.ph's helpful AI assistant. The user is browsing a Philippine marketplace with Travel, Food, Buy & Sell, For Rent, and Services sections. Answer helpfully and concisely in 2-3 sentences. User asked: "${query}"`,
+      prompt: `You are 1Market.ph's helpful assistant. The user is browsing a Philippine marketplace with Travel, Food, Buy & Sell, For Rent, and Services sections. Answer helpfully and concisely in 2-3 sentences. User asked: "${query}"`,
     });
     setAnswer(typeof res === 'string' ? res : res.text || JSON.stringify(res));
     setLoading(false);
@@ -44,19 +44,19 @@ export default function SuggestionsBar() {
         className="w-full bg-gradient-to-r from-[#112240] to-[#0A192F] border-b border-white/5 py-3 px-4"
       >
         <div className="max-w-7xl mx-auto">
-          {/* Top row: AI toggle + suggestion pills */}
+          {/* Top row: toggle + suggestion pills */}
           <div className="flex items-center gap-3 mb-2">
             <button
               onClick={() => { setAiOpen(o => !o); setAnswer(''); setQuery(''); }}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all flex-shrink-0 ${aiOpen ? 'bg-[#00D4FF]/20 border-[#00D4FF]/60 text-[#00D4FF]' : 'bg-white/5 border-white/15 text-white/60 hover:border-[#00D4FF]/40 hover:text-[#00D4FF]'}`}
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span className="font-body text-[11px] font-bold uppercase tracking-wider">Ask 1Market AI</span>
+              <span className="font-body text-[11px] font-bold uppercase tracking-wider">Ask 1Market </span>
             </button>
             <span className="font-body text-[10px] text-white/25 hidden sm:block">— Popular searches</span>
           </div>
 
-          {/* AI panel */}
+          {/* panel */}
           <AnimatePresence>
             {aiOpen && (
               <motion.div

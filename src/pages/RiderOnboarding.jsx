@@ -14,10 +14,10 @@ const DOC_FIELDS = [
 ];
 
 const VEHICLE_TYPES = [
-  { value: 'motorcycle', label: 'Motorcycle', icon: 'AI️' },
-  { value: 'bicycle', label: 'Bicycle', icon: 'AI' },
-  { value: 'e-bike', label: 'E-Bike', icon: 'AI' },
-  { value: 'car', label: 'Car', icon: 'AI' },
+  { value: 'motorcycle', label: 'Motorcycle', icon: '' },
+  { value: 'bicycle', label: 'Bicycle', icon: '' },
+  { value: 'e-bike', label: 'E-Bike', icon: '' },
+  { value: 'car', label: 'Car', icon: '' },
 ];
 
 export default function RiderOnboarding() {
@@ -108,9 +108,9 @@ export default function RiderOnboarding() {
                 </p>
                 <div className="space-y-3 text-left mb-8">
                   {[
-                    { icon: 'AI', title: '3 Valid Government IDs', desc: 'Any government-issued ID' },
-                    { icon: 'AI', title: 'Proof of Billing', desc: 'Utility bill or bank statement' },
-                    { icon: 'AI', title: 'Barangay Clearance', desc: 'Recent certificate from your barangay' },
+                    { icon: '', title: '3 Valid Government IDs', desc: 'Any government-issued ID' },
+                    { icon: '', title: 'Proof of Billing', desc: 'Utility bill or bank statement' },
+                    { icon: '', title: 'Barangay Clearance', desc: 'Recent certificate from your barangay' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
                       <span className="text-2xl">{item.icon}</span>

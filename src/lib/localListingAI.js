@@ -119,5 +119,5 @@ export async function localListingAI({ prompt = '', response_json_schema } = {})
   if (p.includes('listing quality auditor')) return quality(prompt);
   if (p.includes('analyze this product/listing image')) return imageAnalysis(prompt);
   if (response_json_schema?.properties) return Object.fromEntries(Object.entries(response_json_schema.properties).map(([key, schema]) => [key, schema.type === 'array' ? [] : schema.type === 'number' ? 0 : '']));
-  return 'AI helper is ready. Add listing details first for a stronger suggestion.';
+  return 'helper is ready. Add listing details first for a stronger suggestion.';
 }

@@ -100,7 +100,7 @@ export default function Notifications() {
           {['all', 'like', 'comment', 'reply', 'rating'].map(f => (
             <button key={f} onClick={() => setFilter(f)}
               className={`px-3 py-1.5 rounded-xl font-body text-xs font-semibold whitespace-nowrap transition-all ${filter === f ? 'bg-[#2563EB] text-white' : 'bg-white/5 text-white/40 hover:text-white border border-white/10'}`}>
-              {f === 'all' ? 'AI All' : f === 'like' ? 'AI️ Likes' : f === 'comment' ? 'AI Comments' : f === 'reply' ? '↩️ Replies' : '⭐ Ratings'}
+              {f === 'all' ? 'All' : f === 'like' ? 'Likes' : f === 'comment' ? 'Comments' : f === 'reply' ? '↩️ Replies' : '⭐ Ratings'}
             </button>
           ))}
         </div>
@@ -147,11 +147,11 @@ export default function Notifications() {
                     {n.listing_title && n.listing_id && (
                       <Link to={`/listing/${n.listing_id}`}
                         className="inline-flex items-center gap-1 font-body text-[10px] text-[#00D4FF]/70 hover:text-[#00D4FF] mt-0.5 truncate transition-colors">
-                        AI {n.listing_title}
+                        {n.listing_title}
                       </Link>
                     )}
                     {n.listing_title && !n.listing_id && (
-                      <p className="font-body text-[10px] text-white/30 mt-0.5 truncate">AI {n.listing_title}</p>
+                      <p className="font-body text-[10px] text-white/30 mt-0.5 truncate">{n.listing_title}</p>
                     )}
                     <p className="font-body text-[9px] text-white/20 mt-1.5">
                       {new Date(n.created_date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}

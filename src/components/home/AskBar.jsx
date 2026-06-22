@@ -18,7 +18,7 @@ export default function AskBar() {
     setAnswer('');
     setOpen(true);
     const res = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are Alfie, 1Market.ph's friendly dog mascot and AI assistant. The user is browsing a Philippine marketplace with Travel, Food, Buy & Sell, For Rent, and Services sections. Answer helpfully and concisely in 2-3 sentences. Be friendly and end with a short AI emoji. User asked: "${query}"`,
+      prompt: `You are Alfie, 1Market.ph's friendly dog mascot and assistant. The user is browsing a Philippine marketplace with Travel, Food, Buy & Sell, For Rent, and Services sections. Answer helpfully and concisely in 2-3 sentences. Be friendly and end with a short emoji. User asked: "${query}"`,
     });
     setAnswer(typeof res === 'string' ? res : res.text || JSON.stringify(res));
     setLoading(false);
@@ -34,7 +34,7 @@ export default function AskBar() {
         </div>
         <form onSubmit={handleAsk} className="flex gap-2">
           <div className="relative flex-1">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30 font-body text-sm select-none">AI</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30 font-body text-sm select-none"></span>
             <input
               type="text"
               value={query}

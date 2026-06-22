@@ -138,9 +138,9 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
                 style={{ background: '#0D1F3C' }}>
                 <div className="flex items-center gap-2">
                   {isOwner ? (
-                    <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-body text-[9px] font-bold border border-blue-500/30">AI️ Edit Item</span>
+                    <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-body text-[9px] font-bold border border-blue-500/30">Edit Item</span>
                   ) : (
-                    <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-body text-[9px] font-bold border border-amber-500/30">AI️ Admin Edit</span>
+                    <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-body text-[9px] font-bold border border-amber-500/30">Admin Edit</span>
                   )}
                   <h3 className="font-heading font-bold text-white text-sm">{record.title || record.name || entity}</h3>
                 </div>
@@ -190,7 +190,7 @@ export default function AdminEditOverlay({ entity, record, fields, onSaved, onDe
                             <div key={i} className="relative">
                               <img src={url} alt="" className="w-16 h-16 rounded-xl object-cover border border-white/10" />
                               <button type="button" onClick={() => setForm(v => ({ ...v, [f.key]: v[f.key].filter((_, j) => j !== i) }))}
-                                className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center">AI</button>
+                                className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center"></button>
                             </div>
                           ))}
                         </div>

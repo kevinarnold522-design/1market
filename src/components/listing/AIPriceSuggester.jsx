@@ -1,5 +1,5 @@
 /**
- * AIPriceSuggester — AI-powered price recommendation inside AddListingModal
+ * AIPriceSuggester — -powered price recommendation inside AddListingModal
  * Uses InvokeLLM to analyze listing details and suggest a competitive price range.
  */
 import React, { useState } from 'react';
@@ -63,7 +63,7 @@ Include brief reasoning (1-2 sentences max).`,
           <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#f59e0b,#f97316)' }}>
             <TrendingUp className="w-3.5 h-3.5 text-white" />
           </div>
-          <span className="font-heading font-bold text-sm text-amber-400">AI Price Suggester</span>
+          <span className="font-heading font-bold text-sm text-amber-400">Price Suggester</span>
           <span className="px-1.5 py-0.5 rounded-full font-body text-[9px] font-bold text-[#0A192F] bg-amber-400">SMART</span>
         </div>
         {open ? <ChevronUp className="w-4 h-4 text-amber-400/60" /> : <ChevronDown className="w-4 h-4 text-amber-400/60" />}
@@ -78,7 +78,7 @@ Include brief reasoning (1-2 sentences max).`,
             className="overflow-hidden">
             <div className="px-4 pb-4 border-t border-white/8 pt-3 space-y-3">
               <p className="font-body text-[10px] text-white/40">
-                Let AI analyze your listing and suggest a competitive price range based on current Philippine marketplace trends.
+                Let analyze your listing and suggest a competitive price range based on current Philippine marketplace trends.
               </p>
               <button
                 type="button"

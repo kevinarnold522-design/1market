@@ -14,16 +14,16 @@ const SELLER_TYPES = [
 ];
 
 const FOOD_BUSINESS_TYPES = [
-  { value: 'Home Kitchen',              label: 'AI Home Kitchen',              desc: 'Cooking & selling from home' },
-  { value: 'Karinderia / Carinderia',   label: 'AI Karinderia / Carinderia',   desc: 'Local Filipino eatery / canteen' },
-  { value: 'Bakery / Pastry Shop',      label: 'AI Bakery / Pastry Shop',      desc: 'Bread, cakes, pastries' },
-  { value: 'Fast Food Chain',           label: 'AI Fast Food Chain',           desc: 'Quick service restaurant' },
-  { value: 'Restaurant / Resto Bar',    label: 'AI️ Restaurant / Resto Bar',   desc: 'Sit-down dining establishment' },
-  { value: 'Food Stall / Kiosk',        label: 'AI Food Stall / Kiosk',        desc: 'Market stall or kiosk' },
-  { value: 'Catering Service',          label: 'AI Catering Service',          desc: 'Events and bulk food orders' },
-  { value: 'Corporation / Franchise',   label: 'AI Corporation / Franchise',   desc: 'Registered company or franchisee' },
-  { value: 'Cloud Kitchen / Online',    label: 'AI Cloud Kitchen / Online',    desc: 'Delivery-only, no dine-in' },
-  { value: 'Other',                     label: 'AI Other',                     desc: 'Something else' },
+  { value: 'Home Kitchen',              label: 'Home Kitchen',              desc: 'Cooking & selling from home' },
+  { value: 'Karinderia / Carinderia',   label: 'Karinderia / Carinderia',   desc: 'Local Filipino eatery / canteen' },
+  { value: 'Bakery / Pastry Shop',      label: 'Bakery / Pastry Shop',      desc: 'Bread, cakes, pastries' },
+  { value: 'Fast Food Chain',           label: 'Fast Food Chain',           desc: 'Quick service restaurant' },
+  { value: 'Restaurant / Resto Bar',    label: 'Restaurant / Resto Bar',   desc: 'Sit-down dining establishment' },
+  { value: 'Food Stall / Kiosk',        label: 'Food Stall / Kiosk',        desc: 'Market stall or kiosk' },
+  { value: 'Catering Service',          label: 'Catering Service',          desc: 'Events and bulk food orders' },
+  { value: 'Corporation / Franchise',   label: 'Corporation / Franchise',   desc: 'Registered company or franchisee' },
+  { value: 'Cloud Kitchen / Online',    label: 'Cloud Kitchen / Online',    desc: 'Delivery-only, no dine-in' },
+  { value: 'Other',                     label: 'Other',                     desc: 'Something else' },
 ];
 
 const FOOD_TYPES = [
@@ -239,7 +239,7 @@ export default function BecomeSellerModal({ user, onClose, onSuccess }) {
                 <motion.div key="food" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="px-5 pb-6">
                   {foodStep === 0 ? (
                     <>
-                      <h2 className="font-heading font-bold text-xl text-white mb-1">AI Food Business Type</h2>
+                      <h2 className="font-heading font-bold text-xl text-white mb-1">Food Business Type</h2>
                       <p className="font-body text-sm text-white/45 mb-4">What best describes your food business?</p>
                       {error && <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-red-500/15 border border-red-500/25 text-red-400 font-body text-xs mb-3"><AlertCircle className="w-3.5 h-3.5" />{error}</div>}
                       <div className="grid grid-cols-1 gap-2 mb-5">
@@ -263,7 +263,7 @@ export default function BecomeSellerModal({ user, onClose, onSuccess }) {
                     </>
                   ) : (
                     <>
-                      <h2 className="font-heading font-bold text-xl text-white mb-1">AI️ What food do you sell?</h2>
+                      <h2 className="font-heading font-bold text-xl text-white mb-1">What food do you sell?</h2>
                       <p className="font-body text-sm text-white/45 mb-4">Select all that apply — you can pick multiple.</p>
                       {error && <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-red-500/15 border border-red-500/25 text-red-400 font-body text-xs mb-3"><AlertCircle className="w-3.5 h-3.5" />{error}</div>}
                       <div className="grid grid-cols-2 gap-2 mb-5">
@@ -348,7 +348,7 @@ export default function BecomeSellerModal({ user, onClose, onSuccess }) {
                   {sellerType === 'food' && (foodBusinessType || foodTypes.length > 0) && (
                     <div className="rounded-2xl p-3 mb-3" style={{ background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)' }}>
                       <p className="font-body text-[10px] text-orange-400 font-bold uppercase tracking-wider mb-2">Your Food Business</p>
-                      {foodBusinessType && <p className="font-body text-xs text-white/70 mb-1">AI <strong className="text-white">{foodBusinessType}</strong></p>}
+                      {foodBusinessType && <p className="font-body text-xs text-white/70 mb-1"><strong className="text-white">{foodBusinessType}</strong></p>}
                       {foodTypes.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 mt-1">
                           {foodTypes.map(ft => <span key={ft} className="px-2 py-0.5 rounded-full bg-orange-400/15 border border-orange-400/25 text-orange-300 font-body text-[10px]">{ft}</span>)}

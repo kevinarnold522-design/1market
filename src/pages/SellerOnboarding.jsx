@@ -18,24 +18,24 @@ const AREAS = {
 };
 
 const SELLER_TYPES = [
-  { value: 'products', label: 'Products & Goods', desc: 'Sell physical items — new or used', color: '#8b5cf6', emoji: 'AI' },
-  { value: 'food', label: 'Food & Beverages', desc: 'Home cooking, baked goods, drinks', color: '#f97316', emoji: 'AI' },
-  { value: 'services', label: 'Services', desc: 'Skills, trades, professional services', color: '#3b82f6', emoji: 'AI' },
-  { value: 'travel', label: 'Travel & Hospitality', desc: 'Hotels, tours, vehicle rentals', color: '#0ea5e9', emoji: 'AI️' },
-  { value: 'rent', label: 'Rooms & Spaces', desc: 'Rent/sell rooms, properties, commercial', color: '#10b981', emoji: 'AI' },
-  { value: 'jobs', label: 'Job Postings', desc: 'Post hiring opportunities', color: '#f59e0b', emoji: 'AI' },
+  { value: 'products', label: 'Products & Goods', desc: 'Sell physical items — new or used', color: '#8b5cf6', emoji: '' },
+  { value: 'food', label: 'Food & Beverages', desc: 'Home cooking, baked goods, drinks', color: '#f97316', emoji: '' },
+  { value: 'services', label: 'Services', desc: 'Skills, trades, professional services', color: '#3b82f6', emoji: '' },
+  { value: 'travel', label: 'Travel & Hospitality', desc: 'Hotels, tours, vehicle rentals', color: '#0ea5e9', emoji: '' },
+  { value: 'rent', label: 'Rooms & Spaces', desc: 'Rent/sell rooms, properties, commercial', color: '#10b981', emoji: '' },
+  { value: 'jobs', label: 'Job Postings', desc: 'Post hiring opportunities', color: '#f59e0b', emoji: '' },
 ];
 
 const BUSINESS_TYPES = [
-  { value: 'food', label: 'Food & Restaurant', emoji: 'AI' },
-  { value: 'retail', label: 'Retail Store', emoji: 'AI' },
-  { value: 'services', label: 'Services Company', emoji: 'AI' },
-  { value: 'hotel_travel', label: 'Hotel / Travel', emoji: 'AI️' },
-  { value: 'real_estate', label: 'Real Estate', emoji: 'AI' },
-  { value: 'tech', label: 'Tech / Digital', emoji: 'AI' },
-  { value: 'healthcare', label: 'Healthcare', emoji: 'AI' },
-  { value: 'events', label: 'Events & Entertainment', emoji: 'AI' },
-  { value: 'other', label: 'Other Business', emoji: 'AI' },
+  { value: 'food', label: 'Food & Restaurant', emoji: '' },
+  { value: 'retail', label: 'Retail Store', emoji: '' },
+  { value: 'services', label: 'Services Company', emoji: '' },
+  { value: 'hotel_travel', label: 'Hotel / Travel', emoji: '' },
+  { value: 'real_estate', label: 'Real Estate', emoji: '' },
+  { value: 'tech', label: 'Tech / Digital', emoji: '' },
+  { value: 'healthcare', label: 'Healthcare', emoji: '' },
+  { value: 'events', label: 'Events & Entertainment', emoji: '' },
+  { value: 'other', label: 'Other Business', emoji: '' },
 ];
 
 export default function SellerOnboarding() {
@@ -150,8 +150,7 @@ export default function SellerOnboarding() {
                     style={{ background: 'linear-gradient(135deg,rgba(16,185,129,0.12),rgba(0,212,255,0.06))', border: '1.5px solid rgba(16,185,129,0.3)' }}>
                     <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 text-2xl"
                       style={{ background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.25)' }}>
-                      AI
-                    </div>
+                                          </div>
                     <div className="flex-1">
                        <p className="font-heading font-bold text-white text-lg">Individual Seller</p>
                        <p className="font-body text-sm text-white/50 mt-0.5">For individuals acting as sole proprietorships, referees, or third-party resellers. List products, services, food & jobs under your personal name.</p>
@@ -170,8 +169,7 @@ export default function SellerOnboarding() {
                     style={{ background: 'linear-gradient(135deg,rgba(37,99,235,0.15),rgba(0,212,255,0.08))', border: '1.5px solid rgba(37,99,235,0.3)' }}>
                     <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 text-2xl"
                       style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(37,99,235,0.25)' }}>
-                      AI
-                    </div>
+                                          </div>
                     <div className="flex-1">
                       <p className="font-heading font-bold text-white text-lg">Business Account</p>
                       <p className="font-body text-sm text-white/50 mt-0.5">For massive corporations or entities operating as more than one person. Business accounts can have multiple emails and list under a shared business name. Eligible for the <OneCheckmark size="xs" label="1Checkmark" /> badge.</p>
@@ -361,22 +359,21 @@ export default function SellerOnboarding() {
                   initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
                   className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 text-4xl"
                   style={{ background: 'linear-gradient(135deg,rgba(16,185,129,0.2),rgba(0,212,255,0.15))', border: '2px solid rgba(16,185,129,0.4)' }}>
-                  AI
-                </motion.div>
+                                  </motion.div>
                 <h2 className="font-heading font-black text-3xl text-white mb-2">
                   {accountMode === 'business' ? 'Business Account Active!' : 'Seller Account Active!'}
                 </h2>
                 <p className="font-body text-sm text-white/60 mb-6 max-w-xs mx-auto leading-relaxed">
                   {accountMode === 'business'
-                    ? 'Your business account is set up. Post listings, manage your profile, and apply for the Verified AI badge anytime.'
+                    ? 'Your business account is set up. Post listings, manage your profile, and apply for the Verified badge anytime.'
                     : 'You can now post listings, manage orders, and build your seller presence on 1MarketPH.'}
                 </p>
 
                 <div className="grid grid-cols-1 gap-3 mb-6 max-w-xs mx-auto text-left">
                   {[
-                    { icon: 'AI', label: 'Post your first listing', href: '/profile?tab=listings' },
-                    { icon: 'AI', label: 'Complete your profile', href: '/profile' },
-                    { icon: 'AI', label: accountMode === 'business' ? 'Apply for Verified badge' : 'Apply for Verified Partner', href: '/profile?tab=sellerpage' },
+                    { icon: '', label: 'Post your first listing', href: '/profile?tab=listings' },
+                    { icon: '', label: 'Complete your profile', href: '/profile' },
+                    { icon: '', label: accountMode === 'business' ? 'Apply for Verified badge' : 'Apply for Verified Partner', href: '/profile?tab=sellerpage' },
                   ].map((item, i) => (
                     <Link key={i} to={item.href}
                       className="flex items-center gap-3 px-4 py-3 rounded-xl font-body text-sm text-white/70 hover:text-white transition-all"

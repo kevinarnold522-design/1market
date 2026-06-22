@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// AI-style double heart (heart inside heart) in blue, covers image then fades
+// -style double heart (heart inside heart) in blue, covers image then fades
 export default function DoubleHeartAnimation({ onDone }) {
   const [visible, setVisible] = useState(true);
 

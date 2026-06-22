@@ -494,7 +494,7 @@ export default function ListingDetail() {
                 <MessageSquare className="w-4 h-4 text-[#00D4FF]" /> Reviews ({comments.length})
               </h3>
 
-              {/* AI Review Summary — shown when 3+ reviews */}
+              {/* Review Summary — shown when 3+ reviews */}
               <AIReviewSummary comments={comments} listing={listing} />
 
               {user ? (

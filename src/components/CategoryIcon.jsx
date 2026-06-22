@@ -1,5 +1,5 @@
 /**
- * AI-designed SVG icons for every category and subcategory.
+ * -designed SVG icons for every category and subcategory.
  * No emojis — clean vector icons with a consistent style.
  */
 import React from 'react';

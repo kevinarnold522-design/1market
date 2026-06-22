@@ -368,7 +368,7 @@ export default function ConnectedAccounts() {
   if (session || !isAdmin) return (
     <div className="min-h-screen flex items-center justify-center p-6" style={{ background: 'linear-gradient(180deg, #0033CC 0%, #001a80 100%)' }}>
       <div className="text-center">
-        <div className="text-4xl mb-4">AI</div>
+        <div className="text-4xl mb-4"></div>
         <p className="font-body text-white/50 mb-4">{session ? 'Created users cannot access this page' : 'Admin access required'}</p>
         <Link to="/" className="px-4 py-2 bg-[#2563EB] text-white rounded-xl font-body text-sm font-bold">← Home</Link>
       </div>

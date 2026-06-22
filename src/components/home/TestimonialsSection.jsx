@@ -3,12 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const TESTIMONIALS = [
-  { name: 'Maria Santos', role: 'Online Seller · Cavite', avatar: 'AI', stars: 5, text: 'I sold my old iPhone in just 2 hours! 1MarketPH is the fastest way to sell anything in the Philippines. The buyers here are serious and legit.' },
-  { name: 'Juan dela Cruz', role: 'Property Owner · Manila', avatar: 'AI', stars: 5, text: 'Listed my condo for rent and got 3 inquiries the same day! Amazing platform for landlords. Very easy to use and free to post.' },
-  { name: 'Ana Reyes', role: 'Traveler · Cebu', avatar: 'AI‍AI', stars: 5, text: 'Booked a hotel in Boracay through 1MarketPH and the price was unbeatable! The listings are detailed and the booking process was smooth.' },
-  { name: 'Carlo Mendoza', role: 'Freelancer · Taguig', avatar: 'AI‍AI', stars: 5, text: 'Found my current job through the Jobs section. The platform is clean, easy to navigate, and the employers post real opportunities.' },
-  { name: 'Liza Garcia', role: 'Food Business Owner · QC', avatar: 'AI‍AI', stars: 5, text: 'My catering business got so many clients after posting on 1MarketPH. The reach is incredible — customers from all over Metro Manila!' },
-  { name: 'Ronnie Bautista', role: 'Car Dealer · Batangas', avatar: 'AI', stars: 5, text: 'Selling cars used to be hard. With 1MarketPH, I reach buyers faster than any other platform. Sold 5 cars this month alone!' },
+  { name: 'Maria Santos', role: 'Online Seller · Cavite', avatar: '', stars: 5, text: 'I sold my old iPhone in just 2 hours! 1MarketPH is the fastest way to sell anything in the Philippines. The buyers here are serious and legit.' },
+  { name: 'Juan dela Cruz', role: 'Property Owner · Manila', avatar: '', stars: 5, text: 'Listed my condo for rent and got 3 inquiries the same day! Amazing platform for landlords. Very easy to use and free to post.' },
+  { name: 'Ana Reyes', role: 'Traveler · Cebu', avatar: '', stars: 5, text: 'Booked a hotel in Boracay through 1MarketPH and the price was unbeatable! The listings are detailed and the booking process was smooth.' },
+  { name: 'Carlo Mendoza', role: 'Freelancer · Taguig', avatar: '', stars: 5, text: 'Found my current job through the Jobs section. The platform is clean, easy to navigate, and the employers post real opportunities.' },
+  { name: 'Liza Garcia', role: 'Food Business Owner · QC', avatar: '', stars: 5, text: 'My catering business got so many clients after posting on 1MarketPH. The reach is incredible — customers from all over Metro Manila!' },
+  { name: 'Ronnie Bautista', role: 'Car Dealer · Batangas', avatar: '', stars: 5, text: 'Selling cars used to be hard. With 1MarketPH, I reach buyers faster than any other platform. Sold 5 cars this month alone!' },
 ];
 
 export default function TestimonialsSection() {

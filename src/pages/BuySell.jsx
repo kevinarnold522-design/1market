@@ -295,7 +295,7 @@ export default function BuySell() {
                     {urlType?.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())} › {urlSub}
                   </span>
                   <button onClick={() => { setSearch(''); window.history.replaceState({}, '', '/buysell'); }}
-                    className="text-white/30 hover:text-white/60 text-xs font-body">AI Clear</button>
+                    className="text-white/30 hover:text-white/60 text-xs font-body">Clear</button>
                 </div>
               )}
               <p className="font-body text-sm text-white/40">

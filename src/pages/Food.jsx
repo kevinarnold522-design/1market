@@ -223,7 +223,7 @@ function RateModal({ biz, onClose }) {
             <div className="flex gap-2 mb-4 justify-center">
               {[1,2,3,4,5].map(s => (
                 <button key={s} onClick={() => setRating(s)}
-                  className={`text-3xl transition-transform hover:scale-110 ${s <= rating ? 'text-amber-400' : 'text-white/20'}`}>AI</button>
+                  className={`text-3xl transition-transform hover:scale-110 ${s <= rating ? 'text-amber-400' : 'text-white/20'}`}></button>
               ))}
             </div>
             <textarea
@@ -247,18 +247,18 @@ function RateModal({ biz, onClose }) {
 }
 
 const FOOD_SUBCATEGORIES = [
-  { key: 'all', label: 'All Food', icon: 'AI', desc: 'Everything' },
-  { key: 'chain', label: 'Fast Food', icon: 'AI', desc: 'Chains' },
-  { key: 'carinderia', label: 'Local Eats', icon: 'AI', desc: 'Carinderias' },
-  { key: 'coffee', label: 'Coffee', icon: 'AI', desc: 'Cafes' },
-  { key: 'milktea', label: 'Milk Tea', icon: 'AI', desc: 'Boba' },
-  { key: 'korean', label: 'Korean', icon: 'AI', desc: 'K-BBQ' },
-  { key: 'japanese', label: 'Japanese', icon: 'AI', desc: 'Ramen & more' },
-  { key: 'seafood', label: 'Seafood', icon: 'AI', desc: 'Fresh catch' },
-  { key: 'home-kitchen', label: 'Home Kitchen', icon: 'AI', desc: 'Lutong bahay' },
-  { key: 'home-baker', label: 'Home Bakers', icon: 'AI', desc: 'Pastries' },
-  { key: 'desserts', label: 'Desserts', icon: 'AI', desc: 'Sweets' },
-  { key: 'catering', label: 'Catering', icon: 'AI️', desc: 'Events' },
+  { key: 'all', label: 'All Food', icon: '', desc: 'Everything' },
+  { key: 'chain', label: 'Fast Food', icon: '', desc: 'Chains' },
+  { key: 'carinderia', label: 'Local Eats', icon: '', desc: 'Carinderias' },
+  { key: 'coffee', label: 'Coffee', icon: '', desc: 'Cafes' },
+  { key: 'milktea', label: 'Milk Tea', icon: '', desc: 'Boba' },
+  { key: 'korean', label: 'Korean', icon: '', desc: 'K-BBQ' },
+  { key: 'japanese', label: 'Japanese', icon: '', desc: 'Ramen & more' },
+  { key: 'seafood', label: 'Seafood', icon: '', desc: 'Fresh catch' },
+  { key: 'home-kitchen', label: 'Home Kitchen', icon: '', desc: 'Lutong bahay' },
+  { key: 'home-baker', label: 'Home Bakers', icon: '', desc: 'Pastries' },
+  { key: 'desserts', label: 'Desserts', icon: '', desc: 'Sweets' },
+  { key: 'catering', label: 'Catering', icon: '', desc: 'Events' },
 ];
 
 const BUSINESS_ADMIN_FIELDS = [

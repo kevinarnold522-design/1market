@@ -4,12 +4,12 @@ import { X, Flag, AlertTriangle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const REASONS = [
-  { value: 'spam', label: 'AI️ Spam or Misleading' },
-  { value: 'scam', label: 'AI️ Scam / Fraud' },
-  { value: 'inappropriate', label: 'AI Inappropriate Content' },
-  { value: 'wrong_category', label: 'AI Wrong Category' },
-  { value: 'duplicate', label: 'AI Duplicate Listing' },
-  { value: 'other', label: 'AI Other' },
+  { value: 'spam', label: 'Spam or Misleading' },
+  { value: 'scam', label: 'Scam / Fraud' },
+  { value: 'inappropriate', label: 'Inappropriate Content' },
+  { value: 'wrong_category', label: 'Wrong Category' },
+  { value: 'duplicate', label: 'Duplicate Listing' },
+  { value: 'other', label: 'Other' },
 ];
 
 export default function ReportModal({ listing, user, onClose }) {
@@ -67,7 +67,7 @@ export default function ReportModal({ listing, user, onClose }) {
 
           {done ? (
             <div className="text-center py-6">
-              <div className="text-4xl mb-3">AI</div>
+              <div className="text-4xl mb-3"></div>
               <p className="font-heading font-bold text-white mb-1">Report Submitted</p>
               <p className="font-body text-xs text-white/50 mb-4">This listing has been suspended and will be reviewed by our admin team.</p>
               <button onClick={onClose} className="px-6 py-2.5 bg-[#00D4FF] text-[#0A192F] rounded-xl font-body font-bold text-sm hover:bg-white transition-colors">

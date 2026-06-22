@@ -259,7 +259,7 @@ export default function Messages() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* AI Smart Reply */}
+          {/* Smart Reply */}
           <AISmartReply
             messages={messages}
             listingTitle={activeConvo?.listing_title}

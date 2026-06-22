@@ -55,7 +55,7 @@ export default function SmartSearchBar({ placeholder = 'Search listings, food, j
         ).slice(0, 6);
         setResults(matched);
 
-        // AI-powered keyword suggestions
+        // -powered keyword suggestions
         if (query.length >= 3) {
           const res = await base44.integrations.Core.InvokeLLM({
             prompt: `You are a smart search assistant for 1MarketPH, a Philippine marketplace. 
@@ -132,12 +132,12 @@ Return ONLY a JSON array of strings. Example: ["iPhone 14 Cavite","second hand l
               </div>
             )}
 
-            {/* AI Suggestions */}
+            {/* Suggestions */}
             {aiSuggestions.length > 0 && (
               <div className="px-4 pt-3 pb-2">
                 <div className="flex items-center gap-1.5 mb-2">
                   <Sparkles className="w-3 h-3 text-[#00D4FF]" />
-                  <span className="font-body text-[10px] font-bold text-[#00D4FF]/70 uppercase tracking-wider">AI Suggestions</span>
+                  <span className="font-body text-[10px] font-bold text-[#00D4FF]/70 uppercase tracking-wider">Suggestions</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {aiSuggestions.map((s, i) => (

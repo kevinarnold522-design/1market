@@ -1,7 +1,7 @@
 import React from 'react';
 import { Sparkles } from 'lucide-react';
 
-export default function SmartFilterChips({ title = 'Smart AI filters', options = [] }) {
+export default function SmartFilterChips({ title = 'Smart filters', options = [] }) {
   if (!options.length) return null;
   return (
     <div className="flex items-center gap-2 flex-wrap rounded-2xl p-3 mb-4" style={{ background: 'rgba(0,212,255,0.06)', border: '1px solid rgba(0,212,255,0.14)' }}>

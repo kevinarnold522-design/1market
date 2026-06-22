@@ -10,14 +10,14 @@ const MESSAGES = [
 ];
 
 const ANIMATED_ITEMS = [
-  { emoji: 'AI', label: 'Electronics', color: '#00D4FF' },
-  { emoji: 'AI', label: 'Real Estate', color: '#FFD700' },
-  { emoji: 'AI', label: 'Food', color: '#10b981' },
-  { emoji: 'AI️', label: 'Travel', color: '#f472b6' },
-  { emoji: 'AI', label: 'Fashion', color: '#a855f7' },
-  { emoji: 'AI', label: 'Services', color: '#3E97F1' },
-  { emoji: 'AI', label: 'Jobs', color: '#fb7185' },
-  { emoji: 'AI', label: 'Vehicles', color: '#f59e0b' },
+  { emoji: '', label: 'Electronics', color: '#00D4FF' },
+  { emoji: '', label: 'Real Estate', color: '#FFD700' },
+  { emoji: '', label: 'Food', color: '#10b981' },
+  { emoji: '', label: 'Travel', color: '#f472b6' },
+  { emoji: '', label: 'Fashion', color: '#a855f7' },
+  { emoji: '', label: 'Services', color: '#3E97F1' },
+  { emoji: '', label: 'Jobs', color: '#fb7185' },
+  { emoji: '', label: 'Vehicles', color: '#f59e0b' },
 ];
 
 export default function BrandedHeroSection() {

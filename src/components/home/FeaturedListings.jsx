@@ -20,10 +20,10 @@ const CATEGORY_COLORS = {
 };
 
 const CATEGORY_ICONS = {
-  shoes: 'AI', cars: 'AI', houses: 'AI', electronics: 'AI',
-  services: 'AI', clothing: 'AI', furniture: 'AI️', food: 'AI️',
-  jobs: 'AI', other: 'AI', product: 'AI', hotel: 'AI',
-  flights: 'AI️', vehicle_rental: 'AI', space_rent: 'AI', mods: 'AI️',
+  shoes: '', cars: '', houses: '', electronics: '',
+  services: '', clothing: '', furniture: '', food: '',
+  jobs: '', other: '', product: '', hotel: '',
+  flights: '', vehicle_rental: '', space_rent: '', mods: '',
 };
 
 function MiniHeartBtn({ listingId, user }) {
@@ -54,7 +54,7 @@ function MiniHeartBtn({ listingId, user }) {
     <button onClick={toggle} className="relative flex items-center gap-0.5 px-1.5 py-1 rounded-lg bg-white/5 hover:bg-red-500/15 transition-all">
       <AnimatePresence>
         {anim && <motion.span initial={{ scale: 1, opacity: 1, y: 0 }} animate={{ scale: 2, opacity: 0, y: -14 }}
-          transition={{ duration: 0.6 }} className="absolute -top-2 left-1/2 -translate-x-1/2 text-sm pointer-events-none">AI️</motion.span>}
+          transition={{ duration: 0.6 }} className="absolute -top-2 left-1/2 -translate-x-1/2 text-sm pointer-events-none"></motion.span>}
       </AnimatePresence>
       <Heart className={`w-3 h-3 ${hearted ? 'text-red-400 fill-red-400' : 'text-white/40'}`} />
       <span className="font-body text-[9px] text-white/40">{count > 0 ? count : ''}</span>
@@ -65,7 +65,7 @@ function MiniHeartBtn({ listingId, user }) {
 function ListingCard({ item, user }) {
   const price = item.price_label || (item.price ? `₱${Number(item.price).toLocaleString()}` : null);
   const colorClass = CATEGORY_COLORS[item.type] || 'bg-gray-500/20 text-gray-300';
-  const icon = CATEGORY_ICONS[item.type] || 'AI';
+  const icon = CATEGORY_ICONS[item.type] || '';
   const borderColor = item.border_color || '#00D4FF';
 
   const handleShare = (e) => {

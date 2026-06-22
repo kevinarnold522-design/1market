@@ -106,7 +106,7 @@ function MessageModal({ seller, user, onClose }) {
         <div className="p-5 space-y-3">
           {sent ? (
             <div className="flex flex-col items-center gap-3 py-6 text-center">
-              <div className="w-12 h-12 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center text-2xl">AI</div>
+              <div className="w-12 h-12 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center text-2xl"></div>
               <p className="font-heading font-bold text-white">Message Sent!</p>
               <p className="font-body text-xs text-white/40">Redirecting to Messages...</p>
             </div>
@@ -293,7 +293,7 @@ export default function SellerProfilePage() {
         // STEP 0: Check if this is a ghost account (sessionStorage)
         const session = getGhostSession();
         if (session && (session.id === sellerId || session.ghost_id === sellerId || session.username === sellerId)) {
-          console.log('[PROFILE LOAD] AI Found active ghost session');
+          console.log('[PROFILE LOAD] Found active ghost session');
           // Try to load fresh DB data for this ghost
           let ghostData = session;
           try {
@@ -317,7 +317,7 @@ export default function SellerProfilePage() {
         const ghostRaw = localStorage.getItem(ghostKey);
         
         if (ghostRaw) {
-          console.log('[PROFILE LOAD] AI Found ghost account in localStorage');
+          console.log('[PROFILE LOAD] Found ghost account in localStorage');
           const ghost = JSON.parse(ghostRaw);
           setSeller(ghost);
           const [listings, posts] = await Promise.all([
@@ -366,14 +366,14 @@ export default function SellerProfilePage() {
         
         // STEP 2: Handle not found
         if (users.length === 0) {
-          console.error('[PROFILE LOAD] AI FAILED - No user found for:', sellerId);
+          console.error('[PROFILE LOAD] FAILED - No user found for:', sellerId);
           setError('Profile not found. This account may not exist or was deleted.');
           setLoading(false);
           return;
         }
         
         const seller = users[0];
-        console.log('[PROFILE LOAD] AI Found via', lookupMethod + ':', seller.full_name);
+        console.log('[PROFILE LOAD] Found via', lookupMethod + ':', seller.full_name);
         setSeller(seller);
         
         // STEP 3: Load listings and posts
@@ -395,7 +395,7 @@ export default function SellerProfilePage() {
         setPosts(communityPosts);
         
       } catch (err) {
-        console.error('[PROFILE LOAD] AI Error:', err.message);
+        console.error('[PROFILE LOAD] Error:', err.message);
         setError('Failed to load profile: ' + err.message);
       } finally {
         setLoading(false);

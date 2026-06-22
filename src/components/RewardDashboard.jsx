@@ -101,7 +101,7 @@ export default function RewardDashboard({ user, onClose }) {
                   <Flame className="w-5 h-5 text-orange-400" />
                 </div>
                 <div>
-                  <p className="font-body font-bold text-sm text-white">{streak} Day Streak AI</p>
+                  <p className="font-body font-bold text-sm text-white">{streak} Day Streak </p>
                   <p className="font-body text-[10px] text-white/40">Login daily to keep your streak alive</p>
                 </div>
               </div>
@@ -120,11 +120,11 @@ export default function RewardDashboard({ user, onClose }) {
                   <motion.div key="claimed" initial={{ scale: 0.8 }} animate={{ scale: 1 }}
                     className="w-full py-3 rounded-xl text-center font-body font-bold text-sm"
                     style={{ background: 'rgba(34,197,94,0.2)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.3)' }}>
-                    AI Reward Claimed! Come back tomorrow
+                    Reward Claimed! Come back tomorrow
                   </motion.div>
                 ) : alreadyClaimed ? (
                   <div className="w-full py-3 rounded-xl text-center font-body font-bold text-sm bg-white/5 text-white/30">
-                    AI Already claimed today — come back tomorrow!
+                    Already claimed today — come back tomorrow!
                   </div>
                 ) : (
                   <motion.button key="claim" onClick={handleClaim} disabled={claiming}

@@ -93,7 +93,7 @@ function ImgUpload({ label, value, onChange }) {
       {value && (
         <div className="relative inline-block mb-2">
           <SmartImage src={value} alt={label} className="h-20 w-28 rounded-xl border border-white/10" />
-          <button type="button" onClick={() => onChange('')} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center">AI</button>
+          <button type="button" onClick={() => onChange('')} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center"></button>
         </div>
       )}
       <input ref={ref} type="file" accept="image/*" className="hidden" onChange={handle} />
@@ -127,7 +127,7 @@ function MultiImgUpload({ label, value, onChange }) {
         {(value || []).map((url, i) => (
           <div key={i} className="relative">
             <SmartImage src={url} alt={`Additional photo ${i + 1}`} className="w-14 h-14 rounded-xl border border-white/10" />
-            <button type="button" onClick={() => onChange(value.filter((_, j) => j !== i))} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center">AI</button>
+            <button type="button" onClick={() => onChange(value.filter((_, j) => j !== i))} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center"></button>
           </div>
         ))}
       </div>
@@ -216,7 +216,7 @@ function ListingSubForm({ form, set }) {
         <Field label="Seller Name (internal)" value={form.seller_name} onChange={v => set('seller_name', v)} placeholder="Direct Owner" />
         <div className="col-span-2">
           <div className="rounded-xl p-3 space-y-2" style={{ background: 'rgba(0,212,255,0.05)', border: '1px solid rgba(0,212,255,0.2)' }}>
-            <p className="font-body text-[9px] text-[#00D4FF] font-bold uppercase tracking-wider">AI Admin: Approved Channel Name</p>
+            <p className="font-body text-[9px] text-[#00D4FF] font-bold uppercase tracking-wider">Admin: Approved Channel Name</p>
             <Field label="Approved Public Channel Name" value={form.approved_channel_name || ''} onChange={v => set('approved_channel_name', v)} placeholder="e.g. Juan's Store PH, CleanPro Services — approved by admin" />
             <p className="font-body text-[9px] text-white/30">This name overrides the seller's self-entered name and is displayed publicly on all listings.</p>
           </div>
@@ -224,7 +224,7 @@ function ListingSubForm({ form, set }) {
       </div>
       {form.type === 'electronics' && (
         <div className="rounded-xl p-3 space-y-2" style={{ background: 'rgba(0,212,255,0.05)', border: '1px solid rgba(0,212,255,0.2)' }}>
-          <p className="font-body text-[10px] text-[#00D4FF] font-semibold">AI Electronics — Warranty & Specs Required</p>
+          <p className="font-body text-[10px] text-[#00D4FF] font-semibold">Electronics — Warranty & Specs Required</p>
           <Field label="Warranty" value={form.warranty} onChange={v => set('warranty', v)} placeholder="1 Year PH Warranty" required />
           <Field label="Full Specifications" value={form.specs} onChange={v => set('specs', v)} type="textarea" placeholder="Specs..." required />
         </div>
@@ -312,7 +312,7 @@ export default function QuickAddModal({ onClose, defaultMode = 'business', onAdd
           {['business', 'listing'].map(m => (
             <button key={m} onClick={() => setMode(m)}
               className={`flex-1 py-2 rounded-xl font-body font-semibold text-xs capitalize transition-all ${mode === m ? 'bg-[#2563EB] text-white' : 'bg-white/5 text-white/50 hover:bg-white/10 border border-white/10'}`}>
-              {m === 'business' ? 'AI New Business' : 'AI️ New Listing'}
+              {m === 'business' ? 'New Business' : 'New Listing'}
             </button>
           ))}
         </div>

@@ -181,7 +181,7 @@ export default function DPAComplianceChecker({ onComplianceChange, required = fa
 
         {required && (
           <p className="font-body text-[9px] text-slate-400 mt-4 text-center">
-            AI️ This compliance check is mandatory before proceeding.
+            This compliance check is mandatory before proceeding.
           </p>
         )}
       </div>

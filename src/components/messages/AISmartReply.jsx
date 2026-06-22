@@ -55,7 +55,7 @@ Rules:
       <div className="px-3 pb-2">
         <div className="flex items-center gap-1.5 mb-2">
           <Sparkles className="w-3 h-3 text-[#00D4FF]" />
-          <span className="font-body text-[10px] text-white/40 font-bold uppercase tracking-wider">AI Suggestions</span>
+          <span className="font-body text-[10px] text-white/40 font-bold uppercase tracking-wider">Suggestions</span>
           <button onClick={() => { setSuggestions([]); setGenerated(false); }}
             className="ml-auto font-body text-[9px] text-white/20 hover:text-white/50">hide</button>
         </div>
@@ -85,7 +85,7 @@ Rules:
         style={{ background: 'rgba(0,212,255,0.06)', border: '1px solid rgba(0,212,255,0.15)' }}>
         {loading
           ? <><Loader2 className="w-3 h-3 text-[#00D4FF] animate-spin" /><span className="text-[#00D4FF]/70">Thinking...</span></>
-          : <><Sparkles className="w-3 h-3 text-[#00D4FF]" /><span className="text-[#00D4FF]/70">AI Smart Reply</span></>}
+          : <><Sparkles className="w-3 h-3 text-[#00D4FF]" /><span className="text-[#00D4FF]/70">Smart Reply</span></>}
       </button>
     </div>
   );

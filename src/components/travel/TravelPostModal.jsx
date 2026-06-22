@@ -6,19 +6,19 @@ import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import HotelRoomManager from './HotelRoomManager';
 
 const TRAVEL_TYPES = [
-  { value: 'hotel',          label: 'AI Hotel' },
-  { value: 'resort',         label: 'AI Resort' },
-  { value: 'cruise',         label: 'AI Cruise' },
-  { value: 'flight',         label: 'AI️ Flight' },
-  { value: 'ferry_bus',      label: 'AI️ Ferry & Bus' },
-  { value: 'car_rental',     label: 'AI Car Rental' },
-  { value: 'van_rental',     label: 'AI Van Rental' },
-  { value: 'tour',           label: 'AI️ Tour' },
-  { value: 'island_hopping', label: 'AI️ Island Hopping' },
-  { value: 'camping',        label: 'AI Camping' },
-  { value: 'hiking',         label: 'AI Hiking' },
-  { value: 'diving',         label: 'AI Diving' },
-  { value: 'surfing',        label: 'AI Surfing' },
+  { value: 'hotel',          label: 'Hotel' },
+  { value: 'resort',         label: 'Resort' },
+  { value: 'cruise',         label: 'Cruise' },
+  { value: 'flight',         label: 'Flight' },
+  { value: 'ferry_bus',      label: 'Ferry & Bus' },
+  { value: 'car_rental',     label: 'Car Rental' },
+  { value: 'van_rental',     label: 'Van Rental' },
+  { value: 'tour',           label: 'Tour' },
+  { value: 'island_hopping', label: 'Island Hopping' },
+  { value: 'camping',        label: 'Camping' },
+  { value: 'hiking',         label: 'Hiking' },
+  { value: 'diving',         label: 'Diving' },
+  { value: 'surfing',        label: 'Surfing' },
 ];
 
 const ACTIVITY_TYPES = ['camping', 'hiking', 'diving', 'surfing', 'tour', 'island_hopping'];
@@ -46,7 +46,7 @@ function HotelPreview({ form }) {
       <div className="relative h-40 bg-white/5 flex items-center justify-center">
         {form.image_url
           ? <img src={form.image_url} alt="" className="w-full h-full object-cover" />
-          : <div className="text-center"><span className="text-3xl">AI</span><p className="font-body text-xs text-white/20 mt-1">Upload a thumbnail</p></div>
+          : <div className="text-center"><span className="text-3xl"></span><p className="font-body text-xs text-white/20 mt-1">Upload a thumbnail</p></div>
         }
         <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F] to-transparent" />
         <div className="absolute bottom-3 left-3 right-3">
@@ -389,7 +389,7 @@ export default function TravelPostModal({ user, onClose, onSuccess }) {
                   <button type="button" onClick={handleSubmit} disabled={saving || !form.title || !form.location}
                     className="px-6 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105 disabled:opacity-40"
                     style={{ background: 'linear-gradient(135deg,#0033CC,#00D4FF)' }}>
-                    {saving ? 'Posting...' : 'Post Listing AI'}
+                    {saving ? 'Posting...' : 'Post Listing '}
                   </button>
                 )}
               </div>
@@ -436,7 +436,7 @@ export default function TravelPostModal({ user, onClose, onSuccess }) {
                   <button type="button" onClick={handleSubmit} disabled={saving}
                     className="px-6 py-2.5 rounded-xl font-body font-bold text-sm text-white transition-all hover:scale-105 disabled:opacity-40"
                     style={{ background: 'linear-gradient(135deg,#0033CC,#00D4FF)' }}>
-                    {saving ? 'Posting...' : 'Post Listing AI'}
+                    {saving ? 'Posting...' : 'Post Listing '}
                   </button>
                 </div>
               </div>

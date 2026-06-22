@@ -176,7 +176,7 @@ function ShareModal({ listing, onClose }) {
         <button onClick={() => { navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
           className="w-full py-2 rounded-xl font-body text-sm text-white transition-all"
           style={{ background: copied ? 'rgba(34,197,94,0.2)' : 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
-          {copied ? 'AI Copied!' : 'Copy Link'}
+          {copied ? 'Copied!' : 'Copy Link'}
         </button>
       </motion.div>
     </motion.div>

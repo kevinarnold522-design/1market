@@ -84,19 +84,19 @@ function TravelTransition({ subtype }) {
 // ─── Food subcategory transitions ─────────────────────────────────────────────
 function FoodTransition({ subtype }) {
   const configs = {
-    seafood:   { icons: ['AI','AI','AI','AI','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#0c2340,#164e63)', label: 'AI Fresh Seafood Awaits!', sub: 'Loading seafood spots...' },
-    fastfood:  { icons: ['AI','AI','AI','AI','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#7f1d1d,#dc2626)', label: 'AI Fast Food Time!', sub: 'Loading fast food chains...' },
-    baked:     { icons: ['AI','AI','AI','AI','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#7c2d12,#c2410c)', label: 'AI Baked Goodness!', sub: 'Loading bakeries...' },
-    bbq:       { icons: ['AI','AI','AI','AI','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#3b0000,#991b1b)', label: 'AI BBQ & Grills!', sub: 'Loading grills & BBQ...' },
-    coffee:    { icons: ['AI','AI','AI','AI','AI','AI','AI','AI','AI','AI️'], bg: 'linear-gradient(135deg,#1c1002,#78350f)', label: 'AI Café & Drinks!', sub: 'Loading coffee shops...' },
-    milktea:   { icons: ['AI','AI','AI','AI','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#2d1b69,#7c3aed)', label: 'AI Bubble Tea Heaven!', sub: 'Loading milk tea shops...' },
-    japanese:  { icons: ['AI','AI','AI','AI','AI','AI','AI','AI','AI','AI️'], bg: 'linear-gradient(135deg,#450a0a,#b91c1c)', label: 'AI Itadakimasu!', sub: 'Loading Japanese restaurants...' },
-    korean:    { icons: ['AI','AI','AI️','AI','AI','AI','AI','AI','AI','🇰🇷'], bg: 'linear-gradient(135deg,#1c0035,#7c3aed)', label: 'AI K-BBQ Time!', sub: 'Loading Korean restaurants...' },
-    seafoodlocal: { icons: ['AI','AI','AI','AI','AI','AI️','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#0c2340,#0891b2)', label: 'AI Fresh Local Catch!', sub: 'Loading seafood...' },
-    homekitchen: { icons: ['AI','AI','AI','AI','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#14532d,#15803d)', label: 'AI Lutong Bahay!', sub: 'Loading home kitchens...' },
-    homebaker: { icons: ['AI','AI','AI','AI','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#7c2d12,#ea580c)', label: 'AI Homemade Pastries!', sub: 'Loading home bakers...' },
-    catering:  { icons: ['AI️','AI','AI','AI','AI','AI‍AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#1e1b4b,#4338ca)', label: 'AI️ Catering Services!', sub: 'Loading caterers...' },
-    default:   { icons: ['AI','AI','AI','AI','AI','AI','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#3b0000,#7f1d1d)', label: 'What are you craving? AI️', sub: 'Loading food directory...' },
+    seafood:   { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#0c2340,#164e63)', label: 'Fresh Seafood Awaits!', sub: 'Loading seafood spots...' },
+    fastfood:  { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#7f1d1d,#dc2626)', label: 'Fast Food Time!', sub: 'Loading fast food chains...' },
+    baked:     { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#7c2d12,#c2410c)', label: 'Baked Goodness!', sub: 'Loading bakeries...' },
+    bbq:       { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#3b0000,#991b1b)', label: 'BBQ & Grills!', sub: 'Loading grills & BBQ...' },
+    coffee:    { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#1c1002,#78350f)', label: 'Café & Drinks!', sub: 'Loading coffee shops...' },
+    milktea:   { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#2d1b69,#7c3aed)', label: 'Bubble Tea Heaven!', sub: 'Loading milk tea shops...' },
+    japanese:  { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#450a0a,#b91c1c)', label: 'Itadakimasu!', sub: 'Loading Japanese restaurants...' },
+    korean:    { icons: ['','','','','','','','','','🇰🇷'], bg: 'linear-gradient(135deg,#1c0035,#7c3aed)', label: 'K-BBQ Time!', sub: 'Loading Korean restaurants...' },
+    seafoodlocal: { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#0c2340,#0891b2)', label: 'Fresh Local Catch!', sub: 'Loading seafood...' },
+    homekitchen: { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#14532d,#15803d)', label: 'Lutong Bahay!', sub: 'Loading home kitchens...' },
+    homebaker: { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#7c2d12,#ea580c)', label: 'Homemade Pastries!', sub: 'Loading home bakers...' },
+    catering:  { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#1e1b4b,#4338ca)', label: 'Catering Services!', sub: 'Loading caterers...' },
+    default:   { icons: ['','','','','','','','','','','',''], bg: 'linear-gradient(135deg,#3b0000,#7f1d1d)', label: 'What are you craving? ', sub: 'Loading food directory...' },
   };
   const c = configs[subtype] || configs.default;
   return <IconBurst icons={c.icons} bg={c.bg} label={c.label} sublabel={c.sub} />;
@@ -105,15 +105,15 @@ function FoodTransition({ subtype }) {
 // ─── Buy & Sell subcategory transitions ───────────────────────────────────────
 function BuySellTransition({ subtype }) {
   const configs = {
-    electronics: { icons: ['AI','AI','AI','AI️','⌚','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#1e0050,#7e22ce)', label: 'AI Gadgets & Tech Deals!', sub: 'Loading electronics...' },
-    cars:        { icons: ['AI','AI','AI️','AI','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#1a0a00,#b45309)', label: 'AI Rev It Up!', sub: 'Loading vehicles...' },
-    shoes:       { icons: ['AI','AI','AI','AI','AI','AI','AI','AI','AI️','AI'], bg: 'linear-gradient(135deg,#2d0036,#7e22ce)', label: 'AI Step Into Deals!', sub: 'Loading footwear...' },
-    clothes:     { icons: ['AI','AI','AI','AI','AI','AI','AI','AI','AI️','AI'], bg: 'linear-gradient(135deg,#1e0050,#db2777)', label: 'AI Fashion Finds!', sub: 'Loading clothing...' },
-    houses:      { icons: ['AI','AI','AI','AI','AI','AI️','AI','AI️','AI','AI️'], bg: 'linear-gradient(135deg,#052e16,#15803d)', label: 'AI Find Your Home!', sub: 'Loading properties...' },
-    furniture:   { icons: ['AI️','AI','AI️','AI️','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#1c0a00,#a16207)', label: 'AI️ Furnish Your Space!', sub: 'Loading furniture...' },
-    food:        { icons: ['AI','AI','AI','AI','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#3b0000,#b91c1c)', label: 'AI Food Products!', sub: 'Loading food listings...' },
-    product:     { icons: ['AI','AI','AI','AI️','AI','AI','AI','AI','AI️','AI'], bg: 'linear-gradient(135deg,#1e0050,#4338ca)', label: 'AI Great Deals Await!', sub: 'Loading products...' },
-    default:     { icons: ['AI️','AI','AI','AI','AI️','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#1e0050,#7e22ce)', label: 'AI️ Buy & Sell — Best Deals!', sub: 'Loading marketplace...' },
+    electronics: { icons: ['','','','','⌚','','','','',''], bg: 'linear-gradient(135deg,#1e0050,#7e22ce)', label: 'Gadgets & Tech Deals!', sub: 'Loading electronics...' },
+    cars:        { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#1a0a00,#b45309)', label: 'Rev It Up!', sub: 'Loading vehicles...' },
+    shoes:       { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#2d0036,#7e22ce)', label: 'Step Into Deals!', sub: 'Loading footwear...' },
+    clothes:     { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#1e0050,#db2777)', label: 'Fashion Finds!', sub: 'Loading clothing...' },
+    houses:      { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#052e16,#15803d)', label: 'Find Your Home!', sub: 'Loading properties...' },
+    furniture:   { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#1c0a00,#a16207)', label: 'Furnish Your Space!', sub: 'Loading furniture...' },
+    food:        { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#3b0000,#b91c1c)', label: 'Food Products!', sub: 'Loading food listings...' },
+    product:     { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#1e0050,#4338ca)', label: 'Great Deals Await!', sub: 'Loading products...' },
+    default:     { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#1e0050,#7e22ce)', label: 'Buy & Sell — Best Deals!', sub: 'Loading marketplace...' },
   };
   const c = configs[subtype] || configs.default;
   return <IconBurst icons={c.icons} bg={c.bg} label={c.label} sublabel={c.sub} />;
@@ -122,13 +122,13 @@ function BuySellTransition({ subtype }) {
 // ─── For Rent subcategory transitions ────────────────────────────────────────
 function RentTransition({ subtype }) {
   const configs = {
-    house:     { icons: ['AI','AI','AI','AI','AI️','AI','AI️','AI️','AI','AI️'], bg: 'linear-gradient(135deg,#002a00,#15803d)', label: 'AI Find Your Perfect Home!', sub: 'Loading residential rentals...' },
-    condo:     { icons: ['AI','AI','AI️','AI','AI','AI️','AI','AI','AI','🅿️'], bg: 'linear-gradient(135deg,#0a1628,#1d4ed8)', label: 'AI Urban Living Awaits!', sub: 'Loading condo rentals...' },
-    office:    { icons: ['AI','AI','AI','AI️','AI','AI','AI️','AI','AI️','AI'], bg: 'linear-gradient(135deg,#1e1b4b,#4338ca)', label: 'AI Prime Office Space!', sub: 'Loading office rentals...' },
-    vehicle:   { icons: ['AI','AI','AI','AI','AI','AI','AI','AI','AI️','AI'], bg: 'linear-gradient(135deg,#1a0a00,#b45309)', label: 'AI Wheels for Rent!', sub: 'Loading vehicle rentals...' },
-    equipment: { icons: ['AI','AI️','AI','AI','AI️','AI','AI','AI','AI️','AI'], bg: 'linear-gradient(135deg,#0a2a00,#4d7c0f)', label: 'AI Equipment Ready!', sub: 'Loading equipment...' },
-    events:    { icons: ['AI','AI','AI','AI','AI','AI','AI️','AI','AI','AI'], bg: 'linear-gradient(135deg,#2d1b69,#9333ea)', label: 'AI Event Spaces!', sub: 'Loading event venues...' },
-    default:   { icons: ['AI','AI','AI','AI','AI️','AI','AI','AI','AI️','AI'], bg: 'linear-gradient(135deg,#002a00,#15803d)', label: 'AI Find What to Rent!', sub: 'Loading rentals...' },
+    house:     { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#002a00,#15803d)', label: 'Find Your Perfect Home!', sub: 'Loading residential rentals...' },
+    condo:     { icons: ['','','','','','','','','','🅿️'], bg: 'linear-gradient(135deg,#0a1628,#1d4ed8)', label: 'Urban Living Awaits!', sub: 'Loading condo rentals...' },
+    office:    { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#1e1b4b,#4338ca)', label: 'Prime Office Space!', sub: 'Loading office rentals...' },
+    vehicle:   { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#1a0a00,#b45309)', label: 'Wheels for Rent!', sub: 'Loading vehicle rentals...' },
+    equipment: { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#0a2a00,#4d7c0f)', label: 'Equipment Ready!', sub: 'Loading equipment...' },
+    events:    { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#2d1b69,#9333ea)', label: 'Event Spaces!', sub: 'Loading event venues...' },
+    default:   { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#002a00,#15803d)', label: 'Find What to Rent!', sub: 'Loading rentals...' },
   };
   const c = configs[subtype] || configs.default;
   return <IconBurst icons={c.icons} bg={c.bg} label={c.label} sublabel={c.sub} />;
@@ -137,14 +137,14 @@ function RentTransition({ subtype }) {
 // ─── Services subcategory transitions ────────────────────────────────────────
 function ServicesTransition({ subtype }) {
   const configs = {
-    home:       { icons: ['AI','AI','AI','AI','AI','AI️','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#1a0a00,#c2410c)', label: 'AI Home Services!', sub: 'Loading home services...' },
-    tech:       { icons: ['AI','AI️','AI','⌨️','AI','AI','AI','AI‍AI','AI️','AI️'], bg: 'linear-gradient(135deg,#1e0050,#1d4ed8)', label: 'AI Tech Experts!', sub: 'Loading tech services...' },
-    beauty:     { icons: ['AI','AI','AI','AI️','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#3b0030,#be185d)', label: 'AI Beauty & Wellness!', sub: 'Loading beauty services...' },
-    events:     { icons: ['AI','AI','AI','AI','AI','AI','AI️','AI','AI','AI'], bg: 'linear-gradient(135deg,#1e1b4b,#7c3aed)', label: 'AI Events & Entertainment!', sub: 'Loading event services...' },
-    transport:  { icons: ['AI','AI','AI','AI','AI','AI','AI️','AI','AI','AI️'], bg: 'linear-gradient(135deg,#0a2a00,#166534)', label: 'AI Transport Services!', sub: 'Loading transport...' },
-    professional: { icons: ['AI','AI️','AI','AI','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#0a1628,#1e40af)', label: 'AI Professional Services!', sub: 'Loading professional services...' },
-    health:     { icons: ['AI️‍AI','AI','AI','AI','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#1a3030,#0d9488)', label: 'AI️‍AI Health & Wellness!', sub: 'Loading health services...' },
-    default:    { icons: ['AI️','AI','AI','AI','AI','⭐','AI','AI','AI‍AI','AI'], bg: 'linear-gradient(135deg,#2a1000,#c2410c)', label: 'AI️ Expert Services!', sub: 'Loading services...' },
+    home:       { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#1a0a00,#c2410c)', label: 'Home Services!', sub: 'Loading home services...' },
+    tech:       { icons: ['','','','⌨️','','','','','',''], bg: 'linear-gradient(135deg,#1e0050,#1d4ed8)', label: 'Tech Experts!', sub: 'Loading tech services...' },
+    beauty:     { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#3b0030,#be185d)', label: 'Beauty & Wellness!', sub: 'Loading beauty services...' },
+    events:     { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#1e1b4b,#7c3aed)', label: 'Events & Entertainment!', sub: 'Loading event services...' },
+    transport:  { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#0a2a00,#166534)', label: 'Transport Services!', sub: 'Loading transport...' },
+    professional: { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#0a1628,#1e40af)', label: 'Professional Services!', sub: 'Loading professional services...' },
+    health:     { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#1a3030,#0d9488)', label: 'Health & Wellness!', sub: 'Loading health services...' },
+    default:    { icons: ['','','','','','⭐','','','',''], bg: 'linear-gradient(135deg,#2a1000,#c2410c)', label: 'Expert Services!', sub: 'Loading services...' },
   };
   const c = configs[subtype] || configs.default;
   return <IconBurst icons={c.icons} bg={c.bg} label={c.label} sublabel={c.sub} />;
@@ -153,13 +153,13 @@ function ServicesTransition({ subtype }) {
 // ─── Jobs subcategory transitions ────────────────────────────────────────────
 function JobsTransition({ subtype }) {
   const configs = {
-    tech:       { icons: ['AI','AI‍AI','⌨️','AI️','AI','AI','AI','AI','AI️','AI'], bg: 'linear-gradient(135deg,#1a1000,#1d4ed8)', label: 'AI Tech Jobs!', sub: 'Loading tech careers...' },
-    creative:   { icons: ['AI','AI️','AI','AI','AI','AI','AI️','AI','AI','AI'], bg: 'linear-gradient(135deg,#1e0050,#db2777)', label: 'AI Creative Roles!', sub: 'Loading creative jobs...' },
-    remote:     { icons: ['AI','AI','AI','AI','AI','AI','AI','⌚','AI','AI️'], bg: 'linear-gradient(135deg,#052e16,#166534)', label: 'AI Work From Home!', sub: 'Loading remote jobs...' },
-    sales:      { icons: ['AI','AI','AI','AI','AI','AI','AI','⭐','AI','AI'], bg: 'linear-gradient(135deg,#1a0a00,#92400e)', label: 'AI Sales & Marketing!', sub: 'Loading sales jobs...' },
-    admin:      { icons: ['AI','AI','AI','AI️','AI','AI','AI️','AI','AI️','AI'], bg: 'linear-gradient(135deg,#1e1b4b,#3730a3)', label: 'AI Admin & Office Jobs!', sub: 'Loading admin roles...' },
-    food:       { icons: ['AI‍AI','AI','AI️','AI‍AI','AI','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#3b0000,#b91c1c)', label: 'AI‍AI Food & Service Jobs!', sub: 'Loading food jobs...' },
-    default:    { icons: ['AI','AI','AI','AI','⭐','AI','AI','AI','AI','AI'], bg: 'linear-gradient(135deg,#1a1000,#b45309)', label: 'AI Your Career Awaits!', sub: 'Loading jobs...' },
+    tech:       { icons: ['','','⌨️','','','','','','',''], bg: 'linear-gradient(135deg,#1a1000,#1d4ed8)', label: 'Tech Jobs!', sub: 'Loading tech careers...' },
+    creative:   { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#1e0050,#db2777)', label: 'Creative Roles!', sub: 'Loading creative jobs...' },
+    remote:     { icons: ['','','','','','','','⌚','',''], bg: 'linear-gradient(135deg,#052e16,#166534)', label: 'Work From Home!', sub: 'Loading remote jobs...' },
+    sales:      { icons: ['','','','','','','','⭐','',''], bg: 'linear-gradient(135deg,#1a0a00,#92400e)', label: 'Sales & Marketing!', sub: 'Loading sales jobs...' },
+    admin:      { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#1e1b4b,#3730a3)', label: 'Admin & Office Jobs!', sub: 'Loading admin roles...' },
+    food:       { icons: ['','','','','','','','','',''], bg: 'linear-gradient(135deg,#3b0000,#b91c1c)', label: 'Food & Service Jobs!', sub: 'Loading food jobs...' },
+    default:    { icons: ['','','','','⭐','','','','',''], bg: 'linear-gradient(135deg,#1a1000,#b45309)', label: 'Your Career Awaits!', sub: 'Loading jobs...' },
   };
   const c = configs[subtype] || configs.default;
   return <IconBurst icons={c.icons} bg={c.bg} label={c.label} sublabel={c.sub} />;

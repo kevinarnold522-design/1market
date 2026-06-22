@@ -113,7 +113,7 @@ export default function FeaturedFeed({ images }) {
                 </div>
                 <div className="absolute top-3 right-3">
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${item.location === 'Manila' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}`}>
-                    AI {item.area}
+                    {item.area}
                   </span>
                 </div>
               </div>

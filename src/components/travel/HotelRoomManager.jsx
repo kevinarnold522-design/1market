@@ -45,7 +45,7 @@ function CalendarBlocker({ blockedDates, onToggle }) {
               style={isBlocked
                 ? { background: 'rgba(239,68,68,0.2)', border: '1px solid rgba(239,68,68,0.5)', color: '#f87171' }
                 : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.4)' }}>
-              {isBlocked ? 'AI' : 'AI'} {label}
+              {isBlocked ? '' : ''} {label}
             </button>
           );
         })}

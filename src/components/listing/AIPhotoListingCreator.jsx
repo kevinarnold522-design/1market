@@ -22,7 +22,7 @@ export default function AIPhotoListingCreator({ onApplyListing }) {
       const uploads = [];
       for (const file of files) uploads.push(await uploadMediaFileToSupabase(file, 'listing-images'));
       const urls = uploads.map(u => u.file_url).filter(Boolean);
-      setStatus('AI is scanning photos and generating your listing...');
+      setStatus('is scanning photos and generating your listing...');
       let draft;
       try {
         const res = await base44.functions.invoke('analyzeListingImages', { image_urls: urls });
@@ -32,7 +32,7 @@ export default function AIPhotoListingCreator({ onApplyListing }) {
           safe_to_list: true,
           confidence_score: 0.5,
           title: 'Photo-Based Marketplace Listing',
-          description: 'AI draft created from your uploaded photos. Review the category, title, price, condition, and description before submitting for approval.',
+          description: 'draft created from your uploaded photos. Review the category, title, price, condition, and description before submitting for approval.',
           main_category: 'buysell',
           type: 'product',
           subcategory: 'General',
@@ -44,9 +44,9 @@ export default function AIPhotoListingCreator({ onApplyListing }) {
           moderation_notes: ''
         };
       }
-      if (!draft.safe_to_list) setError(draft.moderation_notes || 'AI flagged these images for review. You can edit, but it will not auto-publish.');
+      if (!draft.safe_to_list) setError(draft.moderation_notes || 'flagged these images for review. You can edit, but it will not auto-publish.');
       onApplyListing(draft, urls);
-      setStatus('AI draft added. Review and edit before submitting.');
+      setStatus('draft added. Review and edit before submitting.');
     } catch (err) {
       setError(err.message || 'Could not upload and scan these photos.');
       setStatus('');
@@ -60,13 +60,13 @@ export default function AIPhotoListingCreator({ onApplyListing }) {
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-xl bg-[#00D4FF]/20 flex items-center justify-center"><Sparkles className="w-5 h-5 text-[#00D4FF]" /></div>
         <div className="flex-1">
-          <p className="font-heading font-bold text-white text-sm">Create Listing with AI</p>
+          <p className="font-heading font-bold text-white text-sm">Create Listing with </p>
           <p className="font-body text-xs text-white/45">Scan Photos & Generate Listing. Upload up to 10 photos; you approve before publishing.</p>
         </div>
       </div>
       <label className="flex items-center justify-center gap-2 w-full py-3 rounded-xl cursor-pointer font-body font-bold text-sm text-[#06163a] transition-all hover:scale-[1.01]" style={{ background: 'linear-gradient(135deg,#00D4FF,#60a5fa)' }}>
         {busy ? <div className="w-4 h-4 border-2 border-[#06163a]/30 border-t-[#06163a] rounded-full animate-spin" /> : <><Camera className="w-4 h-4" /><Upload className="w-4 h-4" /></>}
-        {busy ? 'Generating AI Listing...' : 'Scan Photos & Generate Listing'}
+        {busy ? 'Generating Listing...' : 'Scan Photos & Generate Listing'}
         <input type="file" accept="image/*" multiple className="hidden" onChange={handleFiles} disabled={busy} />
       </label>
       {status && <p className="font-body text-[11px] text-[#00D4FF] flex items-center gap-1"><ShieldCheck className="w-3 h-3" />{status}</p>}

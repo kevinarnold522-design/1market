@@ -1,8 +1,8 @@
 /**
  * AIListingAssistant — floating panel inside AddListingModal
  * Features:
- *  1. AI Description Generator
- *  2. AI Image Analyzer (detects product details from uploaded photo)
+ *  1. Description Generator
+ *  2. Image Analyzer (detects product details from uploaded photo)
  */
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -121,7 +121,7 @@ Be concise and practical for a Filipino buyer.`,
             style={{ background: 'linear-gradient(135deg,#00D4FF,#2563EB)' }}>
             <Sparkles className="w-3.5 h-3.5 text-white" />
           </div>
-          <span className="font-heading font-bold text-sm text-[#00D4FF]">AI Listing Assistant</span>
+          <span className="font-heading font-bold text-sm text-[#00D4FF]">Listing Assistant</span>
           <span className="px-1.5 py-0.5 rounded-full font-body text-[9px] font-bold text-[#0A192F] bg-[#00D4FF]">NEW</span>
         </div>
         {open ? <ChevronUp className="w-4 h-4 text-[#00D4FF]/60" /> : <ChevronDown className="w-4 h-4 text-[#00D4FF]/60" />}
@@ -164,14 +164,14 @@ Be concise and practical for a Filipino buyer.`,
               )}
             </div>
 
-            {/* === AI DESCRIPTION GENERATOR === */}
+            {/* === DESCRIPTION GENERATOR === */}
               <div className="pt-3">
                 <div className="flex items-center gap-2 mb-2">
                   <Wand2 className="w-3.5 h-3.5 text-[#00D4FF]" />
-                  <span className="font-body text-[11px] font-bold text-white/70 uppercase tracking-wider">AI Description Writer</span>
+                  <span className="font-body text-[11px] font-bold text-white/70 uppercase tracking-wider">Description Writer</span>
                 </div>
                 <p className="font-body text-[10px] text-white/35 mb-2">
-                  Fill in the title &amp; category first, then let AI write a professional description for you.
+                  Fill in the title &amp; category first, then let write a professional description for you.
                 </p>
                 <button
                   type="button"
@@ -203,14 +203,14 @@ Be concise and practical for a Filipino buyer.`,
                 )}
               </div>
 
-              {/* === AI IMAGE ANALYZER === */}
+              {/* === IMAGE ANALYZER === */}
               <div className="border-t border-white/8 pt-3">
                 <div className="flex items-center gap-2 mb-2">
                   <ImageIcon className="w-3.5 h-3.5 text-purple-400" />
-                  <span className="font-body text-[11px] font-bold text-white/70 uppercase tracking-wider">AI Image Analyzer</span>
+                  <span className="font-body text-[11px] font-bold text-white/70 uppercase tracking-wider">Image Analyzer</span>
                 </div>
                 <p className="font-body text-[10px] text-white/35 mb-2">
-                  Upload your main photo first, then let AI detect product details, condition, and suggest a title.
+                  Upload your main photo first, then let detect product details, condition, and suggest a title.
                 </p>
                 <button
                   type="button"
