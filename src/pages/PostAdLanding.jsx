@@ -104,9 +104,8 @@ export default function PostAdLanding() {
 
   const selectCategory = (cat) => {
     if (!canPost) return;
-    const next = selectedCat?.key === cat.key ? null : cat;
-    setSelectedCat(next);
-    setOpenType(next?.types[0]?.[0] || '');
+    setSelectedCat(cat);
+    setOpenType(cat.types[0]?.[0] || '');
   };
 
   const openListingModal = (type, subcategory = '') => {
