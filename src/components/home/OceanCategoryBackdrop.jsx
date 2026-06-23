@@ -2,12 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 const fish = [
-  { label: 'gold reef fish', top: '69%', color: '#FFD700', accent: '#EF4444', duration: 19, delay: 0, dir: 1, size: 1 },
-  { label: 'red island fish', top: '76%', color: '#EF4444', accent: '#FFFFFF', duration: 22, delay: 1.1, dir: -1, size: 0.9 },
-  { label: 'white reef fish', top: '83%', color: '#FFFFFF', accent: '#FFD700', duration: 24, delay: 2, dir: 1, size: 1.15 },
-  { label: 'blue lagoon fish', top: '91%', color: '#60A5FA', accent: '#FFD700', duration: 28, delay: 2.8, dir: -1, size: 1.25 },
-  { label: 'tiny clown fish', top: '72%', color: '#F97316', accent: '#FFFFFF', duration: 17, delay: 3.4, dir: 1, size: 0.72 },
-  { label: 'royal angel fish', top: '88%', color: '#2563EB', accent: '#FFD700', duration: 21, delay: 4.1, dir: -1, size: 0.86 },
+  { label: 'realistic golden trevally', top: '70%', body: '#D6A83E', belly: '#F8E7B0', stripe: '#7C5A1A', fin: '#C7782A', duration: 23, delay: 0, dir: 1, size: 1 },
+  { label: 'realistic red snapper', top: '78%', body: '#B94A3A', belly: '#F5C7B8', stripe: '#7A241D', fin: '#D86E4D', duration: 27, delay: 1.2, dir: -1, size: 0.92 },
+  { label: 'realistic silver milkfish', top: '86%', body: '#C7D7DD', belly: '#F8FAFC', stripe: '#6C8792', fin: '#A7C0CA', duration: 30, delay: 2.4, dir: 1, size: 1.18 },
+  { label: 'realistic blue tang', top: '92%', body: '#2E6FAE', belly: '#8FC6E8', stripe: '#123A66', fin: '#F0C94B', duration: 25, delay: 3.4, dir: -1, size: 0.88 },
 ];
 
 function Cloud({ className, delay = 0 }) {
@@ -48,11 +46,29 @@ function Boat({ className, delay = 0 }) {
 }
 
 function OceanWaves() {
+  const layers = [
+    { bottom: '0%', height: 96, color: 'rgba(29,78,216,0.52)', duration: 8 },
+    { bottom: '13%', height: 86, color: 'rgba(14,165,233,0.36)', duration: 10 },
+    { bottom: '26%', height: 72, color: 'rgba(255,255,255,0.18)', duration: 12 },
+  ];
+
   return (
-    <div className="absolute inset-x-0 bottom-0 h-[45%] overflow-hidden pointer-events-none">
-      {[0, 1, 2].map(i => (
-        <motion.div key={i} className="absolute left-[-20%] w-[140%] rounded-[50%]" style={{ bottom: `${i * 13}%`, height: 82, background: i === 0 ? 'rgba(37,99,235,0.46)' : i === 1 ? 'rgba(14,165,233,0.34)' : 'rgba(255,255,255,0.14)', filter: 'blur(1px)' }} animate={{ x: ['0%', '-8%', '0%'] }} transition={{ duration: 7 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: i * 0.7 }} />
+    <div className="absolute inset-x-0 bottom-0 h-[48%] overflow-hidden pointer-events-none">
+      {layers.map((wave, i) => (
+        <motion.div
+          key={i}
+          className="absolute left-[-25%] w-[150%] rounded-[50%]"
+          style={{ bottom: wave.bottom, height: wave.height, background: wave.color, filter: 'blur(1px)' }}
+          animate={{ x: ['0%', '-10%', '0%'], y: [0, -10, 4, 0], scaleY: [1, 1.08, 0.96, 1] }}
+          transition={{ duration: wave.duration, repeat: Infinity, ease: 'easeInOut', delay: i * 0.55 }}
+        />
       ))}
+      <motion.div
+        className="absolute left-[-10%] bottom-[31%] h-8 w-[120%] opacity-70"
+        style={{ background: 'repeating-linear-gradient(90deg, transparent 0 44px, rgba(255,255,255,0.32) 44px 88px)', borderRadius: '999px', filter: 'blur(8px)' }}
+        animate={{ x: ['0%', '8%', '0%'], opacity: [0.35, 0.78, 0.35] }}
+        transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut' }}
+      />
     </div>
   );
 }
@@ -67,16 +83,30 @@ function BubbleColumn({ className, delay = 0 }) {
 
 function FishBody({ item, showBubbles }) {
   return (
-    <div className="relative" style={{ width: 86 * item.size, height: 44 * item.size }}>
-      <motion.div className="absolute inset-y-2 left-0 w-[72%] rounded-[999px] shadow-2xl"
-        style={{ background: `radial-gradient(circle at 30% 30%, #fff 0 10%, ${item.color} 22%, ${item.accent} 100%)`, boxShadow: `0 12px 22px ${item.color}55` }}
-        animate={{ rotate: [0, 3, -3, 0], scaleX: [1, 1.04, 1] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}>
-        <motion.span className="absolute right-4 top-2 w-2.5 h-2.5 rounded-full bg-[#0A192F] border border-white"
-          animate={{ scaleY: [1, 1, 0.12, 1] }} transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }} />
+    <div className="relative" style={{ width: 116 * item.size, height: 56 * item.size }}>
+      <motion.div
+        className="absolute left-2 top-2 h-10 w-20 rounded-[55%_45%_48%_52%] shadow-2xl overflow-hidden"
+        style={{
+          background: `linear-gradient(180deg, ${item.body} 0%, ${item.body} 45%, ${item.belly} 100%)`,
+          boxShadow: `0 14px 28px ${item.body}66`,
+        }}
+        animate={{ rotate: [0, 1.5, -1.5, 0], scaleX: [1, 1.035, 1] }}
+        transition={{ duration: 1.7, repeat: Infinity, ease: 'easeInOut' }}>
+        <div className="absolute inset-0 opacity-45" style={{ background: 'repeating-radial-gradient(circle at 28% 50%, rgba(255,255,255,0.36) 0 2px, transparent 2px 9px)' }} />
+        <div className="absolute left-4 right-3 top-5 h-1 rounded-full opacity-55" style={{ background: item.stripe }} />
+        <motion.span className="absolute right-4 top-2.5 w-2.5 h-2.5 rounded-full bg-[#061326] border border-white/80 shadow-sm"
+          animate={{ scaleY: [1, 1, 0.15, 1] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} />
+        <span className="absolute right-3 top-3.5 w-1 h-1 rounded-full bg-white" />
       </motion.div>
-      <motion.div className="absolute right-1 top-1/2 -translate-y-1/2 w-0 h-0"
-        style={{ borderTop: `${16 * item.size}px solid transparent`, borderBottom: `${16 * item.size}px solid transparent`, borderLeft: `${28 * item.size}px solid ${item.accent}` }}
-        animate={{ rotate: [-8, 10, -8] }} transition={{ duration: 0.9, repeat: Infinity, ease: 'easeInOut' }} />
+      <motion.div className="absolute left-10 top-0 w-7 h-5 rounded-t-full origin-bottom"
+        style={{ background: `linear-gradient(180deg, ${item.fin}, transparent)` }}
+        animate={{ rotate: [-8, 8, -8] }} transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }} />
+      <motion.div className="absolute left-12 bottom-1 w-8 h-5 rounded-b-full origin-top"
+        style={{ background: `linear-gradient(0deg, ${item.fin}, transparent)` }}
+        animate={{ rotate: [8, -8, 8] }} transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }} />
+      <motion.div className="absolute left-[78px] top-3 w-0 h-0 origin-left"
+        style={{ borderTop: `${17 * item.size}px solid transparent`, borderBottom: `${17 * item.size}px solid transparent`, borderLeft: `${31 * item.size}px solid ${item.fin}` }}
+        animate={{ rotate: [-13, 13, -13], scaleX: [1, 0.82, 1] }} transition={{ duration: 0.8, repeat: Infinity, ease: 'easeInOut' }} />
       {showBubbles && [0, 1, 2, 3].map(i => (
         <span key={i} className="absolute rounded-full bg-white/60 animate-bubble-float" style={{ width: 6 + i * 3, height: 6 + i * 3, left: -8 - i * 6, bottom: 4 + i * 4, animationDelay: `${item.delay + i * 0.35}s`, animationDuration: `${6 + i}s`, '--bubble-drift': `${8 + i * 3}px` }} />
       ))}
@@ -128,7 +158,7 @@ export default function OceanCategoryBackdrop({ global = false }) {
         const end = item.dir === 1 ? '112vw' : '-18vw';
         return (
           <motion.div key={item.label} className="absolute drop-shadow-2xl" style={{ top: item.top }} aria-label={item.label}
-            initial={{ x: start, scaleX: item.dir }} animate={{ x: [start, '34vw', '66vw', end], y: [0, -14, 12, -8, 0], rotate: [0, -3, 4, -2, 0] }}
+            initial={{ x: start, scaleX: item.dir }} animate={{ x: [start, '28vw', '62vw', end], y: [0, -10, 8, -6, 0], rotate: [0, -1.5, 2, -1, 0] }}
             transition={{ duration: item.duration, repeat: Infinity, ease: 'easeInOut', delay: item.delay }}>
             <FishBody item={item} showBubbles={showBubbles} />
           </motion.div>

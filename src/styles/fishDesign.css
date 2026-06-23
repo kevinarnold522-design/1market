@@ -1,5 +1,1 @@
-/* New fish design styles applied yesterday */
-.fish-design {
-    background-image: url('../assets/fish-yesterday.png');
-    background-size: cover;
-}
+/* Fish artwork is now rendered directly in the ocean backdrop for a more realistic animated look. */

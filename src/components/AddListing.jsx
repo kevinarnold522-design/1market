@@ -1,5 +1,9 @@
+import React, { useState } from 'react';
+
 // Change the listing letters to white when selected
 // Add logic to turn selected option yellow
+const options = ['Travel', 'Food', 'Buy & Sell', 'Jobs', 'Services', 'Rent'];
+
 const AddListing = () => {
     const [selectedOption, setSelectedOption] = useState(null);
 
@@ -26,3 +30,5 @@ const AddListing = () => {
         </div>
     );
 };
+
+export default AddListing;
