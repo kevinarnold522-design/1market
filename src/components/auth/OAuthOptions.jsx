@@ -41,8 +41,8 @@ export default function OAuthOptions({
             {loadingProvider === provider.key ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <span className={`w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold ${provider.className}`}>
-                {provider.mark === 'mail' ? <Mail className="w-4 h-4" /> : provider.mark}
+              <span className={`${provider.key === 'google' ? 'w-12 h-12 text-[15px]' : 'w-9 h-9 text-[12px]'} rounded-full flex items-center justify-center font-bold ${provider.className}`}>
+                {provider.mark === 'mail' ? <Mail className="w-7 h-7" /> : provider.mark}
               </span>
             )}
             {actionLabel} {provider.label}

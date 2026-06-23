@@ -538,3 +538,45 @@ aside nav button + a {
   --tw-gradient-to: rgb(0 51 204 / 0) var(--tw-gradient-to-position) !important;
   --tw-gradient-stops: var(--tw-gradient-from), var(--royal-blue) var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
 }
+
+/* Blue/yellow listing and auth modal readability */
+.listing-options-blue-yellow,
+.listing-options-blue-yellow *:not(svg):not(path),
+.auth-blue-yellow,
+.auth-blue-yellow *:not(svg):not(path) {
+  color: #FFD700 !important;
+}
+.listing-options-blue-yellow input,
+.listing-options-blue-yellow textarea,
+.listing-options-blue-yellow select,
+.auth-blue-yellow input,
+.auth-blue-yellow textarea,
+.auth-blue-yellow select {
+  background: rgba(255,255,255,0.10) !important;
+  border-color: rgba(255,215,0,0.42) !important;
+  color: #FFD700 !important;
+}
+.listing-options-blue-yellow input::placeholder,
+.listing-options-blue-yellow textarea::placeholder,
+.auth-blue-yellow input::placeholder,
+.auth-blue-yellow textarea::placeholder {
+  color: rgba(255,215,0,0.58) !important;
+}
+.listing-options-blue-yellow option {
+  background: #2563EB !important;
+  color: #FFD700 !important;
+}
+.listing-options-blue-yellow button,
+.auth-blue-yellow button {
+  border-color: rgba(255,215,0,0.45) !important;
+}
+.auth-blue-yellow button:not([class*="bg-white"]) {
+  background: rgba(37,99,235,0.92) !important;
+  color: #FFD700 !important;
+}
+.auth-blue-yellow [class*="bg-white"] {
+  background: rgba(255,255,255,0.95) !important;
+}
+.auth-blue-yellow .hidden.lg\:flex {
+  background: linear-gradient(135deg,#2563EB,#60A5FA) !important;
+}

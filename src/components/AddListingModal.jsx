@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload, Trash2, ChevronLeft, Image } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
@@ -395,6 +395,22 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   const [done, setDone] = useState(false);
   const [dpaAccepted, setDpaAccepted] = useState(false);
   const [legalAccepted, setLegalAccepted] = useState(false);
+  const closingFromBrowserBack = useRef(false);
+
+  useEffect(() => {
+    window.history.pushState({ ...(window.history.state || {}), addListingModalOpen: true }, '', window.location.href);
+    const handlePopState = () => {
+      closingFromBrowserBack.current = true;
+      onClose?.();
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      if (!closingFromBrowserBack.current && window.history.state?.addListingModalOpen) {
+        window.history.back();
+      }
+    };
+  }, [onClose]);
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -552,11 +568,11 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-[#070F1A]/90 backdrop-blur-sm">
+      className="listing-options-blue-yellow fixed inset-0 z-50 flex items-center justify-center p-3 bg-[#2563EB]/90 backdrop-blur-sm">
       <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95 }}
         onClick={e => e.stopPropagation()}
         className="w-full max-w-xl rounded-2xl overflow-hidden shadow-2xl flex flex-col"
-        style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)', maxHeight: '92vh' }}>
+        style={{ background: 'linear-gradient(135deg,#2563EB,#3E97F1)', border: '1px solid rgba(255,215,0,0.45)', maxHeight: '92vh' }}>
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 flex-shrink-0">

@@ -24,8 +24,8 @@ export default function LoginModal({ onClose }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 40 }}
           onClick={e => e.stopPropagation()}
-          className="w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden shadow-2xl font-body"
-          style={{ background: 'linear-gradient(135deg,#BAE6FD,#60A5FA)', border: '1px solid rgba(255,215,0,0.45)' }}>
+          className="auth-blue-yellow w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden shadow-2xl font-body"
+          style={{ background: 'linear-gradient(135deg,#2563EB,#3E97F1)', border: '1px solid rgba(255,215,0,0.55)' }}>
 
           <div className="flex items-center justify-between px-5 pt-5 pb-3">
             <div className="flex items-center gap-2">

@@ -32,8 +32,8 @@ export default function MemberSignupModal({ onClose }) {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95 }}
         onClick={e => e.stopPropagation()}
-        className="w-full bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col lg:flex-row font-body"
-        style={{ maxWidth: '680px', boxShadow: '0 0 0 1px rgba(255,215,0,0.32), 0 32px 80px rgba(37,99,235,0.35)' }}>
+        className="auth-blue-yellow w-full rounded-2xl overflow-hidden shadow-2xl flex flex-col lg:flex-row font-body"
+        style={{ maxWidth: '680px', background: 'linear-gradient(135deg,#2563EB,#3E97F1)', boxShadow: '0 0 0 1px rgba(255,215,0,0.44), 0 32px 80px rgba(37,99,235,0.35)' }}>
 
         {/* LEFT — Form */}
         <div className="flex-shrink-0 lg:w-[55%] flex flex-col">
@@ -90,9 +90,9 @@ export default function MemberSignupModal({ onClose }) {
                   onError={setError}
                   actionLabel="Sign up with"
                   className="space-y-3 mb-4"
-                  buttonClassName="w-full h-10 bg-white text-[#0A192F] border-[#0A192F]/10 hover:bg-[#F8FAFC]"
-                  separatorLineClassName="w-full border-t border-[#0A192F]/10"
-                  separatorTextClassName="bg-white px-3 text-[#0A192F]/40"
+                  buttonClassName="w-full h-14 bg-white/95 text-[#2563EB] border-[#FFD700]/60 hover:bg-yellow-50 font-bold"
+                  separatorLineClassName="w-full border-t border-[#FFD700]/45"
+                  separatorTextClassName="bg-[#3E97F1] px-3 text-[#FFD700] font-bold"
                 />
 
                 {error && <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-xs">{error}</div>}
