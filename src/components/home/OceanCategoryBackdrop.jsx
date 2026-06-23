@@ -6,6 +6,8 @@ const fish = [
   { label: 'red island fish', top: '67%', color: '#EF4444', accent: '#FFFFFF', duration: 22, delay: 1.1, dir: -1, size: 0.9 },
   { label: 'white reef fish', top: '75%', color: '#FFFFFF', accent: '#FFD700', duration: 24, delay: 2, dir: 1, size: 1.15 },
   { label: 'blue lagoon fish', top: '84%', color: '#60A5FA', accent: '#FFD700', duration: 28, delay: 2.8, dir: -1, size: 1.25 },
+  { label: 'tiny clown fish', top: '62%', color: '#F97316', accent: '#FFFFFF', duration: 17, delay: 3.4, dir: 1, size: 0.72 },
+  { label: 'royal angel fish', top: '79%', color: '#2563EB', accent: '#FFD700', duration: 21, delay: 4.1, dir: -1, size: 0.86 },
 ];
 
 function Cloud({ className, delay = 0 }) {
@@ -29,6 +31,19 @@ function Island({ className }) {
       <div className="absolute bottom-22 left-24 w-28 h-11 rounded-full bg-[#16A34A] rotate-12" />
       <div className="absolute bottom-9 left-8 w-16 h-9 rounded-t-full bg-white/45" />
     </div>
+  );
+}
+
+function Boat({ className, delay = 0 }) {
+  return (
+    <motion.div className={`absolute pointer-events-none ${className}`} animate={{ x: [0, 14, 0], y: [0, -3, 0], rotate: [0, 1.5, 0] }} transition={{ duration: 5.5, repeat: Infinity, delay, ease: 'easeInOut' }}>
+      <div className="relative w-28 h-20">
+        <div className="absolute bottom-3 left-2 w-24 h-8 rounded-b-full bg-[#8B5A2B] shadow-xl" />
+        <div className="absolute bottom-11 left-14 w-1 h-11 bg-[#6B3F1D]" />
+        <div className="absolute bottom-13 left-15 w-0 h-0 border-y-[20px] border-y-transparent border-l-[28px] border-l-white/90" />
+        <div className="absolute bottom-4 left-6 w-14 h-2 rounded-full bg-white/40" />
+      </div>
+    </motion.div>
   );
 }
 
@@ -83,6 +98,8 @@ export default function OceanCategoryBackdrop({ global = false }) {
       <Island className="left-6 sm:left-16 top-[45%] w-52 h-40 opacity-95" />
       <Island className="right-10 sm:right-24 top-[50%] w-56 h-44 opacity-90 scale-110" />
       <Island className="left-1/2 top-[56%] w-48 h-40 opacity-75 hidden md:block" />
+      <Boat className="left-44 sm:left-64 top-[54%] opacity-95" />
+      <Boat className="right-36 sm:right-72 top-[59%] opacity-85 scale-75" delay={1.5} />
 
       {fish.map(item => {
         const start = item.dir === 1 ? '-18vw' : '112vw';

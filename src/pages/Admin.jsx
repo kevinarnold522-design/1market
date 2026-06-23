@@ -334,19 +334,22 @@ export default function Admin() {
   const [toast, setToast] = useState('');
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
-  const adminUserWrite = async (action, id, patch = {}) => {
-    await base44.functions.invoke('supabaseEntityWrite', { entity: 'User', action, id, patch });
+  const adminEntityWrite = async (entity, action, id, patch = {}) => {
+    const res = await base44.functions.invoke('supabasebase', { entity, action, id, patch, record: patch });
+    return res.data?.data;
   };
+  const adminUserWrite = (action, id, patch = {}) => adminEntityWrite('User', action, id, patch);
+  const getUserType = (u) => u.user_type || (u.is_seller ? 'seller' : 'customer');
 
   const approveListing = async (listingId) => {
-    await base44.entities.Listing.update(listingId, { approval_status: 'approved', is_active: true });
+    await adminEntityWrite('Listing', 'update', listingId, { approval_status: 'approved', is_active: true });
     try { await base44.functions.invoke('listingApprovalNotify', { listing_id: listingId, status: 'approved' }); } catch(e) {}
     showToast('Listing approved! Seller notified by email.');
     loadAll();
   };
 
   const rejectListing = async (listingId, note = '') => {
-    await base44.entities.Listing.update(listingId, { approval_status: 'rejected', is_active: false });
+    await adminEntityWrite('Listing', 'update', listingId, { approval_status: 'rejected', is_active: false });
     try { await base44.functions.invoke('listingApprovalNotify', { listing_id: listingId, status: 'rejected', admin_note: note }); } catch(e) {}
     showToast('Listing rejected. Seller notified.');
     loadAll();
@@ -437,10 +440,10 @@ export default function Admin() {
     if (!form.name) return;
     const data = { ...form, menu: form.menu || [], extra_images: form.extra_images || [] };
     if (editingBiz) {
-      await base44.entities.Business.update(editingBiz.id, data);
+      await adminEntityWrite('Business', 'update', editingBiz.id, data);
       showToast('Business updated!');
     } else {
-      await base44.entities.Business.create(data);
+      await base44.functions.invoke('supabasebase', { entity: 'Business', action: 'create', record: data });
       showToast('Business added!');
     }
     setShowBizForm(false); setEditingBiz(null);
@@ -448,24 +451,7 @@ export default function Admin() {
   };
 
   const adminDeleteEntity = async (entity, id) => {
-    try {
-      const res = await fetch('/api/adminDelete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ entity, id }),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || data.message || `Failed to delete ${entity}`);
-      }
-    } catch (error) {
-      const missingEndpoint = error?.message?.includes('Failed to fetch') || error?.message?.includes('404');
-      if (missingEndpoint) {
-        await base44.entities[entity].delete(id);
-        return;
-      }
-      throw error;
-    }
+    await adminEntityWrite(entity, 'delete', id);
   };
 
   const deleteBiz = async (id) => {
@@ -490,10 +476,10 @@ export default function Admin() {
     if (!form.title) return;
     const data = { ...form, price: Number(form.price) || 0, extra_images: form.extra_images || [] };
     if (editingList) {
-      await base44.entities.Listing.update(editingList.id, data);
+      await adminEntityWrite('Listing', 'update', editingList.id, data);
       showToast('Listing updated!');
     } else {
-      await base44.entities.Listing.create(data);
+      await base44.functions.invoke('supabasebase', { entity: 'Listing', action: 'create', record: data });
       showToast('Listing added!');
     }
     setShowListForm(false); setEditingList(null);
@@ -540,7 +526,7 @@ export default function Admin() {
   const transferListingOwner = async (listing, userId) => {
     const target = users.find(u => u.id === userId);
     if (!target) { showToast('Select a user first.'); return; }
-    await base44.entities.Listing.update(listing.id, {
+    await adminEntityWrite('Listing', 'update', listing.id, {
       created_by_id: target.id,
       owner_user_id: target.id,
       owner_email: target.email || '',
@@ -858,9 +844,9 @@ export default function Admin() {
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold capitalize ${u.role === 'admin' ? 'bg-amber-100 text-amber-700' : u.role === 'moderator' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
                       {u.role || 'user'}
                     </span>
-                    {(u.user_type === 'seller' || u.user_type === 'business' || u.is_seller) && (
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${u.user_type === 'business' ? 'bg-purple-100 text-purple-700' : 'bg-emerald-100 text-emerald-700'}`}>
-                        {u.user_type === 'business' ? `${u.business_name || 'Business'}` : 'Seller'}
+                    {getUserType(u) !== 'customer' && (
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${getUserType(u) === 'business' ? 'bg-purple-100 text-purple-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                        {getUserType(u) === 'business' ? `${u.business_name || 'Business'}` : 'Seller'}
                       </span>
                     )}
                   </div>
@@ -871,15 +857,17 @@ export default function Admin() {
                    className="border border-[#0A192F]/10 rounded-xl px-2 py-1.5 font-body text-xs text-[#0A192F] bg-white focus:outline-none focus:border-[#2563EB]">
                    {ROLES.map(r => <option key={r} value={r} className="capitalize">{r}</option>)}
                  </select>
-                 <select value={u.user_type || 'customer'} onChange={async e => {
+                 <select value={getUserType(u)} onChange={async e => {
                      const newType = e.target.value;
-                     const updateData = { user_type: newType };
+                     const updateData = { user_type: newType, business_pending: false };
                      if (newType === 'seller' || newType === 'business') {
                        updateData.is_seller = true;
                        updateData.account_type = 'business_owner';
                      } else {
                        updateData.is_seller = false;
                        updateData.account_type = 'customer';
+                       updateData.business_name = '';
+                       updateData.channel_name = '';
                      }
                      await adminUserWrite('update', u.id, updateData);
                      // Send transition email
@@ -938,8 +926,8 @@ export default function Admin() {
                   {r.status === 'pending' && (
                     <>
                       <button onClick={async () => {
-                          await base44.entities.Report.update(r.id, { status: 'dismissed' });
-                          await base44.entities.Listing.update(r.listing_id, { is_active: true, status: 'active' });
+                          await adminEntityWrite('Report', 'update', r.id, { status: 'dismissed' });
+                          await adminEntityWrite('Listing', 'update', r.listing_id, { is_active: true, status: 'active' });
                           showToast('Report dismissed — listing restored.');
                           loadAll();
                         }}
@@ -948,8 +936,8 @@ export default function Admin() {
                       </button>
                       <button onClick={async () => {
                           if (!window.confirm('Permanently remove this listing? This cannot be undone.')) return;
-                          await base44.entities.Report.update(r.id, { status: 'removed' });
-                          await base44.entities.Listing.delete(r.listing_id);
+                          await adminEntityWrite('Report', 'update', r.id, { status: 'removed' });
+                          await adminDeleteEntity('Listing', r.listing_id);
                           showToast('Listing permanently removed.');
                           loadAll();
                         }}
@@ -1002,7 +990,7 @@ export default function Admin() {
                 {v.status === 'pending' && (
                   <div className="flex gap-2 flex-shrink-0 flex-wrap">
                     <button onClick={async () => {
-                       await base44.entities.VerificationApplication.update(v.id, { status: 'approved', reviewed_by: 'admin' });
+                       await adminEntityWrite('VerificationApplication', 'update', v.id, { status: 'approved', reviewed_by: 'admin' });
                        const targetUser = users.find(u => u.email === v.user_email);
                        if (targetUser) {
                          const isBizApp = v.account_type === 'business_owner';
@@ -1038,7 +1026,7 @@ export default function Admin() {
                       <CheckCircle className="w-3.5 h-3.5" /> Approve
                     </button>
                     <button onClick={async () => {
-                        await base44.entities.VerificationApplication.update(v.id, { status: 'rejected', reviewed_by: 'admin' });
+                        await adminEntityWrite('VerificationApplication', 'update', v.id, { status: 'rejected', reviewed_by: 'admin' });
                         showToast('Application rejected.');
                         loadAll();
                       }}

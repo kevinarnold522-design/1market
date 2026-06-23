@@ -14,6 +14,7 @@ import StarField from '../components/StarField';
 import RoyalBlueWaves from '../components/RoyalBlueWaves';
 import SimilarListings from '../components/SimilarListings';
 import ListingContactLinks from '../components/ListingContactLinks';
+import AdminListingQuickEdit from '../components/listing/AdminListingQuickEdit';
 import { recordView } from '../components/home/RecentlyViewed';
 
 function HotelRoomSelector({ listing, user }) {
@@ -207,16 +208,18 @@ export default function ListingDetail() {
 
   useEffect(() => {
     const init = async () => {
+      let currentUser = null;
       try {
         const authed = await base44.auth.isAuthenticated();
         if (authed) {
-          const me = await base44.auth.me();
-          setUser(me);
+          currentUser = await base44.auth.me();
+          setUser(currentUser);
         }
       } catch {}
 
       try {
-        const item = await base44.entities.Listing.filter({ id, approval_status: 'approved', is_active: true });
+        const isAdminViewer = currentUser?.role === 'admin' || currentUser?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
+        const item = await base44.entities.Listing.filter(isAdminViewer ? { id } : { id, approval_status: 'approved', is_active: true });
         const found = item[0] || null;
         setListing(found);
 
@@ -327,6 +330,7 @@ export default function ListingDetail() {
       : listing.animation_style === 'shimmer'
         ? { opacity: [0.72, 1, 0.72] }
         : {};
+  const isAdminViewer = user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
 
   const handleChatSeller = async (message) => {
     if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
@@ -370,6 +374,8 @@ export default function ListingDetail() {
             {listing.main_category ? ` to ${listing.main_category === 'buysell' ? 'Buy & Sell' : listing.main_category.charAt(0).toUpperCase() + listing.main_category.slice(1)}` : ''}
             {listing.subcategory ? ` › ${listing.subcategory}` : ''}
           </button>
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+          {isAdminViewer && <AdminListingQuickEdit listing={listing} onSaved={setListing} />}
           {/* Approval Status Badge */}
           {listing.approval_status === 'pending' && (
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-body font-bold text-xs" style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', color: '#fbbf24' }}>
@@ -386,6 +392,7 @@ export default function ListingDetail() {
               <Ban className="w-3 h-3" /> Rejected
             </span>
           )}
+          </div>
         </div>
 
         {listing.description && (
