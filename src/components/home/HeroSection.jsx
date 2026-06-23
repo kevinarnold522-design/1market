@@ -66,7 +66,7 @@ export default function HeroSection({ heroImage }) {
                 className="inline-flex items-center gap-2 px-3 py-1 rounded-full"
                 style={{ background: 'rgba(0,64,208,0.3)', border: '1px solid rgba(62,151,241,0.3)' }}>
                 <div className="w-1.5 h-1.5 rounded-full bg-[#3E97F1] animate-pulse" />
-                <span className="font-body text-[10px] font-medium tracking-widest uppercase text-[#3E97F1]">1Marketph.com · Est. 2026</span>
+                <span className="font-body text-[10px] font-medium tracking-widest uppercase text-[#FFD700]">1Marketph.com · Est. 2026</span>
               </motion.div>
 
               {/* Brand Logo */}
@@ -80,12 +80,12 @@ export default function HeroSection({ heroImage }) {
                   />
                 </a>
                 <h1 className="font-heading font-bold leading-[0.95] tracking-tight">
-                  <span className="block text-2xl sm:text-3xl lg:text-4xl" style={{ color: '#3E97F1' }}>Welcome to</span>
-                  <span className="block text-2xl sm:text-3xl lg:text-4xl mt-0.5" style={{ background: 'linear-gradient(135deg,#0040D0,#3E97F1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>1Market PH™</span>
+                  <span className="block text-2xl sm:text-3xl lg:text-4xl" style={{ color: '#ffffff' }}>Welcome to</span>
+                  <span className="block text-2xl sm:text-3xl lg:text-4xl mt-0.5" style={{ background: 'linear-gradient(135deg,#FFD700,#EF4444,#FFFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>1Market PH™</span>
                 </h1>
               </div>
 
-              <p className="font-body text-xs sm:text-sm text-white/70 max-w-md leading-relaxed font-semibold">
+              <p className="font-body text-xs sm:text-sm text-white max-w-md leading-relaxed font-semibold">
                 The Premiere Marketplace — Buy, Sell &amp; Connect Nationwide.
               </p>
 
@@ -94,9 +94,9 @@ export default function HeroSection({ heroImage }) {
               {/* Trust badges */}
               <div className="flex flex-wrap gap-1.5">
                 {[
-                  { label: 'Free to List', color: 'rgba(16,185,129,0.15)', border: 'rgba(16,185,129,0.3)', text: '#10b981' },
-                  { label: 'Verified Sellers', color: 'rgba(37,99,235,0.15)', border: 'rgba(37,99,235,0.3)', text: '#60a5fa' },
-                  { label: 'Proudly Filipino', color: 'rgba(255,215,0,0.1)', border: 'rgba(255,215,0,0.25)', text: '#FFD700' },
+                  { label: 'Free to List', color: 'rgba(255,215,0,0.18)', border: 'rgba(255,215,0,0.42)', text: '#FFD700' },
+                  { label: 'Verified Sellers', color: 'rgba(239,68,68,0.16)', border: 'rgba(239,68,68,0.4)', text: '#EF4444' },
+                  { label: 'Proudly Filipino', color: 'rgba(255,255,255,0.18)', border: 'rgba(255,255,255,0.55)', text: '#FFFFFF' },
                 ].map(badge => (
                   <span key={badge.label} className="px-2.5 py-0.5 rounded-full font-body text-[9px] font-bold"
                     style={{ background: badge.color, border: `1px solid ${badge.border}`, color: badge.text }}>

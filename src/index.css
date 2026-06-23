@@ -575,7 +575,7 @@ aside nav button + a {
   color: #FFD700 !important;
 }
 .auth-blue-yellow [class*="bg-white"] {
-  background: rgba(255,255,255,0.95) !important;
+  background: rgba(37,99,235,0.92) !important;
 }
 .auth-blue-yellow .hidden.lg\:flex {
   background: linear-gradient(135deg,#2563EB,#60A5FA) !important;

@@ -334,6 +334,9 @@ export default function Admin() {
   const [toast, setToast] = useState('');
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
+  const adminUserWrite = async (action, id, patch = {}) => {
+    await base44.functions.invoke('supabaseEntityWrite', { entity: 'User', action, id, patch });
+  };
 
   const approveListing = async (listingId) => {
     await base44.entities.Listing.update(listingId, { approval_status: 'approved', is_active: true });
@@ -407,7 +410,7 @@ export default function Admin() {
 
   const toggleVerified = async (u) => {
     const newStatus = !u.is_verified_seller;
-    await base44.entities.User.update(u.id, { is_verified_seller: newStatus });
+    await adminUserWrite('update', u.id, { is_verified_seller: newStatus });
     // Send verified partner email when granting verification
     if (newStatus) {
       try {
@@ -423,7 +426,7 @@ export default function Admin() {
   };
 
   const setUserRole = async (u, role) => {
-    await base44.entities.User.update(u.id, { role });
+    await adminUserWrite('update', u.id, { role });
     showToast(`Role updated to ${role}`);
     loadAll();
   };
@@ -582,7 +585,7 @@ export default function Admin() {
   const linkGhostToEmail = async (ghostUser) => {
     const email = ghostLinkEmail[ghostUser.id];
     if (!email || !email.includes('@')) { showToast('Enter a valid email'); return; }
-    await base44.entities.User.update(ghostUser.id, {
+    await adminUserWrite('update', ghostUser.id, {
       email: email.trim().toLowerCase(),
       is_ghost_account: false,
       ghost_linked: true,
@@ -878,7 +881,7 @@ export default function Admin() {
                        updateData.is_seller = false;
                        updateData.account_type = 'customer';
                      }
-                     await base44.entities.User.update(u.id, updateData);
+                     await adminUserWrite('update', u.id, updateData);
                      // Send transition email
                      if (newType === 'seller') {
                        try { await base44.functions.invoke('sendSellerWelcomeEmail', { email: u.email, name: u.full_name || u.email }); } catch(e) {}
@@ -1013,7 +1016,7 @@ export default function Admin() {
                              member_type: 'business',
                            } : {})
                          };
-                         await base44.entities.User.update(targetUser.id, updateData);
+                         await adminUserWrite('update', targetUser.id, updateData);
                          try {
                            if (isBizApp) {
                              await base44.functions.invoke('sendBusinessWelcomeEmail', {
@@ -1233,7 +1236,7 @@ export default function Admin() {
                     )}
                     <button onClick={async () => {
                         if (!window.confirm('Delete this created user account?')) return;
-                        await base44.entities.User.delete(u.id);
+                        await adminUserWrite('delete', u.id);
                         showToast('Created user account deleted.');
                         loadAll();
                       }}

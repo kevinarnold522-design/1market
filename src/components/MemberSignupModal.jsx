@@ -90,7 +90,7 @@ export default function MemberSignupModal({ onClose }) {
                   onError={setError}
                   actionLabel="Sign up with"
                   className="space-y-3 mb-4"
-                  buttonClassName="w-full h-14 bg-white/95 text-[#2563EB] border-[#FFD700]/60 hover:bg-yellow-50 font-bold"
+                  buttonClassName="w-full h-16 bg-[#2563EB] text-[#FFD700] border-[#FFD700]/60 hover:bg-[#1D4ED8] font-bold"
                   separatorLineClassName="w-full border-t border-[#FFD700]/45"
                   separatorTextClassName="bg-[#3E97F1] px-3 text-[#FFD700] font-bold"
                 />

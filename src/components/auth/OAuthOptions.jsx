@@ -1,13 +1,26 @@
 import React, { useState } from 'react';
-import { Loader2, Mail } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabaseCompat } from '@/api/supabaseCompatClient';
 import { clearGhostSession } from '@/lib/ghostAccounts';
 
 const providers = [
-  { key: 'google', label: 'Gmail', mark: 'mail', className: 'text-blue-600 bg-yellow-100 border border-yellow-300' },
-  { key: 'yahoo', label: 'Yahoo', mark: 'Y!', className: 'text-white bg-[#6001D2]' },
+  { key: 'google', label: 'Gmail', mark: 'gmail', className: 'bg-white border border-yellow-300 shadow-sm' },
+  { key: 'yahoo', label: 'Yahoo', mark: 'Y!', className: 'text-[#FFD700] bg-[#6001D2]' },
 ];
+
+function GmailLogo() {
+  return (
+    <svg viewBox="0 0 48 48" className="w-8 h-8" aria-hidden="true">
+      <path fill="#EA4335" d="M6 12.5 24 26 42 12.5v23A4.5 4.5 0 0 1 37.5 40h-27A4.5 4.5 0 0 1 6 35.5v-23Z" />
+      <path fill="#FBBC04" d="M6 12.5 24 26v8L6 20.5v-8Z" />
+      <path fill="#34A853" d="M42 12.5 24 26v8l18-13.5v-8Z" />
+      <path fill="#4285F4" d="M10.5 8h27A4.5 4.5 0 0 1 42 12.5L24 26 6 12.5A4.5 4.5 0 0 1 10.5 8Z" />
+      <path fill="#FFFFFF" d="M10.5 8h27A4.5 4.5 0 0 1 42 12.5L24 26 6 12.5A4.5 4.5 0 0 1 10.5 8Z" opacity="0.88" />
+      <path fill="#EA4335" d="M6 12.5 24 26 42 12.5v5.8L24 31.8 6 18.3v-5.8Z" />
+    </svg>
+  );
+}
 
 export default function OAuthOptions({
   onError,
@@ -41,8 +54,8 @@ export default function OAuthOptions({
             {loadingProvider === provider.key ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <span className={`${provider.key === 'google' ? 'w-12 h-12 text-[15px]' : 'w-9 h-9 text-[12px]'} rounded-full flex items-center justify-center font-bold ${provider.className}`}>
-                {provider.mark === 'mail' ? <Mail className="w-7 h-7" /> : provider.mark}
+              <span className={`${provider.key === 'google' ? 'w-14 h-14 text-[15px]' : 'w-10 h-10 text-[12px]'} rounded-full flex items-center justify-center font-bold ${provider.className}`}>
+                {provider.mark === 'gmail' ? <GmailLogo /> : provider.mark}
               </span>
             )}
             {actionLabel} {provider.label}

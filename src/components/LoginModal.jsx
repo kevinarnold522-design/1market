@@ -32,7 +32,7 @@ export default function LoginModal({ onClose }) {
               <div className="w-7 h-7 rounded-lg bg-[#FFD700] flex items-center justify-center">
                 <span className="text-[#2563EB] font-bold text-sm">1</span>
               </div>
-              <span className="font-heading font-bold text-[#FFD700] text-sm">Marketph.com</span>
+              <span className="font-heading font-bold text-[#FFD700] text-sm">1MarketPH.com</span>
             </div>
             <button onClick={onClose} className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
               <X className="w-3.5 h-3.5 text-white/60" />
@@ -50,9 +50,9 @@ export default function LoginModal({ onClose }) {
               onError={setError}
               actionLabel="Log in with"
               className="space-y-3 mb-4"
-              buttonClassName="w-full h-12 bg-white text-[#2563EB] border-[#FFD700]/50 hover:bg-yellow-50 font-bold"
-              separatorLineClassName="w-full border-t border-yellow-200/60"
-              separatorTextClassName="bg-[#7DD3FC] px-3 text-[#FFD700] font-bold"
+              buttonClassName="w-full h-16 bg-[#2563EB] text-[#FFD700] border-[#FFD700]/60 hover:bg-[#1D4ED8] font-bold"
+              separatorLineClassName="w-full border-t border-[#FFD700]/50"
+              separatorTextClassName="bg-[#2563EB] px-3 text-[#FFD700] font-bold"
             />
 
             {error && <div className="mb-4 p-3 rounded-lg bg-red-500/10 text-red-200 text-xs">{error}</div>}
@@ -63,9 +63,6 @@ export default function LoginModal({ onClose }) {
               <Shield className="w-4 h-4" /> Continue with Email →
             </button>
 
-            <p className="font-body text-[9px] text-yellow-100 leading-relaxed mt-4">
-              DPA 2012 compliant. Your data is safe with us.
-            </p>
           </div>
         </motion.div>
       </motion.div>
