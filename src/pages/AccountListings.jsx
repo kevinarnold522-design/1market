@@ -28,6 +28,26 @@ export default function AccountListings() {
     loadListings();
   }, [ghost?.ghost_id, ghost?.id, user?.id]);
 
+  useEffect(() => {
+    const unsubscribe = base44.entities.Listing.subscribe((event) => {
+      const changed = event.data || event.old_data;
+      if (!changed?.id) return;
+      if (event.type === 'delete') {
+        setListings(items => items.filter(item => item.id !== changed.id));
+        return;
+      }
+      const owned = ghost
+        ? isGhostOwnedRecord(changed, ghost)
+        : changed.owner_user_id === user?.id || changed.created_by_id === user?.id || changed.owner_email === user?.email || changed.created_by === user?.email;
+      if (!owned) return;
+      setListings(items => {
+        const exists = items.some(item => item.id === changed.id);
+        return exists ? items.map(item => item.id === changed.id ? { ...item, ...changed } : item) : [changed, ...items];
+      });
+    });
+    return unsubscribe;
+  }, [ghost?.ghost_id, ghost?.id, user?.id, user?.email]);
+
   const loadListings = async () => {
     setLoading(true);
     const all = await base44.entities.Listing.list('-created_date', 500);
@@ -47,8 +67,13 @@ export default function AccountListings() {
   const deleteListing = async (listing) => {
     if (ghost && !isGhostOwnedRecord(listing, ghost)) return;
     if (!window.confirm('Delete this listing?')) return;
-    await base44.entities.Listing.delete(listing.id);
+    try {
+      await base44.functions.invoke('supabaseEntityWrite', { entity: 'Listing', action: 'delete', id: listing.id });
+    } catch {
+      await base44.entities.Listing.delete(listing.id);
+    }
     setListings(items => items.filter(item => item.id !== listing.id));
+    window.dispatchEvent(new CustomEvent('listing-deleted', { detail: { id: listing.id } }));
   };
 
   const accountName = ghost ? getGhostDisplayName(ghost) : (user?.full_name || 'My Account');
@@ -92,7 +117,7 @@ export default function AccountListings() {
             <Package className="w-12 h-12 text-amber-500 mx-auto mb-3" />
             <h2 className="font-heading font-bold text-2xl mb-2 tracking-tight">No listings found</h2>
             <p className="text-slate-500 mb-5 font-body">Listings created by this account will appear here.</p>
-            <Link to="/post-ad" className="px-5 py-2.5 rounded-xl bg-slate-950 text-amber-200 font-bold shadow-lg">Create listing</Link>
+            <Link to="/post-ad" className="px-5 py-2.5 rounded-xl bg-blue-600 text-yellow-200 font-bold shadow-lg">Create listing</Link>
           </div>
         ) : (
           <div className="space-y-3">

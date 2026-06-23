@@ -25,25 +25,25 @@ export default function MemberSignupModal({ onClose }) {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-[#0A192F]/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-[#2563EB]/80 backdrop-blur-sm"
       onClick={onClose}>
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95 }}
         onClick={e => e.stopPropagation()}
-        className="w-full bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col lg:flex-row"
-        style={{ maxWidth: '680px', boxShadow: '0 0 0 1px rgba(0,212,255,0.1), 0 32px 80px rgba(10,25,47,0.35)' }}>
+        className="w-full bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col lg:flex-row font-body"
+        style={{ maxWidth: '680px', boxShadow: '0 0 0 1px rgba(255,215,0,0.32), 0 32px 80px rgba(37,99,235,0.35)' }}>
 
         {/* LEFT — Form */}
         <div className="flex-shrink-0 lg:w-[55%] flex flex-col">
           {/* Header */}
-          <div className="bg-[#0A192F] px-5 py-4 flex items-center justify-between">
+          <div className="px-5 py-4 flex items-center justify-between" style={{ background: 'linear-gradient(135deg,#2563EB,#3E97F1)' }}>
             <div className="flex items-center gap-2">
-              <div className="w-5 h-5 rounded bg-[#00D4FF] flex items-center justify-center">
-                <span className="text-[#0A192F] font-bold text-[10px]">1</span>
+              <div className="w-5 h-5 rounded bg-[#FFD700] flex items-center justify-center">
+                <span className="text-[#2563EB] font-bold text-[10px]">1</span>
               </div>
-              <span className="font-heading font-bold text-white text-sm">Marketph.com</span>
+              <span className="font-heading font-bold text-[#FFD700] text-sm">Marketph.com</span>
             </div>
             <button onClick={onClose} className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
               <X className="w-3.5 h-3.5 text-white" />
@@ -53,19 +53,19 @@ export default function MemberSignupModal({ onClose }) {
           <div className="p-6 flex-1 flex flex-col justify-center">
             {step === 1 && (
               <motion.div initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}>
-                <h2 className="font-heading font-bold text-xl text-[#0A192F] mb-0.5">Join the Community</h2>
-                <p className="font-body text-xs text-[#0A192F]/40 mb-5">Who are you joining as?</p>
+                <h2 className="font-heading font-bold text-xl text-[#2563EB] mb-0.5">Join the Community</h2>
+                <p className="font-body text-xs text-[#2563EB]/70 mb-5">Who are you joining as?</p>
 
                 <div className="space-y-2 mb-5">
                   {MEMBER_TYPES.map(mt => (
                     <button key={mt.key} onClick={() => setMemberType(mt.key)}
-                      className={`w-full flex items-center gap-2.5 p-3 rounded-xl border-2 transition-all text-left ${memberType === mt.key ? 'border-[#FFD700] bg-[#FFF7CC]' : 'border-[#0A192F]/8 hover:border-[#FFD700]/70'}`}>
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${memberType === mt.key ? 'bg-[#FFD700] text-[#0A192F]' : 'bg-[#F8FAFC] text-[#0A192F]/30'}`}>
+                      className={`w-full flex items-center gap-2.5 p-3 rounded-xl border-2 transition-all text-left ${memberType === mt.key ? 'border-[#FFD700] bg-[#EFF6FF]' : 'border-[#2563EB]/15 hover:border-[#FFD700]/70'}`}>
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${memberType === mt.key ? 'bg-[#FFD700] text-[#2563EB]' : 'bg-[#DBEAFE] text-[#2563EB]'}`}>
                         <mt.icon className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="font-body font-semibold text-xs text-[#0A192F]">{mt.label}</p>
-                        <p className="font-body text-[9px] text-[#0A192F]/40">{mt.desc}</p>
+                        <p className="font-body font-semibold text-xs text-[#2563EB]">{mt.label}</p>
+                        <p className="font-body text-[9px] text-[#1D4ED8]/65">{mt.desc}</p>
                       </div>
                       {memberType === mt.key && <Check className="w-3.5 h-3.5 text-[#FFD700] ml-auto flex-shrink-0" />}
                     </button>
@@ -73,7 +73,8 @@ export default function MemberSignupModal({ onClose }) {
                 </div>
 
                 <button onClick={() => memberType && setStep(2)} disabled={!memberType}
-                  className="w-full py-2.5 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-xl font-body font-semibold text-sm disabled:opacity-40 transition-colors mb-3">
+                  className="w-full py-2.5 text-white rounded-xl font-body font-semibold text-sm disabled:opacity-40 transition-colors mb-3"
+                  style={{ background: 'linear-gradient(135deg,#2563EB,#FFD700)', boxShadow: '0 10px 24px rgba(37,99,235,0.18)' }}>
                   Continue →
                 </button>
               </motion.div>
@@ -81,9 +82,9 @@ export default function MemberSignupModal({ onClose }) {
 
             {step === 2 && (
               <motion.div initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}>
-                <button onClick={() => setStep(1)} className="font-body text-xs text-[#0A192F]/30 hover:text-[#0A192F] mb-4 flex items-center gap-1">← Back</button>
-                <h2 className="font-heading font-bold text-xl text-[#0A192F] mb-1">Create Your Account</h2>
-                <p className="font-body text-xs text-[#0A192F]/40 mb-5">Free forever. No credit card needed.</p>
+                <button onClick={() => setStep(1)} className="font-body text-xs text-[#2563EB]/60 hover:text-[#2563EB] mb-4 flex items-center gap-1">← Back</button>
+                <h2 className="font-heading font-bold text-xl text-[#2563EB] mb-1">Create Your Account</h2>
+                <p className="font-body text-xs text-[#1D4ED8]/60 mb-5">Free forever. No credit card needed.</p>
 
                 <OAuthOptions
                   onError={setError}
@@ -96,11 +97,19 @@ export default function MemberSignupModal({ onClose }) {
 
                 {error && <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-xs">{error}</div>}
 
-                {/* Email button */}
-                <button onClick={handleEmailSignup}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-xl font-body font-semibold text-sm transition-colors mb-4">
-                  <Mail className="w-4 h-4" /> Sign Up with Email
-                </button>
+                <div className="rounded-2xl border border-[#FFD700]/50 bg-[#FFF7CC]/70 p-3 mb-4">
+                  <p className="font-heading text-sm font-bold text-[#2563EB] mb-2">Email options</p>
+                  <div className="grid grid-cols-1 gap-2">
+                    <button onClick={handleEmailSignup}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl font-body font-semibold text-sm transition-colors">
+                      <Mail className="w-4 h-4" /> Continue with Email
+                    </button>
+                    <button onClick={handleSignIn}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#FFD700] hover:bg-[#FACC15] text-[#2563EB] rounded-xl font-body font-semibold text-sm transition-colors">
+                      I already have an email account
+                    </button>
+                  </div>
+                </div>
 
                 <p className="font-body text-[9px] text-[#0A192F]/40 text-center leading-relaxed">
                   By signing up you agree to our{' '}
@@ -125,8 +134,8 @@ export default function MemberSignupModal({ onClose }) {
           <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full opacity-15" style={{ background: 'radial-gradient(circle,#00D4FF,transparent)', transform: 'translate(-30%,30%)' }} />
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-5">
-              <Shield className="w-5 h-5 text-[#2563EB]" />
-              <p className="font-heading font-bold text-sm text-[#0A192F]">Why Join 1Marketph?</p>
+              <Shield className="w-5 h-5 text-[#FFD700]" />
+              <p className="font-heading font-bold text-sm text-[#2563EB]">Why Join 1Marketph?</p>
             </div>
             <div className="space-y-4">
               {[
@@ -141,8 +150,8 @@ export default function MemberSignupModal({ onClose }) {
                     <item.IconComp className="w-4 h-4" style={{ color: item.iconColor }} />
                   </div>
                   <div>
-                    <p className="font-heading font-bold text-xs text-[#0A192F]">{item.title}</p>
-                    <p className="font-body text-[10px] text-[#0A192F]/50 leading-relaxed mt-0.5">{item.desc}</p>
+                    <p className="font-heading font-bold text-xs text-[#2563EB]">{item.title}</p>
+                    <p className="font-body text-[10px] text-[#1D4ED8]/65 leading-relaxed mt-0.5">{item.desc}</p>
                   </div>
                 </motion.div>
               ))}
