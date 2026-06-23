@@ -81,7 +81,7 @@ export default function HeroSection({ heroImage }) {
                 </a>
                 <h1 className="font-heading font-bold leading-[0.95] tracking-tight">
                   <span className="block text-2xl sm:text-3xl lg:text-4xl" style={{ color: '#ffffff' }}>Welcome to</span>
-                  <span className="block text-2xl sm:text-3xl lg:text-4xl mt-0.5" style={{ background: 'linear-gradient(135deg,#FFD700,#EF4444,#FFFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>1Market PH™</span>
+                  <span className="block text-2xl sm:text-3xl lg:text-4xl mt-0.5" style={{ background: 'linear-gradient(135deg,#EF4444,#2563EB,#FFFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>1Market PH™</span>
                 </h1>
               </div>
 

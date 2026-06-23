@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 const fish = [
-  { label: 'gold reef fish', top: '58%', color: '#FFD700', accent: '#EF4444', duration: 19, delay: 0, dir: 1, size: 1 },
-  { label: 'red island fish', top: '67%', color: '#EF4444', accent: '#FFFFFF', duration: 22, delay: 1.1, dir: -1, size: 0.9 },
-  { label: 'white reef fish', top: '75%', color: '#FFFFFF', accent: '#FFD700', duration: 24, delay: 2, dir: 1, size: 1.15 },
-  { label: 'blue lagoon fish', top: '84%', color: '#60A5FA', accent: '#FFD700', duration: 28, delay: 2.8, dir: -1, size: 1.25 },
-  { label: 'tiny clown fish', top: '62%', color: '#F97316', accent: '#FFFFFF', duration: 17, delay: 3.4, dir: 1, size: 0.72 },
-  { label: 'royal angel fish', top: '79%', color: '#2563EB', accent: '#FFD700', duration: 21, delay: 4.1, dir: -1, size: 0.86 },
+  { label: 'gold reef fish', top: '69%', color: '#FFD700', accent: '#EF4444', duration: 19, delay: 0, dir: 1, size: 1 },
+  { label: 'red island fish', top: '76%', color: '#EF4444', accent: '#FFFFFF', duration: 22, delay: 1.1, dir: -1, size: 0.9 },
+  { label: 'white reef fish', top: '83%', color: '#FFFFFF', accent: '#FFD700', duration: 24, delay: 2, dir: 1, size: 1.15 },
+  { label: 'blue lagoon fish', top: '91%', color: '#60A5FA', accent: '#FFD700', duration: 28, delay: 2.8, dir: -1, size: 1.25 },
+  { label: 'tiny clown fish', top: '72%', color: '#F97316', accent: '#FFFFFF', duration: 17, delay: 3.4, dir: 1, size: 0.72 },
+  { label: 'royal angel fish', top: '88%', color: '#2563EB', accent: '#FFD700', duration: 21, delay: 4.1, dir: -1, size: 0.86 },
 ];
 
 function Cloud({ className, delay = 0 }) {
@@ -44,6 +44,24 @@ function Boat({ className, delay = 0 }) {
         <div className="absolute bottom-4 left-6 w-14 h-2 rounded-full bg-white/40" />
       </div>
     </motion.div>
+  );
+}
+
+function OceanWaves() {
+  return (
+    <div className="absolute inset-x-0 bottom-0 h-[45%] overflow-hidden pointer-events-none">
+      {[0, 1, 2].map(i => (
+        <motion.div key={i} className="absolute left-[-20%] w-[140%] rounded-[50%]" style={{ bottom: `${i * 13}%`, height: 82, background: i === 0 ? 'rgba(37,99,235,0.46)' : i === 1 ? 'rgba(14,165,233,0.34)' : 'rgba(255,255,255,0.14)', filter: 'blur(1px)' }} animate={{ x: ['0%', '-8%', '0%'] }} transition={{ duration: 7 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: i * 0.7 }} />
+      ))}
+    </div>
+  );
+}
+
+function BubbleColumn({ className, delay = 0 }) {
+  return (
+    <div className={`absolute pointer-events-none ${className}`}>
+      {[0, 1, 2].map(i => <span key={i} className="absolute rounded-full bg-white/55 animate-bubble-float" style={{ width: 10 + i * 5, height: 10 + i * 5, left: i * 16, bottom: i * 18, animationDuration: `${7 + i}s`, animationDelay: `${delay + i * 0.6}s`, '--bubble-drift': `${18 - i * 4}px` }} />)}
+    </div>
   );
 }
 
@@ -84,8 +102,8 @@ export default function OceanCategoryBackdrop({ global = false }) {
   }, []);
 
   const shellClass = global
-    ? 'fixed inset-0 overflow-hidden pointer-events-none bg-gradient-to-b from-[#7DD3FC] via-[#3E97F1] to-[#0EA5E9]'
-    : 'absolute inset-0 overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#7DD3FC] via-[#3E97F1] to-[#0EA5E9]';
+    ? 'fixed inset-0 overflow-hidden pointer-events-none bg-gradient-to-b from-[#7DD3FC] via-[#3E97F1] to-[#2563EB]'
+    : 'absolute inset-0 overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#7DD3FC] via-[#3E97F1] to-[#2563EB]';
 
   return (
     <div className={shellClass}>
@@ -95,11 +113,15 @@ export default function OceanCategoryBackdrop({ global = false }) {
       <Cloud className="top-24 right-36 opacity-80 scale-125" delay={1.4} />
       <Cloud className="top-36 left-1/2 opacity-70 scale-90" delay={2.2} />
 
-      <Island className="left-6 sm:left-16 top-[45%] w-52 h-40 opacity-95" />
-      <Island className="right-10 sm:right-24 top-[50%] w-56 h-44 opacity-90 scale-110" />
-      <Island className="left-1/2 top-[56%] w-48 h-40 opacity-75 hidden md:block" />
-      <Boat className="left-44 sm:left-64 top-[54%] opacity-95" />
-      <Boat className="right-36 sm:right-72 top-[59%] opacity-85 scale-75" delay={1.5} />
+      <OceanWaves />
+      <Island className="left-6 sm:left-16 top-[58%] w-52 h-40 opacity-95" />
+      <Island className="right-10 sm:right-24 top-[62%] w-56 h-44 opacity-90 scale-110" />
+      <Island className="left-1/2 top-[68%] w-48 h-40 opacity-75 hidden md:block" />
+      <Boat className="left-44 sm:left-64 top-[66%] opacity-95" />
+      <Boat className="right-36 sm:right-72 top-[70%] opacity-85 scale-75" delay={1.5} />
+      <BubbleColumn className="left-[18%] bottom-[8%]" />
+      <BubbleColumn className="left-[50%] bottom-[5%]" delay={1.1} />
+      <BubbleColumn className="right-[20%] bottom-[9%]" delay={2.1} />
 
       {fish.map(item => {
         const start = item.dir === 1 ? '-18vw' : '112vw';
