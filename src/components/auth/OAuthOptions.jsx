@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabaseCompat } from '@/api/supabaseCompatClient';
 import { clearGhostSession } from '@/lib/ghostAccounts';
 
 const providers = [
-  { key: 'google', label: 'Gmail', mark: 'G', className: 'text-blue-600 bg-white' },
-  { key: 'facebook', label: 'Facebook', mark: 'f', className: 'text-white bg-[#1877F2]' },
+  { key: 'google', label: 'Gmail', mark: 'mail', className: 'text-blue-600 bg-yellow-100 border border-yellow-300' },
   { key: 'yahoo', label: 'Yahoo', mark: 'Y!', className: 'text-white bg-[#6001D2]' },
 ];
 
@@ -42,7 +41,9 @@ export default function OAuthOptions({
             {loadingProvider === provider.key ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${provider.className}`}>{provider.mark}</span>
+              <span className={`w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold ${provider.className}`}>
+                {provider.mark === 'mail' ? <Mail className="w-4 h-4" /> : provider.mark}
+              </span>
             )}
             {actionLabel} {provider.label}
           </Button>

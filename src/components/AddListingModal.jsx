@@ -5,10 +5,6 @@ import { base44 } from '@/api/base44Client';
 import { uploadMediaFileToSupabase } from '@/lib/supabaseUpload';
 import SmartImage from '@/components/media/SmartImage';
 import CategoryIcon from './CategoryIcon';
-import AIPhotoListingCreator from './listing/AIPhotoListingCreator';
-import AIListingAssistant from './listing/AIListingAssistant';
-import AIPriceSuggester from './listing/AIPriceSuggester';
-import AIListingQualityChecker from './AIListingQualityChecker';
 import SavedTemplates from './listing/SavedTemplates';
 import { getGhostSession, ghostOwnerFields } from '@/lib/ghostAccounts';
 
@@ -131,54 +127,54 @@ const SUBS_BY_TYPE = {
     'Other / Type Manually',
   ],
   services: [
-    // AI Home Services
+    // Home Services
     'House Cleaning', 'Plumbing', 'Electrical Repair', 'Carpentry', 'Roofing', 'Flooring',
     'Painting Services', 'Landscaping', 'Interior Design', 'Appliance Repair',
     'Aircon Cleaning & Repair', 'CCTV Installation', 'Pest Control', 'Home Renovation',
-    // AI Automotive
+    // Automotive
     'Car Repair', 'Motorcycle Repair', 'Car Wash', 'Auto Detailing', 'Vehicle Rental',
     'Towing Services', 'Driving Lessons', 'Tint Installation',
-    // AI Technology
+    // Technology
     'Website Development', 'Mobile App Development', 'Software Development', 'IT Support',
-    'Cybersecurity', 'Cloud Services', 'AI Development', 'Chatbot Creation', 'Data Analytics',
+    'Cybersecurity', 'Cloud Services', 'Custom Development', 'Chatbot Creation', 'Data Analytics',
     'Network Installation',
-    // AI Creative
+    // Creative
     'Graphic Design', 'Logo Design', 'Branding', 'Animation', 'Video Editing',
     'Photography', 'Videography', 'Voice Over', 'Content Writing', 'Copywriting', 'Printing Services',
-    // AI Marketing
+    // Marketing
     'Social Media Management', 'Facebook Ads', 'Google Ads', 'SEO Services',
     'Influencer Marketing', 'Email Marketing', 'Public Relations', 'Lead Generation',
-    // AI Education & Training
+    // Education & Training
     'Tutoring', 'Online Classes', 'Language Lessons', 'Coding Lessons',
     'Music Lessons', 'Dance Lessons', 'Review Centers', 'Skills Training',
-    // AI Events & Entertainment
+    // Events & Entertainment
     'Wedding Coordination', 'Event Planning', 'DJ Services', 'Event Hosting / Emcee',
     'Catering', 'Photography', 'Videography', 'Photobooth', 'Sound System Rental', 'Stage Rental',
-    // AI Health & Wellness
+    // Health & Wellness
     'Fitness Coaching', 'Personal Training', 'Massage Services', 'Spa & Wellness',
     'Nutrition Coaching', 'Mental Wellness Coaching', 'Home Caregiver Services', 'Home Nursing',
-    // AI Pet Services
+    // Pet Services
     'Pet Grooming', 'Pet Sitting', 'Dog Walking', 'Pet Training', 'Veterinary Services', 'Pet Boarding',
-    // AI Business & Professional
+    // Business & Professional
     'Accounting', 'Bookkeeping', 'Tax Filing', 'Payroll Services', 'Business Registration',
     'Legal Consultation', 'Trademark Registration', 'Business Consulting',
     'HR Services', 'Recruitment', 'Virtual Assistant',
-    // AI️ Construction
+    //️ Construction
     'General Contractors', 'Architecture', 'Civil Engineering', 'Structural Engineering',
     'Surveying Services', 'Construction Equipment Rental',
-    // AI Logistics & Delivery
+    // Logistics & Delivery
     'Moving Services', 'Delivery Services', 'Courier Services', 'Freight Forwarding',
     'Warehousing', 'Storage Solutions',
-    // AI Personal Services
+    // Personal Services
     'Babysitting', 'Elderly Care', 'Laundry Services', 'Makeup Artist',
     'Hair Styling', 'Barbershop', 'Personal Assistant',
-    // AI Freelance & Remote
+    // Freelance & Remote
     'Data Entry', 'Customer Support', 'Appointment Setting',
     'Research Services', 'Translation', 'Transcription', 'Resume Writing',
-    // AI Finance & Insurance
+    // Finance & Insurance
     'Financial Advisory', 'Insurance Services', 'Real Estate Agent', 'Property Management',
-    // AI Other
-    'Travel & Tours', 'Gaming Services', 'AI Services', 'Other / Type Manually',
+    // Other
+    'Travel & Tours', 'Gaming Services', 'Digital Services', 'Other / Type Manually',
   ],
   jobs:           ['Customer Service Rep', 'Technical Support', 'Software Engineer', 'Web Developer', 'IT Helpdesk', 'Staff Nurse (RN)', 'Caregiver', 'HR Generalist', 'Accountant / CPA', 'Civil Engineer', 'Electrician', 'Delivery Rider', 'Sales Executive', 'Graphic Designer', 'Cook / Chef', 'Teacher / Instructor', 'Household Helper', 'Virtual Assistant (VA)', 'Other / Not Listed'],
   rent_lease:     ['Room for Rent', 'Bedspace / Dormitory', 'Apartment / Condo', 'House', 'Townhouse', 'Commercial Space', 'Office Space', 'Bodega / Warehouse', 'Land / Vacant Lot', 'Lot for Lease', 'Commercial Lot', 'Venue / Events Space', 'Stall / Kiosk'],
@@ -209,7 +205,7 @@ const ALL_CITIES = [
 
 const CONDITIONS = ['Brand New', 'Like New', 'Good as New', 'Lightly Used', 'Used', 'Heavily Used', 'N/A'];
 const SLIDESHOW_ANIMATIONS = [
-  { value: 'fade',   label: 'Fade',   emoji: 'AI', desc: 'Crossfade' },
+  { value: 'fade',   label: 'Fade',   emoji: 'fade', desc: 'Crossfade' },
   { value: 'slide',  label: 'Slide',  emoji: 'slide', desc: 'Slide L/R' },
   { value: 'zoom',   label: 'Zoom',   emoji: 'zoom', desc: 'Zoom in/out' },
   { value: 'flip',   label: 'Flip',   emoji: 'flip', desc: '3D flip' },
@@ -643,55 +639,8 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
               {step === 2 && (
                 <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
 
-                  <AIPhotoListingCreator onApplyListing={(draft, urls) => {
-                    setForm(f => ({
-                      ...f,
-                      title: draft.title || f.title,
-                      description: draft.description || f.description,
-                      main_category: draft.main_category || f.main_category,
-                      type: draft.type || f.type,
-                      subcategory: draft.subcategory || f.subcategory,
-                      tags: [...(draft.tags || []), ...(draft.keywords || [])].join(', '),
-                      condition: draft.condition || f.condition,
-                      price: draft.suggested_price_min ? String(draft.suggested_price_min) : f.price,
-                      price_label: draft.suggested_price_min && draft.suggested_price_max ? `₱${Number(draft.suggested_price_min).toLocaleString()} - ₱${Number(draft.suggested_price_max).toLocaleString()}` : f.price_label,
-                      brand: draft.brand || f.brand,
-                      model: draft.model || f.model,
-                      city: draft.location || f.city,
-                      specs: [...(draft.features || []), ...(draft.specifications || [])].join(' | '),
-                      image_url: urls[0] || f.image_url,
-                      extra_images: [...(f.extra_images || []), ...urls.slice(1)],
-                      ai_confidence_score: Number(draft.confidence_score) || 0,
-                      ai_metadata: draft,
-                      ai_generated: true,
-                    }));
-                    setStep(2);
-                  }} />
-
                   {/* SAVED TEMPLATES */}
                   <SavedTemplates form={form} onLoadTemplate={handleLoadTemplate} />
-
-                  {/* AI LISTING ASSISTANT */}
-                  <AIListingAssistant
-                    form={form}
-                    onApplyDescription={(desc) => set('description', desc)}
-                    onApplyImageData={(data) => {
-                      if (data.title) set('title', data.title);
-                      if (data.tags) set('tags', data.tags);
-                    }}
-                    onApplyFullDraft={(draft) => setForm(f => ({ ...f, ...draft, ai_generated: true, ai_metadata: { ...(f.ai_metadata || {}), smart_draft: draft } }))}
-                  />
-
-                  {/* AI PRICE SUGGESTER */}
-                  {!hidePrice && (
-                    <AIPriceSuggester
-                      form={form}
-                      onApplyPrice={(price) => { set('price', String(price)); set('price_label', `₱${Number(price).toLocaleString()}`); }}
-                    />
-                  )}
-
-                  {/* AI QUALITY CHECKER */}
-                  <AIListingQualityChecker form={form} />
 
                   {/* PHOTOS */}
                   <div>
@@ -1124,10 +1073,10 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                         <label className={labelCls}>Service Options</label>
                         <div className="grid grid-cols-2 gap-2">
                           {[
-                            { key: 'service_online_available', label: 'AI Online / Remote' },
-                            { key: 'service_mobile_available', label: 'AI Mobile / On-site' },
-                            { key: 'service_same_day', label: 'AI Same Day Available' },
-                            { key: 'service_emergency_available', label: 'AI Emergency Service' },
+                            { key: 'service_online_available', label: 'Online / Remote' },
+                            { key: 'service_mobile_available', label: 'Mobile / On-site' },
+                            { key: 'service_same_day', label: 'Same Day Available' },
+                            { key: 'service_emergency_available', label: 'Emergency Service' },
                           ].map(({ key, label }) => (
                             <button key={key} type="button" onClick={() => set(key, !form[key])}
                               className="flex items-center gap-2 px-3 py-2 rounded-xl border transition-all text-left"
@@ -1173,9 +1122,9 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                         <label className={labelCls}>Service Packages (optional)</label>
                         <div className="space-y-2">
                           {[
-                            { key: 'service_package_basic', label: 'AI Basic Package', placeholder: 'e.g. Basic cleaning ₱500 — 1 room, 1hr' },
-                            { key: 'service_package_standard', label: 'AI Standard Package', placeholder: 'e.g. Standard ₱1,200 — 3 rooms, full clean' },
-                            { key: 'service_package_premium', label: 'AI Premium Package', placeholder: 'e.g. Premium ₱2,500 — whole house + deep clean' },
+                            { key: 'service_package_basic', label: 'Basic Package', placeholder: 'e.g. Basic cleaning ₱500 — 1 room, 1hr' },
+                            { key: 'service_package_standard', label: 'Standard Package', placeholder: 'e.g. Standard ₱1,200 — 3 rooms, full clean' },
+                            { key: 'service_package_premium', label: 'Premium Package', placeholder: 'e.g. Premium ₱2,500 — whole house + deep clean' },
                           ].map(({ key, label, placeholder }) => (
                             <div key={key}>
                               <label className="block font-body text-[9px] text-white/30 mb-1">{label}</label>
@@ -1317,7 +1266,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                   {(form.main_category === 'buysell' || form.type === 'food') && (
                     <div className="rounded-xl p-3 space-y-3" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.25)' }}>
                       <p className="font-body text-[10px] font-bold text-purple-400 uppercase tracking-wider">
-                        AI Delivery / Pickup Options
+                        Delivery / Pickup Options
                       </p>
                       <p className="font-body text-[10px] text-white/35">Select all that apply — shown to buyers on your listing.</p>
                       <div className="grid grid-cols-2 gap-1.5">

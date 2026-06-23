@@ -12,7 +12,7 @@ export default function Login() {
     <AuthLayout
       icon={LogIn}
       title="Welcome back"
-      subtitle="Continue with Gmail, Facebook, or Yahoo"
+      subtitle="Continue with Gmail or Yahoo"
       footer={
         <>
           Don't have an account?{" "}

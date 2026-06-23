@@ -11,7 +11,7 @@ export default function Register() {
     <AuthLayout
       icon={UserPlus}
       title="Create your account"
-      subtitle="Create your account with Gmail, Facebook, or Yahoo"
+      subtitle="Create your account with Gmail or Yahoo"
       footer={
         <>
           Already have an account?{" "}

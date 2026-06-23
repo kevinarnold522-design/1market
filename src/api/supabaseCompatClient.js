@@ -51,6 +51,27 @@ const writableColumns = {
   ])
 };
 
+async function invokeEntityWrite(payload = {}) {
+  const db = requireSupabase();
+  const { data: sessionData } = await db.auth.getSession();
+  const functionBase = (
+    import.meta.env.VITE_SUPABASE_FUNCTIONS_URL ||
+    `${import.meta.env.VITE_SUPABASE_URL || 'https://ksnzljothfoaefifevch.supabase.co'}/functions/v1`
+  ).replace(/\/+$/, '');
+  const response = await fetch(`${functionBase}/supabaseEntityWrite`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: SUPABASE_PUBLISHABLE_KEY,
+      Authorization: `Bearer ${sessionData?.session?.access_token || SUPABASE_PUBLISHABLE_KEY}`,
+    },
+    body: JSON.stringify(payload)
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || data.message || 'Database write failed');
+  return data;
+}
+
 function sanitizeRecord(entity, input = {}) {
   const allowed = writableColumns[entity];
   if (!allowed) return input || {};
@@ -117,12 +138,20 @@ function makeEntity(name) {
       return normalizeRecords(data);
     },
     async update(id, patch) {
+      if (name === 'Listing') {
+        const result = await invokeEntityWrite({ entity: name, action: 'update', id, patch });
+        return normalizeRecord(result.data);
+      }
       const db = requireSupabase();
       const { data, error } = await db.from(table).update(sanitizeRecord(name, patch)).eq('id', id).select('*').single();
       if (error) throw error;
       return normalizeRecord(data);
     },
     async delete(id) {
+      if (name === 'Listing') {
+        await invokeEntityWrite({ entity: name, action: 'delete', id });
+        return true;
+      }
       const db = requireSupabase();
       const { error } = await db.from(table).delete().eq('id', id);
       if (error) throw error;

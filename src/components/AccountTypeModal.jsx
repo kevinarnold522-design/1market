@@ -270,7 +270,7 @@ export default function AccountTypeModal({ onClose }) {
                   ))}
                 </div>
 
-                <p className="font-body text-xs text-white/30 mb-6">Create your free account with Gmail, Facebook, or Yahoo. No username or password needed.</p>
+                <p className="font-body text-xs text-white/30 mb-6">Create your free account with Gmail or Yahoo. No username or password needed.</p>
                 <div className="space-y-2.5 mb-4">
                   <button onClick={handleContinueToSignup}
                     className="w-full py-3.5 text-white rounded-xl font-body font-bold text-sm flex items-center justify-center gap-2 shadow-lg"

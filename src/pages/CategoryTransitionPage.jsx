@@ -147,7 +147,7 @@ export default function CategoryTransitionPage() {
     );
   }
 
-  const isAuthorized = user && (user.role === 'admin' || user.user_type === 'seller' || user.user_type === 'business' || user.account_type === 'business_owner');
+  const isAuthorized = !!user;
 
   return (
     <div className="relative min-h-screen overflow-hidden" style={{ background: 'linear-gradient(180deg,#38bdf8 0%,#2563EB 100%)' }}>
@@ -167,6 +167,9 @@ export default function CategoryTransitionPage() {
             {catConfig.desc}
           </h1>
           <p className="font-body text-sm text-white/40">Select a listing type to continue</p>
+          <Link to={`/post-ad?category=${category}`} className="inline-flex mt-5 px-5 py-2.5 rounded-xl bg-[#FFD700] text-[#2563EB] font-body font-bold text-sm shadow-lg hover:scale-105 transition-transform">
+            Post a Listing
+          </Link>
         </motion.div>
 
         {/* Type Selection Grid */}
@@ -205,12 +208,12 @@ export default function CategoryTransitionPage() {
               <p className="font-body text-sm text-amber-200 font-semibold">Account Required</p>
             </div>
             <p className="font-body text-sm text-white/60 mb-4">
-              You need a Seller or Business account to post listings. Upgrade your account to continue.
+              Create or sign in to any account type to post listings.
             </p>
             <button onClick={() => setShowSignup(true)}
-              className="px-6 py-2.5 rounded-xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"
-              style={{ background: 'linear-gradient(135deg,#FFD700,#FFA500)' }}>
-              Upgrade to Seller Account
+              className="px-6 py-2.5 rounded-xl font-body font-bold text-sm text-[#2563EB] transition-all hover:scale-105"
+              style={{ background: 'linear-gradient(135deg,#FFD700,#FFF7CC)' }}>
+              Create or Sign In
             </button>
           </motion.div>
         )}

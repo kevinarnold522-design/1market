@@ -181,24 +181,15 @@ return (
                       </Link>
                     </div>
 
-                    {/* Seller Section */}
-                    {(isAdmin || (isSeller && activeUser?.user_type !== 'rider' && !(activeUser?.user_type === 'customer' && !isSeller))) && (
+                    {/* Posting Section */}
+                    {activeUser && (
                       <div className="space-y-0.5 mb-3">
-                        <p className="px-3 py-1 font-body text-[9px] text-[#00D4FF]/50 uppercase tracking-wider font-bold">Seller Tools</p>
+                        <p className="px-3 py-1 font-body text-[9px] text-[#FFD700]/80 uppercase tracking-wider font-bold">Post Listings</p>
                         <div className="px-3 py-2">
                           <PostListingMenu user={activeUser} compact />
                         </div>
                         <Link to="/my-listings" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-[#00D4FF]">
                           <Package className="w-4 h-4 text-[#00D4FF]" /> My Listings
-                        </Link>
-                        <Link to="/seller-orders" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400">
-                          <Package className="w-4 h-4 text-green-400" /> Seller Orders
-                        </Link>
-                        <Link to="/my-analytics" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-yellow-400">
-                          <BarChart2 className="w-4 h-4 text-yellow-400" /> Statistics Dashboard
-                        </Link>
-                        <Link to={`/seller/${isGhostSession ? (ghostUser?.username || ghostUser?.id) : (activeUser?.username || activeUser?.id)}`} onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors text-white/70 hover:text-green-400">
-                          <Globe className="w-4 h-4 text-green-400" /> My Seller Profile
                         </Link>
                       </div>
                     )}

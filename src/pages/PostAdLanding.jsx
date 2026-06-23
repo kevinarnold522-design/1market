@@ -84,10 +84,9 @@ export default function PostAdLanding() {
   const isAdmin = currentUser?.role === 'admin' || currentUser?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
   const isBusinessAccount = userType === 'business' || currentUser?.account_type === 'business_owner';
   const isSellerAccount = userType === 'seller' || currentUser?.is_seller || isBusinessAccount || currentUser?.is_ghost_account;
-  const isBlockedUserType = userType === 'rider' || (userType === 'customer' && !isSellerAccount);
-  const canPost = !!currentUser && !isBlockedUserType && (isAdmin || isSellerAccount);
+  const canPost = !!currentUser;
   const postModeOptions = [
-    ...(isSellerAccount ? [{ key: 'seller', label: 'Seller Ad', desc: 'Post items, services, jobs, rent, food, or travel.' }] : []),
+    { key: 'personal', label: isSellerAccount ? 'Seller Ad' : 'Post a Listing', desc: 'Post items, services, jobs, rent, food, or travel.' },
     ...(isBusinessAccount ? [{ key: 'business', label: 'Business Ad', desc: 'Post under your business account or brand.' }] : []),
     ...(isAdmin ? [{ key: 'admin', label: 'Admin Post', desc: 'Post as marketplace admin.' }] : []),
   ];
@@ -150,8 +149,8 @@ export default function PostAdLanding() {
 
         {!canPost && (
           <div className="mb-8 p-5 rounded-2xl" style={{ background: 'rgba(255,215,0,0.10)', border: '1px solid rgba(255,215,0,0.35)', boxShadow: '0 0 24px rgba(255,215,0,0.14)' }}>
-            <p className="font-heading text-lg font-bold text-white text-center mb-2">Choose how you want to post</p>
-            <p className="font-body text-sm text-white/75 text-center mb-4">Post an Ad is available for seller, business, and admin accounts.</p>
+            <p className="font-heading text-lg font-bold text-white text-center mb-2">Create an account to post</p>
+            <p className="font-body text-sm text-white/75 text-center mb-4">Any account type can post listings on 1MarketPH.</p>
             <div className="grid sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
               <button onClick={() => enablePostingAccount('seller')} disabled={upgradingMode === 'seller'} className="p-4 rounded-2xl border text-left transition-all hover:scale-[1.01] disabled:opacity-60" style={{ borderColor: '#FFD700', background: 'rgba(255,215,0,0.18)' }}>
                 <p className="font-body text-sm font-bold text-[#FFD700]">Seller Ad</p>
@@ -283,7 +282,7 @@ export default function PostAdLanding() {
       <ListingLandingBrandBar />
 
       <AnimatePresence>
-        {showModal && selectedCat && canPost && (
+        {showModal && canPost && (
           <AddListingModal
             user={currentUser}
             defaultType={selectedType}
