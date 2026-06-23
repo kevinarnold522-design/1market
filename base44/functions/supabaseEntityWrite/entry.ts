@@ -13,7 +13,7 @@ const writableColumns = {
     'title','main_category','type','approval_status','border_color','subcategory','extra_subcategories','business_id','price','original_price',
     'price_label','quantity','flash_deal_active','flash_deal_end','location','area','meetup_location','seller_name','seller_email','phone',
     'email_contact','apply_link','description','image_url','extra_images','video_url','preview_media','condition','brand','model','year',
-    'mileage','transmission','size','is_active','view_count','rating','rating_count','delivery_options','metadata'
+    'mileage','transmission','size','is_active','view_count','rating','rating_count','delivery_options','owner_user_id','owner_email','created_by_id','created_by','approved_channel_name','metadata'
   ])
 };
 
@@ -23,7 +23,7 @@ function sanitizeRecord(entity, input = {}) {
   const clean = {};
   const extras = {};
   for (const [key, value] of Object.entries(input || {})) {
-    if (key === 'id' || key === 'created_at' || key === 'created_date' || key === 'updated_at' || key === 'updated_date' || key === 'created_by_id') continue;
+    if (key === 'id' || key === 'created_at' || key === 'created_date' || key === 'updated_at' || key === 'updated_date' || (key === 'created_by_id' && entity !== 'Listing')) continue;
     if (allowed.has(key)) clean[key] = value;
     else if (value !== undefined) extras[key] = value;
   }

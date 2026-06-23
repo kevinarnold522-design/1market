@@ -22,7 +22,7 @@ export default function HeroSection({ heroImage }) {
     }).catch(() => {});
   }, []);
 
-  const canPost = user && (user.role === 'admin' || user.user_type === 'seller' || user.user_type === 'business' || user.is_seller || user.account_type === 'business_owner');
+  const canPost = !!user;
 
   return (
     <section className="relative min-h-[80vh] flex items-center overflow-hidden">
