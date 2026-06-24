@@ -245,9 +245,9 @@ export default function ListingDetail() {
           const nextPoints = nextViews + (hts.length * 2) + (cmts.length * 3);
           setListing({ ...found, view_count: nextViews, heart_count: hts.length, comment_count: cmts.length, point_count: nextPoints });
           base44.entities.Listing.update(found.id, { view_count: nextViews, heart_count: hts.length, comment_count: cmts.length, point_count: nextPoints }).catch(() => {});
-          addSellerPoints(found.owner_user_id || found.created_by_id, 1);
+          addSellerPoints(found.created_by_id || found.owner_user_id, 1);
           // Load seller's user profile for their social links
-          const sellerId = found.owner_user_id || found.created_by_id;
+          const sellerId = found.created_by_id || found.owner_user_id;
           if (sellerId) {
             try {
               const sellerUsers = await base44.entities.User.filter({ id: sellerId });
@@ -285,14 +285,14 @@ export default function ListingDetail() {
       setHearts(h => h - 1);
       setListing(prev => prev ? { ...prev, heart_count: Math.max(0, (prev.heart_count || hearts) - 1), point_count: Math.max(0, (prev.point_count || 0) - 2) } : prev);
       base44.entities.Listing.update(id, { heart_count: Math.max(0, hearts - 1), point_count: Math.max(0, (listing?.point_count || 0) - 2) }).catch(() => {});
-      addSellerPoints(listing?.owner_user_id || listing?.created_by_id, -2);
+      addSellerPoints(listing?.created_by_id || listing?.owner_user_id, -2);
       setUserHearted(false);
     } else {
       await base44.entities.ListingHeart.create({ listing_id: id, user_email: user.email });
       setHearts(h => h + 1);
       setListing(prev => prev ? { ...prev, heart_count: (prev.heart_count || hearts) + 1, point_count: (prev.point_count || 0) + 2 } : prev);
       base44.entities.Listing.update(id, { heart_count: hearts + 1, point_count: (listing?.point_count || 0) + 2 }).catch(() => {});
-      addSellerPoints(listing?.owner_user_id || listing?.created_by_id, 2);
+      addSellerPoints(listing?.created_by_id || listing?.owner_user_id, 2);
       setUserHearted(true);
       setShowHeartAnim(true);
       setTimeout(() => setShowHeartAnim(false), 1300);
@@ -313,7 +313,7 @@ export default function ListingDetail() {
     setComments(c => [created, ...c]);
     setListing(prev => prev ? { ...prev, comment_count: (prev.comment_count || comments.length) + 1, point_count: (prev.point_count || 0) + 3 } : prev);
     base44.entities.Listing.update(id, { comment_count: comments.length + 1, point_count: (listing?.point_count || 0) + 3 }).catch(() => {});
-    addSellerPoints(listing?.owner_user_id || listing?.created_by_id, 3);
+    addSellerPoints(listing?.created_by_id || listing?.owner_user_id, 3);
     setNewComment('');
     setNewRating(0);
     setSubmitting(false);
@@ -1026,8 +1026,8 @@ export default function ListingDetail() {
                     <span className="font-body text-[10px] text-[#00D4FF] font-bold">Verified Channel Name</span>
                   </div>
                 )}
-                {(listing.owner_user_id || listing.created_by_id) ? (
-                  <Link to={`/seller/${listing.owner_user_id || listing.created_by_id}`} className="flex items-center gap-3 group">
+                {(listing.created_by_id || listing.owner_user_id) ? (
+                  <Link to={`/seller/${listing.created_by_id || listing.owner_user_id}`} className="flex items-center gap-3 group">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center font-heading font-bold text-white text-sm flex-shrink-0 group-hover:scale-105 transition-transform">
                       {(listing.approved_channel_name || listing.seller_name || 'S').charAt(0).toUpperCase()}
                     </div>

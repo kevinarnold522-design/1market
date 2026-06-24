@@ -38,7 +38,7 @@ export default function AccountListings() {
       }
       const owned = ghost
         ? isGhostOwnedRecord(changed, ghost)
-        : changed.owner_user_id === user?.id || changed.created_by_id === user?.id || changed.owner_email === user?.email || changed.created_by === user?.email;
+        : changed.created_by_id === user?.id || changed.owner_user_id === user?.id || changed.owner_email === user?.email || changed.created_by === user?.email;
       if (!owned) return;
       if (changed.is_active === false) {
         setListings(items => items.filter(item => item.id !== changed.id));
@@ -58,7 +58,7 @@ export default function AccountListings() {
     const owned = all.filter(item => {
       if (item.is_active === false) return false;
       if (ghost) return isGhostOwnedRecord(item, ghost);
-      return item.owner_user_id === user?.id || item.created_by_id === user?.id || item.owner_email === user?.email || item.created_by === user?.email;
+      return item.created_by_id === user?.id || item.owner_user_id === user?.id || item.owner_email === user?.email || item.created_by === user?.email;
     });
     setListings(owned);
     setLoading(false);
