@@ -33,7 +33,7 @@ const TYPES_BY_MAIN = {
     { value: 'furniture',      label: 'Furniture' },
     { value: 'homeappliances', label: 'Home Appliances' },
     { value: 'cars',           label: 'Cars & Vehicles' },
-    { value: 'houses',         label: 'Real Estate' },
+    { value: 'houses',         label: 'Real Estate / Properties / Houses / Condo' },
     { value: 'mods',           label: 'Mods & Customizations' },
     { value: 'other',          label: 'Other / Miscellaneous' },
   ],
@@ -643,7 +643,6 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
     };
 
     const locationStr = [form.city, form.state_region].filter(Boolean).join(', ') || 'Nationwide';
-    const verifiedPublisher = !!(effectiveUser?.is_verified_seller || effectiveUser?.role === 'admin' || effectiveUser?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
     // For ghost sessions: use ghost's display name, never expose internal ghost email
     const ghostSess = getGhostSession();
     const sellerDisplayName = safeForm.seller_name || effectiveUser?.channel_name || effectiveUser?.business_name || effectiveUser?.full_name || '';
@@ -663,8 +662,8 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       social_facebook: safeForm.social_facebook, social_whatsapp: safeForm.social_whatsapp, social_instagram: safeForm.social_instagram,
       alternate_site_options: safeForm.alternate_site_options || [], custom_site_name: safeForm.custom_site_name || '', custom_site_url: safeForm.custom_site_url || '',
       posting_as: safeForm.posting_as || '',
-      condition: safeForm.condition, is_active: verifiedPublisher ? safeForm.is_active !== false : false,
-      approval_status: verifiedPublisher ? 'approved' : 'pending',
+      condition: safeForm.condition, is_active: safeForm.is_active !== false,
+      approval_status: 'approved',
       quantity: Number(safeForm.quantity) || 1,
       tags: safeForm.tags ? safeForm.tags.split(',').map(t => t.trim()).filter(Boolean).join(',') : '',
       brand: safeForm.brand || undefined,

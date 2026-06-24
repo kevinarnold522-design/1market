@@ -12,6 +12,7 @@ import MascotDog from '../components/MascotDog';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import SmartFilterChips from '../components/SmartFilterChips';
 import ListingLandingBrandBar from '@/components/listing/ListingLandingBrandBar';
+import { dedupeById, filterPublishedListings } from '@/lib/listingVisibility';
 
 const TRAVEL_CATEGORIES = [
   { key: 'hotel',       label: 'Hotels',         icon: <Hotel className="w-4 h-4" />, color: '#6366f1' },
@@ -186,8 +187,12 @@ function ShareModal({ listing, onClose }) {
 export default function Travel() {
   const urlParams = new URLSearchParams(window.location.search);
   const shouldPost = urlParams.get('post') === '1';
+  const urlType = urlParams.get('type');
   const urlSub = urlParams.get('sub');
+  const travelTypeKeys = new Set(TRAVEL_CATEGORIES.map((c) => c.key));
+  const initialTypeFilter = travelTypeKeys.has(String(urlType || '').toLowerCase()) ? String(urlType).toLowerCase() : 'all';
 
+  const [activeTypeFilter, setActiveTypeFilter] = useState(initialTypeFilter);
   const [search, setSearch] = useState(urlSub || '');
   const [dbListings, setDbListings] = useState([]);
   const [shareTarget, setShareTarget] = useState(null);
@@ -207,13 +212,18 @@ export default function Travel() {
         if (shouldPost) setShowTravelPost(true);
       }).catch(() => {});
     }).catch(() => {});
-    base44.entities.Listing.filter({ main_category: 'travel', is_active: true }, '-created_date', 100)
-      .then(res => setDbListings(res)).catch(() => {});
+    base44.entities.Listing.filter({ main_category: 'travel', is_active: true }, '-created_date', 140)
+      .then(res => setDbListings(filterPublishedListings(res))).catch(() => {});
   }, []);
 
   const normalizeType = (l) => {
     const sub = (l.subcategory || '').toLowerCase();
     const t = (l.type || '').toLowerCase();
+    if (t === 'car_rental' || t === 'van_rental' || t === 'hotel' || t === 'resort' || t === 'island' || t === 'camping' || t === 'hiking' || t === 'diving' || t === 'surfing' || t === 'ferry' || t === 'flights') return t;
+    if (t === 'vehicle_rental') {
+      if (sub.includes('van') || `${l.title || ''}`.toLowerCase().includes('van')) return 'van_rental';
+      return 'car_rental';
+    }
     if (sub.includes('hotel') || t === 'hotel') return 'hotel';
     if (sub.includes('resort') || t === 'resort') return 'resort';
     if (sub.includes('flight') || sub.includes('tour') || t === 'flights') return 'flights';
@@ -228,7 +238,7 @@ export default function Travel() {
     return t;
   };
 
-  const allListings = [
+  const allListings = dedupeById([
     ...STATIC_LISTINGS,
     ...dbListings.map(l => ({
       id: l.id,
@@ -243,7 +253,7 @@ export default function Travel() {
       subcategory: l.subcategory || '',
       description: l.description || '',
     }))
-  ];
+  ]);
 
   const searchLower = search.toLowerCase();
   const filtered = search
@@ -255,7 +265,9 @@ export default function Travel() {
       )
     : allListings;
 
-  const byCategory = (key) => filtered.filter(l => l.type === key);
+  const filteredByType = activeTypeFilter === 'all' ? filtered : filtered.filter((l) => l.type === activeTypeFilter);
+
+  const byCategory = (key) => filteredByType.filter(l => l.type === key);
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#000d40 0%,#001a80 50%,#000d40 100%)' }}>
@@ -297,8 +309,11 @@ export default function Travel() {
           <div className="flex gap-2 py-3 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
             {TRAVEL_CATEGORIES.map(cat => (
               <a key={cat.key} href={`#${cat.key}`}
+                onClick={() => setActiveTypeFilter(prev => (prev === cat.key ? 'all' : cat.key))}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-body text-xs font-semibold whitespace-nowrap transition-all border flex-shrink-0 hover:scale-105"
-                style={{ background: `${cat.color}18`, color: cat.color, borderColor: `${cat.color}44` }}>
+                style={activeTypeFilter === cat.key
+                  ? { background: `${cat.color}33`, color: '#fff', borderColor: `${cat.color}88` }
+                  : { background: `${cat.color}18`, color: cat.color, borderColor: `${cat.color}44` }}>
                 <span className="text-white">{cat.icon}</span> {cat.label}
               </a>
             ))}
@@ -314,17 +329,17 @@ export default function Travel() {
           { label: 'Vehicle rentals', onClick: () => setSearch('rental') },
           { label: 'Clear search', onClick: () => setSearch('') },
         ]} />
-        {search ? (
+          {search || activeTypeFilter !== 'all' ? (
           <>
-            <p className="font-body text-sm text-white/40 mb-6">{filtered.length} results for "{search}"</p>
+            <p className="font-body text-sm text-white/40 mb-6">{filteredByType.length} results {search ? `for "${search}"` : ''}{activeTypeFilter !== 'all' ? ` in ${TRAVEL_CATEGORIES.find(c => c.key === activeTypeFilter)?.label || activeTypeFilter}` : ''}</p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {filtered.map(l => (
+              {filteredByType.map(l => (
                 <div key={l.id} className="w-full"><TravelCard listing={l} onShare={setShareTarget} /></div>
               ))}
             </div>
-            {filtered.length === 0 && (
+            {filteredByType.length === 0 && (
               <div className="text-center py-20">
-                <p className="font-body text-white/30">No listings found for "{search}"</p>
+                <p className="font-body text-white/30">No listings found with current filters.</p>
               </div>
             )}
           </>

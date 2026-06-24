@@ -14,6 +14,7 @@ import MascotDog from '../components/MascotDog';
 import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import SmartFilterChips from '../components/SmartFilterChips';
 import ListingLandingBrandBar from '@/components/listing/ListingLandingBrandBar';
+import { dedupeById, filterPublishedListings } from '@/lib/listingVisibility';
 
 const KNOWN_LOGOS = {
   'Jollibee': 'https://upload.wikimedia.org/wikipedia/en/thumb/8/84/Jollibee_logo.svg/220px-Jollibee_logo.svg.png',
@@ -31,6 +32,45 @@ function getLogoUrl(name) {
     if (name.toLowerCase().includes(key.toLowerCase())) return url;
   }
   return null;
+}
+
+function mapFoodTypeFromListing(listing) {
+  const text = `${listing?.subcategory || ''} ${listing?.title || ''} ${listing?.description || ''}`.toLowerCase();
+  if (/coffee|barako|espresso|latte|cafe/.test(text)) return 'coffee';
+  if (/milk tea|boba|chatime|gong cha|tiger sugar/.test(text)) return 'milktea';
+  if (/korean|samgyup|kimchi|bulgogi/.test(text)) return 'korean';
+  if (/japanese|ramen|sushi|udon|katsu/.test(text)) return 'japanese';
+  if (/seafood|fish|shrimp|crab|talaba|oyster/.test(text)) return 'seafood';
+  if (/carinderia|karinderya|lutong bahay|home kitchen|ulam/.test(text)) return 'home-kitchen';
+  if (/baker|bakery|bread|cake|pastry|dessert|kakanin/.test(text)) return 'home-baker';
+  if (/catering|buffet|pax|event food/.test(text)) return 'catering';
+  if (/jollibee|mcdonald|kfc|chowking|greenwich|fast food|chain/.test(text)) return 'chain';
+  return 'carinderia';
+}
+
+function mapFoodListingToBusiness(listing) {
+  return {
+    id: `listing-${listing.id}`,
+    name: listing.title || 'Food Listing',
+    category: listing.subcategory || 'Food',
+    location: listing.location || 'Nationwide',
+    area: listing.area || listing.location || 'Nationwide',
+    address: listing.full_address || listing.location || 'Nationwide',
+    hours: listing.business_hours || 'Open daily',
+    menu: [],
+    type: mapFoodTypeFromListing(listing),
+    tag: listing.price_label || 'Food Listing',
+    image: listing.image_url || 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80',
+    logo_url: getLogoUrl(listing.title || ''),
+    website: listing.apply_link || '',
+    founder: listing.seller_name || '',
+    year_started: '',
+    bio: listing.description || '',
+    desc: listing.description || '',
+    phone: listing.phone || '',
+    delivery_options: listing.delivery_options || [],
+    isListing: true,
+  };
 }
 
 const businesses = [
@@ -261,6 +301,20 @@ const FOOD_SUBCATEGORIES = [
   { key: 'catering', label: 'Catering', icon: 'AI️', desc: 'Events' },
 ];
 
+const FOOD_FILTER_ALIASES = {
+  desserts: ['desserts', 'home-baker', 'bakery'],
+  catering: ['catering', 'home-kitchen'],
+  chain: ['chain'],
+  carinderia: ['carinderia'],
+  coffee: ['coffee'],
+  milktea: ['milktea'],
+  korean: ['korean'],
+  japanese: ['japanese'],
+  seafood: ['seafood'],
+  'home-kitchen': ['home-kitchen', 'carinderia'],
+  'home-baker': ['home-baker', 'desserts'],
+};
+
 const BUSINESS_ADMIN_FIELDS = [
   { key: 'name', label: 'Business Name' },
   { key: 'image_url', label: 'Main Photo', type: 'image' },
@@ -290,6 +344,7 @@ export default function Food() {
   const [showSignup, setShowSignup] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [dbBusinesses, setDbBusinesses] = useState([]);
+  const [dbFoodListings, setDbFoodListings] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [adminMode, setAdminMode] = useState(false);
 
@@ -302,20 +357,44 @@ export default function Food() {
   const isAdminUser = currentUser?.role === 'admin' || currentUser?.role === 'moderator' || currentUser?.email === 'Kevinarnold522@gmail.com';
 
   useEffect(() => {
-    base44.entities.Business.filter({ section: 'food', is_active: true }).then(setDbBusinesses).catch(() => {});
+    Promise.all([
+      base44.entities.Business.filter({ section: 'food', is_active: true }),
+      base44.entities.Listing.filter({ main_category: 'food', is_active: true }, '-created_date', 120),
+      base44.entities.Listing.filter({ type: 'food', is_active: true }, '-created_date', 120),
+    ]).then(([businessRows, byMain, byType]) => {
+      setDbBusinesses(businessRows || []);
+      const mergedListings = filterPublishedListings(dedupeById([...(byMain || []), ...(byType || [])]));
+      setDbFoodListings(mergedListings);
+    }).catch(() => {
+      setDbBusinesses([]);
+      setDbFoodListings([]);
+    });
   }, []);
 
-  // Merge DB businesses on top of static ones (DB takes priority)
-  const allBusinesses = [...dbBusinesses, ...businesses.filter(sb => !dbBusinesses.some(db => db.name === sb.name))];
+  // Merge food listings + businesses + static data, de-duped by name (priority: listings > business rows > static)
+  const listingBusinesses = dbFoodListings.map(mapFoodListingToBusiness);
+  const seenNames = new Set();
+  const allBusinesses = [...listingBusinesses, ...dbBusinesses, ...businesses].filter((item) => {
+    const key = String(item?.name || '').toLowerCase().trim();
+    if (!key) return true;
+    if (seenNames.has(key)) return false;
+    seenNames.add(key);
+    return true;
+  });
 
   const toggleType = (key) => {
     setActiveTypes(prev => prev.includes(key) ? prev.filter(t => t !== key) : [...prev, key]);
   };
 
   const filtered = allBusinesses.filter(b => {
-    const matchSearch = b.name.toLowerCase().includes(search.toLowerCase()) || (b.area || '').toLowerCase().includes(search.toLowerCase()) || (b.category || '').toLowerCase().includes(search.toLowerCase());
+    const searchText = search.toLowerCase();
+    const matchSearch = b.name.toLowerCase().includes(searchText)
+      || (b.area || '').toLowerCase().includes(searchText)
+      || (b.category || '').toLowerCase().includes(searchText)
+      || (b.desc || b.bio || '').toLowerCase().includes(searchText);
     const matchLoc = locationFilter === 'All' || b.location === locationFilter;
-    const matchType = activeTypes.length === 0 || activeTypes.includes(b.type);
+    const expandedTypes = activeTypes.flatMap((key) => FOOD_FILTER_ALIASES[key] || [key]);
+    const matchType = activeTypes.length === 0 || expandedTypes.includes(b.type);
     return matchSearch && matchLoc && matchType;
   });
 

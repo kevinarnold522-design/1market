@@ -101,7 +101,7 @@ const ALL_CATS = [
   { value: 'services', label: 'Services', icon: 'services', subcats: ['Home Services', 'Tech Support', 'Beauty', 'Events', 'Transport'] },
   { value: 'product', label: 'General Products', icon: 'product', subcats: ['Health & Beauty', 'Sports', 'Toys', 'Books', 'Tools'] },
   { value: 'homeappliances', label: 'Home Appliances', icon: 'homeappliances', subcats: ['Refrigerator', 'Washing Machine', 'Aircon', 'TV'] },
-  { value: 'houses', label: 'Real Estate', icon: 'houses', subcats: ['House & Lot', 'Condo', 'Townhouse', 'Lot', 'Commercial'] },
+  { value: 'houses', label: 'Real Estate / Properties / Houses / Condo', icon: 'houses', subcats: ['House & Lot', 'Condo', 'Townhouse', 'Lot', 'Commercial'] },
   { value: 'rent_lease', label: 'For Rent / Lease', icon: 'rent_lease', subcats: ['Rooms', 'Apartments', 'Commercial Spaces', 'Venues'] },
   { value: 'hotel', label: 'Hotels & Accommodation', icon: 'hotel', subcats: ['Budget Hotel', 'Boutique', 'Resort', 'Homestay'] },
   { value: 'flights', label: 'Flights & Tour Packages', icon: 'flights', subcats: ['Domestic', 'International', 'Tour Package'] },

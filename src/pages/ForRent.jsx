@@ -12,6 +12,7 @@ import BecomeSellerBanner from '../components/BecomeSelllerBanner';
 import SmartFilterChips from '../components/SmartFilterChips';
 import ListingContactLinks from '../components/ListingContactLinks';
 import ListingLandingBrandBar from '@/components/listing/ListingLandingBrandBar';
+import { filterPublishedListings } from '@/lib/listingVisibility';
 
 // Multi-icon renderer for the section header
 function MultiIcon({ color }) {
@@ -36,6 +37,58 @@ const SUBCATEGORIES = [
 const SPACE_TYPES = ['All Types', 'Room', 'House', 'Bungalow', 'Dorm', 'Condo', '2 Stories', '3 Stories', 'Land', 'Lot for Lease', 'Commercial Lot'];
 
 // No static/fake listings — only real DB listings shown
+
+const URL_TO_RENT_CATEGORY = {
+  all: 'all',
+  residential: 'residential',
+  property: 'residential',
+  properties: 'residential',
+  house: 'residential',
+  houses: 'residential',
+  condo: 'residential',
+  condominium: 'residential',
+  rent_lease: 'residential',
+  vehicle_rental: 'vehicles',
+  vehicle: 'vehicles',
+  vehicles: 'vehicles',
+  commercial: 'commercial',
+  events: 'events',
+  equipment: 'equipment',
+};
+
+function normalizeActiveCategory(value) {
+  if (!value) return 'all';
+  return URL_TO_RENT_CATEGORY[String(value).toLowerCase()] || 'all';
+}
+
+function detectRentalCategory(listing) {
+  const text = `${listing?.type || ''} ${listing?.subcategory || ''} ${listing?.title || ''}`.toLowerCase();
+  if (listing?.type === 'vehicle_rental' || /car|van|truck|motorcycle|bike|bus|suv|pickup/.test(text)) return 'vehicles';
+  if (/commercial|office|retail|warehouse|bodega|stall|kiosk/.test(text)) return 'commercial';
+  if (/venue|event|hall|function room/.test(text)) return 'events';
+  if (/equipment|gadget|camera|projector|tool|laptop/.test(text)) return 'equipment';
+  return 'residential';
+}
+
+function normalizeRentalListing(listing) {
+  return {
+    ...listing,
+    sub: listing?.subcategory || '',
+    price: listing?.price_label || (listing?.price ? `₱${Number(listing.price).toLocaleString()}` : ''),
+    categoryKey: detectRentalCategory(listing),
+    image: listing?.image_url || '',
+    desc: listing?.description || '',
+    contact: listing?.phone || listing?.email_contact || '',
+  };
+}
+
+function mergeUniqueById(...collections) {
+  const map = new Map();
+  collections.flat().filter(Boolean).forEach((item) => {
+    if (item?.id && !map.has(item.id)) map.set(item.id, item);
+  });
+  return Array.from(map.values());
+}
 
 function AdminListingEditModal({ item, isAdmin, onClose, onSave, onDelete }) {
   const [title, setTitle] = useState(item.title || '');
@@ -163,7 +216,7 @@ export default function ForRent() {
   const urlType = urlParams.get('type');
   const urlSub = urlParams.get('sub');
 
-  const [activeCategory, setActiveCategory] = useState(urlType || null);
+  const [activeCategory, setActiveCategory] = useState(normalizeActiveCategory(urlType));
   const [locationFilter, setLocationFilter] = useState('All');
   const [spaceType, setSpaceType] = useState('All Types');
   const [search, setSearch] = useState(urlSub || '');
@@ -180,30 +233,33 @@ export default function ForRent() {
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
 
+  const loadListings = async () => {
+    try {
+      const [rentByMain, rentByType, vehiclesByType, realEstateByType] = await Promise.all([
+        base44.entities.Listing.filter({ main_category: 'rent', is_active: true }, '-created_date', 80),
+        base44.entities.Listing.filter({ type: 'rent_lease', is_active: true }, '-created_date', 80),
+        base44.entities.Listing.filter({ type: 'vehicle_rental', is_active: true }, '-created_date', 50),
+        base44.entities.Listing.filter({ type: 'houses', is_active: true }, '-created_date', 50),
+      ]);
+      setDbListings(filterPublishedListings(mergeUniqueById(rentByMain, rentByType, vehiclesByType, realEstateByType)));
+    } catch {
+      setDbListings([]);
+    }
+  };
+
   useEffect(() => {
     base44.auth.me().then(u => {
       setUser(u);
       setIsAdmin(u?.role === 'admin' || u?.role === 'moderator' || u?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
       setIsSeller(u?.is_seller || u?.user_type === 'seller' || u?.user_type === 'business' || u?.account_type === 'business_owner');
     }).catch(() => {});
-    Promise.all([
-      base44.entities.Listing.filter({ type: 'rent_lease', is_active: true }, '-created_date', 50),
-      base44.entities.Listing.filter({ type: 'vehicle_rental', is_active: true }, '-created_date', 30),
-    ]).then(([rentals, vehicles]) => setDbListings([...rentals, ...vehicles])).catch(() => {});
+    loadListings();
   }, []);
 
-  const allRentals = dbListings.map(l => ({
-    ...l,
-    sub: l.subcategory || '',
-    price: l.price_label || (l.price ? `₱${Number(l.price).toLocaleString()}` : ''),
-    type: l.type === 'vehicle_rental' ? 'vehicles' : 'residential',
-    image: l.image_url || '',
-    desc: l.description || '',
-    contact: l.phone || l.email_contact || '',
-  }));
+  const allRentals = dbListings.map(normalizeRentalListing);
 
   const filtered = allRentals.filter(l => {
-    const matchCat = !activeCategory || activeCategory === 'all' || l.type === activeCategory;
+    const matchCat = !activeCategory || activeCategory === 'all' || l.categoryKey === activeCategory;
     const matchLoc = locationFilter === 'All' || l.location === locationFilter;
     const matchSearch = l.title.toLowerCase().includes(search.toLowerCase()) || (l.area||'').toLowerCase().includes(search.toLowerCase()) || (l.sub||'').toLowerCase().includes(search.toLowerCase());
     const matchSpace = spaceType === 'All Types' || (l.sub||'').toLowerCase().includes(spaceType.toLowerCase()) || l.title.toLowerCase().includes(spaceType.toLowerCase());
@@ -328,10 +384,10 @@ export default function ForRent() {
       <AnimatePresence>
         {contactItem && <ContactModal item={contactItem} onClose={() => setContactItem(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
-        {showAddListing && <AddListingModal onClose={async () => { setShowAddListing(false); const [r, v] = await Promise.all([base44.entities.Listing.filter({ type: 'rent_lease', is_active: true }, '-created_date', 50), base44.entities.Listing.filter({ type: 'vehicle_rental', is_active: true }, '-created_date', 30)]); setDbListings([...r, ...v]); }} defaultType="rent_lease" defaultSubcategory={addDefaultSub} user={user} />}
+        {showAddListing && <AddListingModal onClose={async () => { setShowAddListing(false); await loadListings(); }} defaultType="rent_lease" defaultSubcategory={addDefaultSub} user={user} />}
         {editItem && editItem.id && (
           <AdminListingEditModal item={editItem} isAdmin={isAdmin} onClose={() => setEditItem(null)}
-            onSave={async () => { setEditItem(null); showToast('Updated!'); const items = await base44.entities.Listing.filter({ type: 'rent_lease', is_active: true }, '-created_date', 50); setDbListings(items); }}
+            onSave={async () => { setEditItem(null); showToast('Updated!'); await loadListings(); }}
             onDelete={async () => { await base44.entities.Listing.delete(editItem.id); setEditItem(null); showToast('Deleted.'); setDbListings(prev => prev.filter(l => l.id !== editItem.id)); }} />
         )}
       </AnimatePresence>

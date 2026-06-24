@@ -16,7 +16,7 @@ const NAV_CATEGORIES = [
 
 const TYPE_LABELS = {
   product: 'General Products', electronics: 'Electronics', clothing: 'Clothing', shoes: 'Shoes',
-  cars: 'Cars & Vehicles', furniture: 'Furniture', houses: 'Real Estate', mods: 'Mods', other: 'Other',
+  cars: 'Cars & Vehicles', furniture: 'Furniture', houses: 'Real Estate / Properties / Houses / Condo', mods: 'Mods', other: 'Other',
   food: 'Food', hotel: 'Hotels', flights: 'Flights', vehicle_rental: 'Vehicle Rental',
   resort: 'Resorts', ferry: 'Ferry & Bus', car_rental: 'Car Rentals', van_rental: 'Van Rentals',
   island: 'Island Hopping', camping: 'Camping', hiking: 'Hiking', diving: 'Diving', surfing: 'Surfing',

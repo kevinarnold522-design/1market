@@ -56,7 +56,7 @@ const BUYSELL_SUBS = [
   { key: 'clothing',       label: 'Clothing',        Icon: Shirt,        href: '/buysell' },
   { key: 'shoes',          label: 'Shoes',           Icon: Footprints,   href: '/buysell' },
   { key: 'furniture',      label: 'Furniture',       Icon: Sofa,         href: '/buysell' },
-  { key: 'houses',         label: 'Real Estate',     Icon: Building2,    href: '/buysell' },
+  { key: 'houses',         label: 'Real Estate / Properties / Houses / Condo',     Icon: Building2,    href: '/buysell' },
   { key: 'homeappliances', label: 'Appliances',      Icon: Zap,          href: '/buysell' },
   { key: 'mods',           label: 'Mods & Customs',  Icon: Settings,     href: '/buysell' },
   { key: 'product',        label: 'General Products', Icon: Package,     href: '/buysell' },

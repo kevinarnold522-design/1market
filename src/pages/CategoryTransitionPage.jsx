@@ -21,7 +21,7 @@ const CATEGORY_CONFIG = {
       { type: 'furniture',     label: 'Furniture',               Icon: Home },
       { type: 'homeappliances',label: 'Home Appliances',         Icon: Zap },
       { type: 'cars',          label: 'Cars & Vehicles',         Icon: Car },
-      { type: 'houses',        label: 'Real Estate',             Icon: Building2 },
+      { type: 'houses',        label: 'Real Estate / Properties / Houses / Condo',             Icon: Building2 },
       { type: 'mods',          label: 'Mods & Customizations',   Icon: Settings },
       { type: 'other',         label: 'Other / Miscellaneous',   Icon: MoreHorizontal },
     ]

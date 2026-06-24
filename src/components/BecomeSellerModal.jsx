@@ -41,7 +41,7 @@ const CATS_BY_TYPE = {
     { value: 'furniture',    label: 'Furniture & Home',       icon: 'furniture',    subcats: ['Living Room', 'Bedroom', 'Office', 'Outdoor', 'Kitchen'] },
     { value: 'homeappliances', label: 'Home Appliances',      icon: 'homeappliances', subcats: ['Refrigerator', 'Washing Machine', 'Air Conditioner', 'Microwave', 'TV'] },
     { value: 'cars',         label: 'Vehicles & Parts',       icon: 'cars',         subcats: ['Sedan', 'SUV', 'Van', 'Motorcycle', 'Parts & Accessories'] },
-    { value: 'houses',       label: 'Real Estate',            icon: 'houses',       subcats: ['House & Lot', 'Condominium', 'Townhouse', 'Vacant Lot', 'Commercial'] },
+    { value: 'houses',       label: 'Real Estate / Properties / Houses / Condo',            icon: 'houses',       subcats: ['House & Lot', 'Condominium', 'Townhouse', 'Vacant Lot', 'Commercial'] },
     { value: 'mods',         label: 'Mods & Customizations',  icon: 'mods',         subcats: ['Car Mods', 'Motorcycle Mods', 'PC Builds', 'Console Mods'] },
     { value: 'product',      label: 'General Products',       icon: 'product',      subcats: ['Health & Beauty', 'Sports', 'Toys', 'Books', 'Tools'] },
   ],

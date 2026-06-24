@@ -82,6 +82,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
         <Route path="/seller" element={<Navigate to="/my-listings" replace />} />
         <Route path="/rent" element={<ForRent />} />
+        <Route path="/for-rent" element={<ForRent />} />
         <Route path="/services" element={<Services />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/profile" element={<UserProfile forcedTab="profile" />} />

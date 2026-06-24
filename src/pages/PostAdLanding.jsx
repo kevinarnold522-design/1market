@@ -19,7 +19,7 @@ const CATEGORIES = [
     types: [
       ['product', 'General Product'], ['electronics', 'Electronics'], ['shoes', 'Shoes & Footwear'],
       ['clothing', 'Clothing & Apparel'], ['furniture', 'Furniture'], ['homeappliances', 'Home Appliances'],
-      ['cars', 'Cars & Vehicles'], ['houses', 'Real Estate'], ['mods', 'Mods & Customizations'], ['other', 'Other / Miscellaneous'],
+      ['cars', 'Cars & Vehicles'], ['houses', 'Real Estate / Properties / Houses / Condo'], ['mods', 'Mods & Customizations'], ['other', 'Other / Miscellaneous'],
     ]
   },
   {

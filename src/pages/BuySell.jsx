@@ -10,6 +10,7 @@ import BecomeSellerBanner from '@/components/BecomeSelllerBanner';
 import SmartFilterChips from '@/components/SmartFilterChips';
 import ListingContactLinks from '@/components/ListingContactLinks';
 import ListingLandingBrandBar from '@/components/listing/ListingLandingBrandBar';
+import { filterPublishedListings } from '@/lib/listingVisibility';
 
 const CONDITIONS = ['Brand New', 'Like New', 'Good as New', 'Lightly Used', 'Used', 'Heavily Used'];
 const DELIVERY_OPTS = ['LBC', 'J&T Express', 'Shopee Express', 'Lalamove', 'GrabExpress', 'Flash Express', 'Meetup at Location', 'Pickup at My Address', 'Cash on Delivery (COD)'];
@@ -24,11 +25,29 @@ const CATEGORIES = [
   { key: 'furniture', label: 'Furniture', color: '#10b981' },
   { key: 'homeappliances', label: 'Appliances', color: '#8b5cf6' },
   { key: 'cars', label: 'Cars', color: '#ef4444' },
-  { key: 'houses', label: 'Real Estate', color: '#14b8a6' },
+  { key: 'houses', label: 'Real Estate / Properties / Houses / Condo', color: '#14b8a6' },
   { key: 'product', label: 'General', color: '#f59e0b' },
   { key: 'mods', label: 'Mods', color: '#a78bfa' },
   { key: 'other', label: 'Other', color: '#6b7280' },
 ];
+
+const BUYSELL_TYPES = new Set(['product', 'electronics', 'shoes', 'clothing', 'furniture', 'homeappliances', 'cars', 'houses', 'mods', 'other']);
+
+function normalizeBuySellType(listing) {
+  const t = String(listing?.type || '').toLowerCase();
+  if (BUYSELL_TYPES.has(t)) return t;
+  const text = `${listing?.subcategory || ''} ${listing?.title || ''} ${listing?.description || ''}`.toLowerCase();
+  if (/phone|laptop|tablet|camera|audio|gaming|tv|display|printer|component|electronic/.test(text)) return 'electronics';
+  if (/shirt|dress|jacket|pants|shorts|apparel|clothing/.test(text)) return 'clothing';
+  if (/shoe|sneaker|boot|sandal|heel|footwear/.test(text)) return 'shoes';
+  if (/sofa|bed|table|chair|cabinet|furniture/.test(text)) return 'furniture';
+  if (/refrigerator|washing machine|air conditioner|microwave|appliance|kettle|rice cooker/.test(text)) return 'homeappliances';
+  if (/car|suv|van|pickup|truck|motorcycle|vehicle/.test(text)) return 'cars';
+  if (/house|condo|condominium|townhouse|lot|property|real estate|commercial/.test(text)) return 'houses';
+  if (/mod|custom|upgrade|build/.test(text)) return 'mods';
+  if (/misc|collectible|craft|instrument|plant|other/.test(text)) return 'other';
+  return 'product';
+}
 
 function ListingCard({ listing, idx }) {
   const [hearted, setHearted] = useState(false);
@@ -148,11 +167,12 @@ export default function BuySell() {
   const urlType = params.get('type');
   const urlSub = params.get('sub');
   const shouldPost = params.get('post') === '1';
+  const normalizedUrlType = BUYSELL_TYPES.has(String(urlType || '').toLowerCase()) ? String(urlType).toLowerCase() : 'all';
 
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(urlSub || '');
-  const [activeCategory, setActiveCategory] = useState(urlType || 'all');
+  const [activeCategory, setActiveCategory] = useState(normalizedUrlType);
   const [activeLocation, setActiveLocation] = useState('All');
   const [priceMin, setPriceMin] = useState('');
   const [priceMax, setPriceMax] = useState('');
@@ -160,7 +180,7 @@ export default function BuySell() {
   const [activeDelivery, setActiveDelivery] = useState([]);
   const [sortBy, setSortBy] = useState('Newest First');
   const [showAddModal, setShowAddModal] = useState(shouldPost && !!user);
-  const [defaultType, setDefaultType] = useState(urlType || 'product');
+  const [defaultType, setDefaultType] = useState(normalizedUrlType === 'all' ? 'product' : normalizedUrlType);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(parseInt(params.get('page')) || 1);
   const ITEMS_PER_PAGE = 10;
@@ -168,10 +188,11 @@ export default function BuySell() {
   const isSeller = user?.user_type === 'seller' || user?.user_type === 'business' || user?.is_seller || user?.account_type === 'business_owner' || user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
 
   useEffect(() => {
-    base44.entities.Listing.filter({ approval_status: 'approved', is_active: true })
+    base44.entities.Listing.filter({ is_active: true })
       .then(data => {
-        const buysell = data.filter(l => l.main_category === 'buysell' ||
-          ['product', 'electronics', 'shoes', 'clothing', 'furniture', 'homeappliances', 'cars', 'houses', 'mods', 'other'].includes(l.type));
+        const buysell = filterPublishedListings(data)
+          .filter(l => l.main_category === 'buysell' || BUYSELL_TYPES.has(String(l.type || '').toLowerCase()))
+          .map(l => ({ ...l, normalized_type: normalizeBuySellType(l) }));
         setListings(buysell);
       })
       .finally(() => setLoading(false));
@@ -199,7 +220,7 @@ export default function BuySell() {
       if (search && !l.title?.toLowerCase().includes(search.toLowerCase()) &&
         !l.description?.toLowerCase().includes(search.toLowerCase()) &&
         !l.subcategory?.toLowerCase().includes(search.toLowerCase())) return false;
-      if (activeCategory !== 'all' && l.type !== activeCategory) return false;
+      if (activeCategory !== 'all' && l.normalized_type !== activeCategory) return false;
       if (activeLocation !== 'All' && !l.location?.includes(activeLocation)) return false;
       if (priceMin && l.price < Number(priceMin)) return false;
       if (priceMax && l.price > Number(priceMax)) return false;
@@ -211,7 +232,7 @@ export default function BuySell() {
       if (sortBy === 'Price: Low to High') return (a.price || 0) - (b.price || 0);
       if (sortBy === 'Price: High to Low') return (b.price || 0) - (a.price || 0);
       if (sortBy === 'Most Popular') return (b.rating_count || 0) - (a.rating_count || 0);
-      return new Date(b.created_date) - new Date(a.created_date);
+      return new Date(b.created_date || b.created_at || 0) - new Date(a.created_date || a.created_at || 0);
     });
 
   // Pagination

@@ -11,6 +11,7 @@ import SmartFilterChips from '../components/SmartFilterChips';
 import ListingContactLinks from '../components/ListingContactLinks';
 import ListingLandingBrandBar from '@/components/listing/ListingLandingBrandBar';
 import { base44 } from '@/api/base44Client';
+import { dedupeById, filterPublishedListings } from '@/lib/listingVisibility';
 
 const SUBCATEGORIES = [
   { key: 'all', label: 'All Services', desc: 'Browse everything', icon: <Briefcase className="w-6 h-6" /> },
@@ -96,6 +97,18 @@ const _REMOVED_FAKE_SERVICES = [
   { id: 54, type: 'professional', title: 'Tax Filing & BIR Compliance', provider: 'TaxEase PH', rate: '₱500–₱3,000/filing', location: 'Both', area: 'Remote / Manila', stars: 4.8, reviews: 52, image: 'https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=500&q=80', desc: 'Individual & corporate tax returns, BIR form submissions. CPA in-house.', contact: '09189990011' },
   { id: 55, type: 'transport', title: 'Van for Hire – Day Tour', provider: 'VanKo Tours', rate: '₱2,500–₱5,000/day', location: 'Both', area: 'Manila & Cavite', stars: 4.6, reviews: 61, image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=500&q=80', desc: 'Air-conditioned van with driver. Tagaytay, Batangas, Manila tour packages.', contact: '09151234321' },
 ];
+
+function classifyServiceCategory(listing) {
+  const text = `${listing?.subcategory || ''} ${listing?.title || ''} ${listing?.description || ''}`.toLowerCase();
+  if (/clean|plumb|electri|aircon|carpent|paint|pest|interior|moving|pool|landscape/.test(text)) return 'home';
+  if (/web|graphic|it|cctv|social media|video edit|network|app development|tech|digital/.test(text)) return 'tech';
+  if (/massage|spa|nail|makeup|hair|barber|beauty/.test(text)) return 'beauty';
+  if (/event|catering|dj|photo|video|live band|party|wedding/.test(text)) return 'events';
+  if (/account|bookkeep|tax|notary|law|legal|immigration|hr|tutor|english|financial|consult/.test(text)) return 'professional';
+  if (/truck|courier|delivery|airport|ride|transport|van for hire|cargo/.test(text)) return 'transport';
+  if (/caregiver|dental|doctor|therapy|mental health|nutrition|health|medical/.test(text)) return 'health';
+  return 'home';
+}
 
 function ServiceEditModal({ item, onClose, onSave, onDelete }) {
   const [title, setTitle] = useState(item.title || '');
@@ -236,6 +249,18 @@ export default function Services() {
   const [dbListings, setDbListings] = useState([]);
   const [toast, setToast] = useState('');
 
+  const loadListings = async () => {
+    try {
+      const [byMain, byType] = await Promise.all([
+        base44.entities.Listing.filter({ main_category: 'services', is_active: true }, '-created_date', 120),
+        base44.entities.Listing.filter({ type: 'services', is_active: true }, '-created_date', 120),
+      ]);
+      setDbListings(filterPublishedListings(dedupeById([...byMain, ...byType])));
+    } catch {
+      setDbListings([]);
+    }
+  };
+
   useEffect(() => {
     base44.auth.isAuthenticated().then(ok => {
       if (ok) base44.auth.me().then(u => {
@@ -246,18 +271,16 @@ export default function Services() {
         setCanAddListing(allowed);
       }).catch(() => {});
     }).catch(() => {});
-    base44.entities.Listing.filter({ type: 'services', is_active: true }, '-created_date', 50)
-      .then(items => setDbListings(items)).catch(() => {});
+    loadListings();
   }, []);
-
-  const typeMap = { legal: 'professional', finance: 'professional', education: 'professional', media: 'tech' };
 
   const allServices = dbListings.map(l => ({
     ...l,
-    id: l.id, type: l.subcategory?.toLowerCase().replace(/\s+/g, '') || 'home',
+    id: l.id,
+    type: classifyServiceCategory(l),
     title: l.title, provider: l.approved_channel_name || l.seller_name || '1Market Listing',
     rate: l.price_label || (l.price ? `₱${Number(l.price).toLocaleString()}` : 'Contact for rate'),
-    location: l.location === 'Cavite' ? 'Cavite' : 'Manila', area: l.area || l.location,
+    location: l.location || 'Nationwide', area: l.area || l.location || 'Nationwide',
     stars: l.rating || 0, reviews: l.rating_count || 0,
     image: l.image_url || 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=500&q=80',
     desc: l.description || '', contact: l.phone || l.email_contact || '',
@@ -265,9 +288,8 @@ export default function Services() {
   }));
 
   const filtered = allServices.filter(s => {
-    const resolvedCat = typeMap[activeCategory] || activeCategory;
-    const matchCat = !activeCategory || activeCategory === 'all' || s.type === resolvedCat;
-    const matchLoc = locationFilter === 'All' || s.location === locationFilter || s.location === 'Both';
+    const matchCat = !activeCategory || activeCategory === 'all' || s.type === activeCategory;
+    const matchLoc = locationFilter === 'All' || s.location === locationFilter || s.location === 'Both' || s.location === 'Nationwide';
     const matchSearch = s.title.toLowerCase().includes(search.toLowerCase()) || s.provider.toLowerCase().includes(search.toLowerCase()) || s.area.toLowerCase().includes(search.toLowerCase());
     return matchCat && matchLoc && matchSearch;
   });
@@ -366,10 +388,10 @@ export default function Services() {
       <AnimatePresence>
         {contactItem && <ContactModal item={contactItem} onClose={() => setContactItem(null)} />}
         {showSignup && <MemberSignupModal onClose={() => setShowSignup(false)} />}
-        {showAddListing && <AddListingModal onClose={async () => { setShowAddListing(false); const items = await base44.entities.Listing.filter({ type: 'services', is_active: true }, '-created_date', 50); setDbListings(items); }} defaultType="services" defaultSubcategory={addDefaultSub} user={currentUser} />}
+        {showAddListing && <AddListingModal onClose={async () => { setShowAddListing(false); await loadListings(); }} defaultType="services" defaultSubcategory={addDefaultSub} user={currentUser} />}
         {editItem && editItem.id && isAdmin && (
           <ServiceEditModal item={editItem} onClose={() => setEditItem(null)}
-            onSave={async () => { setEditItem(null); const items = await base44.entities.Listing.filter({ type: 'services', is_active: true }, '-created_date', 50); setDbListings(items); setToast('Updated!'); setTimeout(() => setToast(''), 2500); }}
+            onSave={async () => { setEditItem(null); await loadListings(); setToast('Updated!'); setTimeout(() => setToast(''), 2500); }}
             onDelete={async () => { await base44.entities.Listing.delete(editItem.id); setEditItem(null); setDbListings(prev => prev.filter(l => l.id !== editItem.id)); setToast('Deleted.'); setTimeout(() => setToast(''), 2500); }} />
         )}
       </AnimatePresence>

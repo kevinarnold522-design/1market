@@ -10,6 +10,7 @@ import SmartFilterChips from '../components/SmartFilterChips';
 import ListingContactLinks from '../components/ListingContactLinks';
 import ListingLandingBrandBar from '@/components/listing/ListingLandingBrandBar';
 import { base44 } from '@/api/base44Client';
+import { dedupeById, filterPublishedListings } from '@/lib/listingVisibility';
 
 // Royal Blue theme colors
 const THEME = {
@@ -39,6 +40,30 @@ const JOB_SUBCATEGORIES = [
   { key: 'general',    label: 'General / Blue Collar',color: '#94a3b8' },
   { key: 'freelance',  label: 'Freelance Projects',  color: '#a855f7' },
 ];
+
+const JOB_CATEGORY_KEYS = new Set(JOB_SUBCATEGORIES.map((item) => item.key));
+
+function classifyJobCategory(listing) {
+  const text = `${listing?.subcategory || ''} ${listing?.title || ''} ${listing?.description || ''}`.toLowerCase();
+  const employment = `${listing?.job_employment_type || ''}`.toLowerCase();
+  if (listing?.is_freelance_job || /freelance|project-based|gig/.test(text)) return 'freelance';
+  if (/remote|work from home|wfh/.test(text) || /remote/.test(employment)) return 'remote';
+  if (/developer|engineer|it|software|data|qa|cloud|cyber|helpdesk|technical/.test(text)) return 'tech';
+  if (/bpo|call center|csr|tsr|customer service|support/.test(text)) return 'bpo';
+  if (/nurse|med|doctor|pharma|clinic|hospital|caregiver|health/.test(text)) return 'healthcare';
+  if (/hr|recruit|operations|admin|office|compliance/.test(text)) return 'operations';
+  if (/finance|account|audit|bank|payroll|billing|bookkeep|tax/.test(text)) return 'finance';
+  if (/civil|site|safety|warehouse|logistics|procurement|inventory|engineer/.test(text)) return 'engineering';
+  if (/sales|marketing|brand|seo|content/.test(text)) return 'sales';
+  if (/design|creative|ui|ux|video|artist|animation/.test(text)) return 'creative';
+  if (/teacher|tutor|professor|instructor|education/.test(text)) return 'education';
+  if (/restaurant|chef|cook|barista|waiter|server|food/.test(text)) return 'food';
+  if (/driver|rider|delivery|courier/.test(text)) return 'drivers';
+  if (/helper|household|housekeeper|domestic|laundry|babysit/.test(text)) return 'domestic';
+  if (/electrician|welder|mechanic|plumber|technician|carpenter/.test(text)) return 'skilled';
+  if (/event|promo|host|emcee/.test(text)) return 'events';
+  return 'general';
+}
 
 // No static/fake jobs — only real DB listings shown
 
@@ -249,9 +274,11 @@ function ApplyModal({ job, onClose }) {
 
 export default function Jobs() {
   const urlParams = new URLSearchParams(window.location.search);
+  const urlType = urlParams.get('type');
   const urlSub = urlParams.get('sub');
+  const normalizedUrlType = JOB_CATEGORY_KEYS.has(String(urlType || '').toLowerCase()) ? String(urlType).toLowerCase() : 'all';
 
-  const [activeType, setActiveType] = useState('all');
+  const [activeType, setActiveType] = useState(normalizedUrlType);
   const [locationFilter, setLocationFilter] = useState('All');
   const [search, setSearch] = useState(urlSub || '');
   const [applyJob, setApplyJob] = useState(null);
@@ -259,13 +286,23 @@ export default function Jobs() {
   const [currentUser, setCurrentUser] = useState(null);
   const [dbJobs, setDbJobs] = useState([]);
 
+  const loadJobs = async () => {
+    try {
+      const [byMain, byType] = await Promise.all([
+        base44.entities.Listing.filter({ main_category: 'jobs', is_active: true }, '-created_date', 160),
+        base44.entities.Listing.filter({ type: 'jobs', is_active: true }, '-created_date', 160),
+      ]);
+      setDbJobs(filterPublishedListings(dedupeById([...byMain, ...byType])));
+    } catch {
+      setDbJobs([]);
+    }
+  };
+
   useEffect(() => {
     base44.auth.isAuthenticated().then(ok => {
       if (ok) base44.auth.me().then(u => setCurrentUser(u)).catch(() => {});
     }).catch(() => {});
-    base44.entities.Listing.filter({ type: 'jobs', approval_status: 'approved', is_active: true }, '-created_date', 100)
-      .then(jobs => setDbJobs(jobs))
-      .catch(() => {});
+    loadJobs();
   }, []);
 
   const SECTOR_TYPE_MAP = {
@@ -279,7 +316,7 @@ export default function Jobs() {
   const allJobs = dbJobs.map(j => ({
     ...j,
     id: j.id,
-    type: j.subcategory?.toLowerCase().replace(/\s+/g, '') || (j.type === 'jobs' ? 'general' : 'other'),
+    type: classifyJobCategory(j),
     title: j.title,
     company: j.company_hiring || '',
     poster_role: j.job_poster_role || '',
@@ -306,7 +343,8 @@ export default function Jobs() {
   const filtered = allJobs.filter(j => {
     const mappedTypes = SECTOR_TYPE_MAP[activeType];
     const matchType = activeType === 'all' || j.type === activeType || (mappedTypes && mappedTypes.includes(j.type));
-    const matchLoc = locationFilter === 'All' || j.location === locationFilter;
+    const locationText = `${j.location || ''} ${j.area || ''}`;
+    const matchLoc = locationFilter === 'All' || locationText.includes(locationFilter) || j.location === 'Nationwide' || j.location === 'Remote / Online / WFH';
     const matchSearch = j.title.toLowerCase().includes(search.toLowerCase()) || j.company.toLowerCase().includes(search.toLowerCase()) || (j.area || '').toLowerCase().includes(search.toLowerCase());
     return matchType && matchLoc && matchSearch;
   });
