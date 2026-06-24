@@ -335,6 +335,11 @@ export default function Admin() {
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
   const adminEntityWrite = async (entity, action, id, patch = {}) => {
+    if (entity === 'Listing') {
+      const res = await base44.functions.invoke('adminListingAction', { action, id, patch });
+      if (res.data?.error) throw new Error(res.data.error);
+      return res.data?.listing || res.data;
+    }
     const api = base44.entities[entity];
     if (api) {
       try {
@@ -546,6 +551,7 @@ export default function Admin() {
       created_by_id: target.id,
       owner_user_id: target.id,
       owner_email: target.email || '',
+      created_by: target.email || '',
       seller_name: target.channel_name || target.business_name || target.full_name || target.email || listing.seller_name,
       email_contact: target.email || listing.email_contact || '',
       approved_channel_name: target.channel_name || target.business_name || target.full_name || '',
@@ -628,9 +634,9 @@ export default function Admin() {
   );
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg,#070F1A 0%,#0a1940 100%)' }}>
+    <div className="ceo-dashboard-theme min-h-screen" style={{ background: 'transparent' }}>
       {/* Header */}
-      <div className="px-4 sm:px-6 lg:px-8 py-6" style={{ background: 'linear-gradient(135deg,#0033CC,#001a80)', borderBottom: '1px solid rgba(0,212,255,0.2)' }}>
+      <div className="px-4 sm:px-6 lg:px-8 py-6" style={{ background: 'rgba(255,255,255,0.18)', borderBottom: '1px solid rgba(255,255,255,0.28)', backdropFilter: 'blur(18px)' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm font-body">

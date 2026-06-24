@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
 
 const KEY = '1market_recently_viewed';
 
@@ -18,10 +19,20 @@ export default function RecentlyViewed() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem(KEY) || '[]');
-      setItems(stored);
-    } catch {}
+    const loadValid = async () => {
+      try {
+        const stored = JSON.parse(localStorage.getItem(KEY) || '[]');
+        const checks = await Promise.all(stored.map(item =>
+          base44.entities.Listing.filter({ id: item.id, approval_status: 'approved', is_active: true })
+            .then(rows => rows[0] ? item : null)
+            .catch(() => null)
+        ));
+        const valid = checks.filter(Boolean);
+        setItems(valid);
+        localStorage.setItem(KEY, JSON.stringify(valid));
+      } catch {}
+    };
+    loadValid();
   }, []);
 
   const remove = (id) => {

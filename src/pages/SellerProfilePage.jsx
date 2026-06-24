@@ -303,7 +303,7 @@ export default function SellerProfilePage() {
           setSeller(ghostData);
           const dbId = ghostData.id || sellerId;
           const [listings, posts] = await Promise.all([
-            base44.entities.Listing.filter({ created_by_id: dbId, approval_status: 'approved' }),
+            base44.entities.Listing.filter({ created_by_id: dbId, approval_status: 'approved', is_active: true }),
             base44.entities.CommunityPost.filter({ author_email: ghostData.email }),
           ]);
           setListings(listings);
@@ -321,7 +321,7 @@ export default function SellerProfilePage() {
           const ghost = JSON.parse(ghostRaw);
           setSeller(ghost);
           const [listings, posts] = await Promise.all([
-            base44.entities.Listing.filter({ created_by_id: sellerId, approval_status: 'approved' }),
+            base44.entities.Listing.filter({ created_by_id: sellerId, approval_status: 'approved', is_active: true }),
             base44.entities.CommunityPost.filter({ author_email: ghost.email }),
           ]);
           setListings(listings);
@@ -377,14 +377,15 @@ export default function SellerProfilePage() {
         setSeller(seller);
         
         // STEP 3: Load listings and posts
-        const [byEmail, byCreator, communityPosts] = await Promise.all([
-          base44.entities.Listing.filter({ email_contact: seller.email, approval_status: 'approved' }),
-          base44.entities.Listing.filter({ created_by_id: seller.id, approval_status: 'approved' }),
+        const [byEmail, byCreator, byOwner, communityPosts] = await Promise.all([
+          base44.entities.Listing.filter({ email_contact: seller.email, approval_status: 'approved', is_active: true }),
+          base44.entities.Listing.filter({ created_by_id: seller.id, approval_status: 'approved', is_active: true }),
+          base44.entities.Listing.filter({ owner_user_id: seller.id, approval_status: 'approved', is_active: true }),
           base44.entities.CommunityPost.filter({ author_email: seller.email }),
         ]);
         
         const seen = new Set();
-        const items = [...byEmail, ...byCreator].filter(l => {
+        const items = [...byEmail, ...byCreator, ...byOwner].filter(l => {
           if (seen.has(l.id)) return false;
           seen.add(l.id);
           return true;

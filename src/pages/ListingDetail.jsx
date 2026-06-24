@@ -235,9 +235,10 @@ export default function ListingDetail() {
           // Increment view count
           base44.entities.Listing.update(found.id, { view_count: (found.view_count || 0) + 1 }).catch(() => {});
           // Load seller's user profile for their social links
-          if (found.created_by_id) {
+          const sellerId = found.owner_user_id || found.created_by_id;
+          if (sellerId) {
             try {
-              const sellerUsers = await base44.entities.User.filter({ id: found.created_by_id });
+              const sellerUsers = await base44.entities.User.filter({ id: sellerId });
               if (sellerUsers[0]) setSellerUser(sellerUsers[0]);
             } catch {}
           }
@@ -991,8 +992,8 @@ export default function ListingDetail() {
                     <span className="font-body text-[10px] text-[#00D4FF] font-bold">Verified Channel Name</span>
                   </div>
                 )}
-                {listing.created_by_id ? (
-                  <Link to={`/seller/${listing.created_by_id}`} className="flex items-center gap-3 group">
+                {(listing.owner_user_id || listing.created_by_id) ? (
+                  <Link to={`/seller/${listing.owner_user_id || listing.created_by_id}`} className="flex items-center gap-3 group">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#00D4FF] flex items-center justify-center font-heading font-bold text-white text-sm flex-shrink-0 group-hover:scale-105 transition-transform">
                       {(listing.approved_channel_name || listing.seller_name || 'S').charAt(0).toUpperCase()}
                     </div>

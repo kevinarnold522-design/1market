@@ -589,6 +589,47 @@ aside nav button + a {
   .listing-book-page::before { display: none; }
 }
 
+/* Mobile responsiveness: keep taps immediate and avoid layout overlays stealing touches */
+a, button, select, input, textarea, [role="button"] {
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+@media (max-width: 768px) {
+  button, a, select, input, textarea, [role="button"] {
+    min-height: 36px;
+  }
+}
+.ceo-dashboard-theme {
+  color: #0f4f7a;
+}
+.ceo-dashboard-theme [style*="rgba(13,31,60"],
+.ceo-dashboard-theme [style*="#070F1A"],
+.ceo-dashboard-theme [style*="#0a1940"],
+.ceo-dashboard-theme [style*="rgba(0,0,0"] {
+  background: rgba(255,255,255,0.76) !important;
+  border-color: rgba(14,165,233,0.2) !important;
+  box-shadow: 0 14px 40px rgba(14,165,233,0.12) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.ceo-dashboard-theme h3,
+.ceo-dashboard-theme h4,
+.ceo-dashboard-theme p,
+.ceo-dashboard-theme span:not([class*="text-white"]),
+.ceo-dashboard-theme label {
+  color: #0f4f7a;
+}
+.ceo-dashboard-theme .text-white,
+.ceo-dashboard-theme [class*="text-white/"] {
+  color: #0f4f7a !important;
+}
+.ceo-dashboard-theme button,
+.ceo-dashboard-theme a,
+.ceo-dashboard-theme select {
+  position: relative;
+  z-index: 1;
+}
+
 /* Blue/yellow listing and auth modal readability */
 .listing-options-blue-yellow,
 .listing-options-blue-yellow *:not(svg):not(path),

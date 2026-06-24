@@ -40,6 +40,10 @@ export default function AccountListings() {
         ? isGhostOwnedRecord(changed, ghost)
         : changed.owner_user_id === user?.id || changed.created_by_id === user?.id || changed.owner_email === user?.email || changed.created_by === user?.email;
       if (!owned) return;
+      if (changed.is_active === false) {
+        setListings(items => items.filter(item => item.id !== changed.id));
+        return;
+      }
       setListings(items => {
         const exists = items.some(item => item.id === changed.id);
         return exists ? items.map(item => item.id === changed.id ? { ...item, ...changed } : item) : [changed, ...items];
@@ -52,6 +56,7 @@ export default function AccountListings() {
     setLoading(true);
     const all = await base44.entities.Listing.list('-created_date', 500);
     const owned = all.filter(item => {
+      if (item.is_active === false) return false;
       if (ghost) return isGhostOwnedRecord(item, ghost);
       return item.owner_user_id === user?.id || item.created_by_id === user?.id || item.owner_email === user?.email || item.created_by === user?.email;
     });
@@ -68,9 +73,9 @@ export default function AccountListings() {
     if (ghost && !isGhostOwnedRecord(listing, ghost)) return;
     if (!window.confirm('Delete this listing?')) return;
     try {
-      await base44.functions.invoke('supabaseEntityWrite', { entity: 'Listing', action: 'delete', id: listing.id });
-    } catch {
       await base44.entities.Listing.delete(listing.id);
+    } catch {
+      await base44.entities.Listing.update(listing.id, { is_active: false, approval_status: 'rejected' });
     }
     setListings(items => items.filter(item => item.id !== listing.id));
     window.dispatchEvent(new CustomEvent('listing-deleted', { detail: { id: listing.id } }));

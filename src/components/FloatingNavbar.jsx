@@ -102,7 +102,7 @@ return (
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: -20, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-14 left-0 w-80 rounded-2xl overflow-hidden shadow-2xl mt-2"
+              className="absolute top-14 left-0 w-[calc(100vw-2rem)] sm:w-80 rounded-2xl overflow-hidden shadow-2xl mt-2"
               style={{
                 background: 'linear-gradient(145deg,rgba(0,51,204,0.92),rgba(37,99,235,0.82))',
                 backdropFilter: 'blur(30px)',

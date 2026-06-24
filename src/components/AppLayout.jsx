@@ -15,7 +15,7 @@ export default function AppLayout() {
 
 
   return (
-    <div data-app-shell className={`relative flex min-h-screen overflow-hidden ${isLandingPage ? '' : 'site-ocean-theme'}`} style={{ background: isLandingPage ? 'var(--landing-bg-gradient)' : 'transparent' }}>
+    <div data-app-shell className={`relative flex min-h-screen overflow-x-hidden ${isLandingPage ? '' : 'site-ocean-theme'}`} style={{ background: isLandingPage ? 'var(--landing-bg-gradient)' : 'transparent' }}>
       {!isLandingPage && <OceanCategoryBackdrop global />}
       <main className="relative z-10 flex-1 min-w-0 overflow-x-hidden" style={{ background: isLandingPage ? 'var(--landing-bg-gradient)' : 'transparent' }}>
         <FloatingNavbar />
