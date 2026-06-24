@@ -186,6 +186,14 @@ function StarRating({ value, onChange, readonly = false }) {
   );
 }
 
+async function addSellerPoints(sellerId, delta) {
+  if (!sellerId || !delta) return;
+  const users = await base44.entities.User.filter({ id: sellerId }).catch(() => []);
+  const seller = users[0];
+  if (!seller) return;
+  await base44.entities.User.update(seller.id, { seller_points: Math.max(0, Number(seller.seller_points || 0) + delta) }).catch(() => {});
+}
+
 export default function ListingDetail() {
   const { id } = useParams();
   const [listing, setListing] = useState(null);
@@ -232,8 +240,12 @@ export default function ListingDetail() {
           setHearts(hts.length);
           // Track recently viewed
           recordView(found);
-          // Increment view count
-          base44.entities.Listing.update(found.id, { view_count: (found.view_count || 0) + 1 }).catch(() => {});
+          // Increment view count and live points
+          const nextViews = (found.view_count || 0) + 1;
+          const nextPoints = nextViews + (hts.length * 2) + (cmts.length * 3);
+          setListing({ ...found, view_count: nextViews, heart_count: hts.length, comment_count: cmts.length, point_count: nextPoints });
+          base44.entities.Listing.update(found.id, { view_count: nextViews, heart_count: hts.length, comment_count: cmts.length, point_count: nextPoints }).catch(() => {});
+          addSellerPoints(found.owner_user_id || found.created_by_id, 1);
           // Load seller's user profile for their social links
           const sellerId = found.owner_user_id || found.created_by_id;
           if (sellerId) {
@@ -257,16 +269,30 @@ export default function ListingDetail() {
     }
   }, [user, id]);
 
+  useEffect(() => {
+    const unsubscribe = base44.entities.Listing.subscribe((event) => {
+      const updated = event?.data;
+      if (updated?.id === id) setListing(prev => prev ? { ...prev, ...updated } : updated);
+    });
+    return unsubscribe;
+  }, [id]);
+
   const handleHeart = async () => {
     if (!user) return;
     if (userHearted) {
       const existing = await base44.entities.ListingHeart.filter({ listing_id: id, user_email: user.email });
       if (existing[0]) await base44.entities.ListingHeart.delete(existing[0].id);
       setHearts(h => h - 1);
+      setListing(prev => prev ? { ...prev, heart_count: Math.max(0, (prev.heart_count || hearts) - 1), point_count: Math.max(0, (prev.point_count || 0) - 2) } : prev);
+      base44.entities.Listing.update(id, { heart_count: Math.max(0, hearts - 1), point_count: Math.max(0, (listing?.point_count || 0) - 2) }).catch(() => {});
+      addSellerPoints(listing?.owner_user_id || listing?.created_by_id, -2);
       setUserHearted(false);
     } else {
       await base44.entities.ListingHeart.create({ listing_id: id, user_email: user.email });
       setHearts(h => h + 1);
+      setListing(prev => prev ? { ...prev, heart_count: (prev.heart_count || hearts) + 1, point_count: (prev.point_count || 0) + 2 } : prev);
+      base44.entities.Listing.update(id, { heart_count: hearts + 1, point_count: (listing?.point_count || 0) + 2 }).catch(() => {});
+      addSellerPoints(listing?.owner_user_id || listing?.created_by_id, 2);
       setUserHearted(true);
       setShowHeartAnim(true);
       setTimeout(() => setShowHeartAnim(false), 1300);
@@ -285,6 +311,9 @@ export default function ListingDetail() {
       rating: newRating || 0,
     });
     setComments(c => [created, ...c]);
+    setListing(prev => prev ? { ...prev, comment_count: (prev.comment_count || comments.length) + 1, point_count: (prev.point_count || 0) + 3 } : prev);
+    base44.entities.Listing.update(id, { comment_count: comments.length + 1, point_count: (listing?.point_count || 0) + 3 }).catch(() => {});
+    addSellerPoints(listing?.owner_user_id || listing?.created_by_id, 3);
     setNewComment('');
     setNewRating(0);
     setSubmitting(false);
@@ -307,6 +336,7 @@ export default function ListingDetail() {
   const avgRating = comments.length > 0
     ? (comments.reduce((s, c) => s + (c.rating || 0), 0) / comments.filter(c => c.rating > 0).length || 0).toFixed(1)
     : listing.rating || 0;
+  const listingPoints = listing.point_count || ((listing.view_count || 0) + (hearts * 2) + (comments.length * 3));
 
   const themePrimary = listing.landing_theme_color || listing.border_color || '#3E97F1';
   const themeSecondary = listing.landing_secondary_color || '#60A5FA';
@@ -600,6 +630,10 @@ export default function ListingDetail() {
                   {[1,2,3,4,5].map(s => <Star key={s} className={`w-3.5 h-3.5 ${parseFloat(avgRating) >= s ? 'text-amber-400 fill-amber-400' : 'text-white/15'}`} />)}
                 </div>
                 <span className="font-body text-xs text-white/40">{avgRating > 0 ? `${avgRating} (${comments.filter(c=>c.rating>0).length} ratings)` : 'No ratings yet'}</span>
+              </div>
+              <div className="flex flex-wrap gap-2 mb-3">
+                <span className="px-2 py-0.5 rounded-full bg-purple-500/15 border border-purple-400/25 text-purple-300 font-body text-[10px] font-bold">{listingPoints} pts</span>
+                <span className="px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-400/20 text-blue-300 font-body text-[10px]">{listing.view_count || 0} views</span>
               </div>
 
               <div className="flex items-start gap-2 mb-4">

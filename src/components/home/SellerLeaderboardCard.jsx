@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Award, Package, Star } from 'lucide-react';
+import { Award, Eye, Heart, MessageSquare, Package, Star } from 'lucide-react';
 import MetaVerifiedBadge from '@/components/MetaVerifiedBadge';
 
 export default function SellerLeaderboardCard({ seller, rank }) {
@@ -21,9 +21,12 @@ export default function SellerLeaderboardCard({ seller, rank }) {
           <p className="font-body text-sm font-bold text-white truncate group-hover:text-[#00D4FF] transition-colors">{seller.name}</p>
           {seller.verified && <MetaVerifiedBadge size="xs" label="" />}
         </div>
-        <div className="flex items-center gap-3 mt-1 text-[10px] text-white/45 font-body">
-          <span className="inline-flex items-center gap-1"><Package className="w-3 h-3" /> {seller.listings} listings</span>
-          <span className="inline-flex items-center gap-1"><Star className="w-3 h-3 text-[#FFD700]" /> {seller.score}</span>
+        <div className="flex items-center gap-2 mt-1 text-[10px] text-white/45 font-body flex-wrap">
+          <span className="inline-flex items-center gap-1"><Package className="w-3 h-3" /> {seller.listings}</span>
+          <span className="inline-flex items-center gap-1"><Eye className="w-3 h-3" /> {seller.views || 0}</span>
+          <span className="inline-flex items-center gap-1"><Heart className="w-3 h-3 text-pink-300" /> {seller.hearts || 0}</span>
+          <span className="inline-flex items-center gap-1"><MessageSquare className="w-3 h-3 text-purple-300" /> {seller.comments || 0}</span>
+          <span className="inline-flex items-center gap-1"><Star className="w-3 h-3 text-[#FFD700]" /> {seller.score} pts</span>
         </div>
       </div>
     </Link>

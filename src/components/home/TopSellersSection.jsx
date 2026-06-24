@@ -12,9 +12,11 @@ export default function TopSellersSection() {
 
   useEffect(() => {
     const loadSellers = async () => {
-      const [users, listings] = await Promise.all([
+      const [users, listings, hearts, comments] = await Promise.all([
         base44.entities.User.list('-created_date', 200).catch(() => []),
         base44.entities.Listing.list('-created_date', 500).catch(() => []),
+        base44.entities.ListingHeart.list('-created_date', 1000).catch(() => []),
+        base44.entities.ListingComment.list('-created_date', 1000).catch(() => []),
       ]);
 
       const localGhosts = getAllLocalGhosts();
@@ -33,12 +35,18 @@ export default function TopSellersSection() {
           verified: !!user.is_verified_seller,
           listings: 0,
           views: 0,
+          hearts: 0,
+          comments: 0,
+          score: Number(user.seller_points || 0),
           rating: Number(user.rating || 0),
           ratingCount: Number(user.rating_count || 0),
         });
         if (user.ghost_id) sellerMap.set(user.ghost_id, sellerMap.get(id));
         if (user.email) sellerMap.set(user.email, sellerMap.get(id));
       });
+
+      const heartsByListing = hearts.reduce((map, item) => ({ ...map, [item.listing_id]: (map[item.listing_id] || 0) + 1 }), {});
+      const commentsByListing = comments.reduce((map, item) => ({ ...map, [item.listing_id]: (map[item.listing_id] || 0) + 1 }), {});
 
       listings.filter(item => item.approval_status !== 'rejected' && item.is_active !== false).forEach(item => {
         const key = sellerKey(item);
@@ -51,11 +59,20 @@ export default function TopSellersSection() {
           verified: false,
           listings: 0,
           views: 0,
+          hearts: 0,
+          comments: 0,
           rating: 0,
           ratingCount: 0,
+          score: 0,
         };
+        const listingHearts = Number(item.heart_count || heartsByListing[item.id] || 0);
+        const listingComments = Number(item.comment_count || commentsByListing[item.id] || 0);
+        const listingViews = Number(item.view_count || 0);
         seller.listings += 1;
-        seller.views += Number(item.view_count || 0);
+        seller.views += listingViews;
+        seller.hearts += listingHearts;
+        seller.comments += listingComments;
+        seller.score += Number(item.point_count || (listingViews + (listingHearts * 2) + (listingComments * 3)));
         if (item.rating) seller.rating = Math.max(seller.rating, Number(item.rating || 0));
         if (item.rating_count) seller.ratingCount += Number(item.rating_count || 0);
         sellerMap.set(key, seller);
@@ -65,9 +82,9 @@ export default function TopSellersSection() {
         .filter(seller => seller.listings > 0)
         .map(seller => ({
           ...seller,
-          score: Math.round((seller.listings * 10) + (seller.rating * 8) + (seller.ratingCount * 2) + Math.min(seller.views / 20, 50)),
+          score: Math.round(seller.score + (seller.listings * 10)),
         }))
-        .sort((a, b) => b.score - a.score || b.listings - a.listings)
+        .sort((a, b) => b.score - a.score || b.views - a.views)
         .slice(0, 10);
 
       setSellers(unique);

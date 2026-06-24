@@ -101,6 +101,15 @@
         "type": "string"
       }
     },
+    "seller_points": {
+      "type": "integer",
+      "default": 0,
+      "description": "Total seller points from listing views, likes, and comments"
+    },
+    "seller_rank": {
+      "type": "integer",
+      "default": 0
+    },
     "business_name": {
       "type": "string"
     },

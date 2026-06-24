@@ -644,22 +644,22 @@ a, button, select, input, textarea, [role="button"] {
 .auth-blue-yellow textarea,
 .auth-blue-yellow select {
   background: rgba(255,255,255,0.10) !important;
-  border-color: rgba(255,215,0,0.42) !important;
-  color: #FFD700 !important;
+  border-color: rgba(192,132,252,0.5) !important;
+  color: #ffffff !important;
 }
 .listing-options-blue-yellow input::placeholder,
 .listing-options-blue-yellow textarea::placeholder,
 .auth-blue-yellow input::placeholder,
 .auth-blue-yellow textarea::placeholder {
-  color: rgba(255,215,0,0.58) !important;
+  color: rgba(255,255,255,0.58) !important;
 }
 .listing-options-blue-yellow option {
-  background: #2563EB !important;
+  background: #581c87 !important;
   color: #ffffff !important;
 }
 .listing-options-blue-yellow button,
 .auth-blue-yellow button {
-  border-color: rgba(255,215,0,0.45) !important;
+  border-color: rgba(192,132,252,0.55) !important;
 }
 .auth-blue-yellow button:not([class*="bg-white"]) {
   background: rgba(37,99,235,0.92) !important;

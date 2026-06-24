@@ -2,7 +2,16 @@
   "name": "DraftListing",
   "type": "object",
   "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "user_email": {
+      "type": "string"
+    },
     "title": {
+      "type": "string"
+    },
+    "main_category": {
       "type": "string"
     },
     "type": {
@@ -54,6 +63,20 @@
       "type": "string"
     },
     "seller_name": {
+      "type": "string"
+    },
+    "form_data": {
+      "type": "object"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published"
+      ],
+      "default": "draft"
+    },
+    "draft_key": {
       "type": "string"
     }
   },
