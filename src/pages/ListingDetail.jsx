@@ -290,18 +290,15 @@ export default function ListingDetail() {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-[#050d2e] flex items-center justify-center">
-      <RoyalBlueWaves />
-      <div className="relative z-10 w-10 h-10 border-2 border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" />
+    <div className="min-h-screen bg-sky-100 flex items-center justify-center">
+      <div className="relative z-10 w-10 h-10 border-2 border-sky-200 border-t-sky-500 rounded-full animate-spin" />
     </div>
   );
 
   if (!listing) return (
-    <div className="min-h-screen bg-[#050d2e] flex flex-col items-center justify-center gap-4 pt-24">
-      <RoyalBlueWaves />
-      <StarField />
-      <p className="font-body text-white/50 text-lg">Listing not found.</p>
-      <Link to="/" className="px-6 py-2.5 bg-[#2563EB] text-white rounded-xl font-body font-bold text-sm hover:bg-[#00D4FF] hover:text-[#0A192F] transition-colors">← Go Home</Link>
+    <div className="min-h-screen bg-sky-100 flex flex-col items-center justify-center gap-4 pt-24">
+      <p className="font-body text-sky-700 text-lg">Listing not found.</p>
+      <Link to="/" className="px-6 py-2.5 bg-sky-500 text-white rounded-xl font-body font-bold text-sm hover:bg-sky-400 transition-colors">← Go Home</Link>
     </div>
   );
 
@@ -314,12 +311,12 @@ export default function ListingDetail() {
   const themeSecondary = listing.landing_secondary_color || '#60A5FA';
   const galleryEffect = listing.transition_effect || listing.slideshow_animation || 'fade';
   const bgStyles = {
-    royal_blue: `linear-gradient(180deg, ${themePrimary} 0%, ${themeSecondary} 100%)`,
-    glass: `linear-gradient(180deg, #ffffff 0%, ${themeSecondary} 58%, #dbeafe 100%)`,
-    neon: `radial-gradient(circle at top, ${themeSecondary}66, transparent 38%), linear-gradient(180deg, ${themePrimary} 0%, #38bdf8 100%)`,
-    sunset: 'linear-gradient(180deg, #fb923c 0%, #60A5FA 100%)',
-    emerald: 'linear-gradient(180deg, #10b981 0%, #60A5FA 100%)',
-    purple: 'linear-gradient(180deg, #8b5cf6 0%, #60A5FA 100%)',
+    royal_blue: 'linear-gradient(180deg, #f8fbff 0%, #dff3ff 56%, #bfdbfe 100%)',
+    glass: 'linear-gradient(180deg, #ffffff 0%, #e0f2fe 58%, #dbeafe 100%)',
+    neon: 'linear-gradient(180deg, #f8fbff 0%, #bae6fd 100%)',
+    sunset: 'linear-gradient(180deg, #fff7ed 0%, #dff3ff 100%)',
+    emerald: 'linear-gradient(180deg, #ecfdf5 0%, #dff3ff 100%)',
+    purple: 'linear-gradient(180deg, #f5f3ff 0%, #dff3ff 100%)',
   };
   const glowOpacity = listing.glow_effect === 'none' ? 0 : listing.glow_effect === 'neon' ? 0.42 : listing.glow_effect === 'strong' ? 0.32 : 0.2;
   const glowBlur = listing.glow_effect === 'neon' ? 80 : listing.glow_effect === 'strong' ? 62 : 44;
@@ -351,21 +348,14 @@ export default function ListingDetail() {
 
   return (
     <div className="listing-blue-white-theme min-h-screen" style={{ background: bgStyles[listing.landing_bg_style || 'royal_blue'] || bgStyles.royal_blue }}>
-      <RoyalBlueWaves />
-      <StarField />
-      <motion.div
-        className="fixed inset-0 pointer-events-none z-[1]"
-        style={{ opacity: glowOpacity, filter: `blur(${glowBlur}px)`, background: `radial-gradient(circle at 22% 18%, ${themePrimary}, transparent 32%), radial-gradient(circle at 82% 32%, ${themeSecondary}, transparent 28%)` }}
-        animate={pageAnimation}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-      />
+      <div className="fixed inset-0 pointer-events-none z-[1] bg-[radial-gradient(circle_at_18%_10%,rgba(186,230,253,0.55),transparent_32%),radial-gradient(circle_at_84%_20%,rgba(147,197,253,0.35),transparent_28%)]" />
       <BlueHeartAnimation show={showHeartAnim} />
 
       {showReport && <ReportModal listing={listing} user={user} onClose={() => setShowReport(false)} />}
       <AnimatePresence>
         {showReceipt && <ReceiptModal listing={listing} user={user} onClose={() => setShowReceipt(false)} />}
       </AnimatePresence>
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-24 lg:py-28">
+      <div className="listing-book-page relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-20 lg:py-24">
         <div className="flex items-center justify-between mb-6">
           <button onClick={() => window.history.back()}
             className="inline-flex items-center gap-2 text-white/50 hover:text-white font-body text-sm transition-colors">

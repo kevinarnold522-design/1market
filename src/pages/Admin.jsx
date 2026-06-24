@@ -335,7 +335,18 @@ export default function Admin() {
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
   const adminEntityWrite = async (entity, action, id, patch = {}) => {
+    const api = base44.entities[entity];
+    if (api) {
+      try {
+        if (action === 'update') return await api.update(id, patch);
+        if (action === 'delete') return await api.delete(id);
+        if (action === 'create') return await api.create(patch);
+      } catch (error) {
+        console.warn('Admin direct write fallback:', entity, action, error.message);
+      }
+    }
     const res = await base44.functions.invoke('supabasebase', { entity, action, id, patch, record: patch });
+    if (res.data?.error) throw new Error(res.data.error);
     return res.data?.data;
   };
   const adminUserWrite = async (action, id, patch = {}) => {
@@ -654,7 +665,7 @@ export default function Admin() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-white">
+      <div className="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-6 sm:py-8 text-white">
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           {[

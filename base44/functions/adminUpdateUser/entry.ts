@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
     if (!id) return Response.json({ error: 'Missing user id' }, { status: 400 });
 
     if (action === 'delete') {
-      await base44.asServiceRole.entities.User.delete(id);
+      await base44.entities.User.delete(id);
       return Response.json({ success: true });
     }
 
@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
       if (Object.prototype.hasOwnProperty.call(patch, key)) cleanPatch[key] = patch[key];
     }
 
-    const updated = await base44.asServiceRole.entities.User.update(id, cleanPatch);
+    const updated = await base44.entities.User.update(id, cleanPatch);
     return Response.json({ success: true, user: updated });
   } catch (error) {
     console.error('[ADMIN_UPDATE_USER_ERROR]', error.message);
