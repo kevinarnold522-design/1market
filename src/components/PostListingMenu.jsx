@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 export default function PostListingMenu({ user, compact = false, iconOnly = false, onSelect }) {
   const navigate = useNavigate();
-  if (!user) return null;
 
   const handleSelect = () => {
     onSelect?.();
@@ -23,7 +22,7 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
       style={!compact ? { boxShadow: '0 0 16px rgba(255,215,0,0.42)' } : undefined}
     >
       {!iconOnly && <Plus className="w-3.5 h-3.5" />}
-      {iconOnly ? <Plus className="w-4 h-4" /> : 'Post an Ad'}
+      {iconOnly ? <Plus className="w-4 h-4" /> : 'Post a Listing'}
     </button>
   );
 }

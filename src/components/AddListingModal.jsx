@@ -348,6 +348,28 @@ const TYPE_TO_MAIN = {
   jobs: 'jobs',
 };
 
+const BLOCKED_MARKUP_PATTERN = /<\s*script\b|<\s*meta\b|<\s*iframe\b|<\s*object\b|<\s*embed\b|javascript:\s*|on[a-z]+\s*=|adsbygoogle|googlesyndication|doubleclick|adservice|adsterra|propellerads|popads|taboola|outbrain/i;
+const BLOCKED_AD_LINK_PATTERN = /googlesyndication|doubleclick|adservice|adsterra|propellerads|popads|taboola|outbrain/i;
+
+function hasBlockedAdCode(value) {
+  return BLOCKED_MARKUP_PATTERN.test(String(value || ''));
+}
+
+function sanitizeText(value) {
+  return String(value || '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function sanitizeLink(value) {
+  const link = String(value || '').trim();
+  if (!link) return '';
+  if (/^javascript:/i.test(link) || /^data:text\/html/i.test(link)) return '';
+  if (BLOCKED_AD_LINK_PATTERN.test(link)) return '';
+  return link;
+}
+
 const inputCls = 'w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 font-body text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#c084fc]';
 const labelCls = 'block font-body text-[10px] font-semibold text-white/40 uppercase tracking-wider mb-1';
 
@@ -533,90 +555,136 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
     if (!form.title) return;
     setPublishError('');
     setSubmitting(true);
+
+    const blockedSources = [
+      form.title,
+      form.description,
+      form.seller_name,
+      form.tags,
+      form.specs,
+      form.custom_product_name,
+      form.custom_service_name,
+      form.custom_site_name,
+      form.apply_link,
+      form.custom_site_url,
+      form.social_facebook,
+      form.social_whatsapp,
+      form.social_instagram,
+    ];
+    if (blockedSources.some(hasBlockedAdCode)) {
+      setPublishError('HTML/meta/script ad code is not allowed. Remove embedded ad code and try again.');
+      setSubmitting(false);
+      return;
+    }
+
+    const safeForm = {
+      ...form,
+      title: sanitizeText(form.title),
+      description: sanitizeText(form.description),
+      seller_name: sanitizeText(form.seller_name),
+      tags: sanitizeText(form.tags),
+      brand: sanitizeText(form.brand),
+      model: sanitizeText(form.model),
+      specs: sanitizeText(form.specs),
+      custom_product_name: sanitizeText(form.custom_product_name),
+      custom_service_name: sanitizeText(form.custom_service_name),
+      custom_site_name: sanitizeText(form.custom_site_name),
+      area: sanitizeText(form.area),
+      city: sanitizeText(form.city),
+      state_region: sanitizeText(form.state_region),
+      zip: sanitizeText(form.zip),
+      apply_link: sanitizeLink(form.apply_link),
+      custom_site_url: sanitizeLink(form.custom_site_url),
+      social_facebook: sanitizeLink(form.social_facebook),
+      social_whatsapp: sanitizeLink(form.social_whatsapp),
+      social_instagram: sanitizeLink(form.social_instagram),
+    };
+
     const locationStr = [form.city, form.state_region].filter(Boolean).join(', ') || 'Nationwide';
     const verifiedPublisher = !!(effectiveUser?.is_verified_seller || effectiveUser?.role === 'admin' || effectiveUser?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
     // For ghost sessions: use ghost's display name, never expose internal ghost email
     const ghostSess = getGhostSession();
-    const sellerDisplayName = form.seller_name || effectiveUser?.channel_name || effectiveUser?.business_name || effectiveUser?.full_name || '';
-    const contactEmail = ghostSess ? '' : (form.email_contact || '');
+    const sellerDisplayName = safeForm.seller_name || effectiveUser?.channel_name || effectiveUser?.business_name || effectiveUser?.full_name || '';
+    const contactEmail = ghostSess ? '' : (safeForm.email_contact || '');
+    const locationSafe = [safeForm.city, safeForm.state_region].filter(Boolean).join(', ') || locationStr;
     let listing;
     try {
       listing = await base44.entities.Listing.create({
       ...ghostOwnerFields(ghostSess),
       owner_user_id: ghostSess ? '' : (effectiveUser?.id || ''),
-      title: form.title, type: form.type, main_category: form.main_category, subcategory: form.subcategory,
-      location: locationStr,
-      area: form.area || (form.zip ? `Zip: ${form.zip}` : ''),
-      full_address: [form.area, form.city, form.state_region, form.zip].filter(Boolean).join(', '),
-      price: hidePrice ? 0 : (Number(form.price) || 0),
-      original_price: (!hidePrice && form.original_price && Number(form.original_price) > Number(form.price)) ? Number(form.original_price) : null,
-      price_label: hidePrice ? '' : form.price_label,
-      description: form.description, image_url: form.image_url, extra_images: form.extra_images || [],
-      phone: form.phone, seller_name: sellerDisplayName, email_contact: contactEmail, apply_link: form.apply_link,
-      social_facebook: form.social_facebook, social_whatsapp: form.social_whatsapp, social_instagram: form.social_instagram,
-      alternate_site_options: form.alternate_site_options || [], custom_site_name: form.custom_site_name || '', custom_site_url: form.custom_site_url || '',
-      posting_as: form.posting_as || '',
-      condition: form.condition, is_active: verifiedPublisher ? form.is_active !== false : false,
+      title: safeForm.title, type: safeForm.type, main_category: safeForm.main_category, subcategory: safeForm.subcategory,
+      location: locationSafe,
+      area: safeForm.area || (safeForm.zip ? `Zip: ${safeForm.zip}` : ''),
+      full_address: [safeForm.area, safeForm.city, safeForm.state_region, safeForm.zip].filter(Boolean).join(', '),
+      price: hidePrice ? 0 : (Number(safeForm.price) || 0),
+      original_price: (!hidePrice && safeForm.original_price && Number(safeForm.original_price) > Number(safeForm.price)) ? Number(safeForm.original_price) : null,
+      price_label: hidePrice ? '' : safeForm.price_label,
+      description: safeForm.description, image_url: safeForm.image_url, extra_images: safeForm.extra_images || [],
+      phone: safeForm.phone, seller_name: sellerDisplayName, email_contact: contactEmail, apply_link: safeForm.apply_link,
+      social_facebook: safeForm.social_facebook, social_whatsapp: safeForm.social_whatsapp, social_instagram: safeForm.social_instagram,
+      alternate_site_options: safeForm.alternate_site_options || [], custom_site_name: safeForm.custom_site_name || '', custom_site_url: safeForm.custom_site_url || '',
+      posting_as: safeForm.posting_as || '',
+      condition: safeForm.condition, is_active: verifiedPublisher ? safeForm.is_active !== false : false,
       approval_status: verifiedPublisher ? 'approved' : 'pending',
-      quantity: Number(form.quantity) || 1,
-      tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean).join(',') : '',
-      brand: form.brand || undefined,
-      model: form.model || undefined,
-      ai_generated: !!form.ai_generated,
-      ai_confidence_score: Number(form.ai_confidence_score) || 0,
-      ai_metadata: form.ai_metadata || {},
-      specs: [form.specs, form.custom_product_name, form.custom_service_name].filter(Boolean).join(' | ') || undefined,
-      slideshow_animation: form.slideshow_animation || 'fade',
-      landing_theme_color: form.landing_theme_color || '#7c3aed',
-      landing_secondary_color: form.landing_secondary_color || '#c084fc',
-      landing_bg_style: form.landing_bg_style || 'royal_blue',
-      transition_effect: form.transition_effect || form.slideshow_animation || 'fade',
-      glow_effect: form.glow_effect || 'soft',
-      animation_style: form.animation_style || 'none',
-      ...(form.type === 'food' ? { food_serving: form.food_serving, food_dietary: form.food_dietary, food_spice_level: form.food_spice_level, food_allergens: form.food_allergens, food_business_type: form.food_business_type, food_type: form.food_type, delivery_options: form.delivery_options, meetup_details: form.meetup_details } : {}),
-      ...(form.main_category === 'buysell' ? { delivery_options: form.delivery_options, meetup_details: form.meetup_details } : {}),
-      ...(form.type === 'jobs' ? { company_hiring: form.company_hiring || '', job_poster_role: form.job_poster_role || '', job_employment_type: form.job_employment_type, job_experience: form.job_experience, job_salary_min: Number(form.job_salary_min) || 0, job_salary_max: Number(form.job_salary_max) || 0, job_benefits: form.job_benefits } : {}),
-      ...(form.type === 'services' ? {
-        service_duration: form.service_duration,
-        service_rate_type: form.service_rate_type,
-        service_availability: form.service_availability,
-        service_area: form.service_area_type,
+      quantity: Number(safeForm.quantity) || 1,
+      tags: safeForm.tags ? safeForm.tags.split(',').map(t => t.trim()).filter(Boolean).join(',') : '',
+      brand: safeForm.brand || undefined,
+      model: safeForm.model || undefined,
+      ai_generated: !!safeForm.ai_generated,
+      ai_confidence_score: Number(safeForm.ai_confidence_score) || 0,
+      ai_metadata: safeForm.ai_metadata || {},
+      specs: [safeForm.specs, safeForm.custom_product_name, safeForm.custom_service_name].filter(Boolean).join(' | ') || undefined,
+      slideshow_animation: safeForm.slideshow_animation || 'fade',
+      landing_theme_color: safeForm.landing_theme_color || '#7c3aed',
+      landing_secondary_color: safeForm.landing_secondary_color || '#c084fc',
+      landing_bg_style: safeForm.landing_bg_style || 'royal_blue',
+      transition_effect: safeForm.transition_effect || safeForm.slideshow_animation || 'fade',
+      glow_effect: safeForm.glow_effect || 'soft',
+      animation_style: safeForm.animation_style || 'none',
+      ...(safeForm.type === 'food' ? { food_serving: safeForm.food_serving, food_dietary: safeForm.food_dietary, food_spice_level: safeForm.food_spice_level, food_allergens: safeForm.food_allergens, food_business_type: safeForm.food_business_type, food_type: safeForm.food_type, delivery_options: safeForm.delivery_options, meetup_details: safeForm.meetup_details } : {}),
+      ...(safeForm.main_category === 'buysell' ? { delivery_options: safeForm.delivery_options, meetup_details: safeForm.meetup_details } : {}),
+      ...(safeForm.type === 'jobs' ? { company_hiring: safeForm.company_hiring || '', job_poster_role: safeForm.job_poster_role || '', job_employment_type: safeForm.job_employment_type, job_experience: safeForm.job_experience, job_salary_min: Number(safeForm.job_salary_min) || 0, job_salary_max: Number(safeForm.job_salary_max) || 0, job_benefits: safeForm.job_benefits } : {}),
+      ...(safeForm.type === 'services' ? {
+        service_duration: safeForm.service_duration,
+        service_rate_type: safeForm.service_rate_type,
+        service_availability: safeForm.service_availability,
+        service_area: safeForm.service_area_type,
         specs: [
-          form.service_experience ? `Experience: ${form.service_experience}` : '',
-          form.service_team_size ? `Team: ${form.service_team_size}` : '',
-          form.service_languages ? `Languages: ${form.service_languages}` : '',
-          form.service_certifications ? `Certified: ${form.service_certifications}` : '',
-          form.service_warranty ? `Warranty: ${form.service_warranty}` : '',
-          form.service_online_available ? 'Online/Remote: Yes' : '',
-          form.service_mobile_available ? 'Mobile/On-site: Yes' : '',
-          form.service_same_day ? 'Same Day: Yes' : '',
-          form.service_emergency_available ? 'Emergency Service: Yes' : '',
-          form.service_package_basic ? `Basic: ${form.service_package_basic}` : '',
-          form.service_package_standard ? `Standard: ${form.service_package_standard}` : '',
-          form.service_package_premium ? `Premium: ${form.service_package_premium}` : '',
+          safeForm.service_experience ? `Experience: ${safeForm.service_experience}` : '',
+          safeForm.service_team_size ? `Team: ${safeForm.service_team_size}` : '',
+          safeForm.service_languages ? `Languages: ${safeForm.service_languages}` : '',
+          safeForm.service_certifications ? `Certified: ${safeForm.service_certifications}` : '',
+          safeForm.service_warranty ? `Warranty: ${safeForm.service_warranty}` : '',
+          safeForm.service_online_available ? 'Online/Remote: Yes' : '',
+          safeForm.service_mobile_available ? 'Mobile/On-site: Yes' : '',
+          safeForm.service_same_day ? 'Same Day: Yes' : '',
+          safeForm.service_emergency_available ? 'Emergency Service: Yes' : '',
+          safeForm.service_package_basic ? `Basic: ${safeForm.service_package_basic}` : '',
+          safeForm.service_package_standard ? `Standard: ${safeForm.service_package_standard}` : '',
+          safeForm.service_package_premium ? `Premium: ${safeForm.service_package_premium}` : '',
         ].filter(Boolean).join(' | '),
       } : {}),
       ...(isPropertyRent ? {
-        rent_deposit: form.rent_deposit, rent_utilities: form.rent_utilities, rent_furnished: form.rent_furnished, rent_pet_policy: form.rent_pet_policy,
-        property_listing_type: form.property_listing_type, property_developer: form.property_developer,
-        ...(isPropertyForSale ? { property_sale_type: form.property_sale_type, ...(isPreselling ? { property_turnover_months: form.property_turnover_months } : {}) } : {}),
-        ...(isPropertyForLease ? { property_lease_months: Number(form.property_lease_months) } : {}),
+        rent_deposit: safeForm.rent_deposit, rent_utilities: safeForm.rent_utilities, rent_furnished: safeForm.rent_furnished, rent_pet_policy: safeForm.rent_pet_policy,
+        property_listing_type: safeForm.property_listing_type, property_developer: safeForm.property_developer,
+        ...(isPropertyForSale ? { property_sale_type: safeForm.property_sale_type, ...(isPreselling ? { property_turnover_months: safeForm.property_turnover_months } : {}) } : {}),
+        ...(isPropertyForLease ? { property_lease_months: Number(safeForm.property_lease_months) } : {}),
       } : {}),
-      ...(isCar ? { car_ownership: form.car_ownership, car_sale_type: form.car_sale_type, car_owner_name: form.car_owner_name } : {}),
-      price_label: hidePrice ? '' : (form.price_label || (form.price ? `₱${Number(form.price).toLocaleString()} ${form.price_rate_type !== 'Per Item' ? form.price_rate_type : ''}`.trim() : '')),
+      ...(isCar ? { car_ownership: safeForm.car_ownership, car_sale_type: safeForm.car_sale_type, car_owner_name: safeForm.car_owner_name } : {}),
+      price_label: hidePrice ? '' : (safeForm.price_label || (safeForm.price ? `₱${Number(safeForm.price).toLocaleString()} ${safeForm.price_rate_type !== 'Per Item' ? safeForm.price_rate_type : ''}`.trim() : '')),
       ...(isFlights ? {
-        flight_departure_date: form.flight_departure_date,
-        flight_departure_time: form.flight_departure_time,
-        flight_return_date: form.flight_return_date,
-        flight_origin: form.flight_origin,
-        flight_destination: form.flight_destination,
-        flight_seats: Number(form.flight_seats) || 0,
+        flight_departure_date: safeForm.flight_departure_date,
+        flight_departure_time: safeForm.flight_departure_time,
+        flight_return_date: safeForm.flight_return_date,
+        flight_origin: safeForm.flight_origin,
+        flight_destination: safeForm.flight_destination,
+        flight_seats: Number(safeForm.flight_seats) || 0,
         specs: [
-          form.flight_type, form.flight_airline, form.flight_travel_class, form.flight_ticket_type,
-          form.flight_baggage, form.flight_refundable ? 'Refundable' : 'Non-Refundable',
-          form.flight_rebookable ? 'Rebookable' : '',
-          form.flight_booking_deadline ? `Deadline: ${form.flight_booking_deadline}` : '',
-          form.flight_max_pax ? `Max ${form.flight_max_pax} pax` : '',
+          safeForm.flight_type, safeForm.flight_airline, safeForm.flight_travel_class, safeForm.flight_ticket_type,
+          safeForm.flight_baggage, safeForm.flight_refundable ? 'Refundable' : 'Non-Refundable',
+          safeForm.flight_rebookable ? 'Rebookable' : '',
+          safeForm.flight_booking_deadline ? `Deadline: ${safeForm.flight_booking_deadline}` : '',
+          safeForm.flight_max_pax ? `Max ${safeForm.flight_max_pax} pax` : '',
         ].filter(Boolean).join(' | '),
       } : {}),
     });

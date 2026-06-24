@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -48,7 +48,8 @@ import AccountSellerOrders from './pages/AccountSellerOrders';
 import AccountDrafts from './pages/AccountDrafts';
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
+  const location = useLocation();
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -64,9 +65,8 @@ const AuthenticatedApp = () => {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
-      navigateToLogin();
-      return null;
+      const next = `${location.pathname}${location.search}${location.hash}`;
+      return <Navigate to={`/login?next=${encodeURIComponent(next)}`} replace />;
     }
   }
 
@@ -103,6 +103,8 @@ const AuthenticatedApp = () => {
         <Route path="/onboarding" element={<SellerOnboarding />} />
         <Route path="/rider-onboarding" element={<RiderOnboarding />} />
         <Route path="/post-ad" element={<PostAdLanding />} />
+        <Route path="/post-add" element={<Navigate to="/post-ad" replace />} />
+        <Route path="/post-listing" element={<Navigate to="/post-ad" replace />} />
         <Route path="/category/:category" element={<CategoryTransitionPage />} />
         <Route path="/connected-accounts" element={<AdminRoute><ConnectedAccounts /></AdminRoute>} />
         <Route path="/groups" element={<Groups />} />
