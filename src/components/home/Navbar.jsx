@@ -565,6 +565,10 @@ export default function Navbar() {
               </>
               ) : (
                 <div className="flex items-center gap-2">
+                  <Link to="/post-ad"
+                    className="px-4 py-2 rounded-lg font-body font-bold text-xs text-[#0A192F] transition-all hover:scale-105 bg-[#FFD700]">
+                    Post an Ad
+                  </Link>
                   <Link to="/login"
                     className="px-4 py-2 border border-white/20 text-white/80 rounded-lg font-body font-bold text-xs hover:border-[#00D4FF] hover:text-[#00D4FF] transition-colors">
                     Login
