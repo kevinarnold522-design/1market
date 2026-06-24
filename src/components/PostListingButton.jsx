@@ -13,8 +13,7 @@ export default function PostListingButton({ className = '', size = 'md' }) {
   const isAdmin = user?.email?.toLowerCase() === 'kevinarnold522@gmail.com' || user?.role === 'admin';
   const isBusinessAccount = userType === 'business' || user?.account_type === 'business_owner';
   const isSellerAccount = userType === 'seller' || user?.is_seller || isBusinessAccount;
-  const isBlockedUserType = userType === 'rider' || (userType === 'customer' && !isSellerAccount);
-  const canPost = user && !isBlockedUserType && (isAdmin || isSellerAccount);
+  const canPost = !!user;
 
   if (!canPost) return null;
   return <PostListingMenu user={user} compact={false} />;

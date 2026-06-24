@@ -358,9 +358,9 @@ function PillSelect({ options, value, onChange, color = '#FFD700' }) {
         <button key={o} type="button" onClick={() => onChange(o)}
           className="px-3 py-1 rounded-full border font-body text-[11px] transition-all"
           style={{
-            borderColor: value === o ? color : 'rgba(255,255,255,0.12)',
-            background: value === o ? `${color}22` : 'rgba(255,255,255,0.04)',
-            color: value === o ? color : 'rgba(255,255,255,0.5)',
+            borderColor: value === o ? '#FFD700' : 'rgba(255,255,255,0.12)',
+            background: value === o ? '#FFD700' : 'rgba(255,255,255,0.04)',
+            color: '#ffffff',
           }}>
           {o}
         </button>
@@ -393,6 +393,10 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   const [uploadingExtra, setUploadingExtra] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [publishedListing, setPublishedListing] = useState(null);
+  const [templateName, setTemplateName] = useState('');
+  const [templateSaving, setTemplateSaving] = useState(false);
+  const [templateSaved, setTemplateSaved] = useState(false);
   const [dpaAccepted, setDpaAccepted] = useState(false);
   const [legalAccepted, setLegalAccepted] = useState(false);
   const closingFromBrowserBack = useRef(false);
@@ -463,11 +467,12 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
     if (!form.title) return;
     setSubmitting(true);
     const locationStr = [form.city, form.state_region].filter(Boolean).join(', ') || 'Nationwide';
+    const verifiedPublisher = !!(effectiveUser?.is_verified_seller || effectiveUser?.role === 'admin' || effectiveUser?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
     // For ghost sessions: use ghost's display name, never expose internal ghost email
     const ghostSess = getGhostSession();
     const sellerDisplayName = form.seller_name || effectiveUser?.channel_name || effectiveUser?.business_name || effectiveUser?.full_name || '';
     const contactEmail = ghostSess ? '' : (form.email_contact || '');
-    await base44.entities.Listing.create({
+    const listing = await base44.entities.Listing.create({
       ...ghostOwnerFields(ghostSess),
       owner_user_id: ghostSess ? '' : (effectiveUser?.id || ''),
       owner_email: ghostSess ? '' : (effectiveUser?.email || ''),
@@ -483,8 +488,8 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       social_facebook: form.social_facebook, social_whatsapp: form.social_whatsapp, social_instagram: form.social_instagram,
       alternate_site_options: form.alternate_site_options || [], custom_site_name: form.custom_site_name || '', custom_site_url: form.custom_site_url || '',
       posting_as: form.posting_as || '',
-      condition: form.condition, is_active: false,
-      approval_status: 'pending',
+      condition: form.condition, is_active: verifiedPublisher ? form.is_active !== false : false,
+      approval_status: verifiedPublisher ? 'approved' : 'pending',
       quantity: Number(form.quantity) || 1,
       tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean).join(',') : '',
       brand: form.brand || undefined,
@@ -547,21 +552,35 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
         ].filter(Boolean).join(' | '),
       } : {}),
     });
+    setPublishedListing(listing);
+    setTemplateName(form.title ? `${form.title} Template` : 'My Listing Template');
     setSubmitting(false); setDone(true);
-    setTimeout(() => onClose(), 2000);
+  };
+
+  const savePublishedTemplate = async () => {
+    if (!effectiveUser?.id || !templateName.trim()) return;
+    setTemplateSaving(true);
+    await base44.entities.SavedListingTemplate.create({
+      user_id: effectiveUser.id,
+      user_email: effectiveUser.email || '',
+      name: templateName.trim(),
+      form_data: { ...form },
+    });
+    setTemplateSaved(true);
+    setTemplateSaving(false);
   };
 
   const isFlights = form.type === 'flights';
   const totalImages = (form.image_url ? 1 : 0) + (form.extra_images?.length || 0);
-  const photosRequired = !isJob;
-  const canSubmit = form.title && form.description && dpaAccepted && (isCar ? legalAccepted : true) && (!photosRequired || totalImages >= 3);
+  const photosRequired = false;
+  const canSubmit = form.title && form.description && dpaAccepted && (isCar ? legalAccepted : true);
   const prePublishRecommendations = [
     !form.main_category && 'Choose the correct main category.',
     !form.subcategory && 'Add a specific subcategory so buyers can find it.',
     !form.title && 'Add a clear searchable title.',
     !form.description && 'Add a detailed description with condition, inclusions, and reason for selling.',
     !hidePrice && !form.price && !form.price_label && 'Add a price or price label.',
-    photosRequired && totalImages < 3 && `Upload at least 3 photos (${totalImages}/3 added).`,
+    !form.image_url && totalImages === 0 && 'Add photos when possible to improve buyer trust.',
     !form.phone && !form.email_contact && !form.social_facebook && !form.social_whatsapp && !form.custom_site_url && 'Add at least one contact or external shop link.',
     !form.tags && 'Add search tags to help buyers discover this listing.',
   ].filter(Boolean);
@@ -600,8 +619,22 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
               <div className="w-14 h-14 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center mx-auto mb-3">
                 <svg className="w-7 h-7 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
               </div>
-              <p className="font-heading font-bold text-white text-lg mb-1">Listing Submitted for Review!</p>
-              <p className="font-body text-sm text-white/50">Your listing is pending admin approval. You will receive an email and notification once it is reviewed.</p>
+              <p className="font-heading font-bold text-white text-lg mb-1">Listing Published!</p>
+              <p className="font-body text-sm text-white/70 mb-5">{publishedListing?.approval_status === 'approved' ? 'Your listing is live now.' : 'Your listing was saved and is waiting for review.'}</p>
+              <div className="rounded-2xl border border-[#FFD700]/35 bg-[#FFD700]/15 p-4 text-left space-y-3">
+                <p className="font-body text-sm font-bold text-white">Would you like to save this listing as a template?</p>
+                <p className="font-body text-xs text-white/70">Load it next time to autofill details and post faster.</p>
+                {!templateSaved ? (
+                  <div className="flex gap-2">
+                    <input value={templateName} onChange={e => setTemplateName(e.target.value)} className="flex-1 rounded-xl border border-white/15 bg-white/10 px-3 py-2 text-sm text-white placeholder-white/40 focus:outline-none" placeholder="Template name" />
+                    <button type="button" onClick={savePublishedTemplate} disabled={templateSaving || !templateName.trim()} className="px-4 py-2 rounded-xl bg-[#FFD700] text-white font-body text-xs font-bold disabled:opacity-50">{templateSaving ? 'Saving...' : 'Save'}</button>
+                  </div>
+                ) : <p className="font-body text-xs font-bold text-green-300">Template saved.</p>}
+              </div>
+              <div className="flex gap-2 mt-5 justify-center">
+                {publishedListing?.id && <a href={`/listing/${publishedListing.id}`} className="px-4 py-2 rounded-xl bg-white/15 text-white font-body text-xs font-bold">View Listing</a>}
+                <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl bg-[#FFD700] text-white font-body text-xs font-bold">Done</button>
+              </div>
             </div>
           </div>
         ) : (
@@ -621,8 +654,8 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       }}
                         className="flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all hover:scale-105"
                         style={{
-                          background: form.main_category === mc.value ? `${mc.color}22` : 'rgba(255,255,255,0.04)',
-                          borderColor: form.main_category === mc.value ? mc.color : 'rgba(255,255,255,0.1)',
+                          background: form.main_category === mc.value ? '#FFD700' : 'rgba(255,255,255,0.04)',
+                          borderColor: form.main_category === mc.value ? '#FFD700' : 'rgba(255,255,255,0.1)',
                           boxShadow: form.main_category === mc.value ? `0 0 16px ${mc.color}44` : 'none',
                         }}>
                         <CategoryIcon name={mc.iconKey} size={28} color={mc.color} />
@@ -641,7 +674,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       <button key={t.value} onClick={() => { set('type', t.value); set('subcategory', ''); setStep(2); }}
                         className="w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all text-left"
                         style={{
-                          background: form.type === t.value ? 'rgba(255,215,0,0.18)' : 'rgba(255,255,255,0.04)',
+                          background: form.type === t.value ? '#FFD700' : 'rgba(255,255,255,0.04)',
                           borderColor: form.type === t.value ? '#FFD700' : 'rgba(255,255,255,0.1)',
                         }}>
                         <span className="font-body text-sm text-white">{t.label}</span>
@@ -743,8 +776,8 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                             className="px-3 py-1.5 rounded-full border font-body text-[11px] transition-all"
                             style={{
                               borderColor: form.posting_as === role ? '#FFD700' : 'rgba(255,255,255,0.12)',
-                              background: form.posting_as === role ? 'rgba(255,215,0,0.2)' : 'rgba(255,255,255,0.04)',
-                              color: form.posting_as === role ? '#FFD700' : 'rgba(255,255,255,0.5)',
+                              background: form.posting_as === role ? '#FFD700' : 'rgba(255,255,255,0.04)',
+                              color: '#ffffff',
                             }}>{role}</button>
                         ))}
                       </div>
@@ -805,13 +838,13 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       <div className="grid grid-cols-2 gap-2">
                         <button type="button" onClick={() => set('flight_refundable', !form.flight_refundable)}
                           className="flex items-center gap-2 px-3 py-2 rounded-xl border transition-all"
-                          style={{ borderColor: form.flight_refundable ? '#0ea5e9' : 'rgba(255,255,255,0.1)', background: form.flight_refundable ? 'rgba(14,165,233,0.15)' : 'rgba(255,255,255,0.04)' }}>
+                          style={{ borderColor: form.flight_refundable ? '#0ea5e9' : 'rgba(255,255,255,0.1)', background: form.flight_refundable ? '#FFD700' : 'rgba(255,255,255,0.04)' }}>
                           <div className={`w-3 h-3 rounded-full ${form.flight_refundable ? 'bg-sky-400' : 'bg-white/20'}`} />
                           <span className="font-body text-xs text-white/70">Refundable</span>
                         </button>
                         <button type="button" onClick={() => set('flight_rebookable', !form.flight_rebookable)}
                           className="flex items-center gap-2 px-3 py-2 rounded-xl border transition-all"
-                          style={{ borderColor: form.flight_rebookable ? '#0ea5e9' : 'rgba(255,255,255,0.1)', background: form.flight_rebookable ? 'rgba(14,165,233,0.15)' : 'rgba(255,255,255,0.04)' }}>
+                          style={{ borderColor: form.flight_rebookable ? '#0ea5e9' : 'rgba(255,255,255,0.1)', background: form.flight_rebookable ? '#FFD700' : 'rgba(255,255,255,0.04)' }}>
                           <div className={`w-3 h-3 rounded-full ${form.flight_rebookable ? 'bg-sky-400' : 'bg-white/20'}`} />
                           <span className="font-body text-xs text-white/70">Rebookable</span>
                         </button>
@@ -886,7 +919,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                             className="py-2.5 rounded-xl border font-body text-xs font-bold transition-all"
                             style={{
                               borderColor: form.property_listing_type === t ? '#10b981' : 'rgba(255,255,255,0.1)',
-                              background: form.property_listing_type === t ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.04)',
+                              background: form.property_listing_type === t ? '#FFD700' : 'rgba(255,255,255,0.04)',
                               color: form.property_listing_type === t ? '#34d399' : 'rgba(255,255,255,0.5)',
                             }}>
                             {t}
@@ -903,7 +936,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                                 className="py-2 px-3 rounded-xl border font-body text-xs text-left transition-all"
                                 style={{
                                   borderColor: form.property_sale_type === t ? '#00D4FF' : 'rgba(255,255,255,0.1)',
-                                  background: form.property_sale_type === t ? 'rgba(255,215,0,0.18)' : 'rgba(255,255,255,0.04)',
+                                  background: form.property_sale_type === t ? '#FFD700' : 'rgba(255,255,255,0.04)',
                                   color: form.property_sale_type === t ? '#00D4FF' : 'rgba(255,255,255,0.5)',
                                 }}>
                                 {t}
@@ -970,7 +1003,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                               className="py-2 px-3 rounded-xl border font-body text-xs text-left transition-all"
                               style={{
                                 borderColor: form.food_business_type === bt ? '#f97316' : 'rgba(255,255,255,0.1)',
-                                background: form.food_business_type === bt ? 'rgba(249,115,22,0.18)' : 'rgba(255,255,255,0.04)',
+                                background: form.food_business_type === bt ? '#FFD700' : 'rgba(255,255,255,0.04)',
                                 color: form.food_business_type === bt ? '#fb923c' : 'rgba(255,255,255,0.5)',
                               }}>
                               {bt}
@@ -986,7 +1019,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                               className="px-2.5 py-1 rounded-full border font-body text-[11px] transition-all"
                               style={{
                                 borderColor: form.food_type === ft ? '#f97316' : 'rgba(255,255,255,0.1)',
-                                background: form.food_type === ft ? 'rgba(249,115,22,0.18)' : 'rgba(255,255,255,0.04)',
+                                background: form.food_type === ft ? '#FFD700' : 'rgba(255,255,255,0.04)',
                                 color: form.food_type === ft ? '#fb923c' : 'rgba(255,255,255,0.4)',
                               }}>
                               {ft}
@@ -1021,7 +1054,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                               className="px-3 py-1.5 rounded-full border font-body text-[11px] transition-all"
                               style={{
                                 borderColor: form.job_poster_role === role ? '#f59e0b' : 'rgba(255,255,255,0.12)',
-                                background: form.job_poster_role === role ? 'rgba(245,158,11,0.18)' : 'rgba(255,255,255,0.04)',
+                                background: form.job_poster_role === role ? '#FFD700' : 'rgba(255,255,255,0.04)',
                                 color: form.job_poster_role === role ? '#fbbf24' : 'rgba(255,255,255,0.5)',
                               }}>
                               {role}
@@ -1077,7 +1110,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                               className="px-2.5 py-1 rounded-full border font-body text-[11px] transition-all"
                               style={{
                                 borderColor: form.service_area_type === a ? '#3b82f6' : 'rgba(255,255,255,0.12)',
-                                background: form.service_area_type === a ? 'rgba(59,130,246,0.18)' : 'rgba(255,255,255,0.04)',
+                                background: form.service_area_type === a ? '#FFD700' : 'rgba(255,255,255,0.04)',
                                 color: form.service_area_type === a ? '#60a5fa' : 'rgba(255,255,255,0.5)',
                               }}>{a}</button>
                           ))}
@@ -1098,7 +1131,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                               className="flex items-center gap-2 px-3 py-2 rounded-xl border transition-all text-left"
                               style={{
                                 borderColor: form[key] ? '#3b82f6' : 'rgba(255,255,255,0.1)',
-                                background: form[key] ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.04)',
+                                background: form[key] ? '#FFD700' : 'rgba(255,255,255,0.04)',
                               }}>
                               <div className={`w-3 h-3 rounded-full flex-shrink-0 ${form[key] ? 'bg-blue-400' : 'bg-white/20'}`} />
                               <span className="font-body text-[11px] text-white/70">{label}</span>
@@ -1215,7 +1248,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                             const curr = form.alternate_site_options || [];
                             set('alternate_site_options', active ? curr.filter(s => s !== site) : [...curr, site]);
                           }} className="px-2.5 py-2 rounded-xl border font-body text-[11px] text-left transition-all"
-                            style={{ borderColor: active ? '#00D4FF' : 'rgba(255,255,255,0.1)', background: active ? 'rgba(255,215,0,0.18)' : 'rgba(255,255,255,0.03)', color: active ? '#00D4FF' : 'rgba(255,255,255,0.45)' }}>
+                            style={{ borderColor: active ? '#00D4FF' : 'rgba(255,255,255,0.1)', background: active ? '#FFD700' : 'rgba(255,255,255,0.03)', color: active ? '#00D4FF' : 'rgba(255,255,255,0.45)' }}>
                             {site}
                           </button>;
                         })}
@@ -1239,7 +1272,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                               className="px-2.5 py-1 rounded-full border font-body text-[11px] transition-all"
                               style={{
                                 borderColor: form.price_rate_type === rt ? '#00D4FF' : 'rgba(255,255,255,0.12)',
-                                background: form.price_rate_type === rt ? 'rgba(255,215,0,0.2)' : 'rgba(255,255,255,0.04)',
+                                background: form.price_rate_type === rt ? '#FFD700' : 'rgba(255,255,255,0.04)',
                                 color: form.price_rate_type === rt ? '#00D4FF' : 'rgba(255,255,255,0.5)',
                               }}>{rt}</button>
                           ))}
@@ -1297,7 +1330,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                               className="flex items-center gap-2 px-2.5 py-2 rounded-xl border font-body text-[11px] text-left transition-all"
                               style={{
                                 borderColor: active ? '#8b5cf6' : 'rgba(255,255,255,0.1)',
-                                background: active ? 'rgba(139,92,246,0.18)' : 'rgba(255,255,255,0.03)',
+                                background: active ? '#FFD700' : 'rgba(255,255,255,0.03)',
                                 color: active ? '#c084fc' : 'rgba(255,255,255,0.45)',
                               }}>
                               <div className="w-3 h-3 rounded-full flex-shrink-0"
@@ -1381,7 +1414,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       <label className={labelCls}>Landing Background Style</label>
                       <div className="grid grid-cols-3 gap-1.5">
                         {LANDING_BG_STYLES.map(opt => (
-                          <button key={opt.value} type="button" onClick={() => set('landing_bg_style', opt.value)} className="px-2 py-2 rounded-xl border font-body text-[10px] font-bold transition-all" style={{ borderColor: form.landing_bg_style === opt.value ? '#BAE6FD' : 'rgba(255,255,255,0.1)', background: form.landing_bg_style === opt.value ? 'rgba(186,230,253,0.18)' : 'rgba(255,255,255,0.04)', color: form.landing_bg_style === opt.value ? '#ffffff' : 'rgba(255,255,255,0.5)' }}>{opt.label}</button>
+                          <button key={opt.value} type="button" onClick={() => set('landing_bg_style', opt.value)} className="px-2 py-2 rounded-xl border font-body text-[10px] font-bold transition-all" style={{ borderColor: form.landing_bg_style === opt.value ? '#BAE6FD' : 'rgba(255,255,255,0.1)', background: form.landing_bg_style === opt.value ? '#FFD700' : 'rgba(255,255,255,0.04)', color: form.landing_bg_style === opt.value ? '#ffffff' : 'rgba(255,255,255,0.5)' }}>{opt.label}</button>
                         ))}
                       </div>
                     </div>
@@ -1389,7 +1422,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       <label className={labelCls}>Transition Effect</label>
                       <div className="grid grid-cols-6 gap-1.5">
                         {SLIDESHOW_ANIMATIONS.map(a => (
-                          <button key={a.value} type="button" onClick={() => { set('slideshow_animation', a.value); set('transition_effect', a.value); }} className="flex flex-col items-center gap-0.5 p-2 rounded-xl border transition-all text-center" style={{ borderColor: form.transition_effect === a.value ? '#BAE6FD' : 'rgba(255,255,255,0.1)', background: form.transition_effect === a.value ? 'rgba(186,230,253,0.18)' : 'rgba(255,255,255,0.04)' }}>
+                          <button key={a.value} type="button" onClick={() => { set('slideshow_animation', a.value); set('transition_effect', a.value); }} className="flex flex-col items-center gap-0.5 p-2 rounded-xl border transition-all text-center" style={{ borderColor: form.transition_effect === a.value ? '#BAE6FD' : 'rgba(255,255,255,0.1)', background: form.transition_effect === a.value ? '#FFD700' : 'rgba(255,255,255,0.04)' }}>
                             <span className="font-body text-[10px] font-bold text-white/70">{a.label}</span>
                             <span className="font-body text-[9px] text-white/30 leading-tight">{a.desc}</span>
                           </button>
@@ -1401,7 +1434,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                         <label className={labelCls}>Glow Effect</label>
                         <div className="flex flex-wrap gap-1.5">
                           {GLOW_EFFECTS.map(opt => (
-                            <button key={opt.value} type="button" onClick={() => set('glow_effect', opt.value)} className="px-2.5 py-1 rounded-full border font-body text-[10px] font-bold transition-all" style={{ borderColor: form.glow_effect === opt.value ? '#BAE6FD' : 'rgba(255,255,255,0.1)', background: form.glow_effect === opt.value ? 'rgba(186,230,253,0.18)' : 'rgba(255,255,255,0.04)', color: form.glow_effect === opt.value ? '#fff' : 'rgba(255,255,255,0.5)' }}>{opt.label}</button>
+                            <button key={opt.value} type="button" onClick={() => set('glow_effect', opt.value)} className="px-2.5 py-1 rounded-full border font-body text-[10px] font-bold transition-all" style={{ borderColor: form.glow_effect === opt.value ? '#BAE6FD' : 'rgba(255,255,255,0.1)', background: form.glow_effect === opt.value ? '#FFD700' : 'rgba(255,255,255,0.04)', color: form.glow_effect === opt.value ? '#fff' : 'rgba(255,255,255,0.5)' }}>{opt.label}</button>
                           ))}
                         </div>
                       </div>
@@ -1409,7 +1442,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                         <label className={labelCls}>Page Animation</label>
                         <div className="flex flex-wrap gap-1.5">
                           {ANIMATION_STYLES.map(opt => (
-                            <button key={opt.value} type="button" onClick={() => set('animation_style', opt.value)} className="px-2.5 py-1 rounded-full border font-body text-[10px] font-bold transition-all" style={{ borderColor: form.animation_style === opt.value ? '#BAE6FD' : 'rgba(255,255,255,0.1)', background: form.animation_style === opt.value ? 'rgba(186,230,253,0.18)' : 'rgba(255,255,255,0.04)', color: form.animation_style === opt.value ? '#fff' : 'rgba(255,255,255,0.5)' }}>{opt.label}</button>
+                            <button key={opt.value} type="button" onClick={() => set('animation_style', opt.value)} className="px-2.5 py-1 rounded-full border font-body text-[10px] font-bold transition-all" style={{ borderColor: form.animation_style === opt.value ? '#BAE6FD' : 'rgba(255,255,255,0.1)', background: form.animation_style === opt.value ? '#FFD700' : 'rgba(255,255,255,0.04)', color: form.animation_style === opt.value ? '#fff' : 'rgba(255,255,255,0.5)' }}>{opt.label}</button>
                           ))}
                         </div>
                       </div>
@@ -1431,7 +1464,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                         <br /><br />
                         I also agree to the 1MarketPH Terms and Conditions. I confirm this listing is truthful and accurate, and does not promote illegal drugs, gambling, dangerous products, harmful services, false advertising, or anything that violates Philippine laws.
                         <br /><br />
-                        I understand that all listings are reviewed before approval and that 1MarketPH may reject or remove listings that break these rules.
+                        I understand that verified seller listings can publish immediately, while other listings may be reviewed before going live, and 1MarketPH may reject or remove listings that break these rules.
                       </p>
                     </div>
                     <div className="flex items-start gap-2.5 pt-1">
@@ -1454,8 +1487,8 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                     className="w-full py-3 rounded-xl font-body font-bold text-sm text-white transition-all disabled:opacity-40 hover:scale-[1.01] flex items-center justify-center gap-2"
                     style={{ background: 'linear-gradient(135deg,#0033CC,#2563EB)', boxShadow: '0 0 20px rgba(37,99,235,0.5)' }}>
                     {submitting
-                      ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Submitting for Review...</>
-                      : 'Submit for Admin Review'}
+                      ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Publishing...</>
+                      : 'Publish'}
                   </button>
 
                   {isCar && !legalAccepted && (
@@ -1464,10 +1497,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                   {!form.description && (
                     <p className="font-body text-[10px] text-red-400 text-center">Description is required.</p>
                   )}
-                  {photosRequired && totalImages < 3 && (
-                    <p className="font-body text-[10px] text-amber-400 text-center">Minimum 3 photos required ({totalImages}/3).</p>
-                  )}
-                  <p className="font-body text-[10px] text-white/25 text-center">All listings are reviewed by our team before going live. You will be notified by email once approved.</p>
+                  <p className="font-body text-[10px] text-white/25 text-center">Verified sellers publish immediately. Other listings may be reviewed before going live.</p>
 
                 </motion.div>
               )}

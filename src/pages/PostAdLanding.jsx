@@ -170,7 +170,7 @@ export default function PostAdLanding() {
               <p className="font-body text-[10px] uppercase tracking-wider font-bold text-[#FFD700] mb-2">Choose post type</p>
               <div className="grid sm:grid-cols-3 gap-3">
                 {postModeOptions.map(option => (
-                  <button key={option.key} onClick={() => setSelectedPostMode(option.key)} className="p-4 rounded-2xl border text-left transition-all hover:scale-[1.01]" style={{ borderColor: activePostMode === option.key ? '#FFD700' : 'rgba(255,255,255,0.12)', background: activePostMode === option.key ? 'rgba(255,215,0,0.18)' : 'rgba(255,255,255,0.05)' }}>
+                  <button key={option.key} onClick={() => setSelectedPostMode(option.key)} className="p-4 rounded-2xl border text-left transition-all hover:scale-[1.01]" style={{ borderColor: activePostMode === option.key ? '#FFD700' : 'rgba(255,255,255,0.12)', background: activePostMode === option.key ? '#FFD700' : 'rgba(255,255,255,0.05)' }}>
                     <p className="font-body text-sm font-bold text-white">{option.label}</p>
                     <p className="font-body text-xs text-white/55 mt-1">{option.desc}</p>
                   </button>
@@ -185,7 +185,7 @@ export default function PostAdLanding() {
                   onClick={() => selectCategory(cat)}
                   className="w-full text-left rounded-2xl p-4 transition-all hover:scale-[1.01] active:scale-[0.99]"
                   style={{
-                    background: selectedCat?.key === cat.key ? `${cat.color}18` : 'rgba(255,255,255,0.04)',
+                    background: selectedCat?.key === cat.key ? '#FFD700' : 'rgba(255,255,255,0.04)',
                     border: `1.5px solid ${selectedCat?.key === cat.key ? cat.color : 'rgba(255,255,255,0.08)'}`,
                     boxShadow: selectedCat?.key === cat.key ? `0 0 20px ${cat.color}30` : 'none',
                   }}>
@@ -233,11 +233,11 @@ export default function PostAdLanding() {
                               {isOpen && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                                   <div className="px-4 pb-4 pt-1 flex flex-wrap gap-2">
-                                    <button onClick={() => openListingModal(type, '')} className="px-3 py-2 rounded-xl font-body text-xs font-bold text-white transition-all hover:scale-[1.02]" style={{ background: selectedCat.color }}>
+                                    <button onClick={() => openListingModal(type, '')} className="px-3 py-2 rounded-xl font-body text-xs font-bold text-white transition-all hover:scale-[1.02]" style={{ background: '#FFD700' }}>
                                       {subcategories.length ? 'Choose manually in form' : 'Create listing'}
                                     </button>
                                     {subcategories.map(sub => (
-                                      <button key={sub} onClick={() => openListingModal(type, sub)} className="px-3 py-2 rounded-xl border font-body text-xs text-white/80 hover:text-white transition-all text-left" style={{ borderColor: `${selectedCat.color}35`, background: `${selectedCat.color}17` }}>
+                                      <button key={sub} onClick={() => openListingModal(type, sub)} className="px-3 py-2 rounded-xl border font-body text-xs text-white hover:text-white transition-all text-left" style={{ borderColor: '#FFD700', background: '#FFD700' }}>
                                         {sub}
                                       </button>
                                     ))}

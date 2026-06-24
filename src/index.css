@@ -635,7 +635,7 @@ a, button, select, input, textarea, [role="button"] {
 .listing-options-blue-yellow *:not(svg):not(path),
 .auth-blue-yellow,
 .auth-blue-yellow *:not(svg):not(path) {
-  color: #FFD700 !important;
+  color: #ffffff !important;
 }
 .listing-options-blue-yellow input,
 .listing-options-blue-yellow textarea,
@@ -655,7 +655,7 @@ a, button, select, input, textarea, [role="button"] {
 }
 .listing-options-blue-yellow option {
   background: #2563EB !important;
-  color: #FFD700 !important;
+  color: #ffffff !important;
 }
 .listing-options-blue-yellow button,
 .auth-blue-yellow button {

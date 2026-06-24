@@ -12,11 +12,8 @@ function fileToBase64(file) {
 }
 
 export async function uploadMediaFileToSupabase(file, folder = 'media') {
-  const notice = toast({ title: 'Uploading image...', description: 'Please wait while we save your file.' });
   try {
-    const result = await uploadFileToSupabase(file, undefined, folder, { allowPdf: true });
-    notice.update({ title: 'Upload complete', description: 'Your image is ready to use.' });
-    return result;
+    return await uploadFileToSupabase(file, undefined, folder, { allowPdf: true });
   } catch (error) {
     try {
       const base64_data = await fileToBase64(file);
@@ -26,10 +23,9 @@ export async function uploadMediaFileToSupabase(file, folder = 'media') {
         base64_data,
         folder,
       });
-      notice.update({ title: 'Upload complete', description: 'Your image is ready to use.' });
       return response.data;
     } catch (fallbackError) {
-      notice.update({ title: 'Upload failed', description: fallbackError.message || error.message || 'Please try another image.', variant: 'destructive' });
+      toast({ title: 'Upload failed', description: fallbackError.message || error.message || 'Please try another image.', variant: 'destructive' });
       throw fallbackError;
     }
   }

@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
 import { Building2, ChevronDown, Plus, Shield, ShoppingBag, Store } from 'lucide-react';
-import AddListingModal from './AddListingModal';
+import { useNavigate } from 'react-router-dom';
 
 export default function PostListingMenu({ user, compact = false, iconOnly = false, onSelect }) {
+  const navigate = useNavigate();
   const menuRef = useRef(null);
   const [open, setOpen] = useState(false);
-  const [showListingModal, setShowListingModal] = useState(false);
   const userType = user?.user_type;
   const isAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
   const isBusinessAccount = userType === 'business' || user?.account_type === 'business_owner';
@@ -32,7 +31,7 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
   const handleSelect = () => {
     setOpen(false);
     onSelect?.();
-    setShowListingModal(true);
+    navigate('/post-ad');
   };
 
   return (
@@ -67,9 +66,6 @@ export default function PostListingMenu({ user, compact = false, iconOnly = fals
           ))}
         </div>
       )}
-      <AnimatePresence>
-        {showListingModal && <AddListingModal user={user} onClose={() => setShowListingModal(false)} />}
-      </AnimatePresence>
     </div>
   );
 }
