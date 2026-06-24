@@ -880,7 +880,7 @@ export default function Admin() {
                   </div>
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
-                  <button onClick={() => { setEditingBiz(biz); setShowBizForm(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  <button onClick={() => { setEditingBiz(biz); setShowBizForm(true); setTab('businesses'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                     className="p-2 rounded-xl bg-[#F8FAFC] hover:bg-[#EFF6FF] border border-[#0A192F]/10 transition-colors">
                     <Pencil className="w-4 h-4 text-[#2563EB]" />
                   </button>
@@ -930,7 +930,7 @@ export default function Admin() {
                     className="px-3 py-1.5 rounded-xl bg-[#00D4FF] text-[#0A192F] font-body text-xs font-bold hover:bg-white transition-colors">
                     Transfer
                   </button>
-                  <button onClick={() => { setEditingList(item); setShowListForm(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  <button onClick={() => { setEditingList(item); setShowListForm(true); setTab('listings'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                     className="p-2 rounded-xl bg-[#F8FAFC] hover:bg-[#EFF6FF] border border-[#0A192F]/10 transition-colors">
                     <Pencil className="w-4 h-4 text-[#2563EB]" />
                   </button>

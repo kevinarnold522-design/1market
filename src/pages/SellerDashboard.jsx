@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import ParticleBackground from '../components/ParticleBackground';
 import PostListingMenu from '../components/PostListingMenu';
 import AddListingModal from '../components/AddListingModal';
+import { useSearchParams } from 'react-router-dom';
 
 const LISTING_TYPES = ['product', 'shoes', 'cars', 'houses', 'electronics', 'clothing', 'furniture', 'food', 'services', 'other'];
 const SUBCATEGORIES_MAP = {
@@ -258,6 +259,7 @@ function ListingForm({ form, setF, onSave, onSaveDraft, onCancel, editing, isEle
 }
 
 export default function SellerDashboard() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [user, setUser] = useState(null);
   const [listings, setListings] = useState([]);
   const [drafts, setDrafts] = useState([]);
@@ -278,6 +280,15 @@ export default function SellerDashboard() {
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
   const setF = (field, val) => setForm(f => ({ ...f, [field]: val }));
+  const ownsListing = (item, me) => {
+    if (!item || !me) return false;
+    return item.created_by_id === me.id || item.owner_email === me.email || item.created_by === me.email;
+  };
+
+  const loadMyListings = async (me) => {
+    const all = await base44.entities.Listing.list('-created_date', 500);
+    return all.filter(item => ownsListing(item, me));
+  };
 
   useEffect(() => {
     const init = async () => {
@@ -287,7 +298,7 @@ export default function SellerDashboard() {
         setLocationSetup({ location: me.seller_location || 'Manila', area: me.seller_area || '' });
         setSellerPageForm({ bio: me.seller_bio || '', page_enabled: me.seller_page_enabled || false });
         const [items, draftItems, ords, favs] = await Promise.all([
-          base44.entities.Listing.filter({ created_by: me.email }),
+          loadMyListings(me),
           base44.entities.DraftListing.filter({ created_by: me.email }),
           base44.entities.Order.filter({ seller_email: me.email }),
           base44.entities.Favourite.filter({ user_email: me.email }),
@@ -311,8 +322,22 @@ export default function SellerDashboard() {
   const openEdit = (item) => {
     setForm({ ...EMPTY_FORM, ...item, price: String(item.price || ''), year: String(item.year || '') });
     setEditing(item);
+    setActiveNav('listings');
     setShowForm(true);
   };
+
+  useEffect(() => {
+    const editId = searchParams.get('edit');
+    const tab = searchParams.get('tab');
+    if (tab === 'listings') setActiveNav('listings');
+    if (!editId || !listings.length) return;
+    const target = listings.find(item => item.id === editId);
+    if (!target) return;
+    openEdit(target);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('edit');
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, listings]);
 
   const isElectronics = form.type === 'electronics';
   const subcatOptions = SUBCATEGORIES_MAP[form.type] || ['General'];
@@ -332,7 +357,7 @@ export default function SellerDashboard() {
       showToast('Listing published!');
     }
     setShowForm(false); setEditing(null);
-    const items = await base44.entities.Listing.filter({ created_by: user.email });
+    const items = await loadMyListings(user);
     setListings(items);
   };
 
@@ -350,7 +375,7 @@ export default function SellerDashboard() {
     if (!window.confirm('Delete this listing?')) return;
     await base44.entities.Listing.delete(id);
     showToast('Deleted.');
-    const items = await base44.entities.Listing.filter({ created_by: user.email });
+    const items = await loadMyListings(user);
     setListings(items);
   };
 
@@ -788,7 +813,7 @@ export default function SellerDashboard() {
             user={user}
             onClose={async () => {
               setShowAddModal(false);
-              const items = await base44.entities.Listing.filter({ created_by: user.email });
+              const items = await loadMyListings(user);
               setListings(items);
             }}
           />

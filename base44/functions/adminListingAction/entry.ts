@@ -1,6 +1,13 @@
 const SUPABASE_URL = 'https://ksnzljothfoaefifevch.supabase.co';
 const OWNER_EMAIL = 'kevinarnold522@gmail.com';
 
+const LISTING_ALLOWED_COLUMNS = new Set([
+  'title','main_category','type','approval_status','border_color','subcategory','extra_subcategories','business_id','price','original_price',
+  'price_label','quantity','flash_deal_active','flash_deal_end','location','area','meetup_location','seller_name','seller_email','phone',
+  'email_contact','apply_link','description','image_url','extra_images','video_url','preview_media','condition','brand','model','year',
+  'mileage','transmission','size','is_active','view_count','rating','rating_count','delivery_options','created_by_id','metadata'
+]);
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -75,6 +82,23 @@ function cleanPayload(input = {}) {
   return clean;
 }
 
+function cleanListingPayload(input = {}) {
+  const base = cleanPayload(input);
+  const clean = {};
+  const extras = {};
+  for (const [key, value] of Object.entries(base)) {
+    if (LISTING_ALLOWED_COLUMNS.has(key)) clean[key] = value;
+    else extras[key] = value;
+  }
+  if (Object.keys(extras).length) {
+    clean.metadata = {
+      ...(typeof clean.metadata === 'object' && clean.metadata ? clean.metadata : {}),
+      ...extras,
+    };
+  }
+  return clean;
+}
+
 async function cleanupRelatedListingRows(id) {
   const tables = ['listing_hearts', 'listing_comments', 'favourites', 'carts', 'reports'];
   await Promise.allSettled(tables.map(table => fetch(`${SUPABASE_URL}/rest/v1/${table}?listing_id=eq.${encodeURIComponent(id)}`, {
@@ -106,7 +130,7 @@ Deno.serve(async (req) => {
       const rows = await writeWithColumnRetry(`${SUPABASE_URL}/rest/v1/listings?select=*`, {
         method: 'POST',
         headers: serviceHeaders({ Prefer: 'return=representation' }),
-      }, cleanPayload(patch));
+      }, cleanListingPayload(patch));
       return Response.json({ success: true, listing: rows?.[0] || null }, { headers: corsHeaders });
     }
 
@@ -131,7 +155,7 @@ Deno.serve(async (req) => {
 
     if (action !== 'update') return Response.json({ error: 'Unsupported action' }, { status: 400, headers: corsHeaders });
 
-    const safePatch = { ...cleanPayload(patch), updated_at: new Date().toISOString() };
+    const safePatch = { ...cleanListingPayload(patch), updated_at: new Date().toISOString() };
     const rows = await writeWithColumnRetry(`${SUPABASE_URL}/rest/v1/listings?id=eq.${encodeURIComponent(id)}&select=*`, {
       method: 'PATCH',
       headers: serviceHeaders({ Prefer: 'return=representation' }),

@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { getAllLocalGhosts, getGhostDisplayName } from '@/lib/ghostAccounts';
 import SellerLeaderboardCard from './SellerLeaderboardCard';
 
-const sellerKey = (listing) => listing.created_by_id || listing.owner_user_id || listing.ghost_owner_id || listing.owner_ghost_id || listing.seller_email || listing.email_contact || listing.seller_name || '';
+const sellerKey = (listing) => listing.created_by_id || listing.ghost_owner_id || listing.owner_ghost_id || listing.seller_email || listing.email_contact || listing.seller_name || '';
 
 export default function TopSellersSection() {
   const [sellers, setSellers] = useState([]);

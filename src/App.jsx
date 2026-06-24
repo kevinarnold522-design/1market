@@ -87,6 +87,7 @@ const AuthenticatedApp = () => {
         <Route path="/cart" element={<AccountCart />} />
         <Route path="/orders" element={<AccountOrders />} />
         <Route path="/my-listings" element={<AccountListings />} />
+        <Route path="/seller-dashboard" element={<SellerDashboard />} />
         <Route path="/my-analytics" element={<AccountAnalytics />} />
         <Route path="/seller-orders" element={<AccountSellerOrders />} />
         <Route path="/drafts" element={<AccountDrafts />} />
