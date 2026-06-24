@@ -2,10 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 const fish = [
-  { label: 'realistic golden trevally', top: '70%', body: '#D6A83E', belly: '#F8E7B0', stripe: '#7C5A1A', fin: '#C7782A', duration: 23, delay: 0, dir: 1, size: 1 },
-  { label: 'realistic red snapper', top: '78%', body: '#B94A3A', belly: '#F5C7B8', stripe: '#7A241D', fin: '#D86E4D', duration: 27, delay: 1.2, dir: -1, size: 0.92 },
-  { label: 'realistic silver milkfish', top: '86%', body: '#C7D7DD', belly: '#F8FAFC', stripe: '#6C8792', fin: '#A7C0CA', duration: 30, delay: 2.4, dir: 1, size: 1.18 },
-  { label: 'realistic blue tang', top: '92%', body: '#2E6FAE', belly: '#8FC6E8', stripe: '#123A66', fin: '#F0C94B', duration: 25, delay: 3.4, dir: -1, size: 0.88 },
+  { label: 'golden trevally 1', top: '66%', body: '#D6A83E', belly: '#F8E7B0', stripe: '#7C5A1A', fin: '#C7782A', duration: 23, delay: 0, dir: 1, size: 0.95 },
+  { label: 'red snapper 1', top: '72%', body: '#B94A3A', belly: '#F5C7B8', stripe: '#7A241D', fin: '#D86E4D', duration: 27, delay: 0.7, dir: -1, size: 0.9 },
+  { label: 'silver milkfish 1', top: '78%', body: '#C7D7DD', belly: '#F8FAFC', stripe: '#6C8792', fin: '#A7C0CA', duration: 30, delay: 1.4, dir: 1, size: 1.12 },
+  { label: 'blue tang 1', top: '84%', body: '#2E6FAE', belly: '#8FC6E8', stripe: '#123A66', fin: '#F0C94B', duration: 25, delay: 2.1, dir: -1, size: 0.82 },
+  { label: 'clownfish 1', top: '90%', body: '#F97316', belly: '#FFE1B8', stripe: '#FFFFFF', fin: '#EF4444', duration: 21, delay: 2.8, dir: 1, size: 0.72 },
+  { label: 'parrotfish 1', top: '69%', body: '#18A999', belly: '#BFF7EA', stripe: '#146C94', fin: '#FACC15', duration: 29, delay: 3.5, dir: -1, size: 0.86 },
+  { label: 'yellowfin tuna 1', top: '76%', body: '#426B8A', belly: '#EDF7FA', stripe: '#1E3A5F', fin: '#FACC15', duration: 20, delay: 4.2, dir: 1, size: 0.78 },
+  { label: 'reef fish 1', top: '88%', body: '#7C3AED', belly: '#DDD6FE', stripe: '#FBBF24', fin: '#FB7185', duration: 24, delay: 4.9, dir: -1, size: 0.68 },
+  { label: 'golden trevally 2', top: '81%', body: '#D6A83E', belly: '#F8E7B0', stripe: '#7C5A1A', fin: '#C7782A', duration: 31, delay: 5.6, dir: 1, size: 0.64 },
+  { label: 'silver milkfish 2', top: '93%', body: '#C7D7DD', belly: '#F8FAFC', stripe: '#6C8792', fin: '#A7C0CA', duration: 26, delay: 6.3, dir: -1, size: 0.74 },
 ];
 
 function Cloud({ className, delay = 0 }) {
@@ -82,33 +88,41 @@ function BubbleColumn({ className, delay = 0 }) {
 }
 
 function FishBody({ item, showBubbles }) {
+  const id = item.label.replace(/\s+/g, '-');
+
   return (
-    <div className="relative" style={{ width: 116 * item.size, height: 56 * item.size }}>
-      <motion.div
-        className="absolute left-2 top-2 h-10 w-20 rounded-[55%_45%_48%_52%] shadow-2xl overflow-hidden"
-        style={{
-          background: `linear-gradient(180deg, ${item.body} 0%, ${item.body} 45%, ${item.belly} 100%)`,
-          boxShadow: `0 14px 28px ${item.body}66`,
-        }}
-        animate={{ rotate: [0, 1.5, -1.5, 0], scaleX: [1, 1.035, 1] }}
-        transition={{ duration: 1.7, repeat: Infinity, ease: 'easeInOut' }}>
-        <div className="absolute inset-0 opacity-45" style={{ background: 'repeating-radial-gradient(circle at 28% 50%, rgba(255,255,255,0.36) 0 2px, transparent 2px 9px)' }} />
-        <div className="absolute left-4 right-3 top-5 h-1 rounded-full opacity-55" style={{ background: item.stripe }} />
-        <motion.span className="absolute right-4 top-2.5 w-2.5 h-2.5 rounded-full bg-[#061326] border border-white/80 shadow-sm"
-          animate={{ scaleY: [1, 1, 0.15, 1] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} />
-        <span className="absolute right-3 top-3.5 w-1 h-1 rounded-full bg-white" />
-      </motion.div>
-      <motion.div className="absolute left-10 top-0 w-7 h-5 rounded-t-full origin-bottom"
-        style={{ background: `linear-gradient(180deg, ${item.fin}, transparent)` }}
-        animate={{ rotate: [-8, 8, -8] }} transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }} />
-      <motion.div className="absolute left-12 bottom-1 w-8 h-5 rounded-b-full origin-top"
-        style={{ background: `linear-gradient(0deg, ${item.fin}, transparent)` }}
-        animate={{ rotate: [8, -8, 8] }} transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }} />
-      <motion.div className="absolute left-[78px] top-3 w-0 h-0 origin-left"
-        style={{ borderTop: `${17 * item.size}px solid transparent`, borderBottom: `${17 * item.size}px solid transparent`, borderLeft: `${31 * item.size}px solid ${item.fin}` }}
-        animate={{ rotate: [-13, 13, -13], scaleX: [1, 0.82, 1] }} transition={{ duration: 0.8, repeat: Infinity, ease: 'easeInOut' }} />
-      {showBubbles && [0, 1, 2, 3].map(i => (
-        <span key={i} className="absolute rounded-full bg-white/60 animate-bubble-float" style={{ width: 6 + i * 3, height: 6 + i * 3, left: -8 - i * 6, bottom: 4 + i * 4, animationDelay: `${item.delay + i * 0.35}s`, animationDuration: `${6 + i}s`, '--bubble-drift': `${8 + i * 3}px` }} />
+    <div className="relative" style={{ width: 132 * item.size, height: 66 * item.size }}>
+      <motion.svg
+        viewBox="0 0 132 66"
+        className="absolute inset-0 drop-shadow-2xl"
+        aria-hidden="true"
+        animate={{ rotate: [0, 1.3, -1.3, 0], scaleX: [1, 1.025, 1] }}
+        transition={{ duration: 1.65, repeat: Infinity, ease: 'easeInOut' }}>
+        <defs>
+          <linearGradient id={`body-${id}`} x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stopColor={item.body} />
+            <stop offset="58%" stopColor={item.body} />
+            <stop offset="100%" stopColor={item.belly} />
+          </linearGradient>
+          <radialGradient id={`shine-${id}`} cx="70%" cy="28%" r="52%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.78)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+          </radialGradient>
+        </defs>
+        <motion.path d="M24 33 L5 14 C16 19 23 24 27 31 C23 39 16 47 5 52 Z" fill={item.fin} opacity="0.9" animate={{ rotate: [-4, 6, -4] }} style={{ transformOrigin: '24px 33px' }} transition={{ duration: 0.75, repeat: Infinity, ease: 'easeInOut' }} />
+        <path d="M24 33 C34 9 80 5 113 28 C121 34 121 38 113 42 C80 61 34 57 24 33 Z" fill={`url(#body-${id})`} />
+        <path d="M24 33 C44 42 79 45 112 38 C90 57 43 58 24 33 Z" fill={item.belly} opacity="0.55" />
+        <path d="M43 15 C57 5 79 7 91 18 C73 16 58 18 43 15 Z" fill={item.fin} opacity="0.82" />
+        <path d="M55 48 C67 58 86 56 98 45 C79 47 66 46 55 48 Z" fill={item.fin} opacity="0.72" />
+        <path d="M40 34 C58 29 82 29 105 34" stroke={item.stripe} strokeWidth="3" strokeLinecap="round" opacity="0.55" />
+        {[44, 55, 66, 77, 88].map((x, i) => <path key={x} d={`M${x} 20 C${x - 5} 28 ${x - 5} 38 ${x} 46`} stroke="rgba(255,255,255,0.3)" strokeWidth="1.4" fill="none" opacity={0.85 - i * 0.08} />)}
+        <ellipse cx="94" cy="25" rx="3.8" ry="4.2" fill="#071326" />
+        <circle cx="95.5" cy="23.5" r="1.1" fill="#ffffff" />
+        <path d="M111 35 C116 34 119 32 122 30" stroke="rgba(7,19,38,0.45)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+        <path d="M24 33 C34 9 80 5 113 28 C121 34 121 38 113 42 C80 61 34 57 24 33 Z" fill={`url(#shine-${id})`} opacity="0.45" />
+      </motion.svg>
+      {showBubbles && [0, 1, 2].map(i => (
+        <span key={i} className="absolute rounded-full bg-white/60 animate-bubble-float" style={{ width: 6 + i * 3, height: 6 + i * 3, left: -8 - i * 6, bottom: 8 + i * 5, animationDelay: `${item.delay + i * 0.35}s`, animationDuration: `${6 + i}s`, '--bubble-drift': `${8 + i * 3}px` }} />
       ))}
     </div>
   );

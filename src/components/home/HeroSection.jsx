@@ -22,8 +22,6 @@ export default function HeroSection({ heroImage }) {
     }).catch(() => {});
   }, []);
 
-  const canPost = !!user;
-
   return (
     <section className="relative min-h-[80vh] flex items-center overflow-hidden">
       {/* Transparent so the ocean background shows through */}
@@ -66,7 +64,7 @@ export default function HeroSection({ heroImage }) {
                 className="inline-flex items-center gap-2 px-3 py-1 rounded-full"
                 style={{ background: 'rgba(0,64,208,0.3)', border: '1px solid rgba(62,151,241,0.3)' }}>
                 <div className="w-1.5 h-1.5 rounded-full bg-[#3E97F1] animate-pulse" />
-                <span className="font-body text-[10px] font-medium tracking-widest uppercase text-[#FFD700]">1Marketph.com · Est. 2026</span>
+                <span className="font-body text-[10px] font-black tracking-widest uppercase"><span className="text-[#EF4444]">1Marketph.com</span> <span className="text-[#FFD700]">· Est.</span> <span className="text-white">2026</span></span>
               </motion.div>
 
               {/* Brand Logo */}
@@ -80,8 +78,8 @@ export default function HeroSection({ heroImage }) {
                   />
                 </a>
                 <h1 className="font-heading font-bold leading-[0.95] tracking-tight">
-                  <span className="block text-2xl sm:text-3xl lg:text-4xl" style={{ color: '#ffffff' }}>Welcome to</span>
-                  <span className="block text-2xl sm:text-3xl lg:text-4xl mt-0.5" style={{ background: 'linear-gradient(135deg,#EF4444,#2563EB,#FFFFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>1Market PH™</span>
+                  <span className="block text-2xl sm:text-3xl lg:text-4xl" style={{ color: '#EF4444', textShadow: '0 2px 10px rgba(239,68,68,0.25)' }}>Welcome to</span>
+                  <span className="block text-2xl sm:text-3xl lg:text-4xl mt-0.5" style={{ background: 'linear-gradient(135deg,#EF4444 0%,#FFD700 52%,#FFFFFF 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 2px 10px rgba(255,215,0,0.25))' }}>1Market PH™</span>
                 </h1>
               </div>
 
@@ -132,7 +130,7 @@ export default function HeroSection({ heroImage }) {
                   </>
                 ) : (
                   <div className="flex items-center gap-3 flex-wrap">
-                    {canPost && <PostListingMenu user={user} />}
+                    <PostListingMenu user={user} />
                     <motion.a
                       href="/explore"
                       className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-body font-bold text-sm text-[#0A192F] transition-all hover:scale-105"

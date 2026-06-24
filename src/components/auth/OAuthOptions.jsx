@@ -11,7 +11,7 @@ const providers = [
 
 function GmailLogo() {
   return (
-    <svg viewBox="0 0 48 48" className="w-8 h-8" aria-hidden="true">
+    <svg viewBox="0 0 48 48" className="w-20 h-20" aria-hidden="true">
       <path fill="#EA4335" d="M6 12.5 24 26 42 12.5v23A4.5 4.5 0 0 1 37.5 40h-27A4.5 4.5 0 0 1 6 35.5v-23Z" />
       <path fill="#FBBC04" d="M6 12.5 24 26v8L6 20.5v-8Z" />
       <path fill="#34A853" d="M42 12.5 24 26v8l18-13.5v-8Z" />
@@ -27,7 +27,7 @@ export default function OAuthOptions({
   redirectTo = '/',
   actionLabel = 'Continue with',
   className = 'space-y-3 mb-6',
-  buttonClassName = 'w-full h-11',
+  buttonClassName = 'w-full min-h-24 py-4',
   separatorLineClassName = 'w-full border-t border-border',
   separatorTextClassName = 'bg-card px-3 text-muted-foreground',
   showSeparator = true
@@ -54,7 +54,7 @@ export default function OAuthOptions({
             {loadingProvider === provider.key ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <span className={`${provider.key === 'google' ? 'w-14 h-14 text-[15px]' : 'w-10 h-10 text-[12px]'} rounded-full flex items-center justify-center font-bold ${provider.className}`}>
+              <span className={`${provider.key === 'google' ? 'w-24 h-24 text-[15px]' : 'w-10 h-10 text-[12px]'} rounded-full flex items-center justify-center font-bold ${provider.className}`}>
                 {provider.mark === 'gmail' ? <GmailLogo /> : provider.mark}
               </span>
             )}

@@ -338,7 +338,11 @@ export default function Admin() {
     const res = await base44.functions.invoke('supabasebase', { entity, action, id, patch, record: patch });
     return res.data?.data;
   };
-  const adminUserWrite = (action, id, patch = {}) => adminEntityWrite('User', action, id, patch);
+  const adminUserWrite = async (action, id, patch = {}) => {
+    if (action === 'update') return await base44.entities.User.update(id, patch);
+    if (action === 'delete') return await base44.entities.User.delete(id);
+    return await adminEntityWrite('User', action, id, patch);
+  };
   const getUserType = (u) => u.user_type || (u.is_seller ? 'seller' : 'customer');
 
   const approveListing = async (listingId) => {

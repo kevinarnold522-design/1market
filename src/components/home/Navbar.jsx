@@ -224,7 +224,7 @@ export default function Navbar() {
               <Link to="/community" className="flex items-center gap-1 px-2.5 py-1 rounded-xl font-body text-xs font-semibold text-purple-400 hover:bg-white/8 transition-all whitespace-nowrap ml-1">
                 <Users className="w-3 h-3" /> Community
               </Link>
-              {isAuthenticated && activeUser && (isAdmin || (isSeller && !isRider && !isCustomer)) && (
+              {isAuthenticated && activeUser && (
                 <div className="ml-auto flex-shrink-0">
                   <PostListingMenu user={activeUser} compact />
                 </div>
@@ -252,7 +252,7 @@ export default function Navbar() {
             {/* Spacer */}
             <div className="flex-shrink-0" />
 
-            {isAuthenticated && activeUser && (isAdmin || (isSeller && !isRider && !isCustomer)) && (
+            {isAuthenticated && activeUser && (
               <div className="hidden md:block">
                 <PostListingMenu user={activeUser} compact />
               </div>
@@ -339,7 +339,7 @@ export default function Navbar() {
                       <div className="text-left hidden sm:block">
                         <div className="flex items-center gap-1">
                           <p className="font-body text-xs text-white font-semibold leading-tight max-w-[80px] truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
-                          {(isAdmin || isVerified) && isSeller && !isGhostSession && <MetaVerifiedBadge size="xs" label="" />}
+                          {(isAdmin || isVerified) && !isGhostSession && <MetaVerifiedBadge size="xs" label="" />}
 
                         </div>
                         <p className={`font-body text-[9px] leading-tight ${isGhostSession ? 'text-purple-400' : 'text-[#00D4FF]'}`}>{adminLabel}</p>
@@ -389,7 +389,7 @@ export default function Navbar() {
                                   {adminLabel}
                                 </span>
                                 {isAdmin && !isGhostSession && <MetaVerifiedBadge size="sm" label="CEO" />}
-                                {isVerified && !isAdmin && isSeller && !isGhostSession && <MetaVerifiedBadge size="sm" label="Verified Partner" />}
+                                {isVerified && !isAdmin && !isGhostSession && <MetaVerifiedBadge size="sm" label="Verified Partner" />}
                               </div>
                               {editingName && !isGhostSession ? (
                                 <div className="flex items-center gap-1.5">
@@ -611,7 +611,7 @@ export default function Navbar() {
                             style={{ fontSize: '9px', padding: '2px 8px', borderRadius: '4px', background: isAdmin ? 'rgba(245,158,11,0.2)' : isBusiness ? 'rgba(37,99,235,0.2)' : isSeller ? 'rgba(16,185,129,0.15)' : 'rgba(37,99,235,0.15)', border: `1px solid ${isAdmin ? 'rgba(245,158,11,0.4)' : isBusiness ? 'rgba(37,99,235,0.4)' : isSeller ? 'rgba(16,185,129,0.35)' : 'rgba(37,99,235,0.3)'}`, color: isAdmin ? '#fbbf24' : isBusiness ? '#93c5fd' : isSeller ? '#6ee7b7' : '#60a5fa' }}>
                             {adminLabel}
                           </span>
-                          {isAdmin && !isGhostSession && <MetaVerifiedBadge size="xs" label="" />}
+                          {(isAdmin || isVerified) && !isGhostSession && <MetaVerifiedBadge size="xs" label="" />}
                         </div>
                         <p className="font-body text-xs font-bold text-white truncate">{activeUser.full_name || activeUser.channel_name || 'Account'}</p>
                         {/* Ghost: never show internal email */}
@@ -634,12 +634,11 @@ export default function Navbar() {
                       className="block text-[#00D4FF] font-body text-sm font-semibold py-2">
                       My Profile
                     </Link>
-                    {(isAdmin || (isSeller && !isRider && !isCustomer)) && (
-                      <>
-                        <div className="py-1">
-                          <PostListingMenu user={activeUser} compact={true} onSelect={() => setMenuOpen(false)} />
-                        </div>
-                        <Link to="/my-listings" onClick={() => setMenuOpen(false)}
+                    <>
+                      <div className="py-1">
+                        <PostListingMenu user={activeUser} compact={true} onSelect={() => setMenuOpen(false)} />
+                      </div>
+                      <Link to="/my-listings" onClick={() => setMenuOpen(false)}
                           className="block text-white/80 hover:text-[#00D4FF] font-body text-sm font-medium py-2 transition-colors">
                           My Listings
                         </Link>
@@ -647,8 +646,7 @@ export default function Navbar() {
                           className="block text-yellow-300 font-body text-sm font-medium py-2 transition-colors">
                           Statistics Dashboard
                         </Link>
-                      </>
-                    )}
+                    </>
                     {isSeller && !isVerified && !isAdmin && !user?.verification_submitted && (
                       <Link to="/profile?tab=sellerpage" onClick={() => setMenuOpen(false)}
                         className="block text-purple-300 font-body text-sm font-medium py-2 transition-colors">

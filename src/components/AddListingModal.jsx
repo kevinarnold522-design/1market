@@ -641,8 +641,8 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       <button key={t.value} onClick={() => { set('type', t.value); set('subcategory', ''); setStep(2); }}
                         className="w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all text-left"
                         style={{
-                          background: form.type === t.value ? 'rgba(0,212,255,0.12)' : 'rgba(255,255,255,0.04)',
-                          borderColor: form.type === t.value ? '#00D4FF' : 'rgba(255,255,255,0.1)',
+                          background: form.type === t.value ? 'rgba(255,215,0,0.18)' : 'rgba(255,255,255,0.04)',
+                          borderColor: form.type === t.value ? '#FFD700' : 'rgba(255,255,255,0.1)',
                         }}>
                         <span className="font-body text-sm text-white">{t.label}</span>
                         {form.type === t.value && <span className="text-[#00D4FF] text-xs">done</span>}
@@ -742,9 +742,9 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                           <button key={role} type="button" onClick={() => set('posting_as', role)}
                             className="px-3 py-1.5 rounded-full border font-body text-[11px] transition-all"
                             style={{
-                              borderColor: form.posting_as === role ? '#00D4FF' : 'rgba(255,255,255,0.12)',
-                              background: form.posting_as === role ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.04)',
-                              color: form.posting_as === role ? '#00D4FF' : 'rgba(255,255,255,0.5)',
+                              borderColor: form.posting_as === role ? '#FFD700' : 'rgba(255,255,255,0.12)',
+                              background: form.posting_as === role ? 'rgba(255,215,0,0.2)' : 'rgba(255,255,255,0.04)',
+                              color: form.posting_as === role ? '#FFD700' : 'rgba(255,255,255,0.5)',
                             }}>{role}</button>
                         ))}
                       </div>
@@ -903,7 +903,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                                 className="py-2 px-3 rounded-xl border font-body text-xs text-left transition-all"
                                 style={{
                                   borderColor: form.property_sale_type === t ? '#00D4FF' : 'rgba(255,255,255,0.1)',
-                                  background: form.property_sale_type === t ? 'rgba(0,212,255,0.12)' : 'rgba(255,255,255,0.04)',
+                                  background: form.property_sale_type === t ? 'rgba(255,215,0,0.18)' : 'rgba(255,255,255,0.04)',
                                   color: form.property_sale_type === t ? '#00D4FF' : 'rgba(255,255,255,0.5)',
                                 }}>
                                 {t}
@@ -1215,7 +1215,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                             const curr = form.alternate_site_options || [];
                             set('alternate_site_options', active ? curr.filter(s => s !== site) : [...curr, site]);
                           }} className="px-2.5 py-2 rounded-xl border font-body text-[11px] text-left transition-all"
-                            style={{ borderColor: active ? '#00D4FF' : 'rgba(255,255,255,0.1)', background: active ? 'rgba(0,212,255,0.12)' : 'rgba(255,255,255,0.03)', color: active ? '#00D4FF' : 'rgba(255,255,255,0.45)' }}>
+                            style={{ borderColor: active ? '#00D4FF' : 'rgba(255,255,255,0.1)', background: active ? 'rgba(255,215,0,0.18)' : 'rgba(255,255,255,0.03)', color: active ? '#00D4FF' : 'rgba(255,255,255,0.45)' }}>
                             {site}
                           </button>;
                         })}
@@ -1239,7 +1239,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                               className="px-2.5 py-1 rounded-full border font-body text-[11px] transition-all"
                               style={{
                                 borderColor: form.price_rate_type === rt ? '#00D4FF' : 'rgba(255,255,255,0.12)',
-                                background: form.price_rate_type === rt ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.04)',
+                                background: form.price_rate_type === rt ? 'rgba(255,215,0,0.2)' : 'rgba(255,255,255,0.04)',
                                 color: form.price_rate_type === rt ? '#00D4FF' : 'rgba(255,255,255,0.5)',
                               }}>{rt}</button>
                           ))}

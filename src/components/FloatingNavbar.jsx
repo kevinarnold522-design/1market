@@ -156,7 +156,10 @@ return (
                           <span className="inline-flex items-center px-2 py-0.5 rounded-md border border-[#00D4FF]/25 bg-[#00D4FF]/10 font-body text-[8px] font-bold uppercase tracking-wider text-[#00D4FF] mb-0.5">
                             {accountTypeLabel}
                           </span>
-                          <p className="font-body text-xs font-bold text-white truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
+                          <div className="flex items-center gap-1">
+                            <p className="font-body text-xs font-bold text-white truncate">{activeUser.full_name?.split(' ')[0] || 'Account'}</p>
+                            {(isAdmin || isVerified) && !isGhostSession && <MetaVerifiedBadge size="xs" label="" />}
+                          </div>
                         </div>
                       </div>
                     </Link>
