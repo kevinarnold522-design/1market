@@ -78,6 +78,18 @@ async function invokeEntityWrite(payload = {}) {
   return data;
 }
 
+function isRecoverableEntityWriteError(error) {
+  const message = String(error?.message || '').toLowerCase();
+  return (
+    message.includes('failed to fetch') ||
+    message.includes('networkerror') ||
+    message.includes('network error') ||
+    message.includes('load failed') ||
+    message.includes('404') ||
+    message.includes('not found')
+  );
+}
+
 function sanitizeRecord(entity, input = {}) {
   const allowed = writableColumns[entity];
   if (!allowed) return input || {};
@@ -147,8 +159,12 @@ function makeEntity(name) {
     },
     async update(id, patch) {
       if (name === 'Listing' || name === 'User') {
-        const result = await invokeEntityWrite({ entity: name, action: 'update', id, patch });
-        return normalizeRecord(result.data);
+        try {
+          const result = await invokeEntityWrite({ entity: name, action: 'update', id, patch });
+          return normalizeRecord(result.data);
+        } catch (error) {
+          if (!isRecoverableEntityWriteError(error)) throw error;
+        }
       }
       const db = requireSupabase();
       const { data, error } = await db.from(table).update(sanitizeRecord(name, patch)).eq('id', id).select('*').single();
@@ -157,8 +173,12 @@ function makeEntity(name) {
     },
     async delete(id) {
       if (name === 'Listing' || name === 'User') {
-        await invokeEntityWrite({ entity: name, action: 'delete', id });
-        return true;
+        try {
+          await invokeEntityWrite({ entity: name, action: 'delete', id });
+          return true;
+        } catch (error) {
+          if (!isRecoverableEntityWriteError(error)) throw error;
+        }
       }
       const db = requireSupabase();
       const { error } = await db.from(table).delete().eq('id', id);
