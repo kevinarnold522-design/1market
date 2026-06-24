@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MascotDog from '../components/MascotDog';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import MetaVerifiedBadge from '../components/MetaVerifiedBadge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Star, Heart, MessageSquare, Phone, Share2, MapPin, Flag, Facebook, Instagram, Youtube, CheckCircle, BedDouble, Calendar, Clock, ShoppingCart, Play, X, ExternalLink, Send, Briefcase, Utensils, Home, Car, Wrench, Plane, Tag, Package, Link2, Store, MessageCircle, Smartphone, Hourglass, Ban } from 'lucide-react';
@@ -16,6 +16,7 @@ import SimilarListings from '../components/SimilarListings';
 import ListingContactLinks from '../components/ListingContactLinks';
 import AdminListingQuickEdit from '../components/listing/AdminListingQuickEdit';
 import { recordView } from '../components/home/RecentlyViewed';
+import { requireSupabase } from '@/lib/supabaseClient';
 
 function HotelRoomSelector({ listing, user }) {
   const [selectedRoom, setSelectedRoom] = useState(null);
@@ -194,8 +195,40 @@ async function addSellerPoints(sellerId, delta) {
   await base44.entities.User.update(seller.id, { seller_points: Math.max(0, Number(seller.seller_points || 0) + delta) }).catch(() => {});
 }
 
+async function incrementListingViewCount(listingId, fallbackViewCount = 0) {
+  if (!listingId) return null;
+
+  // Preferred path: atomic increment in DB to avoid lost updates under concurrent traffic.
+  try {
+    const db = requireSupabase();
+    const { data, error } = await db.rpc('increment_listing_view', { p_listing_id: listingId });
+    if (!error && typeof data === 'number') return data;
+  } catch {}
+
+  // Try a few times so transient fetch/update failures do not drop page-view tracking.
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      const latest = await base44.entities.Listing.get(listingId).catch(() => null);
+      const currentCount = Number(latest?.view_count ?? fallbackViewCount ?? 0) || 0;
+      const nextCount = currentCount + 1;
+      const updated = await base44.entities.Listing.update(listingId, { view_count: nextCount });
+      return Number(updated?.view_count ?? nextCount);
+    } catch {}
+  }
+
+  // Final fallback: try one direct write using the best known count.
+  try {
+    const nextCount = (Number(fallbackViewCount || 0) || 0) + 1;
+    await base44.entities.Listing.update(listingId, { view_count: nextCount });
+    return nextCount;
+  } catch {
+    return null;
+  }
+}
+
 export default function ListingDetail() {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -232,20 +265,28 @@ export default function ListingDetail() {
         setListing(found);
 
         if (found) {
+          // Track recently viewed immediately on access.
+          recordView(found);
+
+          // Increment view count per landing-page access, independent from comments/hearts loading.
+          const bumpedViews = await incrementListingViewCount(found.id, found.view_count || 0);
+          if (typeof bumpedViews === 'number') {
+            setListing(prev => prev ? { ...prev, view_count: bumpedViews } : prev);
+            addSellerPoints(found.created_by_id, 1);
+          }
+
           // Load comments
           const cmts = await base44.entities.ListingComment.filter({ listing_id: id });
           setComments(cmts);
           // Load hearts
           const hts = await base44.entities.ListingHeart.filter({ listing_id: id });
           setHearts(hts.length);
-          // Track recently viewed
-          recordView(found);
-          // Increment view count and live points
-          const nextViews = (found.view_count || 0) + 1;
+
+          // Recompute points using latest known view count.
+          const nextViews = Number(bumpedViews ?? found.view_count ?? 0) || 0;
           const nextPoints = nextViews + (hts.length * 2) + (cmts.length * 3);
           setListing({ ...found, view_count: nextViews, heart_count: hts.length, comment_count: cmts.length, point_count: nextPoints });
-          base44.entities.Listing.update(found.id, { view_count: nextViews, heart_count: hts.length, comment_count: cmts.length, point_count: nextPoints }).catch(() => {});
-          addSellerPoints(found.created_by_id, 1);
+          base44.entities.Listing.update(found.id, { heart_count: hts.length, comment_count: cmts.length, point_count: nextPoints }).catch(() => {});
           // Load seller's user profile for their social links
           const sellerId = found.created_by_id;
           if (sellerId) {
@@ -359,6 +400,8 @@ export default function ListingDetail() {
         ? { opacity: [0.72, 1, 0.72] }
         : {};
   const isAdminViewer = user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
+  const isOwnerViewer = !!(user && listing && (user.id === listing.created_by_id || user.email === listing.owner_email || user.email === listing.created_by));
+  const shouldAutoOpenEdit = searchParams.get('edit') === '1';
 
   const handleChatSeller = async (message) => {
     if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
@@ -396,7 +439,15 @@ export default function ListingDetail() {
             {listing.subcategory ? ` › ${listing.subcategory}` : ''}
           </button>
           <div className="flex items-center gap-2 flex-wrap justify-end">
-          {isAdminViewer && <AdminListingQuickEdit listing={listing} onSaved={setListing} />}
+          {(isAdminViewer || isOwnerViewer) && (
+            <AdminListingQuickEdit
+              listing={listing}
+              onSaved={setListing}
+              isAdmin={isAdminViewer}
+              canDelete={isAdminViewer}
+              autoOpen={shouldAutoOpenEdit}
+            />
+          )}
           {/* Approval Status Badge */}
           {listing.approval_status === 'pending' && (
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-body font-bold text-xs" style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', color: '#fbbf24' }}>

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Package, Pencil, Trash2, Eye, Clock, CheckCircle2, Crown, Save, X } from 'lucide-react';
+import { ArrowLeft, Package, Pencil, Trash2, Eye, Clock, CheckCircle2, Crown } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { getGhostSession, getGhostDisplayName, isGhostOwnedRecord } from '@/lib/ghostAccounts';
 
@@ -16,17 +16,6 @@ export default function AccountListings() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
-  const [editingItem, setEditingItem] = useState(null);
-  const [editForm, setEditForm] = useState({
-    title: '',
-    price: '',
-    price_label: '',
-    location: '',
-    area: '',
-    description: '',
-    is_active: true,
-  });
-  const [savingEdit, setSavingEdit] = useState(false);
 
   useEffect(() => {
     const refreshGhost = () => setGhost(getGhostSession());
@@ -73,41 +62,6 @@ export default function AccountListings() {
     });
     setListings(owned);
     setLoading(false);
-  };
-
-  const openEdit = (item) => {
-    if (ghost && !isGhostOwnedRecord(item, ghost)) return;
-    setEditingItem(item);
-    setEditForm({
-      title: item.title || '',
-      price: item.price ?? '',
-      price_label: item.price_label || '',
-      location: item.location || '',
-      area: item.area || '',
-      description: item.description || '',
-      is_active: item.is_active !== false,
-    });
-  };
-
-  const saveEdit = async () => {
-    if (!editingItem?.id || !editForm.title.trim()) return;
-    setSavingEdit(true);
-    const patch = {
-      title: editForm.title.trim(),
-      price: Number(editForm.price) || 0,
-      price_label: editForm.price_label,
-      location: editForm.location,
-      area: editForm.area,
-      description: editForm.description,
-      is_active: !!editForm.is_active,
-    };
-    try {
-      const updated = await base44.entities.Listing.update(editingItem.id, patch);
-      setListings(items => items.map(item => item.id === editingItem.id ? { ...item, ...patch, ...(updated || {}) } : item));
-      setEditingItem(null);
-    } finally {
-      setSavingEdit(false);
-    }
   };
 
   const filtered = useMemo(() => {
@@ -182,40 +136,11 @@ export default function AccountListings() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Link to={`/listing/${item.id}`} className="p-2 rounded-xl bg-white/8 hover:bg-white/15 border border-white/10"><Eye className="w-4 h-4 text-white/70" /></Link>
-                  <button onClick={() => openEdit(item)} className="p-2 rounded-xl bg-amber-300/10 hover:bg-amber-300/20 border border-amber-300/20"><Pencil className="w-4 h-4 text-amber-300" /></button>
+                  <Link to={`/listing/${item.id}?edit=1`} className="p-2 rounded-xl bg-amber-300/10 hover:bg-amber-300/20 border border-amber-300/20"><Pencil className="w-4 h-4 text-amber-300" /></Link>
                   <button onClick={() => deleteListing(item)} className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20"><Trash2 className="w-4 h-4 text-red-400" /></button>
                 </div>
               </div>
             ))}
-          </div>
-        )}
-
-        {editingItem && (
-          <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-[#070F1A]/85 backdrop-blur-sm" onClick={() => setEditingItem(null)}>
-            <div className="w-full max-w-2xl rounded-2xl border border-white/20 bg-[#0D1F3C] p-5" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-heading font-bold text-white text-lg">Edit Listing</h3>
-                <button onClick={() => setEditingItem(null)} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><X className="w-4 h-4 text-white/70" /></button>
-              </div>
-              <div className="grid sm:grid-cols-2 gap-3 mb-3">
-                <input value={editForm.title} onChange={(e) => setEditForm(f => ({ ...f, title: e.target.value }))} placeholder="Title" className="sm:col-span-2 border border-white/15 bg-white/5 rounded-xl px-3 py-2 text-white text-sm" />
-                <input value={editForm.price} onChange={(e) => setEditForm(f => ({ ...f, price: e.target.value }))} placeholder="Price" type="number" className="border border-white/15 bg-white/5 rounded-xl px-3 py-2 text-white text-sm" />
-                <input value={editForm.price_label} onChange={(e) => setEditForm(f => ({ ...f, price_label: e.target.value }))} placeholder="Price label" className="border border-white/15 bg-white/5 rounded-xl px-3 py-2 text-white text-sm" />
-                <input value={editForm.location} onChange={(e) => setEditForm(f => ({ ...f, location: e.target.value }))} placeholder="Location" className="border border-white/15 bg-white/5 rounded-xl px-3 py-2 text-white text-sm" />
-                <input value={editForm.area} onChange={(e) => setEditForm(f => ({ ...f, area: e.target.value }))} placeholder="Area" className="border border-white/15 bg-white/5 rounded-xl px-3 py-2 text-white text-sm" />
-              </div>
-              <textarea value={editForm.description} onChange={(e) => setEditForm(f => ({ ...f, description: e.target.value }))} placeholder="Description" rows={4} className="w-full border border-white/15 bg-white/5 rounded-xl px-3 py-2 text-white text-sm resize-none mb-3" />
-              <label className="inline-flex items-center gap-2 text-white/70 text-xs mb-4">
-                <input type="checkbox" checked={editForm.is_active} onChange={(e) => setEditForm(f => ({ ...f, is_active: e.target.checked }))} className="accent-[#00D4FF]" />
-                Listing is active
-              </label>
-              <div className="flex gap-2 justify-end">
-                <button onClick={() => setEditingItem(null)} className="px-4 py-2 rounded-xl border border-white/20 text-white/70 text-sm">Cancel</button>
-                <button onClick={saveEdit} disabled={savingEdit || !editForm.title.trim()} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00D4FF] text-[#0A192F] font-bold text-sm disabled:opacity-50">
-                  <Save className="w-4 h-4" /> {savingEdit ? 'Saving...' : 'Save Changes'}
-                </button>
-              </div>
-            </div>
           </div>
         )}
       </div>

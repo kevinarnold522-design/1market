@@ -349,12 +349,17 @@ export default function SellerDashboard() {
     const mainImage = form.image_url || imgs[0] || '';
     const extras = mainImage && imgs[0] === mainImage ? imgs.slice(1) : imgs;
     const data = { ...form, price: Number(form.price) || 0, image_url: mainImage, extra_images: extras, seller_name: user?.full_name || form.seller_name };
-    if (editing) {
-      await base44.entities.Listing.update(editing.id, data);
-      showToast('Listing updated!');
-    } else {
-      await base44.entities.Listing.create(data);
-      showToast('Listing published!');
+    try {
+      if (editing) {
+        await base44.entities.Listing.update(editing.id, data);
+        showToast('Listing updated!');
+      } else {
+        await base44.entities.Listing.create(data);
+        showToast('Listing published!');
+      }
+    } catch (error) {
+      showToast(error?.message || 'Save failed. Please try again.');
+      return;
     }
     setShowForm(false); setEditing(null);
     const items = await loadMyListings(user);
@@ -604,9 +609,9 @@ export default function SellerDashboard() {
                       <p className="font-body text-[9px] text-white/35 mt-0.5">{item.location}{item.area ? ` · ${item.area}` : ''} · {item.price_label || `₱${Number(item.price).toLocaleString()}`}</p>
                     </div>
                     <div className="flex gap-1.5">
-                      <button onClick={() => openEdit(item)} className="p-1.5 rounded-xl bg-white/5 hover:bg-[#2563EB]/20 border border-white/10 transition-colors">
+                      <Link to={`/listing/${item.id}?edit=1`} className="p-1.5 rounded-xl bg-white/5 hover:bg-[#2563EB]/20 border border-white/10 transition-colors">
                         <Pencil className="w-3.5 h-3.5 text-[#00D4FF]" />
-                      </button>
+                      </Link>
                       <button onClick={() => remove(item.id)} className="p-1.5 rounded-xl bg-white/5 hover:bg-red-500/20 border border-white/10 transition-colors">
                         <Trash2 className="w-3.5 h-3.5 text-red-400" />
                       </button>

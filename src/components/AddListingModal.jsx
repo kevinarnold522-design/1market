@@ -365,7 +365,8 @@ function sanitizeText(value) {
 function sanitizeLink(value) {
   const link = String(value || '').trim();
   if (!link) return '';
-  if (/^javascript:/i.test(link) || /^data:text\/html/i.test(link)) return '';
+  if (/^javascript:/i.test(link) || /^data:/i.test(link) || /^vbscript:/i.test(link) || /^file:/i.test(link)) return '';
+  if (BLOCKED_MARKUP_PATTERN.test(link)) return '';
   if (BLOCKED_AD_LINK_PATTERN.test(link)) return '';
   return link;
 }
@@ -716,6 +717,14 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   const totalImages = (form.image_url ? 1 : 0) + (form.extra_images?.length || 0);
   const photosRequired = false;
   const canSubmit = form.title && form.description && dpaAccepted && (isCar ? legalAccepted : true);
+  const triggerPublish = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (!canSubmit || submitting) return;
+    handleSubmit();
+  };
   const prePublishRecommendations = [
     !form.main_category && 'Choose the correct main category.',
     !form.subcategory && 'Add a specific subcategory so buyers can find it.',
@@ -1625,9 +1634,9 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                   )}
 
                   {/* SUBMIT */}
-                  <button onClick={handleSubmit} disabled={!canSubmit || submitting}
+                  <button type="button" onClick={triggerPublish} onTouchEnd={triggerPublish} disabled={!canSubmit || submitting}
                     className="w-full py-3 rounded-xl font-body font-bold text-sm text-white transition-all disabled:opacity-40 hover:scale-[1.01] flex items-center justify-center gap-2"
-                    style={{ background: 'linear-gradient(135deg,#7c3aed,#a855f7)', boxShadow: '0 0 20px rgba(168,85,247,0.45)' }}>
+                    style={{ background: 'linear-gradient(135deg,#7c3aed,#a855f7)', boxShadow: '0 0 20px rgba(168,85,247,0.45)', touchAction: 'manipulation' }}>
                     {submitting
                       ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Publishing...</>
                       : 'Publish'}

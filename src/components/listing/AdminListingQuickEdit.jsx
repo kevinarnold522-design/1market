@@ -8,9 +8,10 @@ const TRANSITIONS = ['fade', 'slide', 'zoom', 'flip', 'bounce', 'glow'];
 const GLOW_EFFECTS = ['soft', 'strong', 'neon', 'none'];
 const ANIMATIONS = ['none', 'float', 'pulse', 'shimmer'];
 
-export default function AdminListingQuickEdit({ listing, onSaved }) {
-  const [open, setOpen] = useState(false);
+export default function AdminListingQuickEdit({ listing, onSaved, isAdmin = false, canDelete = false, autoOpen = false }) {
+  const [open, setOpen] = useState(!!autoOpen);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [form, setForm] = useState({
     title: listing?.title || '',
     price: listing?.price || '',
@@ -34,32 +35,57 @@ export default function AdminListingQuickEdit({ listing, onSaved }) {
   const set = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
 
   const save = async () => {
+    if (saving) return;
     setSaving(true);
+    setSaveError('');
     const patch = { ...form, price: Number(form.price) || 0, slideshow_animation: form.transition_effect };
-    const res = await base44.functions.invoke('supabasebase', { entity: 'Listing', action: 'update', id: listing.id, patch });
-    const updated = res.data?.data || { ...listing, ...patch };
-    onSaved?.(updated);
-    setSaving(false);
-    setOpen(false);
+    try {
+      let updated;
+      if (isAdmin) {
+        const res = await base44.functions.invoke('supabasebase', { entity: 'Listing', action: 'update', id: listing.id, patch });
+        updated = res.data?.data || { ...listing, ...patch };
+      } else {
+        updated = await base44.entities.Listing.update(listing.id, patch);
+      }
+      onSaved?.(updated);
+      setOpen(false);
+    } catch (error) {
+      setSaveError(error?.message || 'Saving failed. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const triggerSave = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    save();
   };
 
   const deleteListing = async () => {
+    if (!canDelete) return;
     if (!window.confirm('Permanently delete this listing from the whole website?')) return;
     setSaving(true);
-    await base44.functions.invoke('supabasebase', { entity: 'Listing', action: 'delete', id: listing.id });
+    if (isAdmin) {
+      await base44.functions.invoke('supabasebase', { entity: 'Listing', action: 'delete', id: listing.id });
+    } else {
+      await base44.entities.Listing.delete(listing.id);
+    }
     window.location.href = '/';
   };
 
   return (
     <>
       <button onClick={() => setOpen(true)} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full font-body font-bold text-xs text-[#0A192F] bg-[#FFD700] hover:bg-white transition-colors shadow-lg">
-        <Pencil className="w-3.5 h-3.5" /> Admin Edit
+        <Pencil className="w-3.5 h-3.5" /> {isAdmin ? 'Admin Edit' : 'Edit Listing'}
       </button>
       {open && (
-        <div className="fixed inset-0 z-[700] flex items-end sm:items-center justify-center bg-[#070F1A]/85 backdrop-blur-sm sm:p-4" onClick={() => setOpen(false)}>
-          <div className="w-full sm:max-w-xl max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-2xl p-5 space-y-3" style={{ background: '#0D1F3C', border: '1px solid rgba(255,215,0,0.35)' }} onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[2200] flex items-center justify-center p-3 bg-[#070F1A]/88 backdrop-blur-sm" onClick={() => setOpen(false)}>
+          <div className="w-full max-w-2xl max-h-[95dvh] overflow-y-auto rounded-2xl p-5 space-y-3" style={{ background: '#0D1F3C', border: '1px solid rgba(255,215,0,0.35)' }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-2">
-              <h3 className="font-heading font-bold text-white">Admin Edit Listing</h3>
+              <h3 className="font-heading font-bold text-white">{isAdmin ? 'Admin Edit Listing' : 'Edit Your Listing'}</h3>
               <button onClick={() => setOpen(false)} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><X className="w-4 h-4 text-white" /></button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -103,13 +129,16 @@ export default function AdminListingQuickEdit({ listing, onSaved }) {
             </div>
             <textarea value={form.description} onChange={e => set('description', e.target.value)} placeholder="Description" rows={5} className="w-full bg-white/8 border border-white/15 rounded-xl px-3 py-2 text-white font-body text-sm resize-none" />
             <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
-              <button onClick={save} disabled={saving || !form.title} className="py-3 rounded-xl bg-[#FFD700] text-[#0A192F] font-body font-bold disabled:opacity-50 flex items-center justify-center gap-2">
-                <Save className="w-4 h-4" /> {saving ? 'Saving...' : 'Save Admin Changes'}
+              <button type="button" onClick={triggerSave} onTouchEnd={triggerSave} disabled={saving || !form.title} className="py-3 rounded-xl bg-[#FFD700] text-[#0A192F] font-body font-bold disabled:opacity-50 flex items-center justify-center gap-2" style={{ touchAction: 'manipulation' }}>
+                <Save className="w-4 h-4" /> {saving ? 'Saving...' : 'Save Changes'}
               </button>
-              <button onClick={deleteListing} disabled={saving} className="px-4 py-3 rounded-xl bg-red-500/15 text-red-300 border border-red-500/35 font-body font-bold disabled:opacity-50 flex items-center justify-center gap-2">
-                <Trash2 className="w-4 h-4" /> Delete
-              </button>
+              {canDelete && (
+                <button onClick={deleteListing} disabled={saving} className="px-4 py-3 rounded-xl bg-red-500/15 text-red-300 border border-red-500/35 font-body font-bold disabled:opacity-50 flex items-center justify-center gap-2">
+                  <Trash2 className="w-4 h-4" /> Delete
+                </button>
+              )}
             </div>
+            {saveError && <p className="font-body text-xs text-red-300 text-center">{saveError}</p>}
           </div>
         </div>
       )}

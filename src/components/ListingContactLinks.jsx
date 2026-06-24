@@ -1,20 +1,34 @@
 import React, { useState } from 'react';
 import { Phone, Mail, Facebook, Instagram, MessageCircle, Globe } from 'lucide-react';
 
+const BLOCKED_REDIRECT_PATTERN = /<\s*script\b|<\s*meta\b|<\s*iframe\b|javascript:|data:|vbscript:|adsbygoogle|googlesyndication|doubleclick|adservice|adsterra|propellerads|popads|taboola|outbrain|window\.location|location\.href|http-equiv\s*=\s*["']?refresh/i;
+
+const toSafeHttpUrl = (value, prefix = '') => {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  if (BLOCKED_REDIRECT_PATTERN.test(raw)) return '';
+  const normalized = /^https?:\/\//i.test(raw) ? raw : `${prefix}${raw.replace(/^@/, '')}`;
+  try {
+    const parsed = new URL(normalized);
+    if (!['http:', 'https:'].includes(parsed.protocol)) return '';
+    if (BLOCKED_REDIRECT_PATTERN.test(parsed.href)) return '';
+    return parsed.href;
+  } catch {
+    return '';
+  }
+};
+
 const cleanUrl = (value, prefix) => {
-  if (!value) return '';
-  const trimmed = String(value).trim();
-  if (!trimmed) return '';
-  if (/^https?:\/\//i.test(trimmed)) return trimmed;
-  return `${prefix}${trimmed.replace(/^@/, '')}`;
+  return toSafeHttpUrl(value, prefix);
 };
 
 const whatsappUrl = (value, phone) => {
   const raw = String(value || phone || '').trim();
   if (!raw) return '';
-  if (/^https?:\/\//i.test(raw)) return raw;
+  if (/^https?:\/\//i.test(raw)) return toSafeHttpUrl(raw);
+  if (BLOCKED_REDIRECT_PATTERN.test(raw)) return '';
   const digits = raw.replace(/[^0-9]/g, '');
-  return digits ? `https://wa.me/${digits}` : '';
+  return digits ? toSafeHttpUrl(`https://wa.me/${digits}`) : '';
 };
 
 function ContactButton({ available, href, onClick, icon: Icon, label, activeLabel, color = '#00D4FF' }) {

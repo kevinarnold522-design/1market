@@ -1,0 +1,20 @@
+create or replace function public.increment_listing_view(p_listing_id uuid)
+returns integer
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  next_view_count integer;
+begin
+  update public.listings
+  set view_count = coalesce(view_count, 0) + 1,
+      updated_at = now()
+  where id = p_listing_id
+  returning view_count into next_view_count;
+
+  return coalesce(next_view_count, 0);
+end;
+$$;
+
+grant execute on function public.increment_listing_view(uuid) to anon, authenticated, service_role;
