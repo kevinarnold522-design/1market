@@ -13,8 +13,8 @@ function serviceHeaders(extra = {}) {
   return { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', ...extra };
 }
 
-async function getRequestUser(req) {
-  const token = (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
+async function getRequestUser(req, body = {}) {
+  const token = body.supabase_access_token || (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
   if (!token) return null;
 
   const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
@@ -69,11 +69,12 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   try {
-    const adminUser = await getRequestUser(req);
+    const body = await req.json();
+    const adminUser = await getRequestUser(req, body);
     const isAdmin = adminUser?.role === 'admin' || adminUser?.email?.toLowerCase() === OWNER_EMAIL;
     if (!isAdmin) return Response.json({ error: 'Admin access required' }, { status: 403, headers: corsHeaders });
 
-    const { full_name, channel_name, user_type, business_name, location, bio, seller_area, username: requestedUsername, phone } = await req.json();
+    const { full_name, channel_name, user_type, business_name, location, bio, seller_area, username: requestedUsername, phone } = body;
     if (!full_name || !full_name.trim()) return Response.json({ error: 'Display name is required' }, { status: 400, headers: corsHeaders });
 
     const timestamp = Date.now();

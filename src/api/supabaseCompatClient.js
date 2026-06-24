@@ -1,6 +1,8 @@
+import { createClient } from '@base44/sdk';
 import { requireSupabase } from '@/lib/supabaseClient';
 import { uploadFileToSupabase, SUPABASE_IMAGE_BUCKET } from '@/lib/supabaseStorage';
 import { localListingAI } from '@/lib/localListingAI';
+import { appParams } from '@/lib/app-params';
 
 const entityNames = [
   'User','Listing','Business','Order','Cart','Favourite','Review','MenuItem','Group','GroupPost','GroupComment','GroupMember','GroupPostLike','CommunityPost','Notification','VerificationApplication','Follow','Report','ListingHeart','ListingComment','Reservation','ChatMessage','DraftListing','SavedListingTemplate','UserReward','UserTasks'
@@ -37,6 +39,7 @@ const tableMap = {
 
 const tableName = (name) => tableMap[name] || name.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_uHaBIgBzuhgPuUe0cTK0Qw_PDktWO2c';
+const nativeBase44 = appParams.appId ? createClient({ appId: appParams.appId }) : null;
 const normalizeRecord = (record) => record && typeof record === 'object'
   ? { ...(record.metadata && typeof record.metadata === 'object' ? record.metadata : {}), ...record }
   : record;
@@ -324,6 +327,14 @@ export const supabaseCompat = {
     async invoke(name, payload = {}) {
       const db = requireSupabase();
       const { data: sessionData } = await db.auth.getSession();
+      const payloadWithToken = { ...payload, supabase_access_token: sessionData?.session?.access_token || '' };
+      if (nativeBase44) {
+        try {
+          return await nativeBase44.functions.invoke(name, payloadWithToken);
+        } catch (base44Error) {
+          if (!String(base44Error?.message || '').includes('Forbidden')) throw base44Error;
+        }
+      }
       const functionBase = (
         import.meta.env.VITE_SUPABASE_FUNCTIONS_URL ||
         `${import.meta.env.VITE_SUPABASE_URL || 'https://ksnzljothfoaefifevch.supabase.co'}/functions/v1`

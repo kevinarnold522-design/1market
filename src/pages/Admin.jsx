@@ -336,7 +336,11 @@ export default function Admin() {
   const [transferTargetByListing, setTransferTargetByListing] = useState({});
   const [toast, setToast] = useState('');
 
-  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
+  const showToast = (msg) => {
+    const isError = /failed|error|required|select|restricted/i.test(String(msg));
+    setToast(isError ? msg : `✓ ${msg}`);
+    setTimeout(() => setToast(''), 2500);
+  };
   const adminEntityWrite = async (entity, action, id, patch = {}) => {
     if (entity === 'Listing') {
       try {

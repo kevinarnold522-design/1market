@@ -21,8 +21,8 @@ function serviceHeaders(extra = {}) {
   return { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', ...extra };
 }
 
-async function getRequestUser(req) {
-  const token = (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
+async function getRequestUser(req, body = {}) {
+  const token = body.supabase_access_token || (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
   if (!token) return null;
   const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
     headers: serviceHeaders({ Authorization: `Bearer ${token}` }),
@@ -95,10 +95,11 @@ Deno.serve(async (req) => {
   try {
     if (req.method !== 'POST') return Response.json({ error: 'Method not allowed' }, { status: 405, headers: corsHeaders });
 
-    const adminUser = await getRequestUser(req);
+    const body = await req.json();
+    const adminUser = await getRequestUser(req, body);
     if (!isAdmin(adminUser)) return Response.json({ error: 'Forbidden' }, { status: 403, headers: corsHeaders });
 
-    const { entity, action, id, patch, record, records, query } = await req.json();
+    const { entity, action, id, patch, record, records, query } = body;
     const table = tableFor(entity);
 
     if (action === 'create') {

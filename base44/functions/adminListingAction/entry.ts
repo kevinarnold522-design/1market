@@ -45,8 +45,8 @@ async function writeWithColumnRetry(url, options, body) {
   throw new Error('Too many unsupported fields for Supabase write');
 }
 
-async function getRequestUser(req) {
-  const token = (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
+async function getRequestUser(req, body = {}) {
+  const token = body.supabase_access_token || (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
   if (!token) return null;
   const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
     headers: serviceHeaders({ Authorization: `Bearer ${token}` }),
@@ -89,10 +89,11 @@ Deno.serve(async (req) => {
   try {
     if (req.method !== 'POST') return Response.json({ error: 'Method not allowed' }, { status: 405, headers: corsHeaders });
 
-    const adminUser = await getRequestUser(req);
+    const body = await req.json();
+    const adminUser = await getRequestUser(req, body);
     if (!isAdmin(adminUser)) return Response.json({ error: 'Forbidden' }, { status: 403, headers: corsHeaders });
 
-    const { action, id, patch = {} } = await req.json();
+    const { action, id, patch = {} } = body;
 
     if (action === 'list') {
       const response = await fetch(`${SUPABASE_URL}/rest/v1/listings?select=*&limit=2000`, { headers: serviceHeaders() });
