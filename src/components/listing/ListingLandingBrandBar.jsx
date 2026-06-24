@@ -17,9 +17,9 @@ export default function ListingLandingBrandBar({ compact = false }) {
         <div className="flex items-center gap-3">
           <img src={MARKETPH_LOGO} alt="1Market PH" className="w-12 h-12 rounded-2xl object-cover shadow-xl" />
           <div>
-            <p className="font-heading font-extrabold text-white text-xl tracking-tight">1Market <span className="text-[#FFD700]">PH</span></p>
+            <p className="font-heading font-extrabold text-white text-xl tracking-tight">1Market <span className="text-[#93C5FD]">PH</span></p>
             <p className="font-heading font-bold text-white/90 text-sm">1MarketPH.com</p>
-            {!compact && <p className="font-body text-xs text-white/65 mt-0.5">Philippines' Premier Marketplace</p>}
+            {!compact && <p className="font-body text-xs text-white/65 mt-0.5">Philippines Marketplace</p>}
           </div>
         </div>
         <div className="md:text-right">

@@ -11,7 +11,7 @@ const providers = [
 
 function GmailLogo() {
   return (
-    <img src="/gmail-logo.png" alt="" className="w-16 h-12 object-contain" aria-hidden="true" />
+    <img src="/gmail-logo.png" alt="" className="w-[8rem] h-[8rem] sm:w-[10rem] sm:h-[10rem] object-contain drop-shadow-lg" aria-hidden="true" />
   );
 }
 
@@ -43,11 +43,11 @@ export default function OAuthOptions({
     <div className={className}>
       <div className="grid grid-cols-1 gap-2">
         {providers.map((provider) => (
-          <Button key={provider.key} type="button" variant="outline" className={buttonClassName} onClick={() => handleProvider(provider)} disabled={!!loadingProvider}>
+          <Button key={provider.key} type="button" variant="outline" className={`${buttonClassName} ${provider.key === 'google' ? 'min-h-[13rem] sm:min-h-[15rem] flex-col gap-3 py-6' : ''}`} onClick={() => handleProvider(provider)} disabled={!!loadingProvider}>
             {loadingProvider === provider.key ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <span className={`${provider.key === 'google' ? 'w-16 h-12' : 'w-10 h-10 text-[12px] rounded-full'} flex items-center justify-center font-bold ${provider.className || ''}`}>
+              <span className={`${provider.key === 'google' ? 'w-[8rem] h-[8rem] sm:w-[10rem] sm:h-[10rem]' : 'w-10 h-10 text-[12px] rounded-full'} flex items-center justify-center font-bold ${provider.className || ''}`}>
                 {provider.mark === 'gmail' ? <GmailLogo /> : provider.mark}
               </span>
             )}

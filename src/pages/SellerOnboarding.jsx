@@ -368,7 +368,7 @@ export default function SellerOnboarding() {
                 </h2>
                 <p className="font-body text-sm text-white/60 mb-6 max-w-xs mx-auto leading-relaxed">
                   {accountMode === 'business'
-                    ? 'Your business account is set up. Post listings, manage your profile, and apply for the Verified AI badge anytime.'
+                    ? 'Your business account is set up. Post listings, manage your profile, and apply for the Verified badge anytime.'
                     : 'You can now post listings, manage orders, and build your seller presence on 1MarketPH.'}
                 </p>
 

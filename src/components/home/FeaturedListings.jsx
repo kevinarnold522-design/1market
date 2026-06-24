@@ -54,7 +54,7 @@ function MiniHeartBtn({ listingId, user }) {
     <button onClick={toggle} className="relative flex items-center gap-0.5 px-1.5 py-1 rounded-lg bg-white/5 hover:bg-red-500/15 transition-all">
       <AnimatePresence>
         {anim && <motion.span initial={{ scale: 1, opacity: 1, y: 0 }} animate={{ scale: 2, opacity: 0, y: -14 }}
-          transition={{ duration: 0.6 }} className="absolute -top-2 left-1/2 -translate-x-1/2 text-sm pointer-events-none">AI️</motion.span>}
+          transition={{ duration: 0.6 }} className="absolute -top-2 left-1/2 -translate-x-1/2 text-sm pointer-events-none">♥</motion.span>}
       </AnimatePresence>
       <Heart className={`w-3 h-3 ${hearted ? 'text-red-400 fill-red-400' : 'text-white/40'}`} />
       <span className="font-body text-[9px] text-white/40">{count > 0 ? count : ''}</span>

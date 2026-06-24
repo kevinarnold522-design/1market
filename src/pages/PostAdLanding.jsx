@@ -14,7 +14,7 @@ import ListingLandingBrandBar from '@/components/listing/ListingLandingBrandBar'
 
 const CATEGORIES = [
   {
-    key: 'buysell', label: 'Buy & Sell', iconKey: 'buysell', color: '#FFD700',
+    key: 'buysell', label: 'Buy & Sell', iconKey: 'buysell', color: '#60A5FA',
     desc: 'Products, electronics, cars, homes, appliances and more',
     types: [
       ['product', 'General Product'], ['electronics', 'Electronics'], ['shoes', 'Shoes & Footwear'],
@@ -23,27 +23,27 @@ const CATEGORIES = [
     ]
   },
   {
-    key: 'food', label: 'Food', iconKey: 'food', color: '#FFD700',
+    key: 'food', label: 'Food', iconKey: 'food', color: '#60A5FA',
     desc: 'Home kitchen, bakery, carinderia, restaurants, drinks and catering',
     types: [['food', 'Food & Beverages']]
   },
   {
-    key: 'travel', label: 'Travel / Hotel', iconKey: 'travel', color: '#FFD700',
+    key: 'travel', label: 'Travel / Hotel', iconKey: 'travel', color: '#60A5FA',
     desc: 'Hotels, flights, tour packages and vehicle rentals',
     types: [['hotel', 'Hotel / Accommodation'], ['flights', 'Flights / Tour Package'], ['vehicle_rental', 'Vehicle Rental']]
   },
   {
-    key: 'rent', label: 'Rent / For Sale / Lease', iconKey: 'rent', color: '#FFD700',
+    key: 'rent', label: 'Rent / For Sale / Lease', iconKey: 'rent', color: '#60A5FA',
     desc: 'Rooms, condos, houses, commercial spaces, venues and vehicles',
     types: [['rent_lease', 'Property — Rent / Sale / Lease'], ['vehicle_rental', 'Vehicle Rental']]
   },
   {
-    key: 'services', label: 'Services', iconKey: 'services', color: '#FFD700',
+    key: 'services', label: 'Services', iconKey: 'services', color: '#60A5FA',
     desc: 'Home, tech, creative, beauty, logistics and professional services',
     types: [['services', 'Service Listing']]
   },
   {
-    key: 'jobs', label: 'Jobs', iconKey: 'jobs', color: '#FFD700',
+    key: 'jobs', label: 'Jobs', iconKey: 'jobs', color: '#60A5FA',
     desc: 'Full-time, part-time, freelance, remote and local jobs',
     types: [['jobs', 'Job Posting']]
   },
@@ -148,16 +148,16 @@ export default function PostAdLanding() {
         </motion.div>
 
         {!canPost && (
-          <div className="mb-8 p-5 rounded-2xl" style={{ background: 'rgba(255,215,0,0.10)', border: '1px solid rgba(255,215,0,0.35)', boxShadow: '0 0 24px rgba(255,215,0,0.14)' }}>
+          <div className="mb-8 p-5 rounded-2xl" style={{ background: 'rgba(96,165,250,0.10)', border: '1px solid rgba(96,165,250,0.35)', boxShadow: '0 0 24px rgba(96,165,250,0.14)' }}>
             <p className="font-heading text-lg font-bold text-white text-center mb-2">Create an account to post</p>
             <p className="font-body text-sm text-white/75 text-center mb-4">Any account type can post listings on 1MarketPH.</p>
             <div className="grid sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
-              <button onClick={() => enablePostingAccount('seller')} disabled={upgradingMode === 'seller'} className="p-4 rounded-2xl border text-left transition-all hover:scale-[1.01] disabled:opacity-60" style={{ borderColor: '#FFD700', background: 'rgba(255,215,0,0.18)' }}>
-                <p className="font-body text-sm font-bold text-[#FFD700]">Seller Ad</p>
+              <button onClick={() => enablePostingAccount('seller')} disabled={upgradingMode === 'seller'} className="p-4 rounded-2xl border text-left transition-all hover:scale-[1.01] disabled:opacity-60" style={{ borderColor: '#60A5FA', background: 'rgba(96,165,250,0.18)' }}>
+                <p className="font-body text-sm font-bold text-[#93C5FD]">Seller Ad</p>
                 <p className="font-body text-xs text-white/70 mt-1">{currentUser ? 'Enable seller posting now — no extra sign in needed.' : 'Create a seller account to post items, services, jobs, rent, food, or travel.'}</p>
               </button>
-              <button onClick={() => enablePostingAccount('business')} disabled={upgradingMode === 'business'} className="p-4 rounded-2xl border text-left transition-all hover:scale-[1.01] disabled:opacity-60" style={{ borderColor: '#FFD700', background: 'rgba(255,215,0,0.18)' }}>
-                <p className="font-body text-sm font-bold text-[#FFD700]">Business Ad</p>
+              <button onClick={() => enablePostingAccount('business')} disabled={upgradingMode === 'business'} className="p-4 rounded-2xl border text-left transition-all hover:scale-[1.01] disabled:opacity-60" style={{ borderColor: '#60A5FA', background: 'rgba(96,165,250,0.18)' }}>
+                <p className="font-body text-sm font-bold text-[#93C5FD]">Business Ad</p>
                 <p className="font-body text-xs text-white/70 mt-1">{currentUser ? 'Enable business posting now — no extra sign in needed.' : 'Create a business account to post under your brand.'}</p>
               </button>
             </div>
@@ -167,10 +167,10 @@ export default function PostAdLanding() {
         {canPost && (
           <>
             <div className="mb-5 rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-5">
-              <p className="font-body text-[10px] uppercase tracking-wider font-bold text-[#FFD700] mb-2">Choose post type</p>
+              <p className="font-body text-[10px] uppercase tracking-wider font-bold text-[#93C5FD] mb-2">Choose post type</p>
               <div className="grid sm:grid-cols-3 gap-3">
                 {postModeOptions.map(option => (
-                  <button key={option.key} onClick={() => setSelectedPostMode(option.key)} className="p-4 rounded-2xl border text-left transition-all hover:scale-[1.01]" style={{ borderColor: activePostMode === option.key ? '#FFD700' : 'rgba(255,255,255,0.12)', background: activePostMode === option.key ? '#FFD700' : 'rgba(255,255,255,0.05)' }}>
+                  <button key={option.key} onClick={() => setSelectedPostMode(option.key)} className="p-4 rounded-2xl border text-left transition-all hover:scale-[1.01]" style={{ borderColor: activePostMode === option.key ? '#60A5FA' : 'rgba(255,255,255,0.12)', background: activePostMode === option.key ? '#60A5FA' : 'rgba(255,255,255,0.05)' }}>
                     <p className="font-body text-sm font-bold text-white">{option.label}</p>
                     <p className="font-body text-xs text-white/55 mt-1">{option.desc}</p>
                   </button>
@@ -185,7 +185,7 @@ export default function PostAdLanding() {
                   onClick={() => selectCategory(cat)}
                   className="w-full text-left rounded-2xl p-4 transition-all hover:scale-[1.01] active:scale-[0.99]"
                   style={{
-                    background: selectedCat?.key === cat.key ? '#FFD700' : 'rgba(255,255,255,0.04)',
+                    background: selectedCat?.key === cat.key ? '#60A5FA' : 'rgba(255,255,255,0.04)',
                     border: `1.5px solid ${selectedCat?.key === cat.key ? cat.color : 'rgba(255,255,255,0.08)'}`,
                     boxShadow: selectedCat?.key === cat.key ? `0 0 20px ${cat.color}30` : 'none',
                   }}>
@@ -233,11 +233,11 @@ export default function PostAdLanding() {
                               {isOpen && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                                   <div className="px-4 pb-4 pt-1 flex flex-wrap gap-2">
-                                    <button onClick={() => openListingModal(type, '')} className="px-3 py-2 rounded-xl font-body text-xs font-bold text-white transition-all hover:scale-[1.02]" style={{ background: '#FFD700' }}>
+                                    <button onClick={() => openListingModal(type, '')} className="px-3 py-2 rounded-xl font-body text-xs font-bold text-white transition-all hover:scale-[1.02]" style={{ background: '#60A5FA' }}>
                                       {subcategories.length ? 'Choose manually in form' : 'Create listing'}
                                     </button>
                                     {subcategories.map(sub => (
-                                      <button key={sub} onClick={() => openListingModal(type, sub)} className="px-3 py-2 rounded-xl border font-body text-xs text-white hover:text-white transition-all text-left" style={{ borderColor: '#FFD700', background: '#FFD700' }}>
+                                      <button key={sub} onClick={() => openListingModal(type, sub)} className="px-3 py-2 rounded-xl border font-body text-xs text-white hover:text-white transition-all text-left" style={{ borderColor: '#60A5FA', background: '#60A5FA' }}>
                                         {sub}
                                       </button>
                                     ))}

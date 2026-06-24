@@ -81,7 +81,7 @@ function ImageUploader({ images, onAdd, onRemove }) {
         {images.map((url, i) => (
           <div key={i} className="relative group">
             <img src={url} alt="" className="w-14 h-14 rounded-xl object-cover border border-white/10" />
-            <button onClick={() => onRemove(i)} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">AI</button>
+            <button onClick={() => onRemove(i)} className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">×</button>
           </div>
         ))}
         <label className={`w-14 h-14 rounded-xl border-2 border-dashed border-white/15 flex flex-col items-center justify-center cursor-pointer hover:border-[#00D4FF]/40 transition-colors ${uploading ? 'opacity-50' : ''}`}>
@@ -247,7 +247,7 @@ function ListingForm({ form, setF, onSave, onSaveDraft, onCancel, editing, isEle
           <button onClick={runPriceSearch} disabled={priceLoading}
             className="flex items-center gap-1.5 px-4 py-2 bg-white/5 border border-[#00D4FF]/25 text-[#00D4FF] rounded-xl font-body text-xs font-semibold hover:bg-[#00D4FF]/10 transition-colors disabled:opacity-50">
             {priceLoading ? <div className="w-3 h-3 border border-[#00D4FF]/30 border-t-[#00D4FF] rounded-full animate-spin" /> : <Search className="w-3 h-3" />}
-            AI Price Check
+            Price Check
           </button>
         )}
         <button onClick={onCancel} className="px-4 py-2 border border-white/10 text-white/40 rounded-xl font-body text-xs hover:bg-white/5 transition-colors">
@@ -544,7 +544,7 @@ export default function SellerDashboard() {
                 </p>
                 <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
                   <span className="font-body text-[9px] text-white/35">{user.email}</span>
-                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-[#00D4FF]/15 text-[#00D4FF] border border-[#00D4FF]/20">AI Seller</span>
+                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-[#00D4FF]/15 text-[#00D4FF] border border-[#00D4FF]/20">Seller</span>
                   {isVerified ? (
                     <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-[#2563EB]/20 text-[#60a5fa] border border-[#2563EB]/20 flex items-center gap-1">
                       <BadgeCheck className="w-2.5 h-2.5" /> Verified
@@ -800,7 +800,7 @@ export default function SellerDashboard() {
               <h3 className="font-heading font-bold text-white text-sm mb-3">Account</h3>
               <div className="flex items-center justify-between p-3 rounded-xl mb-2" style={{ background: 'rgba(255,255,255,0.04)' }}>
                 <p className="font-body text-xs text-white/50">{user.email}</p>
-                <span className="text-[9px] text-[#00D4FF] font-bold px-2 py-0.5 rounded-full bg-[#00D4FF]/10">Verified AI</span>
+                <span className="text-[9px] text-[#00D4FF] font-bold px-2 py-0.5 rounded-full bg-[#00D4FF]/10">Verified</span>
               </div>
               <button onClick={() => base44.auth.logout('/')}
                 className="w-full py-2.5 rounded-xl border border-red-500/20 text-red-400 hover:bg-red-500/10 font-body font-semibold text-xs transition-colors flex items-center justify-center gap-2">
@@ -861,7 +861,7 @@ export default function SellerDashboard() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
             className="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-2.5 rounded-xl font-body text-xs shadow-2xl z-50 text-white"
             style={{ background: '#0D1F3C', border: '1px solid rgba(0,212,255,0.2)' }}>
-            AI {toast}
+            {toast}
           </motion.div>
         )}
       </AnimatePresence>
