@@ -166,34 +166,34 @@ function ServiceCard({ svc, onContact, user, isAdmin, onEdit }) {
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
       onTouchStart={() => setTouched(true)}
       onTouchEnd={() => setTimeout(() => setTouched(false), 800)}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group relative"
-      style={{ border: touched ? '1.5px solid #2563EB' : '1px solid rgba(10,25,47,0.06)', boxShadow: touched ? '0 0 24px rgba(37,99,235,0.3), 0 8px 30px rgba(0,0,0,0.1)' : undefined, transition: 'border 0.2s, box-shadow 0.2s' }}>
+      className="rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group relative"
+      style={{ background: 'linear-gradient(160deg,#0D1F3C 0%,#163B72 100%)', border: touched ? '1.5px solid #60A5FA' : '1px solid rgba(96,165,250,0.18)', boxShadow: touched ? '0 0 24px rgba(37,99,235,0.3), 0 8px 30px rgba(0,0,0,0.18)' : '0 8px 24px rgba(0,23,64,0.18)', transition: 'border 0.2s, box-shadow 0.2s' }}>
       <div className="relative aspect-[16/10] overflow-hidden">
         <img src={svc.image} alt={svc.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0D1F3C]/65 to-transparent" />
         <div className="absolute top-3 left-3">
           <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${svc.location === 'Manila' ? 'bg-blue-100 text-blue-700' : svc.location === 'Cavite' ? 'bg-emerald-100 text-emerald-700' : 'bg-purple-100 text-purple-700'}`}>
             {svc.area}
           </span>
         </div>
-        <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/90 rounded-full px-2 py-0.5">
+        <div className="absolute top-3 right-3 flex items-center gap-1 bg-[#0D1F3C]/85 border border-white/10 rounded-full px-2 py-0.5">
           <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-          <span className="font-body text-[10px] font-bold text-[#0A192F]">{svc.stars} ({svc.reviews})</span>
+          <span className="font-body text-[10px] font-bold text-white">{svc.stars} ({svc.reviews})</span>
         </div>
       </div>
       <div className="p-4">
-        <h3 className="font-heading font-bold text-sm text-[#0A192F] leading-tight mb-0.5">{svc.title}</h3>
-        <p className="font-body text-xs text-[#2563EB] font-semibold mb-1">{svc.provider}</p>
-        <p className="font-body text-xs text-[#0A192F]/50 mb-3 line-clamp-2">{svc.desc}</p>
+        <h3 className="font-heading font-bold text-sm text-white leading-tight mb-0.5">{svc.title}</h3>
+        <p className="font-body text-xs text-[#93C5FD] font-semibold mb-1">{svc.provider}</p>
+        <p className="font-body text-xs text-white/70 mb-3 line-clamp-2">{svc.desc}</p>
         <div className="flex items-center justify-between">
-          <span className="font-heading font-bold text-sm text-[#0A192F]">{svc.rate}</span>
+          <span className="font-heading font-bold text-sm text-white">{svc.rate}</span>
           <div className="flex items-center gap-1.5">
             {(isAdmin || isOwner) && svc.id && (
-              <button onClick={() => onEdit(svc)} className="p-1.5 rounded-lg bg-[#EFF6FF] border border-[#2563EB]/15 text-[#2563EB] hover:bg-[#DBEAFE] transition-colors">
+              <button onClick={() => onEdit(svc)} className="p-1.5 rounded-lg bg-[#2563EB]/20 border border-[#60A5FA]/25 text-[#93C5FD] hover:bg-[#2563EB]/35 transition-colors">
                 <Pencil className="w-3 h-3" />
               </button>
             )}
-            <button onClick={() => onContact(svc)} className="px-3 py-1.5 bg-[#0A192F] hover:bg-[#2563EB] text-white rounded-lg font-body text-xs font-semibold transition-colors">
+            <button onClick={() => onContact(svc)} className="px-3 py-1.5 bg-[#2563EB] hover:bg-[#60A5FA] text-white rounded-lg font-body text-xs font-semibold transition-colors">
               Book Now
             </button>
           </div>
@@ -208,20 +208,21 @@ function ContactModal({ item, onClose }) {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0A192F]/60 backdrop-blur-sm" onClick={onClose}>
       <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} onClick={e => e.stopPropagation()}
-        className="w-full max-w-sm bg-white rounded-2xl overflow-hidden shadow-2xl">
+        className="w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl"
+        style={{ background: 'linear-gradient(160deg,#0D1F3C 0%,#163B72 100%)', border: '1px solid rgba(96,165,250,0.25)' }}>
         <div className="relative h-24 overflow-hidden">
           <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0D1F3C]/85 to-transparent" />
           <button onClick={onClose} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-white text-xs">×</button>
           <p className="absolute bottom-2 left-4 font-heading font-bold text-white text-sm">{item.title}</p>
         </div>
         <div className="p-5 space-y-3">
-          <p className="font-body text-xs text-[#0A192F]/60">Provider: <strong>{item.provider}</strong></p>
-          <p className="font-body text-xs text-[#2563EB] font-semibold">{item.rate}</p>
+          <p className="font-body text-xs text-white/75">Provider: <strong className="text-white">{item.provider}</strong></p>
+          <p className="font-body text-xs text-[#93C5FD] font-semibold">{item.rate}</p>
           <ListingContactLinks listing={item} compact />
-          <div className="flex items-start gap-2 bg-amber-50 p-3 rounded-xl">
+          <div className="flex items-start gap-2 bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl">
             <AlertCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
-            <p className="font-body text-[10px] text-amber-700">Always verify credentials and agree on terms before any payment.</p>
+            <p className="font-body text-[10px] text-amber-200">Always verify credentials and agree on terms before any payment.</p>
           </div>
         </div>
       </motion.div>

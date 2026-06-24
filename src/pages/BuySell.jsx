@@ -97,6 +97,9 @@ function ListingCard({ listing, idx }) {
       </Link>
 
       <div className="p-3 flex flex-col gap-1.5 flex-1">
+        <p className="font-body text-[11px] text-white/70 leading-relaxed line-clamp-2">
+          {listing.description || 'Browse this listing for more details and seller information.'}
+        </p>
         {/* Category + Subcategory */}
         <div className="flex flex-wrap items-center gap-1 mb-0.5">
           {listing.type && (

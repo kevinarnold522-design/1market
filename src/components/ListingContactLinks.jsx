@@ -41,7 +41,7 @@ function ContactButton({ available, href, onClick, icon: Icon, label, activeLabe
 
   const className = `flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg font-body text-[11px] font-bold border transition-all min-w-0 ${available ? 'hover:scale-105' : 'cursor-not-allowed opacity-45 grayscale'}`;
   const style = available
-    ? { background: `${color}22`, borderColor: `${color}66`, color }
+    ? { background: `${color}22`, borderColor: `${color}66`, color: '#ffffff' }
     : { background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.35)' };
 
   if (!available) return <div className={className} style={style}>{content}</div>;
@@ -61,7 +61,7 @@ export default function ListingContactLinks({ listing = {}, sellerUser = null, c
 
   return (
     <div className={compact ? 'grid grid-cols-5 gap-1.5' : 'p-3 rounded-xl'} style={compact ? undefined : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
-      {!compact && <p className="font-body text-[9px] text-white/30 uppercase tracking-wider mb-2">Contact Lister</p>}
+      {!compact && <p className="font-body text-[9px] text-white/70 uppercase tracking-wider mb-2">Contact Lister</p>}
       <div className={compact ? 'contents' : 'grid grid-cols-2 sm:grid-cols-3 gap-2'}>
         <ContactButton available={!!phone} onClick={() => setShowPhone(true)} icon={Phone} label="Phone" activeLabel={showPhone && phone ? phone : ''} color="#60cfff" />
         <ContactButton available={!!email} href={`mailto:${email}`} icon={Mail} label="Email" color="#fbbf24" />
