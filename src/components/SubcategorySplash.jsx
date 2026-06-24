@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, X } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import CategoryTransitionOverlay, { getSubtypeForSubcategory } from './transitions/CategoryTransitionOverlay';
 
 const VALUES = ['A', 'K', 'Q', 'J', '10', '9'];
@@ -143,6 +144,23 @@ export default function SubcategorySplash({ subcategories, activeKey, onSelect, 
   const [transition, setTransition] = useState(null);
   const [transitionSubtype, setTransitionSubtype] = useState(null);
   const [filterQuery, setFilterQuery] = useState('');
+  const location = useLocation();
+  const transitionTimerRef = useRef(null);
+
+  useEffect(() => () => {
+    if (transitionTimerRef.current) {
+      clearTimeout(transitionTimerRef.current);
+      transitionTimerRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (transitionTimerRef.current) {
+      clearTimeout(transitionTimerRef.current);
+      transitionTimerRef.current = null;
+    }
+    setTransition(null);
+  }, [location.pathname, location.search, location.hash]);
 
   const handleSelect = (key) => {
     const sc = subcategories.find(s => s.key === key);
@@ -150,7 +168,11 @@ export default function SubcategorySplash({ subcategories, activeKey, onSelect, 
     if (category) {
       setTransition(category);
       setTransitionSubtype(subtype);
-      setTimeout(() => {
+      if (transitionTimerRef.current) {
+        clearTimeout(transitionTimerRef.current);
+      }
+      transitionTimerRef.current = setTimeout(() => {
+        transitionTimerRef.current = null;
         onSelect(key);
         setDismissed(true);
         setTransition(null);

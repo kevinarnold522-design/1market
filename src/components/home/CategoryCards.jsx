@@ -1,9 +1,9 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFireTransition, FireOverlay } from './FireTransition';
 import CategoryTransitionOverlay, { getTransitionTypeForHref, getSubtypeForSubcategory } from '../transitions/CategoryTransitionOverlay';
 import OceanCategoryBackdrop from './OceanCategoryBackdrop';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import PostListingMenu from '../PostListingMenu';
 import { Plane, UtensilsCrossed, ShoppingBag, Home, Wrench, Briefcase, ArrowLeft, X, Hotel, Palmtree, Ship, Car, Bus, Waves, Tent, Mountain, Anchor, Headphones, Laptop, Heart, DollarSign, FolderOpen, HardHat, Palette, ChefHat, Settings, BookOpen, Wifi, ClipboardList, Croissant, Coffee, Candy, ShoppingCart, Salad, Smartphone, CarFront, Shirt, Footprints, Sofa, Building2, Package, MoreHorizontal, BedDouble, Building, TreePine, Warehouse, Sparkles, Zap, CalendarCheck, Camera, GraduationCap, Truck, Search } from 'lucide-react';
@@ -312,6 +312,16 @@ function SubcategoryPicker({ href, onClose, navigate, setTransition }) {
   const title = CATEGORY_TITLES[href] || 'Choose a category';
   const [filter, setFilter] = useState('');
   const { user, isAuthenticated } = useAuth();
+  const transitionTimerRef = useRef(null);
+
+  const clearTransitionTimer = useCallback(() => {
+    if (transitionTimerRef.current) {
+      clearTimeout(transitionTimerRef.current);
+      transitionTimerRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => () => clearTransitionTimer(), [clearTransitionTimer]);
 
   const filtered = subs.filter(s =>
     !filter || s.label.toLowerCase().includes(filter.toLowerCase())
@@ -323,7 +333,15 @@ function SubcategoryPicker({ href, onClose, navigate, setTransition }) {
     const subtype = getSubtypeForSubcategory(type, sub.label);
     if (type) {
       setTransition({ type, subtype });
-      setTimeout(() => { navigate(`${sub.href}?type=${sub.key}&sub=${encodeURIComponent(sub.label)}`); setTransition(null); }, 1150);
+      clearTransitionTimer();
+      transitionTimerRef.current = setTimeout(() => {
+        transitionTimerRef.current = null;
+        try {
+          navigate(`${sub.href}?type=${sub.key}&sub=${encodeURIComponent(sub.label)}`);
+        } finally {
+          setTransition(null);
+        }
+      }, 1150);
       return;
     }
     navigate(`${sub.href}?type=${sub.key}&sub=${encodeURIComponent(sub.label)}`);
@@ -410,9 +428,26 @@ function SubcategoryPicker({ href, onClose, navigate, setTransition }) {
 export default function CategoryCards() {
   const { firing, fireNavigate } = useFireTransition();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isAuthenticated } = useAuth();
   const [transition, setTransition] = useState(null);
   const [pickerHref, setPickerHref] = useState(null);
+  const transitionTimerRef = useRef(null);
+
+  const clearTransitionTimer = useCallback(() => {
+    if (transitionTimerRef.current) {
+      clearTimeout(transitionTimerRef.current);
+      transitionTimerRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => () => clearTransitionTimer(), [clearTransitionTimer]);
+
+  useEffect(() => {
+    clearTransitionTimer();
+    setTransition(null);
+    setPickerHref(null);
+  }, [location.pathname, location.search, location.hash, clearTransitionTimer]);
 
   const handleCategoryClick = (href) => {
     // Always show subcategory picker first if we have subs defined
@@ -422,7 +457,15 @@ export default function CategoryCards() {
       const type = getTransitionTypeForHref(href);
       if (type) {
         setTransition({ type, subtype: null });
-        setTimeout(() => { navigate(href); setTransition(null); }, 1100);
+        clearTransitionTimer();
+        transitionTimerRef.current = setTimeout(() => {
+          transitionTimerRef.current = null;
+          try {
+            navigate(href);
+          } finally {
+            setTransition(null);
+          }
+        }, 1100);
       } else {
         fireNavigate(href);
       }

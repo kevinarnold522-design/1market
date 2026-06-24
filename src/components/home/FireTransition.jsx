@@ -1,19 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export function useFireTransition() {
   const [firing, setFiring] = useState(false);
-  const [target, setTarget] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+  const fireTimerRef = useRef(null);
+
+  const clearFireTimer = useCallback(() => {
+    if (fireTimerRef.current) {
+      clearTimeout(fireTimerRef.current);
+      fireTimerRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => () => clearFireTimer(), [clearFireTimer]);
+
+  useEffect(() => {
+    setFiring(false);
+    clearFireTimer();
+  }, [location.pathname, location.search, location.hash, clearFireTimer]);
 
   const fireNavigate = (href) => {
     if (firing) return;
-    setTarget(href);
+    clearFireTimer();
     setFiring(true);
-    setTimeout(() => {
-      navigate(href);
-      setFiring(false);
+    fireTimerRef.current = setTimeout(() => {
+      fireTimerRef.current = null;
+      try {
+        navigate(href);
+      } finally {
+        setFiring(false);
+      }
     }, 900);
   };
 
