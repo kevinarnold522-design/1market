@@ -136,7 +136,7 @@ export default function AccountListings() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Link to={`/listing/${item.id}`} className="p-2 rounded-xl bg-white/8 hover:bg-white/15 border border-white/10"><Eye className="w-4 h-4 text-white/70" /></Link>
-                  <Link to={`/listing/${item.id}?edit=1`} className="p-2 rounded-xl bg-amber-300/10 hover:bg-amber-300/20 border border-amber-300/20"><Pencil className="w-4 h-4 text-amber-300" /></Link>
+                  <Link to={`/listing/${item.id}/edit`} className="p-2 rounded-xl bg-amber-300/10 hover:bg-amber-300/20 border border-amber-300/20"><Pencil className="w-4 h-4 text-amber-300" /></Link>
                   <button onClick={() => deleteListing(item)} className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20"><Trash2 className="w-4 h-4 text-red-400" /></button>
                 </div>
               </div>

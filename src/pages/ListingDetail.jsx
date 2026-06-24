@@ -14,7 +14,6 @@ import StarField from '../components/StarField';
 import RoyalBlueWaves from '../components/RoyalBlueWaves';
 import SimilarListings from '../components/SimilarListings';
 import ListingContactLinks from '../components/ListingContactLinks';
-import AdminListingQuickEdit from '../components/listing/AdminListingQuickEdit';
 import { recordView } from '../components/home/RecentlyViewed';
 import { requireSupabase } from '@/lib/supabaseClient';
 
@@ -228,6 +227,7 @@ async function incrementListingViewCount(listingId, fallbackViewCount = 0) {
 
 export default function ListingDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -382,14 +382,6 @@ export default function ListingDetail() {
   const themePrimary = listing.landing_theme_color || listing.border_color || '#3E97F1';
   const themeSecondary = listing.landing_secondary_color || '#60A5FA';
   const galleryEffect = listing.transition_effect || listing.slideshow_animation || 'fade';
-  const bgStyles = {
-    royal_blue: 'linear-gradient(180deg, #f8fbff 0%, #dff3ff 56%, #bfdbfe 100%)',
-    glass: 'linear-gradient(180deg, #ffffff 0%, #e0f2fe 58%, #dbeafe 100%)',
-    neon: 'linear-gradient(180deg, #f8fbff 0%, #bae6fd 100%)',
-    sunset: 'linear-gradient(180deg, #fff7ed 0%, #dff3ff 100%)',
-    emerald: 'linear-gradient(180deg, #ecfdf5 0%, #dff3ff 100%)',
-    purple: 'linear-gradient(180deg, #f5f3ff 0%, #dff3ff 100%)',
-  };
   const glowOpacity = listing.glow_effect === 'none' ? 0 : listing.glow_effect === 'neon' ? 0.42 : listing.glow_effect === 'strong' ? 0.32 : 0.2;
   const glowBlur = listing.glow_effect === 'neon' ? 80 : listing.glow_effect === 'strong' ? 62 : 44;
   const pageAnimation = listing.animation_style === 'float'
@@ -401,7 +393,13 @@ export default function ListingDetail() {
         : {};
   const isAdminViewer = user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
   const isOwnerViewer = !!(user && listing && (user.id === listing.created_by_id || user.email === listing.owner_email || user.email === listing.created_by));
-  const shouldAutoOpenEdit = searchParams.get('edit') === '1';
+
+  useEffect(() => {
+    if (searchParams.get('edit') !== '1') return;
+    if (!listing) return;
+    if (!(isAdminViewer || isOwnerViewer)) return;
+    navigate(`/listing/${listing.id}/edit`, { replace: true });
+  }, [searchParams, listing, isAdminViewer, isOwnerViewer, navigate]);
 
   const handleChatSeller = async (message) => {
     if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
@@ -421,7 +419,8 @@ export default function ListingDetail() {
   };
 
   return (
-    <div className="listing-blue-white-theme min-h-screen" style={{ background: bgStyles[listing.landing_bg_style || 'royal_blue'] || bgStyles.royal_blue }}>
+    <div className="listing-blue-white-theme min-h-screen" style={{ background: 'linear-gradient(180deg, #f8fbff 0%, #dff3ff 56%, #bfdbfe 100%)' }}>
+      <RoyalBlueWaves />
       <div className="fixed inset-0 pointer-events-none z-[1] bg-[radial-gradient(circle_at_18%_10%,rgba(186,230,253,0.55),transparent_32%),radial-gradient(circle_at_84%_20%,rgba(147,197,253,0.35),transparent_28%)]" />
       <BlueHeartAnimation show={showHeartAnim} />
 
@@ -440,13 +439,9 @@ export default function ListingDetail() {
           </button>
           <div className="flex items-center gap-2 flex-wrap justify-end">
           {(isAdminViewer || isOwnerViewer) && (
-            <AdminListingQuickEdit
-              listing={listing}
-              onSaved={setListing}
-              isAdmin={isAdminViewer}
-              canDelete={isAdminViewer}
-              autoOpen={shouldAutoOpenEdit}
-            />
+            <Link to={`/listing/${listing.id}/edit`} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full font-body font-bold text-xs text-[#0A192F] bg-[#FFD700] hover:bg-white transition-colors shadow-lg">
+              Edit Listing
+            </Link>
           )}
           {/* Approval Status Badge */}
           {listing.approval_status === 'pending' && (

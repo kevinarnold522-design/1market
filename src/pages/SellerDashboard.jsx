@@ -609,7 +609,7 @@ export default function SellerDashboard() {
                       <p className="font-body text-[9px] text-white/35 mt-0.5">{item.location}{item.area ? ` · ${item.area}` : ''} · {item.price_label || `₱${Number(item.price).toLocaleString()}`}</p>
                     </div>
                     <div className="flex gap-1.5">
-                      <Link to={`/listing/${item.id}?edit=1`} className="p-1.5 rounded-xl bg-white/5 hover:bg-[#2563EB]/20 border border-white/10 transition-colors">
+                      <Link to={`/listing/${item.id}/edit`} className="p-1.5 rounded-xl bg-white/5 hover:bg-[#2563EB]/20 border border-white/10 transition-colors">
                         <Pencil className="w-3.5 h-3.5 text-[#00D4FF]" />
                       </Link>
                       <button onClick={() => remove(item.id)} className="p-1.5 rounded-xl bg-white/5 hover:bg-red-500/20 border border-white/10 transition-colors">

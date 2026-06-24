@@ -392,22 +392,53 @@ function PillSelect({ options, value, onChange, color = '#a855f7' }) {
   );
 }
 
-export default function AddListingModal({ onClose, defaultType = '', defaultSubcategory = '', user }) {
+function mapListingToForm(listing = {}) {
+  if (!listing || typeof listing !== 'object') return { ...EMPTY_FORM };
+  const locationParts = String(listing.location || '').split(',').map(part => part.trim()).filter(Boolean);
+  const city = listing.city || locationParts[0] || '';
+  const state_region = listing.state_region || locationParts[1] || '';
+  return {
+    ...EMPTY_FORM,
+    ...listing,
+    city,
+    state_region,
+    subcategory: listing.subcategory || '',
+    main_category: listing.main_category || TYPE_TO_MAIN[listing.type] || '',
+    type: listing.type || '',
+    price: listing.price != null ? String(listing.price) : '',
+    original_price: listing.original_price != null ? String(listing.original_price) : '',
+    quantity: listing.quantity != null ? listing.quantity : 1,
+    extra_images: Array.isArray(listing.extra_images) ? listing.extra_images : [],
+    alternate_site_options: Array.isArray(listing.alternate_site_options) ? listing.alternate_site_options : [],
+    delivery_options: Array.isArray(listing.delivery_options) ? listing.delivery_options : [],
+    tags: typeof listing.tags === 'string' ? listing.tags : '',
+    landing_bg_style: listing.landing_bg_style || 'royal_blue',
+    transition_effect: listing.transition_effect || listing.slideshow_animation || 'fade',
+    glow_effect: listing.glow_effect || 'soft',
+    animation_style: listing.animation_style || 'none',
+  };
+}
+
+export default function AddListingModal({ onClose, defaultType = '', defaultSubcategory = '', user, initialListing = null, editMode = false, listingId = null, onSaved }) {
   const resolvedMain = defaultType ? (Object.entries(TYPE_TO_MAIN).find(([t]) => t === defaultType)?.[1] || '') : '';
   // Detect ghost session — use ghost identity for listing, not real user
   const ghostSession = getGhostSession();
   const effectiveUser = ghostSession || user;
+  const targetListingId = listingId || initialListing?.id || null;
+  const isEditing = !!(editMode && targetListingId);
+  const initialMapped = mapListingToForm(initialListing);
 
   const [form, setForm] = useState({
     ...EMPTY_FORM,
-    main_category: resolvedMain,
-    type: defaultType,
-    subcategory: defaultSubcategory,
-    seller_name: effectiveUser?.channel_name || effectiveUser?.business_name || effectiveUser?.full_name || '',
-    email_contact: '', // never pre-fill ghost email
-    channel_name: effectiveUser?.channel_name || effectiveUser?.business_name || '',
+    ...initialMapped,
+    main_category: initialMapped.main_category || resolvedMain,
+    type: initialMapped.type || defaultType,
+    subcategory: initialMapped.subcategory || defaultSubcategory,
+    seller_name: initialMapped.seller_name || effectiveUser?.channel_name || effectiveUser?.business_name || effectiveUser?.full_name || '',
+    email_contact: initialMapped.email_contact || '',
+    channel_name: initialMapped.channel_name || effectiveUser?.channel_name || effectiveUser?.business_name || '',
   });
-  const [step, setStep] = useState(resolvedMain ? (defaultType ? 2 : 1) : 0);
+  const [step, setStep] = useState(isEditing ? 2 : (resolvedMain ? (defaultType ? 2 : 1) : 0));
   const [uploading, setUploading] = useState(false);
 
   const handleLoadTemplate = (templateForm) => {
@@ -424,10 +455,18 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   const [dpaAccepted, setDpaAccepted] = useState(false);
   const [legalAccepted, setLegalAccepted] = useState(false);
   const [draftReady, setDraftReady] = useState(false);
-  const draftKey = `listing_options_draft_${effectiveUser?.id || effectiveUser?.email || 'guest'}_${defaultType || 'new'}`;
+  const draftKey = `listing_options_draft_${effectiveUser?.id || effectiveUser?.email || 'guest'}_${isEditing ? `edit_${targetListingId}` : (defaultType || 'new')}`;
   const hasDraftContent = (data = form) => !!(data.title || data.description || data.main_category || data.type || data.image_url || (data.extra_images || []).length);
 
   useEffect(() => {
+    if (!isEditing || !initialListing) return;
+    const hydrated = mapListingToForm(initialListing);
+    setForm(prev => ({ ...prev, ...hydrated }));
+    setStep(2);
+  }, [isEditing, initialListing]);
+
+  useEffect(() => {
+    if (isEditing) { setDraftReady(true); return; }
     const saved = localStorage.getItem(draftKey);
     if (!saved) { setDraftReady(true); return; }
     try {
@@ -441,11 +480,13 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   }, [draftKey]);
 
   useEffect(() => {
+    if (isEditing) return;
     if (!draftReady || done || !hasDraftContent(form)) return;
     localStorage.setItem(draftKey, JSON.stringify({ form, step, updated_at: new Date().toISOString() }));
-  }, [form, step, done, draftKey, draftReady]);
+  }, [form, step, done, draftKey, draftReady, isEditing]);
 
   useEffect(() => {
+    if (isEditing) return;
     const saveBeforePause = () => {
       if (done || !hasDraftContent(form)) return;
       localStorage.setItem(draftKey, JSON.stringify({ form, step, updated_at: new Date().toISOString() }));
@@ -457,7 +498,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       window.removeEventListener('pagehide', saveBeforePause);
       document.removeEventListener('visibilitychange', saveWhenHidden);
     };
-  }, [form, step, done, draftKey]);
+  }, [form, step, done, draftKey, isEditing]);
 
   const persistDraftToHistory = async () => {
     if (!hasDraftContent(form)) return;
@@ -494,7 +535,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   };
 
   const handleClose = async () => {
-    await persistDraftToHistory();
+    if (!isEditing) await persistDraftToHistory();
     onClose?.();
   };
 
@@ -609,10 +650,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
     const contactEmail = ghostSess ? '' : (safeForm.email_contact || '');
     const locationSafe = [safeForm.city, safeForm.state_region].filter(Boolean).join(', ') || locationStr;
     let listing;
-    try {
-      listing = await base44.entities.Listing.create({
-      ...ghostOwnerFields(ghostSess),
-      ...(ghostSess || !effectiveUser?.id ? {} : { created_by_id: effectiveUser.id }),
+    const listingPayload = {
       title: safeForm.title, type: safeForm.type, main_category: safeForm.main_category, subcategory: safeForm.subcategory,
       location: locationSafe,
       area: safeForm.area || (safeForm.zip ? `Zip: ${safeForm.zip}` : ''),
@@ -688,12 +726,30 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
           safeForm.flight_max_pax ? `Max ${safeForm.flight_max_pax} pax` : '',
         ].filter(Boolean).join(' | '),
       } : {}),
-    });
+    };
+    try {
+      if (isEditing && targetListingId) {
+        listing = await base44.entities.Listing.update(targetListingId, listingPayload);
+      } else {
+        listing = await base44.entities.Listing.create({
+          ...listingPayload,
+          ...ghostOwnerFields(ghostSess),
+          ...(ghostSess || !effectiveUser?.id ? {} : { created_by_id: effectiveUser.id }),
+        });
+      }
     } catch (error) {
       setPublishError(error.message || 'Publishing failed. Please try again.');
       setSubmitting(false);
       return;
     }
+
+    if (isEditing) {
+      onSaved?.(listing);
+      setSubmitting(false);
+      onClose?.(listing);
+      return;
+    }
+
     localStorage.removeItem(draftKey);
     setPublishedListing(listing);
     setTemplateName(form.title ? `${form.title} Template` : 'My Listing Template');
@@ -753,9 +809,9 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
               </button>
             )}
             <div>
-              <h2 className="font-heading font-bold text-white text-base">Post an Ad</h2>
+              <h2 className="font-heading font-bold text-white text-base">{isEditing ? 'Edit Listing' : 'Post an Ad'}</h2>
               <p className="font-body text-[10px] text-white/30">
-                {step === 0 ? 'Step 1 — Pick a main category' : step === 1 ? 'Step 2 — Choose type' : 'Step 3 — Listing details'}
+                {isEditing ? 'Update listing using full post options' : (step === 0 ? 'Step 1 — Pick a main category' : step === 1 ? 'Step 2 — Choose type' : 'Step 3 — Listing details')}
               </p>
             </div>
           </div>
@@ -1638,8 +1694,8 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                     className="w-full py-3 rounded-xl font-body font-bold text-sm text-white transition-all disabled:opacity-40 hover:scale-[1.01] flex items-center justify-center gap-2"
                     style={{ background: 'linear-gradient(135deg,#7c3aed,#a855f7)', boxShadow: '0 0 20px rgba(168,85,247,0.45)', touchAction: 'manipulation' }}>
                     {submitting
-                      ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Publishing...</>
-                      : 'Publish'}
+                      ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> {isEditing ? 'Saving...' : 'Publishing...'}</>
+                      : (isEditing ? 'Save Changes' : 'Publish')}
                   </button>
 
                   {publishError && (

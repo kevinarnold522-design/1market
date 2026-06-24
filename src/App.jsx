@@ -20,6 +20,7 @@ import UserProfile from './pages/UserProfile';
 import Jobs from './pages/Jobs';
 import SellerProfilePage from './pages/SellerProfilePage';
 import ListingDetail from './pages/ListingDetail';
+import ListingEditLanding from './pages/ListingEditLanding';
 import About from './pages/About';
 import ExplorePage from './pages/ExplorePage';
 import Messages from './pages/Messages';
@@ -95,6 +96,7 @@ const AuthenticatedApp = () => {
         <Route path="/seller/:sellerId" element={<SellerProfilePage />} />
         <Route path="/seller-profile/:sellerId" element={<SellerProfilePage />} />
         <Route path="/listing/:id" element={<ListingDetail />} />
+        <Route path="/listing/:id/edit" element={<ListingEditLanding />} />
         <Route path="/about" element={<About />} />
         <Route path="/explore" element={<ExplorePage />} />
         <Route path="/messages" element={<Messages />} />
