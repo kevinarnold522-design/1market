@@ -339,19 +339,25 @@ export default function Admin() {
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
   const adminEntityWrite = async (entity, action, id, patch = {}) => {
     if (entity === 'Listing') {
-      const res = await base44.functions.invoke('adminListingAction', { action, id, patch });
-      if (res.data?.error) throw new Error(res.data.error);
-      return res.data?.listing || res.data;
+      try {
+        const res = await base44.functions.invoke('adminListingAction', { action, id, patch });
+        if (res.data?.error) throw new Error(res.data.error);
+        return action === 'list' ? (res.data?.listings || []) : (res.data?.listing || res.data);
+      } catch (err) {
+        const fallback = await base44.functions.invoke('supabasebase', { entity, action, id, patch, record: patch });
+        if (fallback.data?.error) throw new Error(fallback.data.error);
+        return action === 'list' ? (fallback.data?.data || []) : (fallback.data?.data || fallback.data);
+      }
     }
     const res = await base44.functions.invoke('supabasebase', { entity, action, id, patch, record: patch });
     if (res.data?.error) throw new Error(res.data.error);
     return res.data?.data;
   };
   const adminUserWrite = async (action, id, patch = {}) => {
-    const res = await base44.functions.invoke('adminUpdateUser', { action, id, patch });
+    const res = await base44.functions.invoke('supabasebase', { entity: 'User', action, id, patch, record: patch });
     if (res.data?.error) throw new Error(res.data.error);
-    if (action === 'list') return res.data?.users || [];
-    return res.data?.user || res.data;
+    if (action === 'list') return res.data?.data || [];
+    return res.data?.data || res.data;
   };
   const getUserType = (u) => u.user_type || (u.is_seller ? 'seller' : 'customer');
 
@@ -385,7 +391,7 @@ export default function Admin() {
     try {
       const [bizRes, listRes, userList] = await Promise.all([
         base44.functions.invoke('supabasebase', { entity: 'Business', action: 'list' }).then(r => r.data?.data || []).catch(() => base44.entities.Business.list('-created_date', 200).catch(() => [])),
-        base44.functions.invoke('adminListingAction', { action: 'list' }).then(r => r.data?.listings || []).catch(() => base44.entities.Listing.list('-created_date', 200).catch(() => [])),
+        adminEntityWrite('Listing', 'list').catch(() => base44.entities.Listing.list('-created_date', 200).catch(() => [])),
         adminUserWrite('list').catch(() => base44.entities.User.list('-created_date', 1000).catch(() => []))
       ]);
       const bizs = (bizRes || []).filter(Boolean).sort(byNewest);
@@ -597,23 +603,55 @@ export default function Admin() {
     if (!ghostForm.full_name.trim()) { showToast('Name is required'); return; }
     setGhostSaving(true);
     try {
-      const response = await base44.functions.invoke('createGhostAccount', {
-        full_name: ghostForm.full_name.trim(),
-        channel_name: ghostForm.business_name.trim() || ghostForm.full_name.trim(),
-        user_type: ghostForm.user_type,
-        business_name: ghostForm.business_name.trim() || ghostForm.full_name.trim(),
-        location: ghostForm.location || 'Manila',
-        bio: '',
-        seller_area: '',
-      });
-
-      const newUser = response.data.user;
+      const fullName = ghostForm.full_name.trim();
+      const channelName = ghostForm.business_name.trim() || fullName;
+      let newUser;
+      try {
+        const response = await base44.functions.invoke('createGhostAccount', {
+          full_name: fullName,
+          channel_name: channelName,
+          user_type: ghostForm.user_type,
+          business_name: channelName,
+          location: ghostForm.location || 'Manila',
+          bio: '',
+          seller_area: '',
+        });
+        newUser = response.data.user;
+      } catch (primaryError) {
+        const timestamp = Date.now();
+        const randomStr = Math.random().toString(36).substring(2, 8);
+        const ghostId = `ghost_${timestamp}_${randomStr}`;
+        const normalizedType = ghostForm.user_type || 'seller';
+        const isSeller = normalizedType !== 'customer';
+        newUser = await adminUserWrite('create', null, {
+          full_name: fullName,
+          channel_name: channelName,
+          email: `${ghostId}@1marketph-ghost.internal`,
+          role: 'user',
+          user_type: normalizedType,
+          is_seller: isSeller,
+          account_type: normalizedType === 'business' ? 'business_owner' : (isSeller ? 'seller' : 'customer'),
+          business_name: channelName,
+          seller_location: ghostForm.location || 'Manila',
+          location: ghostForm.location || 'Manila',
+          seller_page_enabled: isSeller,
+          is_ghost_account: true,
+          is_connected_account: true,
+          ghost_id: ghostId,
+          ghost_linked: false,
+          seller_pending: false,
+          business_pending: false,
+        });
+      }
+      if (!newUser?.id) throw new Error('Created user was not saved');
       localStorage.setItem('1m_ghost_' + (newUser.ghost_id || newUser.id), JSON.stringify(newUser));
       saveGhostSession(newUser);
 
-      setUsers(prev => [newUser, ...prev.filter(u => u.id !== newUser.id)]);
-      setGhostUsers(prev => [newUser, ...prev.filter(u => u.id !== newUser.id)]);
-      setTotalUsers(prev => prev + (users.some(u => u.id === newUser.id) ? 0 : 1));
+      const nextUsers = [newUser, ...users.filter(u => u.id !== newUser.id)];
+      const nextGhosts = [newUser, ...ghostUsers.filter(u => u.id !== newUser.id)];
+      setUsers(nextUsers);
+      setGhostUsers(nextGhosts);
+      setTotalUsers(nextUsers.length);
       setGhostSaving(false);
       setGhostForm({ full_name: '', user_type: 'seller', business_name: '', location: 'Manila' });
       showToast('Created user account added to Users and Created Users.');
