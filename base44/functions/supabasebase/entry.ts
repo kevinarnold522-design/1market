@@ -1,6 +1,5 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
-
 const SUPABASE_URL = 'https://ksnzljothfoaefifevch.supabase.co';
+const OWNER_EMAIL = 'kevinarnold522@gmail.com';
 
 const tableMap = {
   User: 'users', Listing: 'listings', Business: 'businesses', Order: 'orders', Cart: 'carts', Favourite: 'favourites', Review: 'reviews',
@@ -22,6 +21,27 @@ function serviceHeaders(extra = {}) {
   return { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', ...extra };
 }
 
+async function getRequestUser(req) {
+  const token = (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
+  if (!token) return null;
+  const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    headers: serviceHeaders({ Authorization: `Bearer ${token}` }),
+  });
+  if (!authResponse.ok) return null;
+  const authUser = await authResponse.json();
+  if (!authUser?.id) return null;
+  const profileResponse = await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${encodeURIComponent(authUser.id)}&select=*`, {
+    headers: serviceHeaders(),
+  });
+  if (!profileResponse.ok) throw new Error(await profileResponse.text());
+  const profiles = await profileResponse.json();
+  return profiles[0] || { id: authUser.id, email: authUser.email };
+}
+
+function isAdmin(user) {
+  return user?.role === 'admin' || user?.email?.toLowerCase() === OWNER_EMAIL;
+}
+
 function tableFor(entity) {
   const table = tableMap[entity];
   if (!table) throw new Error('Unsupported entity');
@@ -39,7 +59,7 @@ function cleanPayload(input = {}) {
 
 async function readJson(response) {
   const text = await response.text();
-  if (!response.ok) throw new Error(text || 'Supabase write failed');
+  if (!response.ok) throw new Error(text || 'Supabase request failed');
   return text ? JSON.parse(text) : null;
 }
 
@@ -55,7 +75,7 @@ function missingColumnFrom(text) {
 
 async function writeWithColumnRetry(url, options, body) {
   const payload = { ...(body || {}) };
-  for (let attempt = 0; attempt < 12; attempt += 1) {
+  for (let attempt = 0; attempt < 16; attempt += 1) {
     const response = await fetch(url, { ...options, body: JSON.stringify(payload) });
     const text = await response.text();
     if (response.ok) return text ? JSON.parse(text) : null;
@@ -75,16 +95,11 @@ Deno.serve(async (req) => {
   try {
     if (req.method !== 'POST') return Response.json({ error: 'Method not allowed' }, { status: 405, headers: corsHeaders });
 
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    const email = (user?.email || '').toLowerCase();
-    if (!user || (user.role !== 'admin' && email !== 'kevinarnold522@gmail.com')) {
-      return Response.json({ error: 'Forbidden' }, { status: 403, headers: corsHeaders });
-    }
+    const adminUser = await getRequestUser(req);
+    if (!isAdmin(adminUser)) return Response.json({ error: 'Forbidden' }, { status: 403, headers: corsHeaders });
 
     const { entity, action, id, patch, record, records, query } = await req.json();
     const table = tableFor(entity);
-    let response;
 
     if (action === 'create') {
       const rows = await writeWithColumnRetry(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
@@ -94,8 +109,10 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'bulkCreate') {
-      response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
-        method: 'POST', headers: serviceHeaders({ Prefer: 'return=representation' }), body: JSON.stringify((records || []).map(cleanPayload)),
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
+        method: 'POST',
+        headers: serviceHeaders({ Prefer: 'return=representation' }),
+        body: JSON.stringify((records || []).map(cleanPayload)),
       });
       const rows = await readJson(response);
       return Response.json({ success: true, data: rows || [] }, { headers: corsHeaders });
@@ -112,7 +129,7 @@ Deno.serve(async (req) => {
 
     if (action === 'delete') {
       if (!id) return Response.json({ error: 'Missing record ID' }, { status: 400, headers: corsHeaders });
-      response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}`, {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}`, {
         method: 'DELETE', headers: serviceHeaders(),
       });
       await readJson(response);
@@ -122,8 +139,9 @@ Deno.serve(async (req) => {
     if (action === 'list') {
       const params = new URLSearchParams();
       params.set('select', '*');
+      params.set('limit', '2000');
       for (const [key, value] of Object.entries(query || {})) params.set(key, `eq.${value}`);
-      response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params.toString()}`, { headers: serviceHeaders() });
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params.toString()}`, { headers: serviceHeaders() });
       const rows = await readJson(response);
       return Response.json({ success: true, data: rows || [] }, { headers: corsHeaders });
     }

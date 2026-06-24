@@ -41,6 +41,9 @@ const normalizeRecord = (record) => record && typeof record === 'object'
   ? { ...(record.metadata && typeof record.metadata === 'object' ? record.metadata : {}), ...record }
   : record;
 const normalizeRecords = (records) => Array.isArray(records) ? records.map(normalizeRecord) : [];
+const visibleRecords = (name, records) => name === 'Listing'
+  ? records.filter(item => item && item.is_deleted !== true && !item.deleted_at)
+  : records;
 
 const writableColumns = {
   Listing: new Set([
@@ -96,7 +99,7 @@ function makeEntity(name) {
         const column = String(sort).replace(/^-/, '').replace('created_date', 'created_at').replace('updated_date', 'updated_at');
         const { data, error } = await db.from(table).select('*').order(column || 'created_at', { ascending: !descending }).limit(limit || 100);
         if (error) throw error;
-        return normalizeRecords(data);
+        return visibleRecords(name, normalizeRecords(data));
       } catch (error) {
         throw error;
       }
@@ -110,7 +113,7 @@ function makeEntity(name) {
         const column = String(sort).replace(/^-/, '').replace('created_date', 'created_at').replace('updated_date', 'updated_at');
         const { data, error } = await q.order(column || 'created_at', { ascending: !descending }).limit(limit || 100);
         if (error) throw error;
-        return normalizeRecords(data);
+        return visibleRecords(name, normalizeRecords(data));
       } catch (error) {
         throw error;
       }
@@ -120,7 +123,9 @@ function makeEntity(name) {
         const db = requireSupabase();
         const { data, error } = await db.from(table).select('*').eq('id', id).single();
         if (error) throw error;
-        return normalizeRecord(data);
+        const record = normalizeRecord(data);
+        if (name === 'Listing' && (record?.is_deleted === true || record?.deleted_at)) return null;
+        return record;
       } catch (error) {
         throw error;
       }

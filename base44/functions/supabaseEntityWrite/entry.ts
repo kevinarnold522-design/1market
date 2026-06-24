@@ -57,6 +57,32 @@ async function readJson(response) {
   return text ? JSON.parse(text) : null;
 }
 
+function missingColumnFrom(text) {
+  try {
+    const data = JSON.parse(text || '{}');
+    const match = String(data.message || '').match(/Could not find the '([^']+)' column/);
+    return match?.[1] || null;
+  } catch {
+    return null;
+  }
+}
+
+async function writeWithColumnRetry(url, options, body) {
+  const payload = { ...(body || {}) };
+  for (let attempt = 0; attempt < 16; attempt += 1) {
+    const response = await fetch(url, { ...options, body: JSON.stringify(payload) });
+    const text = await response.text();
+    if (response.ok) return text ? JSON.parse(text) : null;
+    const missing = missingColumnFrom(text);
+    if (missing && missing in payload) {
+      delete payload[missing];
+      continue;
+    }
+    throw new Error(text || 'Database write failed');
+  }
+  throw new Error('Too many unsupported fields for database write');
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
@@ -68,10 +94,9 @@ Deno.serve(async (req) => {
 
     if (action === 'create') {
       const safeRecord = sanitizeRecord(entity, record || {});
-      response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
-        method: 'POST', headers: serviceHeaders({ Prefer: 'return=representation' }), body: JSON.stringify(safeRecord),
-      });
-      const rows = await readJson(response);
+      const rows = await writeWithColumnRetry(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
+        method: 'POST', headers: serviceHeaders({ Prefer: 'return=representation' }),
+      }, safeRecord);
       return Response.json({ success: true, data: rows?.[0] || null }, { headers: corsHeaders });
     }
 
@@ -87,10 +112,9 @@ Deno.serve(async (req) => {
     if (action === 'update') {
       if (!id) return Response.json({ error: 'Missing record ID' }, { status: 400, headers: corsHeaders });
       const safePatch = { ...sanitizeRecord(entity, patch || {}), updated_at: new Date().toISOString() };
-      response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}&select=*`, {
-        method: 'PATCH', headers: serviceHeaders({ Prefer: 'return=representation' }), body: JSON.stringify(safePatch),
-      });
-      const rows = await readJson(response);
+      const rows = await writeWithColumnRetry(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}&select=*`, {
+        method: 'PATCH', headers: serviceHeaders({ Prefer: 'return=representation' }),
+      }, safePatch);
       return Response.json({ success: true, data: rows?.[0] || null }, { headers: corsHeaders });
     }
 
@@ -99,7 +123,16 @@ Deno.serve(async (req) => {
       response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}`, {
         method: 'DELETE', headers: serviceHeaders(),
       });
-      await readJson(response);
+      const text = await response.text();
+      if (!response.ok) {
+        if (entity === 'Listing') {
+          await writeWithColumnRetry(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}&select=*`, {
+            method: 'PATCH', headers: serviceHeaders({ Prefer: 'return=representation' }),
+          }, { is_active: false, approval_status: 'rejected', is_deleted: true, deleted_at: new Date().toISOString() });
+        } else {
+          throw new Error(text || 'Database delete failed');
+        }
+      }
       return Response.json({ success: true }, { headers: corsHeaders });
     }
 

@@ -1,6 +1,11 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
-
 const SUPABASE_URL = 'https://ksnzljothfoaefifevch.supabase.co';
+const OWNER_EMAIL = 'kevinarnold522@gmail.com';
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+};
 
 function serviceHeaders(extra = {}) {
   const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -8,97 +13,114 @@ function serviceHeaders(extra = {}) {
   return { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', ...extra };
 }
 
-async function listSupabaseUsers() {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/users?select=*&order=created_date.desc&limit=1000`, {
-    headers: serviceHeaders()
-  });
-  if (!response.ok) return [];
-  return await response.json();
+async function readJson(response) {
+  const text = await response.text();
+  if (!response.ok) throw new Error(text || 'Supabase request failed');
+  return text ? JSON.parse(text) : null;
 }
 
-async function updateSupabaseUser(id, patch) {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${encodeURIComponent(id)}`, {
-    method: 'PATCH',
-    headers: serviceHeaders({ Prefer: 'return=representation' }),
-    body: JSON.stringify(patch)
-  });
-  if (!response.ok) throw new Error(await response.text());
-  const rows = await response.json();
-  return rows[0] || null;
+function missingColumnFrom(text) {
+  try {
+    const data = JSON.parse(text || '{}');
+    const match = String(data.message || '').match(/Could not find the '([^']+)' column/);
+    return match?.[1] || null;
+  } catch {
+    return null;
+  }
 }
 
-async function deleteSupabaseUser(id) {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${encodeURIComponent(id)}`, {
-    method: 'DELETE',
-    headers: serviceHeaders()
+async function writeWithColumnRetry(url, options, body) {
+  const payload = { ...(body || {}) };
+  for (let attempt = 0; attempt < 16; attempt += 1) {
+    const response = await fetch(url, { ...options, body: JSON.stringify(payload) });
+    const text = await response.text();
+    if (response.ok) return text ? JSON.parse(text) : null;
+    const missing = missingColumnFrom(text);
+    if (missing && missing in payload) {
+      delete payload[missing];
+      continue;
+    }
+    throw new Error(text || 'Supabase write failed');
+  }
+  throw new Error('Too many unsupported fields for Supabase write');
+}
+
+async function getRequestUser(req) {
+  const token = (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
+  if (!token) return null;
+  const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    headers: serviceHeaders({ Authorization: `Bearer ${token}` }),
   });
-  if (!response.ok) throw new Error(await response.text());
+  if (!authResponse.ok) return null;
+  const authUser = await authResponse.json();
+  if (!authUser?.id) return null;
+  const profileResponse = await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${encodeURIComponent(authUser.id)}&select=*`, {
+    headers: serviceHeaders(),
+  });
+  if (!profileResponse.ok) throw new Error(await profileResponse.text());
+  const profiles = await profileResponse.json();
+  return profiles[0] || { id: authUser.id, email: authUser.email };
+}
+
+function isAdmin(user) {
+  return user?.role === 'admin' || user?.email?.toLowerCase() === OWNER_EMAIL;
+}
+
+function cleanUserPatch(patch = {}) {
+  const allowed = [
+    'role', 'user_type', 'is_seller', 'account_type', 'business_pending',
+    'business_name', 'channel_name', 'is_verified_seller', 'verification_submitted',
+    'ghost_linked', 'is_ghost_account', 'email', 'seller_page_enabled',
+    'seller_pending', 'member_type', 'seller_location', 'location', 'phone',
+    'username', 'username_set', 'ghost_id', 'is_connected_account'
+  ];
+  const clean = {};
+  for (const key of allowed) {
+    if (Object.prototype.hasOwnProperty.call(patch, key)) clean[key] = patch[key];
+  }
+  return clean;
 }
 
 Deno.serve(async (req) => {
-  try {
-    if (req.method !== 'POST') {
-      return Response.json({ error: 'Method not allowed' }, { status: 405 });
-    }
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    const email = (user?.email || '').toLowerCase();
-    if (!user || (user.role !== 'admin' && email !== 'kevinarnold522@gmail.com')) {
-      return Response.json({ error: 'Forbidden' }, { status: 403 });
-    }
+  try {
+    if (req.method !== 'POST') return Response.json({ error: 'Method not allowed' }, { status: 405, headers: corsHeaders });
+
+    const adminUser = await getRequestUser(req);
+    if (!isAdmin(adminUser)) return Response.json({ error: 'Forbidden' }, { status: 403, headers: corsHeaders });
 
     const { action, id, patch = {} } = await req.json();
 
     if (action === 'list') {
-      const [baseUsers, supabaseUsers] = await Promise.all([
-        base44.asServiceRole.entities.User.list('-created_date', 1000).catch(() => []),
-        listSupabaseUsers()
-      ]);
-      const byId = new Map();
-      [...baseUsers, ...supabaseUsers].forEach(item => {
-        if (item?.id) byId.set(item.id, { ...(byId.get(item.id) || {}), ...item });
-      });
-      const users = Array.from(byId.values()).sort((a, b) => new Date(b.created_date || 0) - new Date(a.created_date || 0));
-      return Response.json({ success: true, users });
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/users?select=*&limit=2000`, { headers: serviceHeaders() });
+      const users = await readJson(response) || [];
+      users.sort((a, b) => new Date(b.created_at || b.created_date || 0) - new Date(a.created_at || a.created_date || 0));
+      return Response.json({ success: true, users }, { headers: corsHeaders });
     }
 
-    if (!id) return Response.json({ error: 'Missing user id' }, { status: 400 });
+    if (!id) return Response.json({ error: 'Missing user id' }, { status: 400, headers: corsHeaders });
 
     if (action === 'delete') {
-      await Promise.allSettled([
-        base44.asServiceRole.entities.User.delete(id),
-        deleteSupabaseUser(id)
-      ]);
-      return Response.json({ success: true });
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: serviceHeaders(),
+      });
+      await readJson(response);
+      return Response.json({ success: true }, { headers: corsHeaders });
     }
 
-    if (action !== 'update') {
-      return Response.json({ error: 'Unsupported action' }, { status: 400 });
-    }
+    if (action !== 'update') return Response.json({ error: 'Unsupported action' }, { status: 400, headers: corsHeaders });
 
-    const allowed = [
-      'role', 'user_type', 'is_seller', 'account_type', 'business_pending',
-      'business_name', 'channel_name', 'is_verified_seller', 'verification_submitted',
-      'ghost_linked', 'is_ghost_account', 'email', 'seller_page_enabled',
-      'seller_pending', 'member_type'
-    ];
-    const cleanPatch = {};
-    for (const key of allowed) {
-      if (Object.prototype.hasOwnProperty.call(patch, key)) cleanPatch[key] = patch[key];
-    }
+    const cleanPatch = cleanUserPatch(patch);
+    const rows = await writeWithColumnRetry(`${SUPABASE_URL}/rest/v1/users?id=eq.${encodeURIComponent(id)}&select=*`, {
+      method: 'PATCH',
+      headers: serviceHeaders({ Prefer: 'return=representation' }),
+    }, cleanPatch);
 
-    const [baseResult, supabaseResult] = await Promise.allSettled([
-      base44.asServiceRole.entities.User.update(id, cleanPatch),
-      updateSupabaseUser(id, cleanPatch)
-    ]);
-    if (baseResult.status === 'rejected' && supabaseResult.status === 'rejected') {
-      throw new Error(baseResult.reason?.message || supabaseResult.reason?.message || 'User update failed');
-    }
-    const updated = baseResult.status === 'fulfilled' ? baseResult.value : supabaseResult.value;
-    return Response.json({ success: true, user: updated || { id, ...cleanPatch } });
+    return Response.json({ success: true, user: rows?.[0] || { id, ...cleanPatch } }, { headers: corsHeaders });
   } catch (error) {
     console.error('[ADMIN_UPDATE_USER_ERROR]', error.message);
-    return Response.json({ error: error.message || 'Admin user update failed' }, { status: 500 });
+    return Response.json({ error: error.message || 'Admin user update failed' }, { status: 500, headers: corsHeaders });
   }
 });

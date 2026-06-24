@@ -340,16 +340,6 @@ export default function Admin() {
       if (res.data?.error) throw new Error(res.data.error);
       return res.data?.listing || res.data;
     }
-    const api = base44.entities[entity];
-    if (api) {
-      try {
-        if (action === 'update') return await api.update(id, patch);
-        if (action === 'delete') return await api.delete(id);
-        if (action === 'create') return await api.create(patch);
-      } catch (error) {
-        console.warn('Admin direct write fallback:', entity, action, error.message);
-      }
-    }
     const res = await base44.functions.invoke('supabasebase', { entity, action, id, patch, record: patch });
     if (res.data?.error) throw new Error(res.data.error);
     return res.data?.data;
@@ -387,35 +377,39 @@ export default function Admin() {
 
   const loadAll = async () => {
     setLoading(true);
+    const activeRecord = (item) => item && item.is_deleted !== true && !item.deleted_at;
+    const byNewest = (a, b) => new Date(b.created_at || b.created_date || 0) - new Date(a.created_at || a.created_date || 0);
     try {
-      const [bizs, lists, userList] = await Promise.all([
-        base44.entities.Business.list('-created_date', 200),
-        base44.entities.Listing.list('-created_date', 200),
-        adminUserWrite('list')
+      const [bizRes, listRes, userList] = await Promise.all([
+        base44.functions.invoke('supabasebase', { entity: 'Business', action: 'list' }).then(r => r.data?.data || []).catch(() => base44.entities.Business.list('-created_date', 200).catch(() => [])),
+        base44.functions.invoke('adminListingAction', { action: 'list' }).then(r => r.data?.listings || []).catch(() => base44.entities.Listing.list('-created_date', 200).catch(() => [])),
+        adminUserWrite('list').catch(() => base44.entities.User.list('-created_date', 1000).catch(() => []))
       ]);
+      const bizs = (bizRes || []).filter(Boolean).sort(byNewest);
+      const lists = (listRes || []).filter(activeRecord).sort(byNewest);
       setBusinesses(bizs);
       setListings(lists);
-      setUsers(userList);
+      setUsers(userList || []);
 
-      const ghosts = userList.filter(u => {
+      const ghosts = (userList || []).filter(u => {
         const isGhostEmail = u.email?.includes('@1marketph-ghost.internal');
         const isGhostFlag = u.is_ghost_account === true;
         const isGhostId = u.ghost_id?.startsWith('ghost_');
         return isGhostEmail || isGhostFlag || isGhostId;
       });
       setGhostUsers(ghosts);
-      setTotalUsers(userList.length);
-      const allPending = lists.filter(j => !j.approval_status || j.approval_status === 'pending').sort((a,b) => new Date(b.created_date) - new Date(a.created_date));
+      setTotalUsers((userList || []).length);
+      const allPending = lists.filter(j => !j.approval_status || j.approval_status === 'pending').sort(byNewest);
       setPendingListings(allPending);
       setPendingJobs(allPending.filter(j => j.type === 'jobs'));
       setLoading(false);
 
       Promise.all([
-        base44.entities.Report.list('-created_date', 200),
-        base44.entities.VerificationApplication.list('-created_date', 200),
+        base44.functions.invoke('supabasebase', { entity: 'Report', action: 'list' }).then(r => r.data?.data || []).catch(() => []),
+        base44.functions.invoke('supabasebase', { entity: 'VerificationApplication', action: 'list' }).then(r => r.data?.data || []).catch(() => []),
       ]).then(([rpts, verifs]) => {
-        setReports(rpts);
-        setVerifications(verifs);
+        setReports((rpts || []).sort(byNewest));
+        setVerifications((verifs || []).sort(byNewest));
       });
     } catch (err) {
       console.error('Admin load failed:', err);
@@ -525,7 +519,7 @@ export default function Admin() {
       await adminEntityWrite('Listing', 'update', editingList.id, data);
       showToast('Listing updated!');
     } else {
-      await base44.functions.invoke('supabasebase', { entity: 'Listing', action: 'create', record: data });
+      await adminEntityWrite('Listing', 'create', null, data);
       showToast('Listing added!');
     }
     setShowListForm(false); setEditingList(null);

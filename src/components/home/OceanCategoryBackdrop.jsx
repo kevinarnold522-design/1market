@@ -65,10 +65,10 @@ function TinyFish({ item, index }) {
 
 export default function OceanCategoryBackdrop({ global = false }) {
   return (
-    <div className={global ? 'fixed inset-0 overflow-hidden pointer-events-none bg-gradient-to-b from-sky-100 via-sky-200 to-blue-300' : 'absolute inset-0 overflow-hidden rounded-[2rem] bg-gradient-to-b from-sky-100 via-sky-200 to-blue-300'}>
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.82)_0%,rgba(224,242,254,0.54)_45%,rgba(125,211,252,0.42)_100%)]" />
-      <div className="absolute top-8 right-10 w-20 h-20 rounded-full bg-yellow-200/80 blur-[1px] shadow-[0_0_38px_rgba(253,224,71,0.42)]" />
-      <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-sky-300/65 via-sky-200/24 to-transparent" />
+    <div className={global ? 'fixed inset-0 overflow-hidden pointer-events-none bg-gradient-to-b from-blue-500 via-blue-600 to-blue-800' : 'absolute inset-0 overflow-hidden rounded-[2rem] bg-gradient-to-b from-blue-500 via-blue-600 to-blue-800'}>
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(96,165,250,0.58)_0%,rgba(37,99,235,0.62)_45%,rgba(29,78,216,0.78)_100%)]" />
+      <div className="absolute top-8 right-10 w-20 h-20 rounded-full bg-yellow-200/70 blur-[1px] shadow-[0_0_38px_rgba(253,224,71,0.36)]" />
+      <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-blue-900/70 via-blue-700/30 to-transparent" />
       <div className="absolute inset-x-[-8%] bottom-[12%] h-16 rounded-[50%] bg-white/22" />
       {fish.map((item, index) => <TinyFish key={index} item={item} index={index} />)}
     </div>

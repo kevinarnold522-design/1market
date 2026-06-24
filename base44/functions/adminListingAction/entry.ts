@@ -1,53 +1,144 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+const SUPABASE_URL = 'https://ksnzljothfoaefifevch.supabase.co';
+const OWNER_EMAIL = 'kevinarnold522@gmail.com';
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+};
+
+function serviceHeaders(extra = {}) {
+  const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (!key) throw new Error('SUPABASE_SERVICE_ROLE_KEY is missing');
+  return { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', ...extra };
+}
+
+async function readJson(response) {
+  const text = await response.text();
+  if (!response.ok) throw new Error(text || 'Supabase request failed');
+  return text ? JSON.parse(text) : null;
+}
+
+function missingColumnFrom(text) {
+  try {
+    const data = JSON.parse(text || '{}');
+    const match = String(data.message || '').match(/Could not find the '([^']+)' column/);
+    return match?.[1] || null;
+  } catch {
+    return null;
+  }
+}
+
+async function writeWithColumnRetry(url, options, body) {
+  const payload = { ...(body || {}) };
+  for (let attempt = 0; attempt < 16; attempt += 1) {
+    const response = await fetch(url, { ...options, body: JSON.stringify(payload) });
+    const text = await response.text();
+    if (response.ok) return text ? JSON.parse(text) : null;
+    const missing = missingColumnFrom(text);
+    if (missing && missing in payload) {
+      delete payload[missing];
+      continue;
+    }
+    throw new Error(text || 'Supabase write failed');
+  }
+  throw new Error('Too many unsupported fields for Supabase write');
+}
+
+async function getRequestUser(req) {
+  const token = (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
+  if (!token) return null;
+  const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    headers: serviceHeaders({ Authorization: `Bearer ${token}` }),
+  });
+  if (!authResponse.ok) return null;
+  const authUser = await authResponse.json();
+  if (!authUser?.id) return null;
+  const profileResponse = await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${encodeURIComponent(authUser.id)}&select=*`, {
+    headers: serviceHeaders(),
+  });
+  if (!profileResponse.ok) throw new Error(await profileResponse.text());
+  const profiles = await profileResponse.json();
+  return profiles[0] || { id: authUser.id, email: authUser.email };
+}
+
+function isAdmin(user) {
+  return user?.role === 'admin' || user?.email?.toLowerCase() === OWNER_EMAIL;
+}
+
+function cleanPayload(input = {}) {
+  const clean = {};
+  for (const [key, value] of Object.entries(input || {})) {
+    if (['created_at', 'created_date', 'updated_at', 'updated_date'].includes(key)) continue;
+    if (value !== undefined) clean[key] = value;
+  }
+  return clean;
+}
+
+async function cleanupRelatedListingRows(id) {
+  const tables = ['listing_hearts', 'listing_comments', 'favourites', 'carts', 'reports'];
+  await Promise.allSettled(tables.map(table => fetch(`${SUPABASE_URL}/rest/v1/${table}?listing_id=eq.${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+    headers: serviceHeaders(),
+  })));
+}
 
 Deno.serve(async (req) => {
-  try {
-    if (req.method !== 'POST') {
-      return Response.json({ error: 'Method not allowed' }, { status: 405 });
-    }
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    const email = (user?.email || '').toLowerCase();
-    if (!user || (user.role !== 'admin' && email !== 'kevinarnold522@gmail.com')) {
-      return Response.json({ error: 'Forbidden' }, { status: 403 });
-    }
+  try {
+    if (req.method !== 'POST') return Response.json({ error: 'Method not allowed' }, { status: 405, headers: corsHeaders });
+
+    const adminUser = await getRequestUser(req);
+    if (!isAdmin(adminUser)) return Response.json({ error: 'Forbidden' }, { status: 403, headers: corsHeaders });
 
     const { action, id, patch = {} } = await req.json();
-    if (!id) return Response.json({ error: 'Missing listing id' }, { status: 400 });
+
+    if (action === 'list') {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/listings?select=*&limit=2000`, { headers: serviceHeaders() });
+      const listings = await readJson(response) || [];
+      listings.sort((a, b) => new Date(b.created_at || b.created_date || 0) - new Date(a.created_at || a.created_date || 0));
+      return Response.json({ success: true, listings }, { headers: corsHeaders });
+    }
+
+    if (action === 'create') {
+      const rows = await writeWithColumnRetry(`${SUPABASE_URL}/rest/v1/listings?select=*`, {
+        method: 'POST',
+        headers: serviceHeaders({ Prefer: 'return=representation' }),
+      }, cleanPayload(patch));
+      return Response.json({ success: true, listing: rows?.[0] || null }, { headers: corsHeaders });
+    }
+
+    if (!id) return Response.json({ error: 'Missing listing id' }, { status: 400, headers: corsHeaders });
 
     if (action === 'delete') {
-      try {
-        await base44.asServiceRole.entities.Listing.delete(id);
-      } catch (_error) {
-        await base44.asServiceRole.entities.Listing.update(id, { is_active: false, approval_status: 'rejected' });
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/listings?id=eq.${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: serviceHeaders(),
+      });
+      if (!response.ok) {
+        await writeWithColumnRetry(`${SUPABASE_URL}/rest/v1/listings?id=eq.${encodeURIComponent(id)}&select=*`, {
+          method: 'PATCH',
+          headers: serviceHeaders({ Prefer: 'return=representation' }),
+        }, { is_active: false, approval_status: 'rejected', is_deleted: true, deleted_at: new Date().toISOString() });
+      } else {
+        await response.text();
       }
-      return Response.json({ success: true });
+      cleanupRelatedListingRows(id).catch(() => {});
+      return Response.json({ success: true }, { headers: corsHeaders });
     }
 
-    if (action !== 'update') {
-      return Response.json({ error: 'Unsupported action' }, { status: 400 });
-    }
+    if (action !== 'update') return Response.json({ error: 'Unsupported action' }, { status: 400, headers: corsHeaders });
 
-    const cleanPatch = {};
-    for (const [key, value] of Object.entries(patch || {})) {
-      if (['id', 'created_date', 'updated_date'].includes(key)) continue;
-      if (value !== undefined) cleanPatch[key] = value;
-    }
+    const safePatch = { ...cleanPayload(patch), updated_at: new Date().toISOString() };
+    const rows = await writeWithColumnRetry(`${SUPABASE_URL}/rest/v1/listings?id=eq.${encodeURIComponent(id)}&select=*`, {
+      method: 'PATCH',
+      headers: serviceHeaders({ Prefer: 'return=representation' }),
+    }, safePatch);
 
-    try {
-      const updated = await base44.asServiceRole.entities.Listing.update(id, cleanPatch);
-      return Response.json({ success: true, listing: updated });
-    } catch (error) {
-      if (Object.prototype.hasOwnProperty.call(cleanPatch, 'created_by_id')) {
-        const { created_by_id, ...withoutCreator } = cleanPatch;
-        const updated = await base44.asServiceRole.entities.Listing.update(id, withoutCreator);
-        return Response.json({ success: true, listing: updated, warning: 'Owner fields updated, creator field is protected.' });
-      }
-      throw error;
-    }
+    return Response.json({ success: true, listing: rows?.[0] || { id, ...safePatch } }, { headers: corsHeaders });
   } catch (error) {
     console.error('[ADMIN_LISTING_ACTION_ERROR]', error.message);
-    return Response.json({ error: error.message || 'Admin listing action failed' }, { status: 500 });
+    return Response.json({ error: error.message || 'Admin listing action failed' }, { status: 500, headers: corsHeaders });
   }
 });
