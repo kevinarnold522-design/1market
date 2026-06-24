@@ -247,7 +247,6 @@ export default function QuickAddModal({ onClose, defaultMode = 'business', onAdd
   const [bizForm, setBizForm] = useState({ ...EMPTY_BIZ, ...(forceSection ? { section: forceSection } : {}) });
   const [listForm, setListForm] = useState({
     ...EMPTY_LISTING,
-    seller_email: sellerEmail || '',
     seller_name: sellerName || '',
     ...(forceSubcategory ? { subcategory: forceSubcategory } : {}),
   });
@@ -272,8 +271,8 @@ export default function QuickAddModal({ onClose, defaultMode = 'business', onAdd
         ...listForm,
         price: Number(listForm.price) || 0,
         extra_images: listForm.extra_images || [],
-        seller_email: sellerEmail || listForm.seller_email || '',
         seller_name: sellerName || listForm.seller_name || '',
+        email_contact: listForm.email_contact || sellerEmail || '',
       };
       await base44.entities.Listing.create(payload);
       setSaving(false);

@@ -132,9 +132,33 @@
     "seller_name": {
       "type": "string"
     },
+    "seller_email": {
+      "type": "string",
+      "description": "Optional seller account email used by legacy flows"
+    },
     "approved_channel_name": {
       "type": "string",
       "description": "Admin-approved public display name for the lister/channel"
+    },
+    "owner_user_id": {
+      "type": "string",
+      "description": "Authenticated owner user id for listing ownership"
+    },
+    "owner_email": {
+      "type": "string",
+      "description": "Owner email used by legacy ownership paths"
+    },
+    "ghost_owner_id": {
+      "type": "string"
+    },
+    "owner_ghost_id": {
+      "type": "string"
+    },
+    "created_by_ghost_id": {
+      "type": "string"
+    },
+    "owner_account_type": {
+      "type": "string"
     },
     "posting_as": {
       "type": "string",

@@ -544,7 +544,6 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
       listing = await base44.entities.Listing.create({
       ...ghostOwnerFields(ghostSess),
       owner_user_id: ghostSess ? '' : (effectiveUser?.id || ''),
-      owner_email: ghostSess ? '' : (effectiveUser?.email || ''),
       title: form.title, type: form.type, main_category: form.main_category, subcategory: form.subcategory,
       location: locationStr,
       area: form.area || (form.zip ? `Zip: ${form.zip}` : ''),

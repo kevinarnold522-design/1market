@@ -67,6 +67,5 @@ export function ghostOwnerFields(ghost) {
     created_by_ghost_id: ghostId,
     owner_account_type: 'ghost',
     seller_name: getGhostDisplayName(ghost),
-    seller_email: ghost.email || '',
   };
 }
