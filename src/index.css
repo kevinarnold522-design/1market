@@ -8,12 +8,12 @@
   :root {
     --font-heading: 'Bricolage Grotesque', sans-serif;
     --font-body: 'Abril Fatface', system-ui;
-    --landing-primary: #BAE6FD;
-    --landing-accent: #E0F2FE;
-    --landing-deep: #7DD3FC;
-    --landing-bg-gradient: linear-gradient(180deg, #F8FBFF 0%, var(--landing-primary) 55%, var(--landing-deep) 100%);
-    --royal-blue: #7DD3FC;
-    --royal-blue-light: #E0F2FE;
+    --landing-primary: #2563EB;
+    --landing-accent: #3B82F6;
+    --landing-deep: #1D4ED8;
+    --landing-bg-gradient: linear-gradient(180deg, #60A5FA 0%, var(--landing-primary) 52%, var(--landing-deep) 100%);
+    --royal-blue: #2563EB;
+    --royal-blue-light: #60A5FA;
 
     --background: 199 89% 92%;
     --foreground: 205 72% 30%;

@@ -357,6 +357,7 @@ export default function Admin() {
   const adminUserWrite = async (action, id, patch = {}) => {
     const res = await base44.functions.invoke('adminUpdateUser', { action, id, patch });
     if (res.data?.error) throw new Error(res.data.error);
+    if (action === 'list') return res.data?.users || [];
     return res.data?.user || res.data;
   };
   const getUserType = (u) => u.user_type || (u.is_seller ? 'seller' : 'customer');
@@ -386,49 +387,41 @@ export default function Admin() {
 
   const loadAll = async () => {
     setLoading(true);
-    // Load critical data first
-    const [bizs, lists] = await Promise.all([
-      base44.entities.Business.list('-created_date', 200),
-      base44.entities.Listing.list('-created_date', 200),
-    ]);
-    setBusinesses(bizs);
-    setListings(lists);
-    
-    // Load other data in parallel but non-blocking
-    Promise.all([
-      base44.entities.Report.list('-created_date', 200),
-      base44.entities.VerificationApplication.list('-created_date', 200),
-      base44.entities.Listing.filter({ type: 'jobs' }, '-created_date', 200),
-    ]).then(([rpts, verifs, jobs]) => {
-      setReports(rpts);
-      setVerifications(verifs);
-      const allPending = lists.filter(j => !j.approval_status || j.approval_status === 'pending').sort((a,b) => new Date(b.created_date) - new Date(a.created_date));
-      setPendingListings(allPending);
-      setPendingJobs(allPending.filter(j => j.type === 'jobs'));
-    });
-    
-    // Load users separately - increase limit to ensure we get all ghost accounts
-    base44.entities.User.list('-created_date', 500).then(userList => {
-      console.log('Loaded users:', userList.length);
+    try {
+      const [bizs, lists, userList] = await Promise.all([
+        base44.entities.Business.list('-created_date', 200),
+        base44.entities.Listing.list('-created_date', 200),
+        adminUserWrite('list')
+      ]);
+      setBusinesses(bizs);
+      setListings(lists);
       setUsers(userList);
-      // Filter for ghost accounts using multiple checks
+
       const ghosts = userList.filter(u => {
         const isGhostEmail = u.email?.includes('@1marketph-ghost.internal');
         const isGhostFlag = u.is_ghost_account === true;
         const isGhostId = u.ghost_id?.startsWith('ghost_');
         return isGhostEmail || isGhostFlag || isGhostId;
       });
-      console.log('Created users found:', ghosts.length, 'Total users:', userList.length);
       setGhostUsers(ghosts);
-      
-      // Update stats with total user count (ghosts count as regular users)
       setTotalUsers(userList.length);
-      
+      const allPending = lists.filter(j => !j.approval_status || j.approval_status === 'pending').sort((a,b) => new Date(b.created_date) - new Date(a.created_date));
+      setPendingListings(allPending);
+      setPendingJobs(allPending.filter(j => j.type === 'jobs'));
       setLoading(false);
-    }).catch(err => {
-      console.error('Failed to load users:', err);
+
+      Promise.all([
+        base44.entities.Report.list('-created_date', 200),
+        base44.entities.VerificationApplication.list('-created_date', 200),
+      ]).then(([rpts, verifs]) => {
+        setReports(rpts);
+        setVerifications(verifs);
+      });
+    } catch (err) {
+      console.error('Admin load failed:', err);
+      showToast('Dashboard data failed to load. Please refresh.');
       setLoading(false);
-    });
+    }
   };
 
   const toggleVerified = async (u) => {
@@ -449,10 +442,42 @@ export default function Admin() {
   };
 
   const setUserRole = async (u, role) => {
-    await adminUserWrite('update', u.id, { role });
-    setUsers(prev => prev.map(item => item.id === u.id ? { ...item, role } : item));
-    showToast(`Role updated to ${role}`);
-    loadAll();
+    try {
+      await adminUserWrite('update', u.id, { role });
+      setUsers(prev => prev.map(item => item.id === u.id ? { ...item, role } : item));
+      showToast(`Role updated to ${role}`);
+    } catch (err) {
+      showToast('Role update failed. Please try again.');
+    }
+  };
+
+  const setUserType = async (u, newType) => {
+    const updateData = { user_type: newType, business_pending: false, seller_pending: false };
+    if (newType === 'seller' || newType === 'business') {
+      updateData.is_seller = true;
+      updateData.account_type = newType === 'seller' ? 'seller' : 'business_owner';
+      updateData.seller_page_enabled = true;
+    } else {
+      updateData.is_seller = false;
+      updateData.account_type = 'customer';
+      updateData.seller_page_enabled = false;
+      updateData.business_name = '';
+      updateData.channel_name = '';
+    }
+    const previous = users;
+    setUsers(prev => prev.map(item => item.id === u.id ? { ...item, ...updateData } : item));
+    try {
+      await adminUserWrite('update', u.id, updateData);
+      if (newType === 'seller') {
+        try { await base44.functions.invoke('sendSellerWelcomeEmail', { email: u.email, name: u.full_name || u.email }); } catch(e) {}
+      } else if (newType === 'business') {
+        try { await base44.functions.invoke('sendBusinessWelcomeEmail', { email: u.email, name: u.full_name || u.email, business_name: u.business_name || u.full_name }); } catch(e) {}
+      }
+      showToast(`User type changed to ${newType}${(newType==='seller'||newType==='business') ? ' — Email sent!' : ''}`);
+    } catch (err) {
+      setUsers(previous);
+      showToast('User type update failed. Please try again.');
+    }
   };
 
   useEffect(() => { loadAll(); }, []);
@@ -876,33 +901,11 @@ export default function Admin() {
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
                  <select value={u.role || 'user'} onChange={e => setUserRole(u, e.target.value)}
-                   className="border border-[#0A192F]/10 rounded-xl px-2 py-1.5 font-body text-xs text-[#0A192F] bg-white focus:outline-none focus:border-[#2563EB]">
+                   className="border border-[#0A192F]/10 rounded-xl px-3 py-2 min-h-[44px] font-body text-sm text-[#0A192F] bg-white focus:outline-none focus:border-[#2563EB]">
                    {ROLES.map(r => <option key={r} value={r} className="capitalize">{r}</option>)}
                  </select>
-                 <select value={getUserType(u)} onChange={async e => {
-                     const newType = e.target.value;
-                     const updateData = { user_type: newType, business_pending: false };
-                     if (newType === 'seller' || newType === 'business') {
-                       updateData.is_seller = true;
-                       updateData.account_type = 'business_owner';
-                     } else {
-                       updateData.is_seller = false;
-                       updateData.account_type = 'customer';
-                       updateData.business_name = '';
-                       updateData.channel_name = '';
-                     }
-                     await adminUserWrite('update', u.id, updateData);
-                     setUsers(prev => prev.map(item => item.id === u.id ? { ...item, ...updateData } : item));
-                     // Send transition email
-                     if (newType === 'seller') {
-                       try { await base44.functions.invoke('sendSellerWelcomeEmail', { email: u.email, name: u.full_name || u.email }); } catch(e) {}
-                     } else if (newType === 'business') {
-                       try { await base44.functions.invoke('sendBusinessWelcomeEmail', { email: u.email, name: u.full_name || u.email, business_name: u.business_name || u.full_name }); } catch(e) {}
-                     }
-                     showToast(`User type changed to ${newType}${(newType==='seller'||newType==='business') ? ' — Email sent!' : ''}`);
-                     loadAll();
-                   }}
-                   className="border border-[#0A192F]/10 rounded-xl px-2 py-1.5 font-body text-xs text-[#0A192F] bg-white focus:outline-none focus:border-[#2563EB]">
+                 <select value={getUserType(u)} onChange={e => setUserType(u, e.target.value)}
+                   className="border border-[#0A192F]/10 rounded-xl px-3 py-2 min-h-[44px] font-body text-sm text-[#0A192F] bg-white focus:outline-none focus:border-[#2563EB]">
                    <option value="customer">Customer</option>
                    <option value="seller">Seller</option>
                    <option value="business">Business</option>

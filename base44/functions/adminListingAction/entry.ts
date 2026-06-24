@@ -17,14 +17,11 @@ Deno.serve(async (req) => {
     if (!id) return Response.json({ error: 'Missing listing id' }, { status: 400 });
 
     if (action === 'delete') {
-      await base44.asServiceRole.entities.Listing.delete(id);
-      await Promise.allSettled([
-        base44.asServiceRole.entities.ListingHeart.deleteMany({ listing_id: id }),
-        base44.asServiceRole.entities.ListingComment.deleteMany({ listing_id: id }),
-        base44.asServiceRole.entities.Favourite.deleteMany({ listing_id: id }),
-        base44.asServiceRole.entities.Cart.deleteMany({ listing_id: id }),
-        base44.asServiceRole.entities.Report.deleteMany({ listing_id: id })
-      ]);
+      try {
+        await base44.asServiceRole.entities.Listing.delete(id);
+      } catch (_error) {
+        await base44.asServiceRole.entities.Listing.update(id, { is_active: false, approval_status: 'rejected' });
+      }
       return Response.json({ success: true });
     }
 
