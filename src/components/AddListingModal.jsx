@@ -392,6 +392,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   };
   const [uploadingExtra, setUploadingExtra] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [publishError, setPublishError] = useState('');
   const [done, setDone] = useState(false);
   const [publishedListing, setPublishedListing] = useState(null);
   const [templateName, setTemplateName] = useState('');
@@ -420,6 +421,20 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
     if (!draftReady || done || !hasDraftContent(form)) return;
     localStorage.setItem(draftKey, JSON.stringify({ form, step, updated_at: new Date().toISOString() }));
   }, [form, step, done, draftKey, draftReady]);
+
+  useEffect(() => {
+    const saveBeforePause = () => {
+      if (done || !hasDraftContent(form)) return;
+      localStorage.setItem(draftKey, JSON.stringify({ form, step, updated_at: new Date().toISOString() }));
+    };
+    const saveWhenHidden = () => { if (document.visibilityState === 'hidden') saveBeforePause(); };
+    window.addEventListener('pagehide', saveBeforePause);
+    document.addEventListener('visibilitychange', saveWhenHidden);
+    return () => {
+      window.removeEventListener('pagehide', saveBeforePause);
+      document.removeEventListener('visibilitychange', saveWhenHidden);
+    };
+  }, [form, step, done, draftKey]);
 
   const persistDraftToHistory = async () => {
     if (!hasDraftContent(form)) return;
@@ -479,11 +494,18 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   const isPreselling = isPropertyForSale && form.property_sale_type === 'Pre-Selling';
 
   const handleImageUpload = async (e) => {
-    const file = e.target.files[0]; if (!file) return;
+    const files = Array.from(e.target.files || []); if (!files.length) return;
     setUploading(true);
     try {
-      const { file_url } = await uploadMediaFileToSupabase(file, 'listing-images');
-      set('image_url', file_url);
+      const uploads = await Promise.all(files.map(file => uploadMediaFileToSupabase(file, 'listing-images')));
+      const urls = uploads.map(upload => upload.file_url).filter(Boolean);
+      if (urls.length) {
+        setForm(current => ({
+          ...current,
+          image_url: current.image_url || urls[0],
+          extra_images: [...(current.extra_images || []), ...urls.slice(current.image_url ? 0 : 1)],
+        }));
+      }
     } catch {
       // Toast is shown by the uploader.
     } finally {
@@ -492,12 +514,12 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
   };
 
   const handleExtraImageUpload = async (e) => {
-    const files = Array.from(e.target.files); if (!files.length) return;
+    const files = Array.from(e.target.files || []); if (!files.length) return;
     setUploadingExtra(true);
     try {
       const uploads = await Promise.all(files.map(file => uploadMediaFileToSupabase(file, 'listing-images')));
       const urls = uploads.map(upload => upload.file_url).filter(Boolean);
-      set('extra_images', [...(form.extra_images || []), ...urls]);
+      setForm(current => ({ ...current, extra_images: [...(current.extra_images || []), ...urls] }));
     } catch {
       // Toast is shown by the uploader.
     } finally {
@@ -509,6 +531,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
 
   const handleSubmit = async () => {
     if (!form.title) return;
+    setPublishError('');
     setSubmitting(true);
     const locationStr = [form.city, form.state_region].filter(Boolean).join(', ') || 'Nationwide';
     const verifiedPublisher = !!(effectiveUser?.is_verified_seller || effectiveUser?.role === 'admin' || effectiveUser?.email?.toLowerCase() === 'kevinarnold522@gmail.com');
@@ -516,7 +539,9 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
     const ghostSess = getGhostSession();
     const sellerDisplayName = form.seller_name || effectiveUser?.channel_name || effectiveUser?.business_name || effectiveUser?.full_name || '';
     const contactEmail = ghostSess ? '' : (form.email_contact || '');
-    const listing = await base44.entities.Listing.create({
+    let listing;
+    try {
+      listing = await base44.entities.Listing.create({
       ...ghostOwnerFields(ghostSess),
       owner_user_id: ghostSess ? '' : (effectiveUser?.id || ''),
       owner_email: ghostSess ? '' : (effectiveUser?.email || ''),
@@ -596,6 +621,11 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
         ].filter(Boolean).join(' | '),
       } : {}),
     });
+    } catch (error) {
+      setPublishError(error.message || 'Publishing failed. Please try again.');
+      setSubmitting(false);
+      return;
+    }
     localStorage.removeItem(draftKey);
     setPublishedListing(listing);
     setTemplateName(form.title ? `${form.title} Template` : 'My Listing Template');
@@ -750,8 +780,8 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       <label className="flex flex-col items-center justify-center w-full h-24 rounded-xl border-2 border-dashed border-white/15 cursor-pointer hover:border-[#c084fc]/40 transition-colors mb-2">
                         {uploading
                           ? <div className="w-5 h-5 border-2 border-[#c084fc]/30 border-t-[#c084fc] rounded-full animate-spin" />
-                          : <><Upload className="w-5 h-5 text-white/25 mb-1" /><span className="font-body text-xs text-white/25">Upload Main Photo from device</span></>}
-                        <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploading} />
+                          : <><Upload className="w-5 h-5 text-white/25 mb-1" /><span className="font-body text-xs text-white/25">Upload one or multiple photos from device</span></>}
+                        <input type="file" accept="image/*" multiple className="hidden" onChange={handleImageUpload} disabled={uploading} />
                       </label>
                     )}
 
@@ -786,6 +816,19 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                   <div>
                     <label className={labelCls}>Title *</label>
                     <input value={form.title} onChange={e => set('title', e.target.value)} placeholder="Listing title..." className={inputCls} />
+                  </div>
+
+                  {/* DESCRIPTION */}
+                  <div>
+                    <label className={labelCls}>Description * (Required)</label>
+                    <textarea value={form.description} onChange={e => set('description', e.target.value)} rows={4}
+                      placeholder={
+                        isVehicleListing ? "Describe the vehicle: year, make, model, mileage, color, condition, features, accident history, reason for selling..." :
+                        isGadget ? "Describe the gadget: brand, model, specs, storage, color, condition, included accessories, warranty status..." :
+                        isPropertyRent || form.type === 'houses' ? "Describe the property: size (sqm), number of rooms, floors, amenities, nearby landmarks, parking, utilities..." :
+                        "Describe your listing in detail..."
+                      }
+                      className={`${inputCls} resize-none`} />
                   </div>
 
                   {/* SUBCATEGORY — all types get manual entry */}
@@ -1395,19 +1438,6 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                     </div>
                   )}
 
-                  {/* DESCRIPTION */}
-                  <div>
-                    <label className={labelCls}>Description * (Required)</label>
-                    <textarea value={form.description} onChange={e => set('description', e.target.value)} rows={4}
-                      placeholder={
-                        isVehicleListing ? "Describe the vehicle: year, make, model, mileage, color, condition, features, accident history, reason for selling..." :
-                        isGadget ? "Describe the gadget: brand, model, specs, storage, color, condition, included accessories, warranty status..." :
-                        isPropertyRent || form.type === 'houses' ? "Describe the property: size (sqm), number of rooms, floors, amenities, nearby landmarks, parking, utilities..." :
-                        "Describe your listing in detail..."
-                      }
-                      className={`${inputCls} resize-none`} />
-                  </div>
-
                   {/* MANUAL NAME — Buy & Sell */}
                   {(form.main_category === 'buysell') && (
                     <div>
@@ -1536,6 +1566,9 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
                       : 'Publish'}
                   </button>
 
+                  {publishError && (
+                    <p className="font-body text-[10px] text-red-300 text-center">{publishError}</p>
+                  )}
                   {isCar && !legalAccepted && (
                     <p className="font-body text-[10px] text-orange-400 text-center">Please acknowledge the legal liability checkbox above.</p>
                   )}
