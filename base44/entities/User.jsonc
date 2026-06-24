@@ -6,6 +6,7 @@
       "type": "string",
       "enum": [
         "admin",
+        "moderator",
         "user"
       ],
       "default": "user"
@@ -19,7 +20,7 @@
         "rider"
       ],
       "default": "customer",
-      "description": "Account type: customer, sales (seller), business, or rider delivery"
+      "description": "Account type: customer, seller, business, or rider delivery"
     },
     "sales_subtype": {
       "type": "string"
@@ -162,6 +163,10 @@
     },
     "ghost_id": {
       "type": "string"
+    },
+    "ghost_linked": {
+      "type": "boolean",
+      "default": false
     },
     "is_connected_account": {
       "type": "boolean",

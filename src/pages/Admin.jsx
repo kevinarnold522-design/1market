@@ -339,9 +339,9 @@ export default function Admin() {
     return res.data?.data;
   };
   const adminUserWrite = async (action, id, patch = {}) => {
-    if (action === 'update') return await base44.entities.User.update(id, patch);
-    if (action === 'delete') return await base44.entities.User.delete(id);
-    return await adminEntityWrite('User', action, id, patch);
+    const res = await base44.functions.invoke('adminUpdateUser', { action, id, patch });
+    if (res.data?.error) throw new Error(res.data.error);
+    return res.data?.user || res.data;
   };
   const getUserType = (u) => u.user_type || (u.is_seller ? 'seller' : 'customer');
 
@@ -434,6 +434,7 @@ export default function Admin() {
 
   const setUserRole = async (u, role) => {
     await adminUserWrite('update', u.id, { role });
+    setUsers(prev => prev.map(item => item.id === u.id ? { ...item, role } : item));
     showToast(`Role updated to ${role}`);
     loadAll();
   };
@@ -874,6 +875,7 @@ export default function Admin() {
                        updateData.channel_name = '';
                      }
                      await adminUserWrite('update', u.id, updateData);
+                     setUsers(prev => prev.map(item => item.id === u.id ? { ...item, ...updateData } : item));
                      // Send transition email
                      if (newType === 'seller') {
                        try { await base44.functions.invoke('sendSellerWelcomeEmail', { email: u.email, name: u.full_name || u.email }); } catch(e) {}
