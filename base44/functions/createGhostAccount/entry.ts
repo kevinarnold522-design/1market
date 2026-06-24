@@ -32,15 +32,37 @@ async function getRequestUser(req) {
   return profiles[0] || { id: authUser.id, email: authUser.email };
 }
 
+function missingColumnFrom(text) {
+  try {
+    const data = JSON.parse(text || '{}');
+    const match = String(data.message || '').match(/Could not find the '([^']+)' column/);
+    return match?.[1] || null;
+  } catch {
+    return null;
+  }
+}
+
 async function insertUser(row) {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/users`, {
-    method: 'POST',
-    headers: serviceHeaders({ Prefer: 'return=representation' }),
-    body: JSON.stringify(row),
-  });
-  if (!response.ok) throw new Error(await response.text());
-  const rows = await response.json();
-  return rows[0];
+  const payload = { ...(row || {}) };
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/users?select=*`, {
+      method: 'POST',
+      headers: serviceHeaders({ Prefer: 'return=representation' }),
+      body: JSON.stringify(payload),
+    });
+    const text = await response.text();
+    if (response.ok) {
+      const rows = text ? JSON.parse(text) : [];
+      return rows[0];
+    }
+    const missing = missingColumnFrom(text);
+    if (missing && missing in payload) {
+      delete payload[missing];
+      continue;
+    }
+    throw new Error(text || 'Failed to create user');
+  }
+  throw new Error('Too many unsupported user fields');
 }
 
 Deno.serve(async (req) => {
@@ -73,7 +95,7 @@ Deno.serve(async (req) => {
       role: 'user',
       user_type: normalizedType,
       is_seller: isSeller,
-      account_type: isSeller ? 'business_owner' : 'customer',
+      account_type: normalizedType === 'business' ? 'business_owner' : (isSeller ? 'seller' : 'customer'),
       business_name: business_name?.trim() || channel_name?.trim() || full_name.trim(),
       seller_location: location || 'Manila',
       location: location || 'Manila',

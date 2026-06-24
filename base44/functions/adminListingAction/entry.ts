@@ -69,7 +69,7 @@ function isAdmin(user) {
 function cleanPayload(input = {}) {
   const clean = {};
   for (const [key, value] of Object.entries(input || {})) {
-    if (['created_at', 'created_date', 'updated_at', 'updated_date'].includes(key)) continue;
+    if (['id', 'created_at', 'created_date', 'updated_at', 'updated_date'].includes(key)) continue;
     if (value !== undefined) clean[key] = value;
   }
   return clean;

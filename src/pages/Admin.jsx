@@ -12,6 +12,7 @@ const ROLES = ['user', 'moderator', 'admin'];
 
 const SECTIONS = ['food', 'travel', 'buysell'];
 const TYPES = ['chain', 'carinderia', 'home-kitchen', 'home-baker', 'coffee', 'hotel', 'vehicle-rental', 'shop', 'service'];
+const LISTING_TYPES = ['shoes', 'cars', 'houses', 'services', 'product', 'electronics', 'clothing', 'furniture', 'food', 'other', 'hotel', 'flights', 'vehicle_rental', 'space_rent', 'jobs', 'mods', 'rent_lease', 'homeappliances'];
 const LISTING_THEME_BG_STYLES = ['royal_blue', 'glass', 'neon', 'sunset', 'emerald', 'purple'];
 const LISTING_TRANSITIONS = ['fade', 'slide', 'zoom', 'flip', 'bounce', 'glow'];
 const LISTING_GLOWS = ['soft', 'strong', 'neon', 'none'];
@@ -157,6 +158,7 @@ function MultiImageUploadField({ label, value, onChange }) {
 
 function BusinessForm({ initial, onSave, onCancel }) {
   const [form, setForm] = useState(initial || EMPTY_BIZ);
+  useEffect(() => setForm(initial || EMPTY_BIZ), [initial]);
   const set = (field, val) => setForm(f => ({ ...f, [field]: val }));
 
   return (
@@ -202,6 +204,7 @@ function BusinessForm({ initial, onSave, onCancel }) {
 
 function ListingForm({ initial, onSave, onCancel }) {
   const [form, setForm] = useState(initial || EMPTY_LISTING);
+  useEffect(() => setForm(initial || EMPTY_LISTING), [initial]);
   const set = (field, val) => setForm(f => ({ ...f, [field]: val }));
 
   return (
@@ -209,7 +212,7 @@ function ListingForm({ initial, onSave, onCancel }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FieldInput label="Title *" value={form.title} onChange={v => set('title', v)} placeholder="e.g. Nike Air Force 1 Low" />
         <SelectField label="Type *" value={form.type} onChange={v => set('type', v)}
-          options={['shoes', 'cars', 'houses', 'services', 'product']} />
+          options={LISTING_TYPES} />
         <SelectField label="Location *" value={form.location} onChange={v => set('location', v)} options={['Manila', 'Cavite']} />
         <FieldInput label="Area" value={form.area} onChange={v => set('area', v)} placeholder="e.g. Bacoor" />
         <FieldInput label="Seller Name" value={form.seller_name} onChange={v => set('seller_name', v)} placeholder="e.g. Direct Owner" />
@@ -395,7 +398,8 @@ export default function Admin() {
         const isGhostEmail = u.email?.includes('@1marketph-ghost.internal');
         const isGhostFlag = u.is_ghost_account === true;
         const isGhostId = u.ghost_id?.startsWith('ghost_');
-        return isGhostEmail || isGhostFlag || isGhostId;
+        const isLinkedGhost = u.ghost_linked === true || u.is_connected_account === true;
+        return isGhostEmail || isGhostFlag || isGhostId || isLinkedGhost;
       });
       setGhostUsers(ghosts);
       setTotalUsers((userList || []).length);
@@ -461,7 +465,8 @@ export default function Admin() {
     const previous = users;
     setUsers(prev => prev.map(item => item.id === u.id ? { ...item, ...updateData } : item));
     try {
-      await adminUserWrite('update', u.id, updateData);
+      const updatedUser = await adminUserWrite('update', u.id, updateData);
+      setUsers(prev => prev.map(item => item.id === u.id ? { ...item, ...updatedUser, ...updateData } : item));
       if (newType === 'seller') {
         try { await base44.functions.invoke('sendSellerWelcomeEmail', { email: u.email, name: u.full_name || u.email }); } catch(e) {}
       } else if (newType === 'business') {
@@ -470,7 +475,7 @@ export default function Admin() {
       showToast(`User type changed to ${newType}${(newType==='seller'||newType==='business') ? ' — Email sent!' : ''}`);
     } catch (err) {
       setUsers(previous);
-      showToast('User type update failed. Please try again.');
+      showToast('User type update failed: ' + (err.message || 'Please try again.'));
     }
   };
 
@@ -566,18 +571,26 @@ export default function Admin() {
   const transferListingOwner = async (listing, userId) => {
     const target = users.find(u => u.id === userId);
     if (!target) { showToast('Select a user first.'); return; }
-    await adminEntityWrite('Listing', 'update', listing.id, {
+    const ownerName = target.channel_name || target.business_name || target.full_name || target.email || listing.seller_name;
+    const patch = {
       created_by_id: target.id,
       owner_user_id: target.id,
       owner_email: target.email || '',
       created_by: target.email || '',
-      seller_name: target.channel_name || target.business_name || target.full_name || target.email || listing.seller_name,
+      seller_email: target.email || '',
+      seller_name: ownerName,
       email_contact: target.email || listing.email_contact || '',
-      approved_channel_name: target.channel_name || target.business_name || target.full_name || '',
-    });
-    setTransferTargetByListing(prev => ({ ...prev, [listing.id]: '' }));
-    showToast('Listing transferred to the selected user.');
-    loadAll();
+      approved_channel_name: ownerName,
+    };
+    try {
+      const updatedListing = await adminEntityWrite('Listing', 'update', listing.id, patch);
+      setListings(prev => prev.map(item => item.id === listing.id ? { ...item, ...patch, ...updatedListing } : item));
+      setPendingListings(prev => prev.map(item => item.id === listing.id ? { ...item, ...patch, ...updatedListing } : item));
+      setTransferTargetByListing(prev => ({ ...prev, [listing.id]: '' }));
+      showToast('Listing transferred to the selected user.');
+    } catch (err) {
+      showToast('Transfer failed: ' + (err.message || 'Please try again.'));
+    }
   };
 
   const createGhostAccount = async () => {
@@ -598,10 +611,13 @@ export default function Admin() {
       localStorage.setItem('1m_ghost_' + (newUser.ghost_id || newUser.id), JSON.stringify(newUser));
       saveGhostSession(newUser);
 
+      setUsers(prev => [newUser, ...prev.filter(u => u.id !== newUser.id)]);
+      setGhostUsers(prev => [newUser, ...prev.filter(u => u.id !== newUser.id)]);
+      setTotalUsers(prev => prev + (users.some(u => u.id === newUser.id) ? 0 : 1));
       setGhostSaving(false);
       setGhostForm({ full_name: '', user_type: 'seller', business_name: '', location: 'Manila' });
-      showToast('Created user account created. Signing in...');
-      navigate('/profile');
+      showToast('Created user account added to Users and Created Users.');
+      setTab('ghost');
     } catch (err) {
       console.error('Created user account creation failed:', err);
       setGhostSaving(false);
@@ -754,13 +770,13 @@ export default function Admin() {
           {(showBizForm || editingBiz) && (
             <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="mb-8">
               <h3 className="font-heading font-bold text-lg text-[#0A192F] mb-4">{editingBiz ? 'Edit Business' : 'Add New Business'}</h3>
-              <BusinessForm initial={editingBiz || EMPTY_BIZ} onSave={saveBiz} onCancel={() => { setShowBizForm(false); setEditingBiz(null); }} />
+              <BusinessForm key={editingBiz?.id || 'new-business'} initial={editingBiz || EMPTY_BIZ} onSave={saveBiz} onCancel={() => { setShowBizForm(false); setEditingBiz(null); }} />
             </motion.div>
           )}
           {(showListForm || editingList) && (
             <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="mb-8">
               <h3 className="font-heading font-bold text-lg text-[#0A192F] mb-4">{editingList ? 'Edit Listing' : 'Add New Listing'}</h3>
-              <ListingForm initial={editingList || EMPTY_LISTING} onSave={saveList} onCancel={() => { setShowListForm(false); setEditingList(null); }} />
+              <ListingForm key={editingList?.id || 'new-listing'} initial={editingList || EMPTY_LISTING} onSave={saveList} onCancel={() => { setShowListForm(false); setEditingList(null); }} />
             </motion.div>
           )}
         </AnimatePresence>
