@@ -611,7 +611,7 @@ export default function AddListingModal({ onClose, defaultType = '', defaultSubc
     try {
       listing = await base44.entities.Listing.create({
       ...ghostOwnerFields(ghostSess),
-      owner_user_id: ghostSess ? '' : (effectiveUser?.id || ''),
+      ...(ghostSess || !effectiveUser?.id ? {} : { created_by_id: effectiveUser.id }),
       title: safeForm.title, type: safeForm.type, main_category: safeForm.main_category, subcategory: safeForm.subcategory,
       location: locationSafe,
       area: safeForm.area || (safeForm.zip ? `Zip: ${safeForm.zip}` : ''),

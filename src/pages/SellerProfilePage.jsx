@@ -380,7 +380,7 @@ export default function SellerProfilePage() {
         const [byEmail, byCreator, byOwner, communityPosts] = await Promise.all([
           base44.entities.Listing.filter({ email_contact: seller.email, approval_status: 'approved', is_active: true }),
           base44.entities.Listing.filter({ created_by_id: seller.id, approval_status: 'approved', is_active: true }),
-          base44.entities.Listing.filter({ owner_user_id: seller.id, approval_status: 'approved', is_active: true }),
+          base44.entities.Listing.filter({ owner_user_id: seller.id, approval_status: 'approved', is_active: true }).catch(() => []),
           base44.entities.CommunityPost.filter({ author_email: seller.email }),
         ]);
         

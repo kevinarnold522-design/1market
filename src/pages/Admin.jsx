@@ -6,7 +6,7 @@ import { isOwnerAccount } from '@/lib/adminAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, X, Save, ArrowLeft, Building2, ShoppingBag, Search, Upload, User, Users, BadgeCheck, Shield, Flag, CheckCircle, XCircle, Ghost, Link2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { saveGhostSession } from '@/lib/ghostAccounts';
+import { getAllLocalGhosts, saveGhostSession } from '@/lib/ghostAccounts';
 
 const ROLES = ['user', 'moderator', 'admin'];
 
@@ -18,6 +18,29 @@ const LISTING_TRANSITIONS = ['fade', 'slide', 'zoom', 'flip', 'bounce', 'glow'];
 const LISTING_GLOWS = ['soft', 'strong', 'neon', 'none'];
 const LISTING_ANIMATIONS = ['none', 'float', 'pulse', 'shimmer'];
 const LOCATIONS = ['Manila', 'Cavite', 'Nationwide'];
+
+const isGhostUserRecord = (u = {}) => {
+  const isGhostEmail = u.email?.includes('@1marketph-ghost.internal');
+  const isGhostFlag = u.is_ghost_account === true;
+  const isGhostId = u.ghost_id?.startsWith('ghost_');
+  const isLinkedGhost = u.ghost_linked === true || u.is_connected_account === true;
+  return isGhostEmail || isGhostFlag || isGhostId || isLinkedGhost;
+};
+
+const mergeUsersByIdentity = (remoteUsers = [], localGhosts = []) => {
+  const merged = [];
+  const seen = new Set();
+  const addUser = (u) => {
+    if (!u) return;
+    const key = u.id || u.ghost_id || u.email;
+    if (!key || seen.has(key)) return;
+    seen.add(key);
+    merged.push(u);
+  };
+  remoteUsers.forEach(addUser);
+  localGhosts.forEach(addUser);
+  return merged;
+};
 
 const EMPTY_BIZ = {
   name: '', category: '', type: 'carinderia', section: 'food',
@@ -400,19 +423,15 @@ export default function Admin() {
       ]);
       const bizs = (bizRes || []).filter(Boolean).sort(byNewest);
       const lists = (listRes || []).filter(activeRecord).sort(byNewest);
+      const localGhosts = getAllLocalGhosts();
+      const mergedUsers = mergeUsersByIdentity(userList || [], localGhosts);
       setBusinesses(bizs);
       setListings(lists);
-      setUsers(userList || []);
+      setUsers(mergedUsers);
 
-      const ghosts = (userList || []).filter(u => {
-        const isGhostEmail = u.email?.includes('@1marketph-ghost.internal');
-        const isGhostFlag = u.is_ghost_account === true;
-        const isGhostId = u.ghost_id?.startsWith('ghost_');
-        const isLinkedGhost = u.ghost_linked === true || u.is_connected_account === true;
-        return isGhostEmail || isGhostFlag || isGhostId || isLinkedGhost;
-      });
+      const ghosts = mergedUsers.filter(isGhostUserRecord);
       setGhostUsers(ghosts);
-      setTotalUsers((userList || []).length);
+      setTotalUsers(mergedUsers.length);
       const allPending = lists.filter(j => !j.approval_status || j.approval_status === 'pending').sort(byNewest);
       setPendingListings(allPending);
       setPendingJobs(allPending.filter(j => j.type === 'jobs'));
@@ -584,7 +603,6 @@ export default function Admin() {
     const ownerName = target.channel_name || target.business_name || target.full_name || target.email || listing.seller_name;
     const patch = {
       created_by_id: target.id,
-      owner_user_id: target.id,
       owner_email: target.email || '',
       created_by: target.email || '',
       seller_email: target.email || '',
