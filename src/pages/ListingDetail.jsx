@@ -360,6 +360,16 @@ export default function ListingDetail() {
     setSubmitting(false);
   };
 
+  const isAdminViewer = user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
+  const isOwnerViewer = !!(user && listing && (user.id === listing.created_by_id || user.email === listing.owner_email || user.email === listing.created_by));
+
+  useEffect(() => {
+    if (searchParams.get('edit') !== '1') return;
+    if (!listing) return;
+    if (!(isAdminViewer || isOwnerViewer)) return;
+    navigate(`/listing/${listing.id}/edit`, { replace: true });
+  }, [searchParams, listing, isAdminViewer, isOwnerViewer, navigate]);
+
   if (loading) return (
     <div className="min-h-screen bg-sky-100 flex items-center justify-center">
       <div className="relative z-10 w-10 h-10 border-2 border-sky-200 border-t-sky-500 rounded-full animate-spin" />
@@ -391,15 +401,6 @@ export default function ListingDetail() {
       : listing.animation_style === 'shimmer'
         ? { opacity: [0.72, 1, 0.72] }
         : {};
-  const isAdminViewer = user?.role === 'admin' || user?.email?.toLowerCase() === 'kevinarnold522@gmail.com';
-  const isOwnerViewer = !!(user && listing && (user.id === listing.created_by_id || user.email === listing.owner_email || user.email === listing.created_by));
-
-  useEffect(() => {
-    if (searchParams.get('edit') !== '1') return;
-    if (!listing) return;
-    if (!(isAdminViewer || isOwnerViewer)) return;
-    navigate(`/listing/${listing.id}/edit`, { replace: true });
-  }, [searchParams, listing, isAdminViewer, isOwnerViewer, navigate]);
 
   const handleChatSeller = async (message) => {
     if (!user) { base44.auth.redirectToLogin(window.location.href); return; }
