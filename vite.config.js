@@ -2,6 +2,8 @@ import react from '@vitejs/plugin-react'
 import { defineConfig, loadEnv } from 'vite'
 import path from 'path'
 
+import { cloudflare } from "@cloudflare/vite-plugin";
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   // Load ALL env vars (not just VITE_ prefixed) so we can bridge them
@@ -13,9 +15,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     logLevel: 'error', // Suppress warnings, only show errors
-    plugins: [
-      react(),
-    ],
+    plugins: [react(), cloudflare()],
     // Bridge non-VITE_ prefixed env vars into import.meta.env so Supabase client works.
     // Vite only auto-exposes VITE_ prefixed variables; we explicitly map the others here.
     resolve: {
